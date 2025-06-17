@@ -13,6 +13,7 @@ namespace TrainTicketPlatformAPI.Data
         public DbSet<Train> Trains { get; set; }
         public DbSet<Seat> Seats { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<BookingReport> bookingReports { get; set; }
         public DbSet<Payment> Payments { get; set; }
 
         // Optional: Fluent API configuration
@@ -50,6 +51,11 @@ namespace TrainTicketPlatformAPI.Data
             modelBuilder.Entity<Payment>()
                 .Property(p => p.Amount)
                 .HasPrecision(18, 2);
+
+            // Makes bookinf report keyless for querying
+            modelBuilder
+           .Entity<BookingReport>()
+           .HasNoKey();
         }
     }
 }
