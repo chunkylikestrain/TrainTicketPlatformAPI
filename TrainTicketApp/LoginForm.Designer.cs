@@ -59,14 +59,14 @@
             // 
             txtEmail.Location = new Point(317, 12);
             txtEmail.Name = "txtEmail";
-            txtEmail.Size = new Size(125, 27);
+            txtEmail.Size = new Size(294, 27);
             txtEmail.TabIndex = 2;
             // 
             // txtPasword
             // 
             txtPasword.Location = new Point(317, 50);
             txtPasword.Name = "txtPasword";
-            txtPasword.Size = new Size(125, 27);
+            txtPasword.Size = new Size(414, 27);
             txtPasword.TabIndex = 3;
             txtPasword.UseSystemPasswordChar = true;
             // 

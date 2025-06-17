@@ -109,7 +109,7 @@ namespace TrainTicketApp
             }
         }
 
-        // ④ “Register” link click (if you have a LinkLabel named lnkRegister)
+        // ④ “Register” link click 
         private void btnGoToRegister_Click(object sender, EventArgs e)
         {
             // resolve and show your RegisterForm

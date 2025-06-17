@@ -11,6 +11,7 @@ namespace TrainTicketPlatformAPI.Services
         Task DeleteUserAsync(int userId);
         Task<User> RegisterAsync(RegisterDto dto);
         Task<string> LoginAsync(LoginDto dto);
+        
 
     }
 

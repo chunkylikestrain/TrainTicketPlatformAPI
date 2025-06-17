@@ -6,6 +6,8 @@ using System.Windows.Forms;
 using TrainTicketPlatformAPI.Data;
 using TrainTicketPlatformAPI.Services;
 using TrainTicketApp;
+using Microsoft.Extensions.Configuration;
+
 
 namespace TrainTicketApp
 {
@@ -16,15 +18,23 @@ namespace TrainTicketApp
         [STAThread]
         static void Main()
         {
-            
+            // 0) build a config reader
+            var config = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
             ApplicationConfiguration.Initialize();
 
-            // build Host & DI container
+            // 1) Build the Host
             AppHost = Host.CreateDefaultBuilder()
-                .ConfigureServices((context, services) =>
+                .ConfigureServices((ctx, services) =>
                 {
+                    // read the real connection string
+                    var conn = config.GetConnectionString("DefaultConnection");
+
                     services.AddDbContext<TrainTicketDbContext>(opts =>
-                        opts.UseSqlServer("DefaultConnection"));
+                        opts.UseSqlServer(conn));
 
                     services.AddSingleton<IUserService, UserService>();
                     services.AddScoped<ITrainService, TrainService>();
@@ -55,7 +65,7 @@ namespace TrainTicketApp
                 
 
             //grab the first form from DI and run it
-            var login = AppHost.Services.GetRequiredService<LoginForm>();
+            var login = AppHost.Services.GetRequiredService<SearchTrainsForm>();
             Application.Run(login);
         }
     }

@@ -1,0 +1,5 @@
+{
+  "ConnectionStrings": {
+    "DefaultConnection": "Server=MYGAMINGRIG2\\SQLEXPRESS;Database=TrainTicketDb;Trusted_Connection=True;"
+  }
+}
