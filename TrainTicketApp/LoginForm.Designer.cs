@@ -31,7 +31,7 @@
             label1 = new Label();
             label2 = new Label();
             txtEmail = new TextBox();
-            txtPasword = new TextBox();
+            txtPassword = new TextBox();
             btnLogin = new Button();
             btnGoToRegister = new Button();
             label3 = new Label();
@@ -64,11 +64,11 @@
             // 
             // txtPasword
             // 
-            txtPasword.Location = new Point(317, 50);
-            txtPasword.Name = "txtPasword";
-            txtPasword.Size = new Size(414, 27);
-            txtPasword.TabIndex = 3;
-            txtPasword.UseSystemPasswordChar = true;
+            txtPassword.Location = new Point(317, 50);
+            txtPassword.Name = "txtPasword";
+            txtPassword.Size = new Size(414, 27);
+            txtPassword.TabIndex = 3;
+            txtPassword.UseSystemPasswordChar = true;
             // 
             // btnLogin
             // 
@@ -107,7 +107,7 @@
             Controls.Add(label3);
             Controls.Add(btnGoToRegister);
             Controls.Add(btnLogin);
-            Controls.Add(txtPasword);
+            Controls.Add(txtPassword);
             Controls.Add(txtEmail);
             Controls.Add(label2);
             Controls.Add(label1);
@@ -122,7 +122,7 @@
         private Label label1;
         private Label label2;
         private TextBox txtEmail;
-        private TextBox txtPasword;
+        private TextBox txtPassword;
         private Button btnLogin;
         private Button btnGoToRegister;
         private Label label3;

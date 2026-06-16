@@ -1,4 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
 
@@ -6,6 +9,7 @@ namespace TrainTicketPlatformAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class BookingsController : ControllerBase
     {
         private readonly IBookingService _bookingService;
@@ -14,6 +18,7 @@ namespace TrainTicketPlatformAPI.Controllers
             => _bookingService = bookingService;
 
         // GET: api/Bookings
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Booking>>> GetAll()
             => Ok(await _bookingService.GetAllBookingsAsync());
@@ -25,6 +30,9 @@ namespace TrainTicketPlatformAPI.Controllers
             try
             {
                 var b = await _bookingService.GetBookingByIdAsync(id);
+                if (!CanAccessUserResource(b.UserId))
+                    return Forbid();
+
                 return Ok(b);
             }
             catch (KeyNotFoundException)
@@ -37,11 +45,15 @@ namespace TrainTicketPlatformAPI.Controllers
         [HttpGet("user/{userId}")]
         public async Task<ActionResult<IEnumerable<Booking>>> GetByUser(int userId)
         {
+            if (!CanAccessUserResource(userId))
+                return Forbid();
+
             var list = await _bookingService.GetBookingsByUserAsync(userId);
             return Ok(list);
         }
 
         // GET: api/Bookings/availability?trainId=1&seatId=5&travelDate=2025-06-20
+        [AllowAnonymous]
         [HttpGet("availability")]
         public async Task<ActionResult<bool>> CheckAvailability(
             [FromQuery] int trainId,
@@ -59,6 +71,9 @@ namespace TrainTicketPlatformAPI.Controllers
         {
             try
             {
+                if (!CanAccessUserResource(booking.UserId))
+                    return Forbid();
+
                 var created = await _bookingService.CreateBookingAsync(booking);
                 return CreatedAtAction(nameof(GetById),
                                        new { id = created.Id },
@@ -79,6 +94,10 @@ namespace TrainTicketPlatformAPI.Controllers
 
             try
             {
+                var existing = await _bookingService.GetBookingByIdAsync(id);
+                if (!CanAccessUserResource(existing.UserId))
+                    return Forbid();
+
                 var updated = await _bookingService.UpdateBookingAsync(booking);
                 return Ok(updated);
             }
@@ -98,6 +117,10 @@ namespace TrainTicketPlatformAPI.Controllers
         {
             try
             {
+                var booking = await _bookingService.GetBookingByIdAsync(id);
+                if (!CanAccessUserResource(booking.UserId))
+                    return Forbid();
+
                 await _bookingService.CancelBookingAsync(id);
                 return NoContent();
             }
@@ -111,6 +134,7 @@ namespace TrainTicketPlatformAPI.Controllers
             }
         }
         // GET: api/Bookings/report?from=2025-06-01&to=2025-06-30
+        [Authorize(Roles = "Admin")]
         [HttpGet("report")]
         public async Task<ActionResult<BookingReport>> GetReport(
             [FromQuery] DateTime from,
@@ -121,6 +145,16 @@ namespace TrainTicketPlatformAPI.Controllers
 
             var report = await _bookingService.GenerateBookingReportAsync(from, to);
             return Ok(report);
+        }
+
+        private bool CanAccessUserResource(int userId)
+        {
+            if (User.IsInRole("Admin"))
+                return true;
+
+            var subject = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
+                          ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(subject, out var currentUserId) && currentUserId == userId;
         }
     }
 }

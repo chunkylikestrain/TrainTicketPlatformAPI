@@ -10,7 +10,11 @@ namespace TrainTicketPlatformAPI.Data
             : base(options) { }
         // Each DbSet<T> represents a table:
         public DbSet<User> Users { get; set; }
+        public DbSet<Station> Stations { get; set; }
+        public DbSet<TrainRoute> TrainRoutes { get; set; }
         public DbSet<Train> Trains { get; set; }
+        public DbSet<Trip> Trips { get; set; }
+        public DbSet<Fare> Fares { get; set; }
         public DbSet<Seat> Seats { get; set; }
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<BookingReport> bookingReports { get; set; }
@@ -42,6 +46,46 @@ namespace TrainTicketPlatformAPI.Data
                 .HasForeignKey(b => b.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.Trip)
+                .WithMany(t => t.Bookings)
+                .HasForeignKey(b => b.TripId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Station>()
+                .HasIndex(s => s.Code)
+                .IsUnique();
+
+            modelBuilder.Entity<TrainRoute>()
+                .HasOne(r => r.DepartureStation)
+                .WithMany(s => s.DepartureRoutes)
+                .HasForeignKey(r => r.DepartureStationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TrainRoute>()
+                .HasOne(r => r.ArrivalStation)
+                .WithMany(s => s.ArrivalRoutes)
+                .HasForeignKey(r => r.ArrivalStationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Trip>()
+                .HasOne(t => t.Train)
+                .WithMany(t => t.Trips)
+                .HasForeignKey(t => t.TrainId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Trip>()
+                .HasOne(t => t.TrainRoute)
+                .WithMany(r => r.Trips)
+                .HasForeignKey(t => t.TrainRouteId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Fare>()
+                .HasOne(f => f.Trip)
+                .WithMany(t => t.Fares)
+                .HasForeignKey(f => f.TripId)
+                .OnDelete(DeleteBehavior.Cascade);
+
             // Train.Price → decimal(18,2)
             modelBuilder.Entity<Train>()
                 .Property(t => t.Price)
@@ -52,6 +96,14 @@ namespace TrainTicketPlatformAPI.Data
                 .Property(p => p.Amount)
                 .HasPrecision(18, 2);
 
+            modelBuilder.Entity<TrainRoute>()
+                .Property(r => r.DistanceKm)
+                .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Fare>()
+                .Property(f => f.Price)
+                .HasPrecision(18, 2);
+
             // Makes bookinf report keyless for querying
             modelBuilder
            .Entity<BookingReport>()
@@ -59,4 +111,3 @@ namespace TrainTicketPlatformAPI.Data
         }
     }
 }
-

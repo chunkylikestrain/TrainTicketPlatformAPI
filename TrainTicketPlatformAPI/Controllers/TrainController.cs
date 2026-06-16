@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
 namespace TrainTicketPlatformAPI.Controllers
@@ -12,6 +13,7 @@ namespace TrainTicketPlatformAPI.Controllers
             => _trainService = trainService;
 
         // GET: api/Trains/search?from=A&to=B&date=2025-06-20
+        [AllowAnonymous]
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<Train>>> Search(
             [FromQuery] string from,
@@ -23,11 +25,13 @@ namespace TrainTicketPlatformAPI.Controllers
         }
 
         // GET: api/Trains
+        [AllowAnonymous]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Train>>> GetAll()
             => Ok(await _trainService.GetAllTrainsAsync());
 
         // GET: api/Trains/5
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public async Task<ActionResult<Train>> GetById(int id)
         {
@@ -43,6 +47,7 @@ namespace TrainTicketPlatformAPI.Controllers
         }
 
         // POST: api/Trains
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<ActionResult<Train>> Create(Train train)
         {
@@ -53,6 +58,7 @@ namespace TrainTicketPlatformAPI.Controllers
         }
 
         // PUT: api/Trains/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, Train train)
         {
@@ -69,6 +75,7 @@ namespace TrainTicketPlatformAPI.Controllers
         }
 
         // DELETE: api/Trains/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

@@ -11,6 +11,8 @@ namespace TrainTicketPlatformAPI.Services
 
         public async Task<Payment> ProcessPaymentAsync(int bookingId, decimal amount, string cardNumber)
         {
+            if (string.IsNullOrWhiteSpace(cardNumber) || cardNumber.Length < 4)
+                throw new InvalidOperationException("Card number is invalid");
 
             // 1) Validate booking exists
             var booking = await _db.Bookings.FindAsync(bookingId)
@@ -71,4 +73,3 @@ namespace TrainTicketPlatformAPI.Services
         }
     }
 }
-

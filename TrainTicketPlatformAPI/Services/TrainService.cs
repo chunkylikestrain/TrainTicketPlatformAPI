@@ -14,10 +14,13 @@ namespace TrainTicketPlatformAPI.Services
             string arrivalStation,
             DateTime date)
         {
+            var departure = departureStation.ToLower();
+            var arrival = arrivalStation.ToLower();
+
             return await _db.Trains
                 .Where(t =>
-                    t.DepartureStation.Equals(departureStation, StringComparison.OrdinalIgnoreCase) &&
-                    t.ArrivalStation.Equals(arrivalStation, StringComparison.OrdinalIgnoreCase) &&
+                    t.DepartureStation.ToLower() == departure &&
+                    t.ArrivalStation.ToLower() == arrival &&
                     t.DepartureTime.Date == date.Date)
                 .ToListAsync();
         }
@@ -72,5 +75,4 @@ namespace TrainTicketPlatformAPI.Services
         }
     }
 }
-
 

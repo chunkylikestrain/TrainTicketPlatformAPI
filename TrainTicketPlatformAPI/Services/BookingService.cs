@@ -18,10 +18,19 @@ namespace TrainTicketPlatformAPI.Services
             if (seat == null || !seat.IsAvailable)
                 throw new InvalidOperationException("Seat not available");
 
+            var alreadyBooked = await _db.Bookings.AnyAsync(b =>
+                b.SeatId == booking.SeatId
+                && b.TrainId == booking.TrainId
+                && b.TravelDate.Date == booking.TravelDate.Date
+                && !b.IsCancelled);
+            if (alreadyBooked)
+                throw new InvalidOperationException("Seat already booked for this travel date");
+
             // 2. Mark seat unavailable
             seat.IsAvailable = false;
 
             // 3. Add the booking record
+            booking.BookingDate = DateTime.UtcNow;
             _db.Bookings.Add(booking);
             await _db.SaveChangesAsync();
 
@@ -107,7 +116,8 @@ namespace TrainTicketPlatformAPI.Services
             // 2) Is it already booked on that date?
             var clash = await _db.Bookings
                                  .AnyAsync(b => b.SeatId == seatId
-                                             && b.TravelDate.Date == travelDate.Date);
+                                             && b.TravelDate.Date == travelDate.Date
+                                             && !b.IsCancelled);
             return !clash;
         }
         public async Task<BookingReport> GenerateBookingReportAsync(DateTime from, DateTime to)
