@@ -117,6 +117,18 @@ namespace TrainTicketPlatformAPI.Data
                 .HasIndex(p => p.BookingId);
 
             modelBuilder.Entity<Payment>()
+                .HasIndex(p => p.PaymentIntentId)
+                .IsUnique();
+
+            modelBuilder.Entity<Payment>()
+                .Property(p => p.PaymentIntentId)
+                .HasMaxLength(64);
+
+            modelBuilder.Entity<Payment>()
+                .Property(p => p.PaymentMethodToken)
+                .HasMaxLength(64);
+
+            modelBuilder.Entity<Payment>()
                 .Property(p => p.Status)
                 .HasMaxLength(32);
 

@@ -1,7 +1,6 @@
-﻿using System;
+using System;
 using System.Windows.Forms;
-using TrainTicketPlatformAPI.Services;    // for IPaymentService
-// no need for a “Dtos” namespace if your current interface takes 3 primitives
+using TrainTicketPlatformAPI.Services;
 
 namespace TrainTicketApp
 {
@@ -9,7 +8,6 @@ namespace TrainTicketApp
     {
         private readonly IPaymentService _paymentService;
 
-        // these are set by whoever opens this form
         public int BookingId { get; set; }
         public decimal Amount { get; set; }
         public string TrainName { get; set; } = "";
@@ -20,14 +18,14 @@ namespace TrainTicketApp
         {
             InitializeComponent();
             _paymentService = paymentService;
-            this.Load += PaymentForm_Load;
+            Load += PaymentForm_Load;
         }
 
         private void PaymentForm_Load(object? sender, EventArgs e)
         {
-            // copy the incoming values into your controls
             txtBookingId.Text = BookingId.ToString();
-            txtAmount.Text = Amount.ToString("C");        // currency
+            txtAmount.Text = Amount.ToString("C");
+            txtPaymentToken.Text = PaymentService.SuccessToken;
             lblTrainName.Text = $"Train: {TrainName}";
             lblSeatInfo.Text = $"Seat: {SeatInfo}";
             lblTravelDate.Text = $"Date: {TravelDate:d}";
@@ -37,33 +35,27 @@ namespace TrainTicketApp
         {
             try
             {
-                // note: match your IPaymentService signature exactly
-                var payment = await _paymentService.ProcessPaymentAsync(
-                    BookingId,
-                    Amount,
-                    txtCardNumber.Text.Trim()
-                );
+                var intent = await _paymentService.CreatePaymentIntentAsync(BookingId);
+                var payment = await _paymentService.ConfirmPaymentAsync(
+                    intent.PaymentIntentId,
+                    txtPaymentToken.Text.Trim());
 
                 MessageBox.Show(
-                    $"Payment {payment.Status}\nTransaction ID: {payment.Id}",
+                    $"Payment {payment.Status}\nTransaction ID: {payment.Id}\nIntent: {payment.PaymentIntentId}",
                     "Payment Result",
                     MessageBoxButtons.OK,
-                    MessageBoxIcon.Information
-                );
+                    MessageBoxIcon.Information);
 
-                this.Close();
+                Close();
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "Payment Failed",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    ex.Message,
+                    "Payment Failed",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
             }
         }
     }
 }
-
-
-
-
-
-

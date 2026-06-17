@@ -69,6 +69,29 @@ namespace TrainTicketPlatformAPI.Controllers
             }
         }
 
+        // POST: api/Payments/intent
+        [HttpPost("intent")]
+        public async Task<ActionResult<PaymentIntentDto>> CreateIntent([FromBody] CreatePaymentIntentRequest request)
+        {
+            try
+            {
+                var booking = await _bookingService.GetBookingByIdAsync(request.BookingId);
+                if (!CanAccessUserResource(booking.UserId))
+                    return Forbid();
+
+                var intent = await _paymentService.CreatePaymentIntentAsync(request.BookingId);
+                return Ok(intent);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound("Booking not found");
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         // POST: api/Payments
         [HttpPost]
         public async Task<ActionResult<PaymentDto>> Create([FromBody] ConfirmPaymentRequest request)
@@ -82,14 +105,14 @@ namespace TrainTicketPlatformAPI.Controllers
         {
             try
             {
-                var booking = await _bookingService.GetBookingByIdAsync(request.BookingId);
+                var intentBookingId = GetBookingIdFromPaymentIntent(request.PaymentIntentId);
+                var booking = await _bookingService.GetBookingByIdAsync(intentBookingId);
                 if (!CanAccessUserResource(booking.UserId))
                     return Forbid();
 
-                var payment = await _paymentService.ProcessPaymentAsync(
-                    request.BookingId,
-                    request.Amount,
-                    request.CardNumber);
+                var payment = await _paymentService.ConfirmPaymentAsync(
+                    request.PaymentIntentId,
+                    request.PaymentMethodToken);
 
                 return CreatedAtAction(nameof(GetById), new { id = payment.Id }, ToDto(payment));
             }
@@ -113,10 +136,23 @@ namespace TrainTicketPlatformAPI.Controllers
             return int.TryParse(subject, out var currentUserId) && currentUserId == userId;
         }
 
+        private static int GetBookingIdFromPaymentIntent(string paymentIntentId)
+        {
+            if (string.IsNullOrWhiteSpace(paymentIntentId) ||
+                !paymentIntentId.StartsWith("pi_", StringComparison.OrdinalIgnoreCase) ||
+                !int.TryParse(paymentIntentId[3..], out var bookingId))
+            {
+                throw new InvalidOperationException("Payment intent is invalid");
+            }
+
+            return bookingId;
+        }
+
         private static PaymentDto ToDto(Payment payment) => new()
         {
             Id = payment.Id,
             BookingId = payment.BookingId,
+            PaymentIntentId = payment.PaymentIntentId,
             PaymentDate = payment.PaymentDate,
             Status = payment.Status,
             Amount = payment.Amount

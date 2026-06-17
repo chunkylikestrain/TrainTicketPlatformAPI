@@ -146,6 +146,10 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+
+    using var scope = app.Services.CreateScope();
+    var db = scope.ServiceProvider.GetRequiredService<TrainTicketDbContext>();
+    await DevelopmentSeedData.SeedAsync(db, app.Configuration);
 }
 
 app.UseHttpsRedirection();
@@ -159,3 +163,5 @@ app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+
+public partial class Program { }

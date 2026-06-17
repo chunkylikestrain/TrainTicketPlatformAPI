@@ -1,6 +1,3 @@
-﻿using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
 using TrainTicketPlatformAPI.Data;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
@@ -13,7 +10,7 @@ namespace TrainTicketPlatformAPI.Tests
         private TrainTicketDbContext NewDb(string name)
             => TestHelpers.GetInMemoryDb(name);
 
-        private void SeedTrainAndSeat(TrainTicketDbContext db)
+        private async Task SeedPaymentGraphAsync(TrainTicketDbContext db)
         {
             db.Trains.Add(new Train
             {
@@ -33,40 +30,69 @@ namespace TrainTicketPlatformAPI.Tests
                 ClassType = "Economy",
                 IsAvailable = true
             });
-        }
-
-        private void SeedBooking(TrainTicketDbContext db)
-        {
+            db.Trips.Add(new Trip
+            {
+                Id = 1,
+                TrainId = 1,
+                TrainRouteId = 1,
+                DepartureTime = DateTime.UtcNow.AddHours(1),
+                ArrivalTime = DateTime.UtcNow.AddHours(3),
+                Status = "Scheduled"
+            });
+            db.Fares.Add(new Fare
+            {
+                Id = 1,
+                TripId = 1,
+                ClassType = "Economy",
+                Price = 49.99m,
+                Currency = "USD"
+            });
             db.Bookings.Add(new Booking
             {
                 Id = 1,
                 UserId = 42,
                 TrainId = 1,
+                TripId = 1,
                 SeatId = 1,
-                BookingDate = DateTime.UtcNow.AddHours(-2),
-                TravelDate = DateTime.UtcNow.AddHours(+1),
+                BookingDate = DateTime.UtcNow.AddMinutes(-1),
+                TravelDate = DateTime.UtcNow.AddHours(1).Date,
+                ExpiresAtUtc = DateTime.UtcNow.AddMinutes(14),
+                BookingStatus = "PendingPayment",
                 PaymentStatus = "Pending"
             });
+            await db.SaveChangesAsync();
         }
 
         [Test]
-        public async Task ProcessPaymentAsync_Succeeds_ForVisa()
+        public async Task CreatePaymentIntentAsync_ReturnsIntentForBooking()
         {
-            var db = NewDb("Pay_Visa");
-            SeedTrainAndSeat(db);
-            SeedBooking(db);
-            await db.SaveChangesAsync();
-
+            var db = NewDb("PayIntent_Create");
+            await SeedPaymentGraphAsync(db);
             var svc = new PaymentService(db);
-            var amount = 123.45m;
-            var card = "4123456789012345";   // Visa starts with '4'
 
-            var payment = await svc.ProcessPaymentAsync(1, amount, card);
+            var intent = await svc.CreatePaymentIntentAsync(1);
+
+            Assert.That(intent.PaymentIntentId, Is.EqualTo("pi_1"));
+            Assert.That(intent.BookingId, Is.EqualTo(1));
+            Assert.That(intent.Amount, Is.EqualTo(49.99m));
+            Assert.That(intent.Currency, Is.EqualTo("USD"));
+            Assert.That(intent.TestPaymentMethodTokens, Does.Contain(PaymentService.SuccessToken));
+            Assert.That(intent.TestPaymentMethodTokens, Does.Contain(PaymentService.FailToken));
+        }
+
+        [Test]
+        public async Task ConfirmPaymentAsync_Succeeds_ForSuccessToken()
+        {
+            var db = NewDb("Pay_TokenSuccess");
+            await SeedPaymentGraphAsync(db);
+            var svc = new PaymentService(db);
+
+            var payment = await svc.ConfirmPaymentAsync("pi_1", PaymentService.SuccessToken);
 
             Assert.That(payment.Status, Is.EqualTo("Successful"));
-            Assert.That(payment.Amount, Is.EqualTo(amount));
-            Assert.That(payment.BookingId, Is.EqualTo(1));
-            Assert.That(payment.PaymentDate.Kind, Is.EqualTo(DateTimeKind.Utc));
+            Assert.That(payment.PaymentIntentId, Is.EqualTo("pi_1"));
+            Assert.That(payment.PaymentMethodToken, Is.EqualTo(PaymentService.SuccessToken));
+            Assert.That(payment.Amount, Is.EqualTo(49.99m));
 
             var booking = await db.Bookings.FindAsync(1);
             Assert.That(booking!.PaymentStatus, Is.EqualTo("Successful"));
@@ -74,54 +100,13 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
-        public async Task ProcessPaymentAsync_Succeeds_ForMasterCardOldRange()
+        public async Task ConfirmPaymentAsync_Fails_ForFailToken()
         {
-            var db = NewDb("Pay_MC_Old");
-            SeedTrainAndSeat(db);
-            SeedBooking(db);
-            await db.SaveChangesAsync();
-
+            var db = NewDb("Pay_TokenFail");
+            await SeedPaymentGraphAsync(db);
             var svc = new PaymentService(db);
-            var amount = 50m;
-            var card = "5123456789012345"; // MasterCard old 51–55
 
-            var payment = await svc.ProcessPaymentAsync(1, amount, card);
-
-            Assert.That(payment.Status, Is.EqualTo("Successful"));
-            Assert.That(payment.BookingId, Is.EqualTo(1));
-            var booking = await db.Bookings.FindAsync(1);
-            Assert.That(booking!.PaymentStatus, Is.EqualTo("Successful"));
-        }
-
-        [Test]
-        public async Task ProcessPaymentAsync_Succeeds_ForMasterCardNewRange()
-        {
-            var db = NewDb("Pay_MC_New");
-            SeedTrainAndSeat(db);
-            SeedBooking(db);
-            await db.SaveChangesAsync();
-
-            var svc = new PaymentService(db);
-            var amount = 75m;
-            var card = "2221001234567890"; // MasterCard new 2221–2720
-
-            var payment = await svc.ProcessPaymentAsync(1, amount, card);
-
-            Assert.That(payment.Status, Is.EqualTo("Successful"));
-            var booking = await db.Bookings.FindAsync(1);
-            Assert.That(booking!.PaymentStatus, Is.EqualTo("Successful"));
-        }
-
-        [Test]
-        public async Task ProcessPaymentAsync_Fails_ForInvalidCard()
-        {
-            var db = NewDb("Pay_Invalid");
-            SeedTrainAndSeat(db);
-            SeedBooking(db);
-            await db.SaveChangesAsync();
-
-            var svc = new PaymentService(db);
-            var payment = await svc.ProcessPaymentAsync(1, 20m, "6011000000000000");
+            var payment = await svc.ConfirmPaymentAsync("pi_1", PaymentService.FailToken);
 
             Assert.That(payment.Status, Is.EqualTo("Failed"));
             var booking = await db.Bookings.FindAsync(1);
@@ -130,65 +115,19 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
-        public void ProcessPaymentAsync_Throws_WhenBookingNotFound()
-        {
-            var db = NewDb("Pay_NoBooking");
-            var svc = new PaymentService(db);
-
-            Assert.ThrowsAsync<KeyNotFoundException>(
-                () => svc.ProcessPaymentAsync(999, 10m, "4123456789012345")
-            );
-        }
-
-        [Test]
-        public void ProcessPaymentAsync_Throws_WhenAmountIsNotPositive()
-        {
-            var db = NewDb("Pay_BadAmount");
-            SeedTrainAndSeat(db);
-            SeedBooking(db);
-            db.SaveChanges();
-
-            var svc = new PaymentService(db);
-
-            Assert.ThrowsAsync<InvalidOperationException>(
-                () => svc.ProcessPaymentAsync(1, 0m, "4123456789012345")
-            );
-        }
-
-        [Test]
-        public void ProcessPaymentAsync_Throws_WhenBookingIsCancelled()
-        {
-            var db = NewDb("Pay_CancelledBooking");
-            SeedTrainAndSeat(db);
-            SeedBooking(db);
-            var booking = db.Bookings.Find(1)
-                          ?? throw new InvalidOperationException("Seed booking missing");
-            booking.IsCancelled = true;
-            db.SaveChanges();
-
-            var svc = new PaymentService(db);
-
-            Assert.ThrowsAsync<InvalidOperationException>(
-                () => svc.ProcessPaymentAsync(1, 10m, "4123456789012345")
-            );
-        }
-
-        [Test]
-        public void ProcessPaymentAsync_Throws_WhenBookingHoldExpired()
+        public void ConfirmPaymentAsync_Throws_WhenBookingHoldExpired()
         {
             var db = NewDb("Pay_ExpiredHold");
-            SeedTrainAndSeat(db);
-            SeedBooking(db);
+            SeedPaymentGraphAsync(db).GetAwaiter().GetResult();
             var booking = db.Bookings.Find(1)
                           ?? throw new InvalidOperationException("Seed booking missing");
-            booking.BookingStatus = "PendingPayment";
             booking.ExpiresAtUtc = DateTime.UtcNow.AddMinutes(-1);
             db.SaveChanges();
 
             var svc = new PaymentService(db);
 
             Assert.ThrowsAsync<InvalidOperationException>(
-                () => svc.ProcessPaymentAsync(1, 10m, "4123456789012345")
+                () => svc.ConfirmPaymentAsync("pi_1", PaymentService.SuccessToken)
             );
             Assert.That(booking.BookingStatus, Is.EqualTo("Expired"));
         }

@@ -7,8 +7,8 @@
         private System.Windows.Forms.TextBox txtBookingId;
         private System.Windows.Forms.Label labelAmount;
         private System.Windows.Forms.TextBox txtAmount;
-        private System.Windows.Forms.Label labelCard;
-        private System.Windows.Forms.TextBox txtCardNumber;
+        private System.Windows.Forms.Label labelPaymentToken;
+        private System.Windows.Forms.TextBox txtPaymentToken;
         private System.Windows.Forms.Button btnPay;
 
         // These three are your “extra” labels:
@@ -33,8 +33,8 @@
             this.txtBookingId = new TextBox();
             this.labelAmount = new Label();
             this.txtAmount = new TextBox();
-            this.labelCard = new Label();
-            this.txtCardNumber = new TextBox();
+            this.labelPaymentToken = new Label();
+            this.txtPaymentToken = new TextBox();
             this.btnPay = new Button();
 
             this.lblTrainName = new Label();
@@ -69,17 +69,17 @@
             this.txtAmount.ReadOnly = true;
             this.txtAmount.Size = new System.Drawing.Size(150, 23);
 
-            // labelCard
-            this.labelCard.AutoSize = true;
-            this.labelCard.Location = new System.Drawing.Point(12, 75);
-            this.labelCard.Name = "labelCard";
-            this.labelCard.Size = new System.Drawing.Size(79, 15);
-            this.labelCard.Text = "Card Number";
+            // labelPaymentToken
+            this.labelPaymentToken.AutoSize = true;
+            this.labelPaymentToken.Location = new System.Drawing.Point(12, 75);
+            this.labelPaymentToken.Name = "labelPaymentToken";
+            this.labelPaymentToken.Size = new System.Drawing.Size(88, 15);
+            this.labelPaymentToken.Text = "Payment Token";
 
-            // txtCardNumber
-            this.txtCardNumber.Location = new System.Drawing.Point(100, 72);
-            this.txtCardNumber.Name = "txtCardNumber";
-            this.txtCardNumber.Size = new System.Drawing.Size(150, 23);
+            // txtPaymentToken
+            this.txtPaymentToken.Location = new System.Drawing.Point(110, 72);
+            this.txtPaymentToken.Name = "txtPaymentToken";
+            this.txtPaymentToken.Size = new System.Drawing.Size(140, 23);
 
             // lblTrainName
             this.lblTrainName.AutoSize = true;
@@ -114,8 +114,8 @@
             this.Controls.Add(this.txtBookingId);
             this.Controls.Add(this.labelAmount);
             this.Controls.Add(this.txtAmount);
-            this.Controls.Add(this.labelCard);
-            this.Controls.Add(this.txtCardNumber);
+            this.Controls.Add(this.labelPaymentToken);
+            this.Controls.Add(this.txtPaymentToken);
             this.Controls.Add(this.lblTrainName);
             this.Controls.Add(this.lblSeatInfo);
             this.Controls.Add(this.lblTravelDate);

@@ -5,12 +5,9 @@ namespace TrainTicketPlatformAPI.Contracts.Payments
     public class ConfirmPaymentRequest
     {
         [Required]
-        public int BookingId { get; set; }
+        public string PaymentIntentId { get; set; } = string.Empty;
 
         [Required]
-        public decimal Amount { get; set; }
-
-        [Required]
-        public string CardNumber { get; set; } = string.Empty;
+        public string PaymentMethodToken { get; set; } = string.Empty;
     }
 }

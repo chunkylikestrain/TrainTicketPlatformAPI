@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using TrainTicketPlatformAPI.Contracts.Payments;
 using TrainTicketPlatformAPI.Data;
 using TrainTicketPlatformAPI.Models;
 
@@ -6,91 +7,161 @@ namespace TrainTicketPlatformAPI.Services
 {
     public class PaymentService : IPaymentService
     {
+        public const string SuccessToken = "tok_success";
+        public const string FailToken = "tok_fail";
+
         private readonly TrainTicketDbContext _db;
-        public PaymentService(TrainTicketDbContext db) => _db = db;
 
-        public async Task<Payment> ProcessPaymentAsync(int bookingId, decimal amount, string cardNumber)
+        public PaymentService(TrainTicketDbContext db)
         {
-            if (string.IsNullOrWhiteSpace(cardNumber) || cardNumber.Length < 4)
-                throw new InvalidOperationException("Card number is invalid");
-            cardNumber = cardNumber?.Trim() ?? string.Empty;
-            
-            if (string.IsNullOrWhiteSpace(cardNumber) || cardNumber.Length < 4)
-                throw new InvalidOperationException("Card number is invalid");
+            _db = db;
+        }
 
-            if (amount <= 0)
-                throw new InvalidOperationException("Payment amount must be greater than zero");
+        public async Task<PaymentIntentDto> CreatePaymentIntentAsync(int bookingId)
+        {
+            var booking = await _db.Bookings
+                .Include(b => b.Seat)
+                .FirstOrDefaultAsync(b => b.Id == bookingId)
+                ?? throw new KeyNotFoundException("Booking not found");
 
-            // 1) Validate booking exists
-            var booking = await _db.Bookings.FindAsync(bookingId)
-                          ?? throw new KeyNotFoundException("Booking not found");
+            EnsureBookingCanBePaid(booking);
 
-            if (booking.IsCancelled)
-                throw new InvalidOperationException("Cannot process payment for a cancelled booking");
+            var fare = await GetFareForBookingAsync(booking);
 
-            if (booking.BookingStatus == "PendingPayment" &&
-                booking.ExpiresAtUtc.HasValue &&
-                booking.ExpiresAtUtc.Value <= DateTime.UtcNow)
+            return new PaymentIntentDto
             {
-                booking.BookingStatus = "Expired";
-                await _db.SaveChangesAsync();
-                throw new InvalidOperationException("Booking hold has expired");
+                PaymentIntentId = BuildPaymentIntentId(booking.Id),
+                BookingId = booking.Id,
+                Amount = fare.Price,
+                Currency = fare.Currency,
+                Status = booking.PaymentStatus,
+                ExpiresAtUtc = booking.ExpiresAtUtc,
+                TestPaymentMethodTokens = new[] { SuccessToken, FailToken }
+            };
+        }
+
+        public async Task<Payment> ConfirmPaymentAsync(string paymentIntentId, string paymentMethodToken)
+        {
+            if (string.IsNullOrWhiteSpace(paymentIntentId))
+                throw new InvalidOperationException("Payment intent is required");
+
+            if (string.IsNullOrWhiteSpace(paymentMethodToken))
+                throw new InvalidOperationException("Payment method token is required");
+
+            var bookingId = ParseBookingIdFromIntent(paymentIntentId.Trim());
+            var booking = await _db.Bookings
+                .Include(b => b.Seat)
+                .FirstOrDefaultAsync(b => b.Id == bookingId)
+                ?? throw new KeyNotFoundException("Booking not found");
+
+            EnsureBookingCanBePaid(booking);
+
+            if (await _db.Payments.AnyAsync(p =>
+                    p.BookingId == booking.Id &&
+                    p.PaymentIntentId == paymentIntentId &&
+                    p.Status == "Successful"))
+            {
+                throw new InvalidOperationException("Payment intent has already been confirmed");
             }
 
-            // 2) Check card prefix: Visa (starts '4') or MasterCard (51-55)
-           
-            string prefix1 = cardNumber.Substring(0, 1);
-            string prefix2 = cardNumber.Substring(0, 2);
-            int prefix4 = int.TryParse(cardNumber.Substring(0, 4), out var p4) ? p4 : 0;
+            var fare = await GetFareForBookingAsync(booking);
+            var status = paymentMethodToken.Trim() switch
+            {
+                SuccessToken => "Successful",
+                FailToken => "Failed",
+                _ => throw new InvalidOperationException("Payment method token is invalid")
+            };
 
-            // Visa: starts with “4”
-            bool isVisa = prefix1 == "4";
-
-            // MasterCard: old (51–55) or new (2221–2720)
-            bool isMC = (int.TryParse(prefix2, out var p2) && p2 is >= 51 and <= 55)
-                         || (prefix4 is >= 2221 and <= 2720);
-
-            bool success = isVisa || isMC;
-            string status = success ? "Successful" : "Failed";
-
-
-            // 3) Record the payment
             var payment = new Payment
             {
-                BookingId = bookingId,
+                BookingId = booking.Id,
+                PaymentIntentId = paymentIntentId,
+                PaymentMethodToken = paymentMethodToken.Trim(),
                 PaymentDate = DateTime.UtcNow,
-                Amount = amount,
+                Amount = fare.Price,
                 Status = status
             };
-            _db.Payments.Add(payment);
 
-            // 4) Update the booking’s payment status
+            _db.Payments.Add(payment);
             booking.PaymentStatus = status;
-            if (success)
+            if (status == "Successful")
                 booking.BookingStatus = "Confirmed";
 
-            // 5) Persist both
             await _db.SaveChangesAsync();
             return payment;
+        }
+
+        public Task<Payment> ProcessPaymentAsync(int bookingId, decimal amount, string paymentMethodToken)
+        {
+            return ConfirmPaymentAsync(BuildPaymentIntentId(bookingId), paymentMethodToken);
         }
 
         public async Task<Payment> GetPaymentByIdAsync(int paymentId)
         {
             var p = await _db.Payments.FindAsync(paymentId);
-            if (p == null) throw new KeyNotFoundException("Payment not found");
+            if (p == null)
+                throw new KeyNotFoundException("Payment not found");
+
             return p;
         }
 
         public async Task<IEnumerable<Payment>> GetPaymentsByBookingAsync(int bookingId)
         {
             return await _db.Payments
-                            .Where(p => p.BookingId == bookingId)
-                            .ToListAsync();
+                .Where(p => p.BookingId == bookingId)
+                .ToListAsync();
         }
 
         public async Task<IEnumerable<Payment>> GetAllPaymentsAsync()
         {
             return await _db.Payments.ToListAsync();
+        }
+
+        private static string BuildPaymentIntentId(int bookingId)
+            => $"pi_{bookingId}";
+
+        private static int ParseBookingIdFromIntent(string paymentIntentId)
+        {
+            if (!paymentIntentId.StartsWith("pi_", StringComparison.OrdinalIgnoreCase) ||
+                !int.TryParse(paymentIntentId[3..], out var bookingId))
+            {
+                throw new InvalidOperationException("Payment intent is invalid");
+            }
+
+            return bookingId;
+        }
+
+        private static void EnsureBookingCanBePaid(Booking booking)
+        {
+            if (booking.IsCancelled)
+                throw new InvalidOperationException("Cannot process payment for a cancelled booking");
+
+            if (booking.BookingStatus == "Confirmed")
+                throw new InvalidOperationException("Booking is already confirmed");
+
+            if (booking.BookingStatus == "Expired" ||
+                (booking.BookingStatus == "PendingPayment" &&
+                 booking.ExpiresAtUtc.HasValue &&
+                 booking.ExpiresAtUtc.Value <= DateTime.UtcNow))
+            {
+                booking.BookingStatus = "Expired";
+                throw new InvalidOperationException("Booking hold has expired");
+            }
+        }
+
+        private async Task<Fare> GetFareForBookingAsync(Booking booking)
+        {
+            if (!booking.TripId.HasValue)
+                throw new InvalidOperationException("Booking must be linked to a trip before payment");
+
+            var classType = booking.Seat?.ClassType;
+            var fare = await _db.Fares
+                .Where(f => f.TripId == booking.TripId.Value)
+                .OrderByDescending(f => classType != null && f.ClassType == classType)
+                .ThenBy(f => f.Price)
+                .FirstOrDefaultAsync();
+
+            return fare ?? throw new InvalidOperationException("No fare is configured for this booking");
         }
     }
 }
