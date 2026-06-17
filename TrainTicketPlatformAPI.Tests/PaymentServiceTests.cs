@@ -138,6 +138,38 @@ namespace TrainTicketPlatformAPI.Tests
                 () => svc.ProcessPaymentAsync(999, 10m, "4123456789012345")
             );
         }
+
+        [Test]
+        public void ProcessPaymentAsync_Throws_WhenAmountIsNotPositive()
+        {
+            var db = NewDb("Pay_BadAmount");
+            SeedTrainAndSeat(db);
+            SeedBooking(db);
+            db.SaveChanges();
+
+            var svc = new PaymentService(db);
+
+            Assert.ThrowsAsync<InvalidOperationException>(
+                () => svc.ProcessPaymentAsync(1, 0m, "4123456789012345")
+            );
+        }
+
+        [Test]
+        public void ProcessPaymentAsync_Throws_WhenBookingIsCancelled()
+        {
+            var db = NewDb("Pay_CancelledBooking");
+            SeedTrainAndSeat(db);
+            SeedBooking(db);
+            var booking = db.Bookings.Find(1)
+                          ?? throw new InvalidOperationException("Seed booking missing");
+            booking.IsCancelled = true;
+            db.SaveChanges();
+
+            var svc = new PaymentService(db);
+
+            Assert.ThrowsAsync<InvalidOperationException>(
+                () => svc.ProcessPaymentAsync(1, 10m, "4123456789012345")
+            );
+        }
     }
 }
-

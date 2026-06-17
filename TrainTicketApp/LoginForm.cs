@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using System;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -39,7 +38,7 @@ namespace TrainTicketApp
         private async void btnLogin_Click(object sender, EventArgs e)
         {
             var email = txtEmail.Text.Trim();
-            var password = txtPasword.Text;
+            var password = txtPassword.Text;
 
             if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
             {
@@ -56,27 +55,18 @@ namespace TrainTicketApp
             {
                 var dto = new LoginDto
                 {
-                    Email = txtEmail.Text,
-                    Password = txtPasword.Text
+                    Email = email,
+                    Password = password
                 };
 
-                // raw token
-                var token = await _userService.LoginAsync(dto);
-
-                // parse it
-                var handler = new JwtSecurityTokenHandler();
-                var jwt = handler.ReadJwtToken(token);
-
-                // get “sub” (user id) and “role” claims
-                var subClaim = jwt.Claims.First(c => c.Type == JwtRegisteredClaimNames.Sub).Value;
-                var roleClaim = jwt.Claims.First(c => c.Type == ClaimTypes.Role).Value;
+                var loginResponse = await _userService.LoginAsync(dto);
 
                 // Store in our session for later use
-                AppSession.JwtToken = token;
-                AppSession.CurrentUserId = int.Parse(jwt.Subject);
+                AppSession.JwtToken = loginResponse.Token;
+                AppSession.CurrentUserId = loginResponse.UserId;
 
                 // Navigate to the search screen
-                if (roleClaim == "Admin")
+                if (loginResponse.Role == "Admin")
                 {
                     var admin = Program.AppHost.Services.GetRequiredService<AdminMainForm>();
                     admin.Show();
@@ -86,11 +76,11 @@ namespace TrainTicketApp
                     var search = Program.AppHost.Services.GetRequiredService<SearchTrainsForm>();
                     search.Show();
                 }
+
                 this.Hide();
             }
             catch (KeyNotFoundException)
             {
-                // thrown when email not found or password mismatch
                 MessageBox.Show(
                     "Invalid email or password.",
                     "Login Failed",
@@ -108,7 +98,6 @@ namespace TrainTicketApp
                 );
             }
         }
-
         // ④ “Register” link click 
         private void btnGoToRegister_Click(object sender, EventArgs e)
         {

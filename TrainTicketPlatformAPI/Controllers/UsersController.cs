@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
 
@@ -6,6 +7,7 @@ namespace TrainTicketPlatformAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
@@ -14,17 +16,20 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetAll()
-            => Ok(await _userService.GetAllUsersAsync());
+        public async Task<ActionResult<IEnumerable<UserResponseDto>>> GetAll()
+        {
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users.Select(ToResponse));
+        }
 
         // GET: api/Users/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetById(int id)
+        public async Task<ActionResult<UserResponseDto>> GetById(int id)
         {
             try
             {
                 var user = await _userService.GetUserByIdAsync(id);
-                return Ok(user);
+                return Ok(ToResponse(user));
             }
             catch (KeyNotFoundException)
             {
@@ -34,14 +39,14 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<User>> Create(User user)
+        public async Task<ActionResult<UserResponseDto>> Create(User user)
         {
             try
             {
                 var created = await _userService.CreateUserAsync(user);
                 return CreatedAtAction(nameof(GetById),
                                        new { id = created.Id },
-                                       created);
+                                       ToResponse(created));
             }
             catch (InvalidOperationException ex)
             {
@@ -59,7 +64,7 @@ namespace TrainTicketPlatformAPI.Controllers
             try
             {
                 var updated = await _userService.UpdateUserAsync(user);
-                return Ok(updated);
+                return Ok(ToResponse(updated));
             }
             catch (KeyNotFoundException)
             {
@@ -89,6 +94,13 @@ namespace TrainTicketPlatformAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        private static UserResponseDto ToResponse(User user) => new()
+        {
+            Id = user.Id,
+            Email = user.Email,
+            Phone = user.Phone,
+            Role = user.Role
+        };
     }
 }
-

@@ -9,6 +9,7 @@ namespace TrainTicketPlatformAPI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IUserService _userService;
+
         public AuthController(IUserService userService)
             => _userService = userService;
 
@@ -29,12 +30,12 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // POST: api/Auth/login
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login([FromBody] LoginDto dto)
+        public async Task<ActionResult<LoginResponseDto>> Login([FromBody] LoginDto dto)
         {
             try
             {
-                var token = await _userService.LoginAsync(dto);
-                return Ok(new { token });
+                var response = await _userService.LoginAsync(dto);
+                return Ok(response);
             }
             catch (KeyNotFoundException)
             {

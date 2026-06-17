@@ -65,7 +65,7 @@ namespace TrainTicketApp
                 
 
             //grab the first form from DI and run it
-            var login = AppHost.Services.GetRequiredService<SearchTrainsForm>();
+            var login = AppHost.Services.GetRequiredService<LoginForm>();
             Application.Run(login);
         }
     }

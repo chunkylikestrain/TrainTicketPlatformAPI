@@ -11,10 +11,22 @@ namespace TrainTicketPlatformAPI.Services
 
         public async Task<Payment> ProcessPaymentAsync(int bookingId, decimal amount, string cardNumber)
         {
+            if (string.IsNullOrWhiteSpace(cardNumber) || cardNumber.Length < 4)
+                throw new InvalidOperationException("Card number is invalid");
+            cardNumber = cardNumber?.Trim() ?? string.Empty;
+            
+            if (string.IsNullOrWhiteSpace(cardNumber) || cardNumber.Length < 4)
+                throw new InvalidOperationException("Card number is invalid");
+
+            if (amount <= 0)
+                throw new InvalidOperationException("Payment amount must be greater than zero");
 
             // 1) Validate booking exists
             var booking = await _db.Bookings.FindAsync(bookingId)
                           ?? throw new KeyNotFoundException("Booking not found");
+
+            if (booking.IsCancelled)
+                throw new InvalidOperationException("Cannot process payment for a cancelled booking");
 
             // 2) Check card prefix: Visa (starts '4') or MasterCard (51-55)
            
@@ -71,4 +83,3 @@ namespace TrainTicketPlatformAPI.Services
         }
     }
 }
-

@@ -1,5 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
 
@@ -7,13 +10,19 @@ namespace TrainTicketPlatformAPI.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
+    [Authorize]
     public class PaymentsController : ControllerBase
     {
         private readonly IPaymentService _paymentService;
-        public PaymentsController(IPaymentService paymentService)
-            => _paymentService = paymentService;
+        private readonly IBookingService _bookingService;
+        public PaymentsController(IPaymentService paymentService, IBookingService bookingService)
+        {
+            _paymentService = paymentService;
+            _bookingService = bookingService;
+        }
 
         // GET: api/Payments
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Payment>>> GetAll()
             => Ok(await _paymentService.GetAllPaymentsAsync());
@@ -25,6 +34,10 @@ namespace TrainTicketPlatformAPI.Controllers
             try
             {
                 var p = await _paymentService.GetPaymentByIdAsync(id);
+                var booking = await _bookingService.GetBookingByIdAsync(p.BookingId);
+                if (!CanAccessUserResource(booking.UserId))
+                    return Forbid();
+
                 return Ok(p);
             }
             catch (KeyNotFoundException)
@@ -37,6 +50,10 @@ namespace TrainTicketPlatformAPI.Controllers
         [HttpGet("booking/{bookingId}")]
         public async Task<ActionResult<IEnumerable<Payment>>> GetByBooking(int bookingId)
         {
+            var booking = await _bookingService.GetBookingByIdAsync(bookingId);
+            if (!CanAccessUserResource(booking.UserId))
+                return Forbid();
+
             var list = await _paymentService.GetPaymentsByBookingAsync(bookingId);
             return Ok(list);
         }
@@ -48,6 +65,10 @@ namespace TrainTicketPlatformAPI.Controllers
         {
             try
             {
+                var booking = await _bookingService.GetBookingByIdAsync(dto.BookingId);
+                if (!CanAccessUserResource(booking.UserId))
+                    return Forbid();
+
                 var payment = await _paymentService
                     .ProcessPaymentAsync(dto.BookingId, dto.Amount, dto.CardNumber);
                 return CreatedAtAction(nameof(GetById),
@@ -58,6 +79,16 @@ namespace TrainTicketPlatformAPI.Controllers
             {
                 return NotFound("Booking not found");
             }
+        }
+
+        private bool CanAccessUserResource(int userId)
+        {
+            if (User.IsInRole("Admin"))
+                return true;
+
+            var subject = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
+                          ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.TryParse(subject, out var currentUserId) && currentUserId == userId;
         }
     }
     // Models/PaymentCreateDto.cs
@@ -74,7 +105,6 @@ namespace TrainTicketPlatformAPI.Controllers
             = string.Empty;    
     }
 }
-
 
 
 
