@@ -10,6 +10,9 @@ namespace TrainTicketPlatformAPI.Data
             : base(options) { }
         // Each DbSet<T> represents a table:
         public DbSet<User> Users { get; set; }
+        public DbSet<Country> Countries { get; set; }
+        public DbSet<StateRegion> StateRegions { get; set; }
+        public DbSet<Locality> Localities { get; set; }
         public DbSet<Station> Stations { get; set; }
         public DbSet<TrainRoute> TrainRoutes { get; set; }
         public DbSet<Train> Trains { get; set; }
@@ -52,9 +55,60 @@ namespace TrainTicketPlatformAPI.Data
                 .HasForeignKey(b => b.TripId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Booking>()
+                .HasIndex(b => new { b.TripId, b.SeatId })
+                .IsUnique()
+                .HasFilter("[IsCancelled] = 0 AND [TripId] IS NOT NULL");
+
+            modelBuilder.Entity<Booking>()
+                .HasIndex(b => new { b.TrainId, b.SeatId, b.TravelDate })
+                .IsUnique()
+                .HasFilter("[IsCancelled] = 0 AND [TripId] IS NULL");
+
             modelBuilder.Entity<Station>()
                 .HasIndex(s => s.Code)
                 .IsUnique();
+
+            modelBuilder.Entity<Country>()
+                .HasIndex(c => c.Code)
+                .IsUnique();
+
+            modelBuilder.Entity<StateRegion>()
+                .HasOne(s => s.Country)
+                .WithMany(c => c.StateRegions)
+                .HasForeignKey(s => s.CountryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<StateRegion>()
+                .HasIndex(s => new { s.CountryId, s.Code })
+                .IsUnique();
+
+            modelBuilder.Entity<Locality>()
+                .HasOne(l => l.StateRegion)
+                .WithMany(s => s.Localities)
+                .HasForeignKey(l => l.StateRegionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Locality>()
+                .HasIndex(l => new { l.StateRegionId, l.Name, l.Type });
+
+            modelBuilder.Entity<Station>()
+                .HasOne(s => s.Country)
+                .WithMany(c => c.Stations)
+                .HasForeignKey(s => s.CountryId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Station>()
+                .HasOne(s => s.StateRegion)
+                .WithMany(r => r.Stations)
+                .HasForeignKey(s => s.StateRegionId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Station>()
+                .HasOne(s => s.Locality)
+                .WithMany(l => l.Stations)
+                .HasForeignKey(s => s.LocalityId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<TrainRoute>()
                 .HasOne(r => r.DepartureStation)

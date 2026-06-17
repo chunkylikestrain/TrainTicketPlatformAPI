@@ -18,8 +18,8 @@ namespace TrainTicketApp
         public DateTime TravelDate { get; set; }
 
         // private holders for display & later use:
-        private Train _train;
-        private Seat _seat;
+        private Train _train = null!;
+        private Seat _seat = null!;
 
         public BookingForm(
             IBookingService bookingService,
@@ -36,7 +36,7 @@ namespace TrainTicketApp
             btnConfirm.Click += btnConfirm_Click;
         }
 
-        private async void BookingForm_Load(object sender, EventArgs e)
+        private async void BookingForm_Load(object? sender, EventArgs e)
         {
             // 1) fetch the train & seat so we can show details
             _train = await _trainService.GetTrainByIdAsync(TrainId);
@@ -48,7 +48,7 @@ namespace TrainTicketApp
             lblTravelDate.Text = TravelDate.ToShortDateString();
         }
 
-        private async void btnConfirm_Click(object sender, EventArgs e)
+        private async void btnConfirm_Click(object? sender, EventArgs e)
         {
             try
             {
@@ -64,7 +64,7 @@ namespace TrainTicketApp
 
                 // 2) go to PaymentForm
                 var payForm = Program
-                    .AppHost
+                    .AppHost!
                     .Services
                     .GetRequiredService<PaymentForm>();
 

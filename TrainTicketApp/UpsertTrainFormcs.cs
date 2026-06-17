@@ -3,10 +3,10 @@ using TrainTicketPlatformAPI.Services;
 
 namespace TrainTicketApp
 {
-    public partial class UpsertTrainForm : Form
+        public partial class UpsertTrainForm : Form
     {
         private readonly ITrainService _trainService;
-        public Train TrainToEdit { get; set; }
+        public Train? TrainToEdit { get; set; }
 
         
      
@@ -14,6 +14,7 @@ namespace TrainTicketApp
         public UpsertTrainForm(ITrainService trainService)
             
         {
+            InitializeComponent();
             _trainService = trainService;
         }
 

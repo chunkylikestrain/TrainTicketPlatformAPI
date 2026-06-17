@@ -10,14 +10,14 @@ namespace TrainTicketPlatformAPI.Tests
     [TestFixture]
     public class UserServiceTests
     {
-        private IConfiguration _config;
+        private IConfiguration _config = null!;
 
         [SetUp]
         public void Setup()
         {
          
             _config = new ConfigurationBuilder()
-                .AddInMemoryCollection(new Dictionary<string, string>
+                .AddInMemoryCollection(new Dictionary<string, string?>
                 {
                     ["Jwt:Key"] = "0123456789ABCDEF0123456789ABCDEF",
                     ["Jwt:Issuer"] = "TestIssuer",

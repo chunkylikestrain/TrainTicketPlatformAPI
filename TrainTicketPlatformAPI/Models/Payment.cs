@@ -7,10 +7,10 @@ namespace TrainTicketPlatformAPI.Models
         public int Id { get; set; }
         public int BookingId { get; set; }
         public DateTime PaymentDate { get; set; }
-        public string Status { get; set; }
+        public string Status { get; set; } = string.Empty;
         [Precision(18, 2)]
         public decimal Amount { get; set; }
 
-        public Booking Booking { get; set; }
+        public Booking Booking { get; set; } = null!;
     }
 }

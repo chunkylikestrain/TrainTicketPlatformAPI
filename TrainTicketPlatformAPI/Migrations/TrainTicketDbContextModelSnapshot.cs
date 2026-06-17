@@ -49,9 +49,6 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.Property<int>("TrainId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TripId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("TravelDate")
                         .HasColumnType("datetime2");
 
@@ -65,11 +62,15 @@ namespace TrainTicketPlatformAPI.Migrations
 
                     b.HasIndex("SeatId");
 
-                    b.HasIndex("TrainId");
-
-                    b.HasIndex("TripId");
-
                     b.HasIndex("UserId");
+
+                    b.HasIndex("TripId", "SeatId")
+                        .IsUnique()
+                        .HasFilter("[IsCancelled] = 0 AND [TripId] IS NOT NULL");
+
+                    b.HasIndex("TrainId", "SeatId", "TravelDate")
+                        .IsUnique()
+                        .HasFilter("[IsCancelled] = 0 AND [TripId] IS NULL");
 
                     b.ToTable("Bookings");
                 });
@@ -92,6 +93,30 @@ namespace TrainTicketPlatformAPI.Migrations
                         .HasColumnType("decimal(18,2)");
 
                     b.ToTable("bookingReports");
+                });
+
+            modelBuilder.Entity("TrainTicketPlatformAPI.Models.Country", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code")
+                        .IsUnique();
+
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Fare", b =>
@@ -122,6 +147,32 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.HasIndex("TripId");
 
                     b.ToTable("Fares");
+                });
+
+            modelBuilder.Entity("TrainTicketPlatformAPI.Models.Locality", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("StateRegionId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StateRegionId", "Name", "Type");
+
+                    b.ToTable("Localities");
                 });
 
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Payment", b =>
@@ -151,36 +202,6 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.HasIndex("BookingId");
 
                     b.ToTable("Payments");
-                });
-
-            modelBuilder.Entity("TrainTicketPlatformAPI.Models.Fare", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("ClassType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<decimal>("Price")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("TripId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("TripId");
-
-                    b.ToTable("Fares");
                 });
 
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Seat", b =>
@@ -216,6 +237,33 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.ToTable("Seats");
                 });
 
+            modelBuilder.Entity("TrainTicketPlatformAPI.Models.StateRegion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CountryId", "Code")
+                        .IsUnique();
+
+                    b.ToTable("StateRegions");
+                });
+
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Station", b =>
                 {
                     b.Property<int>("Id")
@@ -232,14 +280,29 @@ namespace TrainTicketPlatformAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int?>("CountryId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("LocalityId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("StateRegionId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("Code")
                         .IsUnique();
+
+                    b.HasIndex("CountryId");
+
+                    b.HasIndex("LocalityId");
+
+                    b.HasIndex("StateRegionId");
 
                     b.ToTable("Stations");
                 });
@@ -416,6 +479,17 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.Navigation("Trip");
                 });
 
+            modelBuilder.Entity("TrainTicketPlatformAPI.Models.Locality", b =>
+                {
+                    b.HasOne("TrainTicketPlatformAPI.Models.StateRegion", "StateRegion")
+                        .WithMany("Localities")
+                        .HasForeignKey("StateRegionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("StateRegion");
+                });
+
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Payment", b =>
                 {
                     b.HasOne("TrainTicketPlatformAPI.Models.Booking", "Booking")
@@ -436,6 +510,41 @@ namespace TrainTicketPlatformAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("Train");
+                });
+
+            modelBuilder.Entity("TrainTicketPlatformAPI.Models.StateRegion", b =>
+                {
+                    b.HasOne("TrainTicketPlatformAPI.Models.Country", "Country")
+                        .WithMany("StateRegions")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Country");
+                });
+
+            modelBuilder.Entity("TrainTicketPlatformAPI.Models.Station", b =>
+                {
+                    b.HasOne("TrainTicketPlatformAPI.Models.Country", "Country")
+                        .WithMany("Stations")
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("TrainTicketPlatformAPI.Models.Locality", "Locality")
+                        .WithMany("Stations")
+                        .HasForeignKey("LocalityId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("TrainTicketPlatformAPI.Models.StateRegion", "StateRegion")
+                        .WithMany("Stations")
+                        .HasForeignKey("StateRegionId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Country");
+
+                    b.Navigation("Locality");
+
+                    b.Navigation("StateRegion");
                 });
 
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.TrainRoute", b =>
@@ -476,9 +585,28 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.Navigation("TrainRoute");
                 });
 
+            modelBuilder.Entity("TrainTicketPlatformAPI.Models.Country", b =>
+                {
+                    b.Navigation("StateRegions");
+
+                    b.Navigation("Stations");
+                });
+
+            modelBuilder.Entity("TrainTicketPlatformAPI.Models.Locality", b =>
+                {
+                    b.Navigation("Stations");
+                });
+
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Seat", b =>
                 {
                     b.Navigation("Bookings");
+                });
+
+            modelBuilder.Entity("TrainTicketPlatformAPI.Models.StateRegion", b =>
+                {
+                    b.Navigation("Localities");
+
+                    b.Navigation("Stations");
                 });
 
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Station", b =>

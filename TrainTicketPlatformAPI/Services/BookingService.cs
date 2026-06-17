@@ -1,18 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using TrainTicketPlatformAPI.Data;
 using TrainTicketPlatformAPI.Models;
-
 
 namespace TrainTicketPlatformAPI.Services
 {
     public class BookingService : IBookingService
     {
         private readonly TrainTicketDbContext _db;
+
         public BookingService(TrainTicketDbContext db)
             => _db = db;
 
         public async Task<Booking> CreateBookingAsync(Booking booking)
         {
+            await using var transaction = await BeginTransactionIfRelationalAsync();
+
             var seat = await _db.Seats.FindAsync(booking.SeatId);
             if (seat == null || !seat.IsAvailable)
                 throw new InvalidOperationException("Seat not available");
@@ -28,6 +31,15 @@ namespace TrainTicketPlatformAPI.Services
             {
                 var trip = await _db.Trips.FindAsync(booking.TripId.Value)
                            ?? throw new KeyNotFoundException("Trip not found");
+
+                if (trip.TrainId != booking.TrainId)
+                    throw new InvalidOperationException("Trip does not belong to the selected train");
+
+                booking.TravelDate = trip.DepartureTime.Date;
+            }
+            else if (booking.TravelDate == default)
+            {
+                throw new InvalidOperationException("Travel date is required");
             }
 
             if (await HasActiveSeatBookingAsync(
@@ -46,22 +58,31 @@ namespace TrainTicketPlatformAPI.Services
                 booking.PaymentStatus = "Pending";
 
             _db.Bookings.Add(booking);
-            await _db.SaveChangesAsync();
+
+            try
+            {
+                await _db.SaveChangesAsync();
+                if (transaction != null)
+                    await transaction.CommitAsync();
+            }
+            catch (DbUpdateException ex) when (IsDuplicateBookingException(ex))
+            {
+                throw new InvalidOperationException("Seat already booked for this trip or travel date", ex);
+            }
 
             return booking;
         }
+
         public async Task CancelBookingAsync(int bookingId)
         {
             var booking = await _db.Bookings.FindAsync(bookingId)
                        ?? throw new KeyNotFoundException("Booking not found");
 
-            // 1. Enforce cancellation window (using UTC)
             var cutoff = booking.TravelDate.AddHours(-1);
             if (DateTime.UtcNow > cutoff)
                 throw new InvalidOperationException(
                     "Cannot cancel booking within 1 hour of travel date");
 
-            // 2. Soft‐delete the booking
             booking.IsCancelled = true;
             booking.CancellationDate = DateTime.UtcNow;
             await _db.SaveChangesAsync();
@@ -69,9 +90,11 @@ namespace TrainTicketPlatformAPI.Services
 
         public async Task<Booking> GetBookingByIdAsync(int bookingId)
         {
-            var b = await _db.Bookings.FindAsync(bookingId);
-            if (b == null) throw new KeyNotFoundException("Booking not found");
-            return b;
+            var booking = await _db.Bookings.FindAsync(bookingId);
+            if (booking == null)
+                throw new KeyNotFoundException("Booking not found");
+
+            return booking;
         }
 
         public async Task<IEnumerable<Booking>> GetAllBookingsAsync()
@@ -100,30 +123,16 @@ namespace TrainTicketPlatformAPI.Services
                 if (newSeat.TrainId != existing.TrainId)
                     throw new InvalidOperationException("New seat does not belong to the booked train");
             }
-            if (requestedTripId.HasValue)
-            {
-                var trip = await _db.Trips.FindAsync(requestedTripId.Value)
-                           ?? throw new KeyNotFoundException("Trip not found");
-                if (trip.TrainId != existing.TrainId)
-                    throw new InvalidOperationException("Trip does not belong to the booked train");
-            }
-
-            if (await HasActiveSeatBookingAsync(
-                    existing.TrainId,
-                    requestedTripId,
-                    requestedSeatId,
-                    requestedTravelDate,
-                    existing.Id))
-            {
-                throw new InvalidOperationException("Seat already booked for this travel date");
-            }
 
             if (requestedTripId.HasValue)
             {
                 var trip = await _db.Trips.FindAsync(requestedTripId.Value)
                            ?? throw new KeyNotFoundException("Trip not found");
+
                 if (trip.TrainId != existing.TrainId)
                     throw new InvalidOperationException("Trip does not belong to the booked train");
+
+                requestedTravelDate = trip.DepartureTime.Date;
             }
 
             if (await HasActiveSeatBookingAsync(
@@ -144,45 +153,50 @@ namespace TrainTicketPlatformAPI.Services
             return existing;
         }
 
+        public async Task<Booking> ConfirmBookingAsync(int bookingId)
+        {
+            var booking = await _db.Bookings.FindAsync(bookingId)
+                          ?? throw new KeyNotFoundException("Booking not found");
+
+            if (booking.IsCancelled)
+                throw new InvalidOperationException("Cannot confirm a cancelled booking");
+
+            var hasSuccessfulPayment = await _db.Payments
+                .AnyAsync(p => p.BookingId == bookingId && p.Status == "Successful");
+
+            if (!hasSuccessfulPayment)
+                throw new InvalidOperationException("Booking does not have a successful payment");
+
+            booking.PaymentStatus = "Successful";
+            await _db.SaveChangesAsync();
+            return booking;
+        }
+
         public async Task<IEnumerable<Booking>> GetBookingsByUserAsync(int userId)
         {
             return await _db.Bookings
-                            .Where(b => b.UserId == userId)
-                            .ToListAsync();
+                .Where(b => b.UserId == userId)
+                .ToListAsync();
         }
+
         public async Task<bool> CheckSeatAvailabilityAsync(int trainId, int seatId, DateTime travelDate)
         {
-            // 1) Does the seat exist on that train?
             var seat = await _db.Seats
-                                .FirstOrDefaultAsync(s => s.Id == seatId && s.TrainId == trainId);
+                .FirstOrDefaultAsync(s => s.Id == seatId && s.TrainId == trainId);
+
             if (seat == null || !seat.IsAvailable)
                 return false;
 
-            // 2) Is it already booked on that date?
             var clash = await _db.Bookings
-                                 .AnyAsync(b => b.SeatId == seatId
-                                             && b.TravelDate.Date == travelDate.Date
-                                             && !b.IsCancelled);
+                .AnyAsync(b =>
+                    b.SeatId == seatId &&
+                    b.TrainId == trainId &&
+                    b.TravelDate.Date == travelDate.Date &&
+                    !b.IsCancelled);
+
             return !clash;
-          
         }
 
-        private Task<bool> HasActiveSeatBookingAsync(
-            int trainId,
-            int? tripId,
-            int seatId,
-            DateTime travelDate,
-            int? ignoredBookingId)
-        {
-            return _db.Bookings.AnyAsync(b =>
-                b.SeatId == seatId
-                && b.TrainId == trainId
-                && b.TravelDate.Date == travelDate.Date
-                && !b.IsCancelled
-                && (!ignoredBookingId.HasValue || b.Id != ignoredBookingId.Value)
-                && (!tripId.HasValue || b.TripId == null || b.TripId == tripId.Value));
-
-        }
         public async Task<BookingReport> GenerateBookingReportAsync(DateTime from, DateTime to)
         {
             var totalBookings = await _db.Bookings
@@ -210,6 +224,36 @@ namespace TrainTicketPlatformAPI.Services
             };
         }
 
+        private Task<bool> HasActiveSeatBookingAsync(
+            int trainId,
+            int? tripId,
+            int seatId,
+            DateTime travelDate,
+            int? ignoredBookingId)
+        {
+            var query = _db.Bookings.Where(b =>
+                b.SeatId == seatId &&
+                b.TrainId == trainId &&
+                !b.IsCancelled &&
+                (!ignoredBookingId.HasValue || b.Id != ignoredBookingId.Value));
 
+            query = tripId.HasValue
+                ? query.Where(b => b.TripId == tripId.Value)
+                : query.Where(b => b.TripId == null && b.TravelDate.Date == travelDate.Date);
+
+            return query.AnyAsync();
+        }
+
+        private async Task<IDbContextTransaction?> BeginTransactionIfRelationalAsync()
+        {
+            return _db.Database.IsRelational()
+                ? await _db.Database.BeginTransactionAsync()
+                : null;
+        }
+
+        private static bool IsDuplicateBookingException(DbUpdateException ex)
+        {
+            return ex.InnerException?.Message.Contains("IX_Bookings", StringComparison.OrdinalIgnoreCase) == true;
+        }
     }
 }

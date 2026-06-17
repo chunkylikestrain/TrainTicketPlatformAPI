@@ -13,6 +13,6 @@ namespace TrainTicketPlatformAPI.Models
 
         public string Currency { get; set; } = "USD";
 
-        public Trip Trip { get; set; }
+        public Trip Trip { get; set; } = null!;
     }
 }

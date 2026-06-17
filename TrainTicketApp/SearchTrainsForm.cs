@@ -19,8 +19,8 @@ namespace TrainTicketApp
     {
 
         public DateTime TravelDateFilter { get; set; }
-        private readonly ITrainService _trainService;
-        private readonly IBookingService _bookingService;
+        private readonly ITrainService _trainService = null!;
+        private readonly IBookingService _bookingService = null!;
 
         // Designer ctor
         public SearchTrainsForm()
@@ -84,7 +84,7 @@ namespace TrainTicketApp
             if (selected == null) return;
 
             // 4) create a booking & go to seat selection
-            var select = Program.AppHost.Services
+            var select = Program.AppHost!.Services
                          .GetRequiredService<SelectSeatForm>();
             select.TrainId = selected.Id;
             select.TravelDate = this.TravelDateFilter;   // ← pass it along

@@ -10,6 +10,7 @@ namespace TrainTicketPlatformAPI.Services
         Task<Booking> CreateBookingAsync(Booking booking);
         Task CancelBookingAsync(int bookingId);
         Task<Booking> UpdateBookingAsync(Booking booking);
+        Task<Booking> ConfirmBookingAsync(int bookingId);
         Task<IEnumerable<Booking>> GetBookingsByUserAsync(int userId);
         Task<bool> CheckSeatAvailabilityAsync(int trainId, int seatId, DateTime travelDate);
         Task<BookingReport> GenerateBookingReportAsync(DateTime from, DateTime to);

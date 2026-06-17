@@ -70,7 +70,7 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.That(payment.PaymentDate.Kind, Is.EqualTo(DateTimeKind.Utc));
 
             var booking = await db.Bookings.FindAsync(1);
-            Assert.That(booking.PaymentStatus, Is.EqualTo("Successful"));
+            Assert.That(booking!.PaymentStatus, Is.EqualTo("Successful"));
         }
 
         [Test]
@@ -90,7 +90,7 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.That(payment.Status, Is.EqualTo("Successful"));
             Assert.That(payment.BookingId, Is.EqualTo(1));
             var booking = await db.Bookings.FindAsync(1);
-            Assert.That(booking.PaymentStatus, Is.EqualTo("Successful"));
+            Assert.That(booking!.PaymentStatus, Is.EqualTo("Successful"));
         }
 
         [Test]
@@ -109,7 +109,7 @@ namespace TrainTicketPlatformAPI.Tests
 
             Assert.That(payment.Status, Is.EqualTo("Successful"));
             var booking = await db.Bookings.FindAsync(1);
-            Assert.That(booking.PaymentStatus, Is.EqualTo("Successful"));
+            Assert.That(booking!.PaymentStatus, Is.EqualTo("Successful"));
         }
 
         [Test]
@@ -125,7 +125,7 @@ namespace TrainTicketPlatformAPI.Tests
 
             Assert.That(payment.Status, Is.EqualTo("Failed"));
             var booking = await db.Bookings.FindAsync(1);
-            Assert.That(booking.PaymentStatus, Is.EqualTo("Failed"));
+            Assert.That(booking!.PaymentStatus, Is.EqualTo("Failed"));
         }
 
         [Test]

@@ -67,7 +67,7 @@ namespace TrainTicketPlatformAPI.Tests
 
             Assert.That(result.Id, Is.GreaterThan(0));
             var seatAfter = await db.Seats.FindAsync(1);
-            Assert.That(seatAfter.IsAvailable, Is.True);
+            Assert.That(seatAfter!.IsAvailable, Is.True);
         }
 
         [Test]
@@ -90,6 +90,114 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.ThrowsAsync<InvalidOperationException>(
                 () => svc.CreateBookingAsync(toCreate)
             );
+        }
+
+        [Test]
+        public void CreateBookingAsync_Throws_WhenTripBelongsToDifferentTrain()
+        {
+            var db = NewDb("BookingTripDifferentTrain");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            db.Trips.Add(new Trip
+            {
+                Id = 10,
+                TrainId = 2,
+                TrainRouteId = 1,
+                DepartureTime = DateTime.UtcNow.AddDays(1),
+                ArrivalTime = DateTime.UtcNow.AddDays(1).AddHours(2),
+                Status = "Scheduled"
+            });
+            db.SaveChanges();
+
+            var svc = new BookingService(db);
+            var toCreate = new Booking
+            {
+                UserId = 42,
+                TrainId = 1,
+                TripId = 10,
+                SeatId = 1,
+                TravelDate = DateTime.UtcNow.AddDays(1),
+                PaymentStatus = "Pending"
+            };
+
+            Assert.ThrowsAsync<InvalidOperationException>(
+                () => svc.CreateBookingAsync(toCreate));
+        }
+
+        [Test]
+        public async Task CreateBookingAsync_UsesTripDepartureDate_WhenTripProvided()
+        {
+            var db = NewDb("BookingUsesTripDate");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            var departure = DateTime.UtcNow.Date.AddDays(3).AddHours(8);
+            db.Trips.Add(new Trip
+            {
+                Id = 10,
+                TrainId = 1,
+                TrainRouteId = 1,
+                DepartureTime = departure,
+                ArrivalTime = departure.AddHours(2),
+                Status = "Scheduled"
+            });
+            await db.SaveChangesAsync();
+
+            var svc = new BookingService(db);
+
+            var created = await svc.CreateBookingAsync(new Booking
+            {
+                UserId = 42,
+                TrainId = 1,
+                TripId = 10,
+                SeatId = 1,
+                TravelDate = DateTime.UtcNow.Date.AddYears(1),
+                PaymentStatus = "Pending"
+            });
+
+            Assert.That(created.TravelDate, Is.EqualTo(departure.Date));
+        }
+
+        [Test]
+        public void CreateBookingAsync_Throws_WhenSeatAlreadyBookedForTrip()
+        {
+            var db = NewDb("BookingDuplicateTripSeat");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            var departure = DateTime.UtcNow.Date.AddDays(3).AddHours(8);
+            db.Trips.Add(new Trip
+            {
+                Id = 10,
+                TrainId = 1,
+                TrainRouteId = 1,
+                DepartureTime = departure,
+                ArrivalTime = departure.AddHours(2),
+                Status = "Scheduled"
+            });
+            db.Bookings.Add(new Booking
+            {
+                Id = 1,
+                UserId = 42,
+                TrainId = 1,
+                TripId = 10,
+                SeatId = 1,
+                BookingDate = DateTime.UtcNow,
+                TravelDate = departure.Date,
+                PaymentStatus = "Pending"
+            });
+            db.SaveChanges();
+
+            var svc = new BookingService(db);
+
+            Assert.ThrowsAsync<InvalidOperationException>(() =>
+                svc.CreateBookingAsync(new Booking
+                {
+                    UserId = 43,
+                    TrainId = 1,
+                    TripId = 10,
+                    SeatId = 1,
+                    TravelDate = departure.Date,
+                    PaymentStatus = "Pending"
+                }));
         }
 
         // 2) Cancellation Tests
@@ -142,10 +250,10 @@ namespace TrainTicketPlatformAPI.Tests
             await svc.CancelBookingAsync(1);
 
             var b = await db.Bookings.FindAsync(1);
-            Assert.That(b.IsCancelled, Is.True);
+            Assert.That(b!.IsCancelled, Is.True);
             Assert.That(b.CancellationDate, Is.Not.Null);
             var seat = await db.Seats.FindAsync(1);
-            Assert.That(seat.IsAvailable, Is.True);
+            Assert.That(seat!.IsAvailable, Is.True);
         }
 
         // 3) Rescheduling Tests
@@ -184,8 +292,65 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.That(updated.SeatId, Is.EqualTo(2));
             var oldSeat = await db.Seats.FindAsync(1);
             var newSeat = await db.Seats.FindAsync(2);
-            Assert.That(oldSeat.IsAvailable, Is.True);
-            Assert.That(newSeat.IsAvailable, Is.True);
+            Assert.That(oldSeat!.IsAvailable, Is.True);
+            Assert.That(newSeat!.IsAvailable, Is.True);
+        }
+
+        [Test]
+        public async Task ConfirmBookingAsync_SetsSuccessful_WhenSuccessfulPaymentExists()
+        {
+            var db = NewDb("ConfirmBookingSuccessfulPayment");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            db.Bookings.Add(new Booking
+            {
+                Id = 1,
+                UserId = 42,
+                TrainId = 1,
+                SeatId = 1,
+                BookingDate = DateTime.UtcNow,
+                TravelDate = DateTime.UtcNow.AddDays(1),
+                PaymentStatus = "Pending"
+            });
+            db.Payments.Add(new Payment
+            {
+                Id = 1,
+                BookingId = 1,
+                PaymentDate = DateTime.UtcNow,
+                Amount = 50m,
+                Status = "Successful"
+            });
+            await db.SaveChangesAsync();
+
+            var svc = new BookingService(db);
+
+            var confirmed = await svc.ConfirmBookingAsync(1);
+
+            Assert.That(confirmed.PaymentStatus, Is.EqualTo("Successful"));
+        }
+
+        [Test]
+        public void ConfirmBookingAsync_Throws_WhenNoSuccessfulPaymentExists()
+        {
+            var db = NewDb("ConfirmBookingNoSuccessfulPayment");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            db.Bookings.Add(new Booking
+            {
+                Id = 1,
+                UserId = 42,
+                TrainId = 1,
+                SeatId = 1,
+                BookingDate = DateTime.UtcNow,
+                TravelDate = DateTime.UtcNow.AddDays(1),
+                PaymentStatus = "Pending"
+            });
+            db.SaveChanges();
+
+            var svc = new BookingService(db);
+
+            Assert.ThrowsAsync<InvalidOperationException>(
+                () => svc.ConfirmBookingAsync(1));
         }
 
         [Test]
@@ -247,7 +412,7 @@ namespace TrainTicketPlatformAPI.Tests
 
             Assert.That(updated.TravelDate.Date, Is.EqualTo(newTravelDate.Date));
             var seat = await db.Seats.FindAsync(1);
-            Assert.That(seat.IsAvailable, Is.True);
+            Assert.That(seat!.IsAvailable, Is.True);
         }
 
         [Test]
@@ -306,6 +471,54 @@ namespace TrainTicketPlatformAPI.Tests
                 travelDate: bookedDate);
 
             Assert.That(available, Is.False);
+        }
+
+        [Test]
+        public async Task CheckSeatAvailabilityAsync_IgnoresSameSeatIdOnDifferentTrain()
+        {
+            var db = NewDb("SeatAvailableDifferentTrain");
+            SeedTrain(db);
+            db.Trains.Add(new Train
+            {
+                Id = 2,
+                Name = "T2",
+                DepartureStation = "StationA",
+                ArrivalStation = "StationB",
+                DepartureTime = DateTime.UtcNow.AddHours(-2),
+                ArrivalTime = DateTime.UtcNow.AddHours(-1),
+                Price = 50.0m
+            });
+            SeedSeat(db, 1, true);
+            db.Seats.Add(new Seat
+            {
+                Id = 2,
+                TrainId = 2,
+                Coach = "A",
+                Number = "1",
+                ClassType = "Economy",
+                IsAvailable = true
+            });
+            var bookedDate = DateTime.UtcNow.AddDays(1);
+            db.Bookings.Add(new Booking
+            {
+                Id = 1,
+                UserId = 42,
+                TrainId = 1,
+                SeatId = 1,
+                BookingDate = DateTime.UtcNow,
+                TravelDate = bookedDate,
+                PaymentStatus = "Pending"
+            });
+            await db.SaveChangesAsync();
+
+            var svc = new BookingService(db);
+
+            var available = await svc.CheckSeatAvailabilityAsync(
+                trainId: 2,
+                seatId: 2,
+                travelDate: bookedDate);
+
+            Assert.That(available, Is.True);
         }
     }
 }

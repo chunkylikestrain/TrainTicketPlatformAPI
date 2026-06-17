@@ -22,13 +22,13 @@ namespace TrainTicketApp
             ISeatService seatService
         )
         {
-            
+            InitializeComponent();
             _bookingService = bookingService;
             _seatService = seatService;
             this.Load += SelectSeatForm_Load;
         }
 
-        private async void SelectSeatForm_Load(object sender, EventArgs e)
+        private async void SelectSeatForm_Load(object? sender, EventArgs e)
         {
             // load seats for that train
             var allSeats = await _seatService.GetSeatsByTrainAsync(TrainId);
@@ -59,11 +59,11 @@ namespace TrainTicketApp
                 });
 
                 // 2) hand off to your PaymentForm
-                var paymentForm = Program.AppHost.Services
+                var paymentForm = Program.AppHost!.Services
                                     .GetRequiredService<PaymentForm>();
                 paymentForm.BookingId = booking.Id;
                 paymentForm.Amount = /* you can pull the fare from your train service */
-                    /* e.g. */ await Program.AppHost.Services
+                    /* e.g. */ await Program.AppHost!.Services
                         .GetRequiredService<ITrainService>()
                         .GetTrainByIdAsync(TrainId)
                         .ContinueWith(t => t.Result.Price);

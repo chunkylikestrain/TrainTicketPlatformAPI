@@ -6,9 +6,9 @@ namespace TrainTicketPlatformAPI.Models
     {
         public int Id { get; set; }
         
-        public string Name { get; set; }
-        public string DepartureStation { get; set; }
-        public string ArrivalStation { get; set; }
+        public string Name { get; set; } = string.Empty;
+        public string DepartureStation { get; set; } = string.Empty;
+        public string ArrivalStation { get; set; } = string.Empty;
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
         [Precision(18, 2)]

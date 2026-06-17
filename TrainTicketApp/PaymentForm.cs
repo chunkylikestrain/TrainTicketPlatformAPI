@@ -23,7 +23,7 @@ namespace TrainTicketApp
             this.Load += PaymentForm_Load;
         }
 
-        private void PaymentForm_Load(object sender, EventArgs e)
+        private void PaymentForm_Load(object? sender, EventArgs e)
         {
             // copy the incoming values into your controls
             txtBookingId.Text = BookingId.ToString();

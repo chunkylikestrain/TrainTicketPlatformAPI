@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using TrainTicketPlatformAPI.Contracts.Bookings;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
 
@@ -20,12 +21,27 @@ namespace TrainTicketPlatformAPI.Controllers
         // GET: api/Bookings
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetAll()
-            => Ok(await _bookingService.GetAllBookingsAsync());
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetAll()
+        {
+            var bookings = await _bookingService.GetAllBookingsAsync();
+            return Ok(bookings.Select(ToDto));
+        }
+
+        // GET: api/Bookings/me
+        [HttpGet("me")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetMine()
+        {
+            var currentUserId = GetCurrentUserId();
+            if (!currentUserId.HasValue)
+                return Forbid();
+
+            var bookings = await _bookingService.GetBookingsByUserAsync(currentUserId.Value);
+            return Ok(bookings.Select(ToDto));
+        }
 
         // GET: api/Bookings/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Booking>> GetById(int id)
+        public async Task<ActionResult<BookingDto>> GetById(int id)
         {
             try
             {
@@ -33,7 +49,7 @@ namespace TrainTicketPlatformAPI.Controllers
                 if (!CanAccessUserResource(b.UserId))
                     return Forbid();
 
-                return Ok(b);
+                return Ok(ToDto(b));
             }
             catch (KeyNotFoundException)
             {
@@ -43,13 +59,13 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Bookings/user/42
         [HttpGet("user/{userId}")]
-        public async Task<ActionResult<IEnumerable<Booking>>> GetByUser(int userId)
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetByUser(int userId)
         {
             if (!CanAccessUserResource(userId))
                 return Forbid();
 
             var list = await _bookingService.GetBookingsByUserAsync(userId);
-            return Ok(list);
+            return Ok(list.Select(ToDto));
         }
 
         // GET: api/Bookings/availability?trainId=1&seatId=5&travelDate=2025-06-20
@@ -67,17 +83,62 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // POST: api/Bookings
         [HttpPost]
-        public async Task<ActionResult<Booking>> Create(Booking booking)
+        public async Task<ActionResult<BookingDto>> Create([FromBody] CreateBookingRequest request)
         {
             try
             {
-                if (!CanAccessUserResource(booking.UserId))
+                var currentUserId = GetCurrentUserId();
+                if (!currentUserId.HasValue)
                     return Forbid();
+
+                var booking = new Booking
+                {
+                    UserId = currentUserId.Value,
+                    TrainId = request.TrainId,
+                    TripId = request.TripId,
+                    SeatId = request.SeatId,
+                    TravelDate = request.TravelDate,
+                    PaymentStatus = "Pending"
+                };
 
                 var created = await _bookingService.CreateBookingAsync(booking);
                 return CreatedAtAction(nameof(GetById),
                                        new { id = created.Id },
-                                       created);
+                                       ToDto(created));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // POST: api/Bookings/5/cancel
+        [HttpPost("{id}/cancel")]
+        public async Task<IActionResult> CancelBooking(int id)
+        {
+            return await Cancel(id);
+        }
+
+        // POST: api/Bookings/5/confirm
+        [HttpPost("{id}/confirm")]
+        public async Task<ActionResult<BookingDto>> Confirm(int id)
+        {
+            try
+            {
+                var booking = await _bookingService.GetBookingByIdAsync(id);
+                if (!CanAccessUserResource(booking.UserId))
+                    return Forbid();
+
+                var confirmed = await _bookingService.ConfirmBookingAsync(id);
+                return Ok(ToDto(confirmed));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
             }
             catch (InvalidOperationException ex)
             {
@@ -152,9 +213,31 @@ namespace TrainTicketPlatformAPI.Controllers
             if (User.IsInRole("Admin"))
                 return true;
 
+            var currentUserId = GetCurrentUserId();
+            return currentUserId.HasValue && currentUserId.Value == userId;
+        }
+
+        private int? GetCurrentUserId()
+        {
             var subject = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
                           ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return int.TryParse(subject, out var currentUserId) && currentUserId == userId;
+            return int.TryParse(subject, out var currentUserId)
+                ? currentUserId
+                : null;
         }
+
+        private static BookingDto ToDto(Booking booking) => new()
+        {
+            Id = booking.Id,
+            UserId = booking.UserId,
+            TrainId = booking.TrainId,
+            TripId = booking.TripId,
+            SeatId = booking.SeatId,
+            BookingDate = booking.BookingDate,
+            TravelDate = booking.TravelDate,
+            PaymentStatus = booking.PaymentStatus,
+            IsCancelled = booking.IsCancelled,
+            CancellationDate = booking.CancellationDate
+        };
     }
 }

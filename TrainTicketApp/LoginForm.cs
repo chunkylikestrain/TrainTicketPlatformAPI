@@ -10,7 +10,6 @@ using System.Security.Claims;
 using System.Windows.Forms;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace TrainTicketApp
 {
@@ -18,7 +17,7 @@ namespace TrainTicketApp
 
     public partial class LoginForm : Form
     {
-        private readonly IUserService _userService;
+        private readonly IUserService _userService = null!;
 
         // ① Parameterless ctor for the WinForms Designer
         public LoginForm()
@@ -68,12 +67,12 @@ namespace TrainTicketApp
                 // Navigate to the search screen
                 if (loginResponse.Role == "Admin")
                 {
-                    var admin = Program.AppHost.Services.GetRequiredService<AdminMainForm>();
+                    var admin = Program.AppHost!.Services.GetRequiredService<AdminMainForm>();
                     admin.Show();
                 }
                 else
                 {
-                    var search = Program.AppHost.Services.GetRequiredService<SearchTrainsForm>();
+                    var search = Program.AppHost!.Services.GetRequiredService<SearchTrainsForm>();
                     search.Show();
                 }
 
@@ -102,7 +101,7 @@ namespace TrainTicketApp
         private void btnGoToRegister_Click(object sender, EventArgs e)
         {
             // resolve and show your RegisterForm
-            var reg = Program.AppHost.Services.GetRequiredService<RegisterForm>();
+            var reg = Program.AppHost!.Services.GetRequiredService<RegisterForm>();
             reg.Show();
             this.Hide();
         }

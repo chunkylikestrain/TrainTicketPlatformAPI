@@ -117,12 +117,19 @@ namespace TrainTicketPlatformAPI.Services
         new Claim(ClaimTypes.Role, user.Role)
     };
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var jwtKey = _config["Jwt:Key"]
+                ?? throw new InvalidOperationException("Jwt:Key is not configured");
+            var jwtIssuer = _config["Jwt:Issuer"]
+                ?? throw new InvalidOperationException("Jwt:Issuer is not configured");
+            var jwtAudience = _config["Jwt:Audience"]
+                ?? throw new InvalidOperationException("Jwt:Audience is not configured");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: _config["Jwt:Issuer"],
-                audience: _config["Jwt:Audience"],
+                issuer: jwtIssuer,
+                audience: jwtAudience,
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: creds);

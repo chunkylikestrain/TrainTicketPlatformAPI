@@ -31,7 +31,7 @@ namespace TrainTicketApp
         private async void BtnAdd_Click(object sender, EventArgs e)
         {
             var upsert = Program
-                .AppHost
+                .AppHost!
                 .Services
                 .GetRequiredService<UpsertTrainForm>();
 
@@ -50,7 +50,7 @@ namespace TrainTicketApp
             if (selected == null) return;
 
             var upsert = Program
-                .AppHost
+                .AppHost!
                 .Services
                 .GetRequiredService<UpsertTrainForm>();
 

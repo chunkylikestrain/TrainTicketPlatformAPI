@@ -1,4 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using TrainTicketPlatformAPI.Contracts.Auth;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
 
@@ -40,6 +44,34 @@ namespace TrainTicketPlatformAPI.Controllers
             catch (KeyNotFoundException)
             {
                 return Unauthorized("Invalid credentials");
+            }
+        }
+
+        // GET: api/Auth/me
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<ActionResult<CurrentUserDto>> Me()
+        {
+            var subject = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
+                          ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if (!int.TryParse(subject, out var userId))
+                return Unauthorized();
+
+            try
+            {
+                var user = await _userService.GetUserByIdAsync(userId);
+                return Ok(new CurrentUserDto
+                {
+                    Id = user.Id,
+                    Email = user.Email,
+                    Phone = user.Phone,
+                    Role = user.Role
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
             }
         }
     }

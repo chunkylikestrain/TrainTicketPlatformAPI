@@ -9,8 +9,8 @@ namespace TrainTicketPlatformAPI.Models
         public DateTime ArrivalTime { get; set; }
         public string Status { get; set; } = "Scheduled";
 
-        public Train Train { get; set; }
-        public TrainRoute TrainRoute { get; set; }
+        public Train Train { get; set; } = null!;
+        public TrainRoute TrainRoute { get; set; } = null!;
 
         public ICollection<Fare> Fares { get; set; }
             = new List<Fare>();
