@@ -164,12 +164,7 @@ namespace TrainTicketPlatformAPI.Services
                                              && b.TravelDate.Date == travelDate.Date
                                              && !b.IsCancelled);
             return !clash;
-            return !await HasActiveSeatBookingAsync(
-                trainId,
-                null,
-                seatId,
-                travelDate,
-                null);
+          
         }
 
         private Task<bool> HasActiveSeatBookingAsync(

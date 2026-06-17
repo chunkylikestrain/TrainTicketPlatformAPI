@@ -12,7 +12,7 @@ using TrainTicketPlatformAPI.Data;
 namespace TrainTicketPlatformAPI.Migrations
 {
     [DbContext(typeof(TrainTicketDbContext))]
-    [Migration("20260617111740_AddCoreTicketingDomain")]
+    [Migration("20260617114550_AddCoreTicketingDomain")]
     partial class AddCoreTicketingDomain
     {
         /// <inheritdoc />
