@@ -3,7 +3,9 @@ using System.Linq;
 using System.Windows.Forms;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TrainTicketPlatformAPI.Data;
 
 namespace TrainTicketApp
 {
@@ -48,11 +50,14 @@ namespace TrainTicketApp
 
             try
             {
+                var fare = await GetFareForSelectionAsync(seatId);
+
                 // 1) create the booking
                 var booking = await _bookingService.CreateBookingAsync(new Booking
                 {
                     UserId = AppSession.CurrentUserId,
                     TrainId = TrainId,
+                    TripId = fare.TripId,
                     SeatId = seatId,
                     TravelDate = TravelDate,
                     PaymentStatus = "Pending"
@@ -62,11 +67,7 @@ namespace TrainTicketApp
                 var paymentForm = Program.AppHost!.Services
                                     .GetRequiredService<PaymentForm>();
                 paymentForm.BookingId = booking.Id;
-                paymentForm.Amount = /* you can pull the fare from your train service */
-                    /* e.g. */ await Program.AppHost!.Services
-                        .GetRequiredService<ITrainService>()
-                        .GetTrainByIdAsync(TrainId)
-                        .ContinueWith(t => t.Result.Price);
+                paymentForm.Amount = fare.Price;
 
                 paymentForm.Show();
                 this.Hide();
@@ -80,6 +81,23 @@ namespace TrainTicketApp
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        private async Task<Fare> GetFareForSelectionAsync(int seatId)
+        {
+            var seat = await _seatService.GetSeatByIdAsync(seatId);
+            var db = Program.AppHost!.Services.GetRequiredService<TrainTicketDbContext>();
+            var fare = await db.Fares
+                .Include(f => f.Trip)
+                .Where(f =>
+                    f.Trip.TrainId == TrainId &&
+                    f.Trip.DepartureTime.Date == TravelDate.Date)
+                .OrderByDescending(f => f.ClassType == seat.ClassType)
+                .ThenBy(f => f.Price)
+                .FirstOrDefaultAsync();
+
+            return fare ?? throw new InvalidOperationException(
+                "No fare is configured for the selected train, date, and seat class");
         }
     }
 }

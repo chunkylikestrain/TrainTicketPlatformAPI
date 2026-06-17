@@ -4,7 +4,9 @@ namespace TrainTicketPlatformAPI.Models
     {
         public int Id { get; set; }
         public string Code { get; set; } = string.Empty;
+        public string NormalizedCode { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+        public string NormalizedName { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
         public int? CountryId { get; set; }
         public int? StateRegionId { get; set; }

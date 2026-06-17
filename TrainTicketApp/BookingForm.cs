@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows.Forms;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using TrainTicketPlatformAPI.Data;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
 
@@ -52,11 +54,14 @@ namespace TrainTicketApp
         {
             try
             {
+                var fare = await GetFareForSelectionAsync();
+
                 // 1) build and send your Booking
                 var booking = await _bookingService.CreateBookingAsync(new Booking
                 {
                     UserId = AppSession.CurrentUserId,
                     TrainId = TrainId,
+                    TripId = fare.TripId,
                     SeatId = SeatId,
                     TravelDate = TravelDate,
                     PaymentStatus = "Pending"
@@ -69,7 +74,7 @@ namespace TrainTicketApp
                     .GetRequiredService<PaymentForm>();
 
                 payForm.BookingId = booking.Id;
-                payForm.Amount = _train.Price;      // use the fetched train fare
+                payForm.Amount = fare.Price;
                 payForm.TrainName = _train.Name;       // if you want to display it there
                 payForm.SeatInfo = $"{_seat.Coach}-{_seat.Number}";
 
@@ -85,6 +90,22 @@ namespace TrainTicketApp
                     MessageBoxIcon.Error
                 );
             }
+        }
+
+        private async Task<Fare> GetFareForSelectionAsync()
+        {
+            var db = Program.AppHost!.Services.GetRequiredService<TrainTicketDbContext>();
+            var fare = await db.Fares
+                .Include(f => f.Trip)
+                .Where(f =>
+                    f.Trip.TrainId == TrainId &&
+                    f.Trip.DepartureTime.Date == TravelDate.Date)
+                .OrderByDescending(f => f.ClassType == _seat.ClassType)
+                .ThenBy(f => f.Price)
+                .FirstOrDefaultAsync();
+
+            return fare ?? throw new InvalidOperationException(
+                "No fare is configured for the selected train, date, and seat class");
         }
     }
 }

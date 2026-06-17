@@ -7,6 +7,7 @@ namespace TrainTicketPlatformAPI.Services
 {
     public class BookingService : IBookingService
     {
+        private static readonly TimeSpan BookingHoldDuration = TimeSpan.FromMinutes(15);
         private readonly TrainTicketDbContext _db;
 
         public BookingService(TrainTicketDbContext db)
@@ -15,6 +16,7 @@ namespace TrainTicketPlatformAPI.Services
         public async Task<Booking> CreateBookingAsync(Booking booking)
         {
             await using var transaction = await BeginTransactionIfRelationalAsync();
+            await ExpireStalePendingBookingsAsync();
 
             var seat = await _db.Seats.FindAsync(booking.SeatId);
             if (seat == null || !seat.IsAvailable)
@@ -54,6 +56,15 @@ namespace TrainTicketPlatformAPI.Services
 
             booking.BookingDate = DateTime.UtcNow;
 
+            if (string.IsNullOrWhiteSpace(booking.BookingReference))
+                booking.BookingReference = GenerateBookingReference();
+
+            if (string.IsNullOrWhiteSpace(booking.BookingStatus))
+                booking.BookingStatus = "PendingPayment";
+
+            if (booking.BookingStatus == "PendingPayment")
+                booking.ExpiresAtUtc = DateTime.UtcNow.Add(BookingHoldDuration);
+
             if (string.IsNullOrWhiteSpace(booking.PaymentStatus))
                 booking.PaymentStatus = "Pending";
 
@@ -78,6 +89,12 @@ namespace TrainTicketPlatformAPI.Services
             var booking = await _db.Bookings.FindAsync(bookingId)
                        ?? throw new KeyNotFoundException("Booking not found");
 
+            if (ExpireIfPendingHoldElapsed(booking))
+            {
+                await _db.SaveChangesAsync();
+                throw new InvalidOperationException("Booking hold has expired");
+            }
+
             var cutoff = booking.TravelDate.AddHours(-1);
             if (DateTime.UtcNow > cutoff)
                 throw new InvalidOperationException(
@@ -85,6 +102,7 @@ namespace TrainTicketPlatformAPI.Services
 
             booking.IsCancelled = true;
             booking.CancellationDate = DateTime.UtcNow;
+            booking.BookingStatus = "Cancelled";
             await _db.SaveChangesAsync();
         }
 
@@ -104,6 +122,12 @@ namespace TrainTicketPlatformAPI.Services
         {
             var existing = await _db.Bookings.FindAsync(booking.Id)
                            ?? throw new KeyNotFoundException("Booking not found");
+
+            if (ExpireIfPendingHoldElapsed(existing))
+            {
+                await _db.SaveChangesAsync();
+                throw new InvalidOperationException("Booking hold has expired");
+            }
 
             if (existing.IsCancelled)
                 throw new InvalidOperationException("Cannot update a cancelled booking");
@@ -158,6 +182,12 @@ namespace TrainTicketPlatformAPI.Services
             var booking = await _db.Bookings.FindAsync(bookingId)
                           ?? throw new KeyNotFoundException("Booking not found");
 
+            if (ExpireIfPendingHoldElapsed(booking))
+            {
+                await _db.SaveChangesAsync();
+                throw new InvalidOperationException("Booking hold has expired");
+            }
+
             if (booking.IsCancelled)
                 throw new InvalidOperationException("Cannot confirm a cancelled booking");
 
@@ -168,6 +198,7 @@ namespace TrainTicketPlatformAPI.Services
                 throw new InvalidOperationException("Booking does not have a successful payment");
 
             booking.PaymentStatus = "Successful";
+            booking.BookingStatus = "Confirmed";
             await _db.SaveChangesAsync();
             return booking;
         }
@@ -181,6 +212,9 @@ namespace TrainTicketPlatformAPI.Services
 
         public async Task<bool> CheckSeatAvailabilityAsync(int trainId, int seatId, DateTime travelDate)
         {
+            await ExpireStalePendingBookingsAsync();
+            var now = DateTime.UtcNow;
+
             var seat = await _db.Seats
                 .FirstOrDefaultAsync(s => s.Id == seatId && s.TrainId == trainId);
 
@@ -192,7 +226,11 @@ namespace TrainTicketPlatformAPI.Services
                     b.SeatId == seatId &&
                     b.TrainId == trainId &&
                     b.TravelDate.Date == travelDate.Date &&
-                    !b.IsCancelled);
+                    !b.IsCancelled &&
+                    (b.BookingStatus == "Confirmed" ||
+                     (b.BookingStatus == "PendingPayment" &&
+                      (!b.ExpiresAtUtc.HasValue ||
+                       b.ExpiresAtUtc.Value > now))));
 
             return !clash;
         }
@@ -231,10 +269,15 @@ namespace TrainTicketPlatformAPI.Services
             DateTime travelDate,
             int? ignoredBookingId)
         {
+            var now = DateTime.UtcNow;
             var query = _db.Bookings.Where(b =>
                 b.SeatId == seatId &&
                 b.TrainId == trainId &&
                 !b.IsCancelled &&
+                (b.BookingStatus == "Confirmed" ||
+                 (b.BookingStatus == "PendingPayment" &&
+                  (!b.ExpiresAtUtc.HasValue ||
+                   b.ExpiresAtUtc.Value > now))) &&
                 (!ignoredBookingId.HasValue || b.Id != ignoredBookingId.Value));
 
             query = tripId.HasValue
@@ -254,6 +297,43 @@ namespace TrainTicketPlatformAPI.Services
         private static bool IsDuplicateBookingException(DbUpdateException ex)
         {
             return ex.InnerException?.Message.Contains("IX_Bookings", StringComparison.OrdinalIgnoreCase) == true;
+        }
+
+        private static string GenerateBookingReference()
+            => $"BKG-{DateTime.UtcNow:yyyyMMddHHmmssfff}-{Guid.NewGuid():N}"[..28];
+
+        private async Task ExpireStalePendingBookingsAsync()
+        {
+            var now = DateTime.UtcNow;
+            var staleBookings = await _db.Bookings
+                .Where(b =>
+                    !b.IsCancelled &&
+                    b.BookingStatus == "PendingPayment" &&
+                    b.ExpiresAtUtc.HasValue &&
+                    b.ExpiresAtUtc.Value <= now)
+                .ToListAsync();
+
+            if (staleBookings.Count == 0)
+                return;
+
+            foreach (var booking in staleBookings)
+                booking.BookingStatus = "Expired";
+
+            await _db.SaveChangesAsync();
+        }
+
+        private static bool ExpireIfPendingHoldElapsed(Booking booking)
+        {
+            if (booking.IsCancelled ||
+                booking.BookingStatus != "PendingPayment" ||
+                !booking.ExpiresAtUtc.HasValue ||
+                booking.ExpiresAtUtc.Value > DateTime.UtcNow)
+            {
+                return false;
+            }
+
+            booking.BookingStatus = "Expired";
+            return true;
         }
     }
 }

@@ -98,6 +98,7 @@ namespace TrainTicketPlatformAPI.Controllers
                     TripId = request.TripId,
                     SeatId = request.SeatId,
                     TravelDate = request.TravelDate,
+                    BookingStatus = "PendingPayment",
                     PaymentStatus = "Pending"
                 };
 
@@ -233,8 +234,11 @@ namespace TrainTicketPlatformAPI.Controllers
             TrainId = booking.TrainId,
             TripId = booking.TripId,
             SeatId = booking.SeatId,
+            BookingReference = booking.BookingReference,
             BookingDate = booking.BookingDate,
             TravelDate = booking.TravelDate,
+            ExpiresAtUtc = booking.ExpiresAtUtc,
+            BookingStatus = booking.BookingStatus,
             PaymentStatus = booking.PaymentStatus,
             IsCancelled = booking.IsCancelled,
             CancellationDate = booking.CancellationDate

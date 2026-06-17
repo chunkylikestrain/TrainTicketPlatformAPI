@@ -33,6 +33,10 @@ namespace TrainTicketPlatformAPI.Services
             var train = await _db.Trains.FindAsync(seat.TrainId);
             if (train == null) throw new KeyNotFoundException("Train not found");
 
+            NormalizeSeat(seat);
+            if (await SeatNumberExistsAsync(seat.TrainId, seat.Coach, seat.Number, ignoredSeatId: null))
+                throw new InvalidOperationException("A seat with the same train, coach, and number already exists");
+
             _db.Seats.Add(seat);
             await _db.SaveChangesAsync();
             return seat;
@@ -43,7 +47,10 @@ namespace TrainTicketPlatformAPI.Services
             var existing = await _db.Seats.FindAsync(seat.Id)
                          ?? throw new KeyNotFoundException("Seat not found");
 
-            // Update mutable fields
+            NormalizeSeat(seat);
+            if (await SeatNumberExistsAsync(existing.TrainId, seat.Coach, seat.Number, existing.Id))
+                throw new InvalidOperationException("A seat with the same train, coach, and number already exists");
+
             existing.Coach = seat.Coach;
             existing.Number = seat.Number;
             existing.ClassType = seat.ClassType;
@@ -65,6 +72,26 @@ namespace TrainTicketPlatformAPI.Services
 
             _db.Seats.Remove(seat);
             await _db.SaveChangesAsync();
+        }
+
+        private Task<bool> SeatNumberExistsAsync(
+            int trainId,
+            string coach,
+            string number,
+            int? ignoredSeatId)
+        {
+            return _db.Seats.AnyAsync(s =>
+                s.TrainId == trainId &&
+                s.Coach == coach &&
+                s.Number == number &&
+                (!ignoredSeatId.HasValue || s.Id != ignoredSeatId.Value));
+        }
+
+        private static void NormalizeSeat(Seat seat)
+        {
+            seat.Coach = seat.Coach.Trim();
+            seat.Number = seat.Number.Trim();
+            seat.ClassType = seat.ClassType.Trim();
         }
     }
 }

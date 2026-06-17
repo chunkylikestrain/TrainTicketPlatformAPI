@@ -32,8 +32,11 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             TrainId = booking.TrainId,
             TripId = booking.TripId,
             SeatId = booking.SeatId,
+            BookingReference = booking.BookingReference,
             BookingDate = booking.BookingDate,
             TravelDate = booking.TravelDate,
+            ExpiresAtUtc = booking.ExpiresAtUtc,
+            BookingStatus = booking.BookingStatus,
             PaymentStatus = booking.PaymentStatus,
             IsCancelled = booking.IsCancelled,
             CancellationDate = booking.CancellationDate

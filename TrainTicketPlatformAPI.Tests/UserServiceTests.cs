@@ -52,6 +52,7 @@ namespace TrainTicketPlatformAPI.Tests
 
             Assert.That(user.Id, Is.GreaterThan(0));
             Assert.That(user.Email, Is.EqualTo(dto.Email));
+            Assert.That(user.NormalizedEmail, Is.EqualTo("ALICE@EXAMPLE.COM"));
             Assert.That(user.Phone, Is.EqualTo(dto.Phone));
             Assert.That(user.Role, Is.EqualTo("Passenger"));
             Assert.That(user.PasswordHash, Is.Not.EqualTo(dto.Password));
@@ -111,7 +112,7 @@ namespace TrainTicketPlatformAPI.Tests
             var svc = new UserService(db, _config);
             var dto = new LoginDto
             {
-                Email = "carol@example.com",
+                Email = "CAROL@example.com",
                 Password = plain
             };
 

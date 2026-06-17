@@ -27,8 +27,7 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
                 DepartureStation = request.DepartureStation,
                 ArrivalStation = request.ArrivalStation,
                 DepartureTime = request.DepartureTime,
-                ArrivalTime = request.ArrivalTime,
-                Price = request.Price
+                ArrivalTime = request.ArrivalTime
             };
 
             var created = await _trainService.CreateTrainAsync(train);
@@ -59,8 +58,7 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
                 DepartureStation = request.DepartureStation,
                 ArrivalStation = request.ArrivalStation,
                 DepartureTime = request.DepartureTime,
-                ArrivalTime = request.ArrivalTime,
-                Price = request.Price
+                ArrivalTime = request.ArrivalTime
             };
 
             try
@@ -99,8 +97,7 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             DepartureStation = train.DepartureStation,
             ArrivalStation = train.ArrivalStation,
             DepartureTime = train.DepartureTime,
-            ArrivalTime = train.ArrivalTime,
-            Price = train.Price
+            ArrivalTime = train.ArrivalTime
         };
     }
 }

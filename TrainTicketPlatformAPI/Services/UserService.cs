@@ -27,8 +27,12 @@ namespace TrainTicketPlatformAPI.Services
 
         public async Task<User> CreateUserAsync(User user)
         {
-            // business rule: email must be unique
-            bool exists = await _db.Users.AnyAsync(u => u.Email == user.Email);
+            user.Email = user.Email.Trim();
+            user.NormalizedEmail = NormalizeEmail(user.Email);
+
+            bool exists = await _db.Users.AnyAsync(u =>
+                u.NormalizedEmail == user.NormalizedEmail ||
+                u.Email.ToUpper() == user.NormalizedEmail);
             if (exists)
                 throw new InvalidOperationException("Email already in use");
 
@@ -42,13 +46,19 @@ namespace TrainTicketPlatformAPI.Services
             var existing = await _db.Users.FindAsync(user.Id)
                            ?? throw new KeyNotFoundException("User not found");
 
-            // if email changed, ensure new email is not taken
-            if (existing.Email != user.Email)
+            var requestedEmail = user.Email.Trim();
+            var requestedNormalizedEmail = NormalizeEmail(requestedEmail);
+
+            if (existing.NormalizedEmail != requestedNormalizedEmail)
             {
-                bool taken = await _db.Users.AnyAsync(u => u.Email == user.Email);
+                bool taken = await _db.Users.AnyAsync(u =>
+                    u.Id != user.Id &&
+                    (u.NormalizedEmail == requestedNormalizedEmail ||
+                     u.Email.ToUpper() == requestedNormalizedEmail));
                 if (taken)
                     throw new InvalidOperationException("Email already in use");
-                existing.Email = user.Email;
+                existing.Email = requestedEmail;
+                existing.NormalizedEmail = requestedNormalizedEmail;
             }
 
             // update other allowed fields
@@ -82,7 +92,12 @@ namespace TrainTicketPlatformAPI.Services
         // New: Register
         public async Task<User> RegisterAsync(RegisterDto dto)
         {
-            if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
+            var email = dto.Email.Trim();
+            var normalizedEmail = NormalizeEmail(email);
+
+            if (await _db.Users.AnyAsync(u =>
+                    u.NormalizedEmail == normalizedEmail ||
+                    u.Email.ToUpper() == normalizedEmail))
                 throw new InvalidOperationException("Email already in use");
 
             // Hash the password
@@ -90,7 +105,8 @@ namespace TrainTicketPlatformAPI.Services
 
             var user = new User
             {
-                Email = dto.Email,
+                Email = email,
+                NormalizedEmail = normalizedEmail,
                 PasswordHash = hash,
                 Phone = dto.Phone,
                 Role = "Passenger"   // default role
@@ -104,8 +120,12 @@ namespace TrainTicketPlatformAPI.Services
         // Authenticate / Login
         public async Task<LoginResponseDto> LoginAsync(LoginDto dto)
         {
+            var normalizedEmail = NormalizeEmail(dto.Email);
+
             var user = await _db.Users
-                .FirstOrDefaultAsync(u => u.Email == dto.Email);
+                .FirstOrDefaultAsync(u =>
+                    u.NormalizedEmail == normalizedEmail ||
+                    u.Email.ToUpper() == normalizedEmail);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 throw new KeyNotFoundException("Invalid credentials");
@@ -143,5 +163,8 @@ namespace TrainTicketPlatformAPI.Services
                 Role = user.Role
             };
         }
+
+        private static string NormalizeEmail(string email)
+            => email.Trim().ToUpperInvariant();
     }
 }

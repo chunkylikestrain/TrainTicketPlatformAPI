@@ -80,12 +80,17 @@ namespace TrainTicketPlatformAPI.Services
                 .FirstOrDefaultAsync(t => t.Id == tripId)
                 ?? throw new KeyNotFoundException("Trip not found");
 
+            var now = DateTime.UtcNow;
             var bookedSeatIds = await _db.Bookings
                 .AsNoTracking()
                 .Where(b =>
                     b.TripId == tripId &&
                     b.TravelDate.Date == trip.DepartureTime.Date &&
-                    !b.IsCancelled)
+                    !b.IsCancelled &&
+                    (b.BookingStatus == "Confirmed" ||
+                     (b.BookingStatus == "PendingPayment" &&
+                      (!b.ExpiresAtUtc.HasValue ||
+                       b.ExpiresAtUtc.Value > now))))
                 .Select(b => b.SeatId)
                 .ToListAsync();
 

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrainTicketPlatformAPI.Data;
 
@@ -11,9 +12,11 @@ using TrainTicketPlatformAPI.Data;
 namespace TrainTicketPlatformAPI.Migrations
 {
     [DbContext(typeof(TrainTicketDbContext))]
-    partial class TrainTicketDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260617214748_HardenDatabaseConstraints")]
+    partial class HardenDatabaseConstraints
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -48,9 +51,6 @@ namespace TrainTicketPlatformAPI.Migrations
                         .HasDefaultValue("PendingPayment");
 
                     b.Property<DateTime?>("CancellationDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("ExpiresAtUtc")
                         .HasColumnType("datetime2");
 
                     b.Property<bool>("IsCancelled")
@@ -89,13 +89,13 @@ namespace TrainTicketPlatformAPI.Migrations
 
                     b.HasIndex("TripId", "SeatId")
                         .IsUnique()
-                        .HasFilter("[IsCancelled] = 0 AND [TripId] IS NOT NULL AND [BookingStatus] IN ('PendingPayment', 'Confirmed')");
+                        .HasFilter("[IsCancelled] = 0 AND [TripId] IS NOT NULL");
 
                     b.HasIndex("TripId", "TravelDate");
 
                     b.HasIndex("TrainId", "SeatId", "TravelDate")
                         .IsUnique()
-                        .HasFilter("[IsCancelled] = 0 AND [TripId] IS NULL AND [BookingStatus] IN ('PendingPayment', 'Confirmed')");
+                        .HasFilter("[IsCancelled] = 0 AND [TripId] IS NULL");
 
                     b.ToTable("Bookings", t =>
                         {
@@ -393,6 +393,10 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("Price")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("Id");
 

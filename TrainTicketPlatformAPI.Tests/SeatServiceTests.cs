@@ -24,8 +24,7 @@ namespace TrainTicketPlatformAPI.Tests
                 DepartureStation = "A",
                 ArrivalStation = "B",
                 DepartureTime = DateTime.UtcNow.AddHours(-2),
-                ArrivalTime = DateTime.UtcNow.AddHours(-1),
-                Price = 25.0m
+                ArrivalTime = DateTime.UtcNow.AddHours(-1)
             });
         }
 
@@ -144,6 +143,35 @@ namespace TrainTicketPlatformAPI.Tests
             var fetched = await db.Seats.FindAsync(created.Id);
             Assert.That(fetched, Is.Not.Null);
             Assert.That(fetched!.Coach, Is.EqualTo("B"));
+        }
+
+        [Test]
+        public async Task CreateSeatAsync_Throws_WhenTrainCoachNumberAlreadyExists()
+        {
+            var db = NewDb("CreateDuplicateSeat");
+            SeedTrain(db, 1);
+            db.Seats.Add(new Seat
+            {
+                Id = 1,
+                TrainId = 1,
+                Coach = "A",
+                Number = "1",
+                ClassType = "Economy",
+                IsAvailable = true
+            });
+            await db.SaveChangesAsync();
+
+            var svc = new SeatService(db);
+
+            Assert.ThrowsAsync<InvalidOperationException>(() =>
+                svc.CreateSeatAsync(new Seat
+                {
+                    TrainId = 1,
+                    Coach = " A ",
+                    Number = " 1 ",
+                    ClassType = "First",
+                    IsAvailable = true
+                }));
         }
 
         [Test]

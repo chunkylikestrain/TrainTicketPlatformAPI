@@ -28,6 +28,15 @@ namespace TrainTicketPlatformAPI.Services
             if (booking.IsCancelled)
                 throw new InvalidOperationException("Cannot process payment for a cancelled booking");
 
+            if (booking.BookingStatus == "PendingPayment" &&
+                booking.ExpiresAtUtc.HasValue &&
+                booking.ExpiresAtUtc.Value <= DateTime.UtcNow)
+            {
+                booking.BookingStatus = "Expired";
+                await _db.SaveChangesAsync();
+                throw new InvalidOperationException("Booking hold has expired");
+            }
+
             // 2) Check card prefix: Visa (starts '4') or MasterCard (51-55)
            
             string prefix1 = cardNumber.Substring(0, 1);
@@ -57,6 +66,8 @@ namespace TrainTicketPlatformAPI.Services
 
             // 4) Update the booking’s payment status
             booking.PaymentStatus = status;
+            if (success)
+                booking.BookingStatus = "Confirmed";
 
             // 5) Persist both
             await _db.SaveChangesAsync();

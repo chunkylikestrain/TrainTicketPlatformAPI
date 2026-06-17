@@ -22,8 +22,7 @@ namespace TrainTicketPlatformAPI.Tests
                 DepartureStation = "A",
                 ArrivalStation = "B",
                 DepartureTime = DateTime.UtcNow.AddHours(-1),
-                ArrivalTime = DateTime.UtcNow.AddHours(+1),
-                Price = 100m
+                ArrivalTime = DateTime.UtcNow.AddHours(+1)
             });
             db.Seats.Add(new Seat
             {
@@ -71,6 +70,7 @@ namespace TrainTicketPlatformAPI.Tests
 
             var booking = await db.Bookings.FindAsync(1);
             Assert.That(booking!.PaymentStatus, Is.EqualTo("Successful"));
+            Assert.That(booking.BookingStatus, Is.EqualTo("Confirmed"));
         }
 
         [Test]
@@ -126,6 +126,7 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.That(payment.Status, Is.EqualTo("Failed"));
             var booking = await db.Bookings.FindAsync(1);
             Assert.That(booking!.PaymentStatus, Is.EqualTo("Failed"));
+            Assert.That(booking.BookingStatus, Is.EqualTo("PendingPayment"));
         }
 
         [Test]
@@ -170,6 +171,26 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.ThrowsAsync<InvalidOperationException>(
                 () => svc.ProcessPaymentAsync(1, 10m, "4123456789012345")
             );
+        }
+
+        [Test]
+        public void ProcessPaymentAsync_Throws_WhenBookingHoldExpired()
+        {
+            var db = NewDb("Pay_ExpiredHold");
+            SeedTrainAndSeat(db);
+            SeedBooking(db);
+            var booking = db.Bookings.Find(1)
+                          ?? throw new InvalidOperationException("Seed booking missing");
+            booking.BookingStatus = "PendingPayment";
+            booking.ExpiresAtUtc = DateTime.UtcNow.AddMinutes(-1);
+            db.SaveChanges();
+
+            var svc = new PaymentService(db);
+
+            Assert.ThrowsAsync<InvalidOperationException>(
+                () => svc.ProcessPaymentAsync(1, 10m, "4123456789012345")
+            );
+            Assert.That(booking.BookingStatus, Is.EqualTo("Expired"));
         }
     }
 }

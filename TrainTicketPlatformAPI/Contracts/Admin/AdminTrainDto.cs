@@ -8,6 +8,5 @@ namespace TrainTicketPlatformAPI.Contracts.Admin
         public string ArrivalStation { get; set; } = string.Empty;
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
-        public decimal Price { get; set; }
     }
 }

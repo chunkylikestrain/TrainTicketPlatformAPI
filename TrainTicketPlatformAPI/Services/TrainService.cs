@@ -52,7 +52,6 @@ namespace TrainTicketPlatformAPI.Services
             existing.ArrivalStation = train.ArrivalStation;
             existing.DepartureTime = train.DepartureTime;
             existing.ArrivalTime = train.ArrivalTime;
-            existing.Price = train.Price;
 
             await _db.SaveChangesAsync();
             return existing;

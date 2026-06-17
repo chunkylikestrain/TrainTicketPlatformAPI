@@ -34,8 +34,7 @@ namespace TrainTicketPlatformAPI.Tests
                 DepartureStation = "Warsaw",
                 ArrivalStation = "Krakow",
                 DepartureTime = new DateTime(2026, 7, 1, 8, 0, 0),
-                ArrivalTime = new DateTime(2026, 7, 1, 11, 0, 0),
-                Price = 70m
+                ArrivalTime = new DateTime(2026, 7, 1, 11, 0, 0)
             };
 
             var route = new TrainRoute

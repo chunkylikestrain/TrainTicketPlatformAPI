@@ -22,8 +22,7 @@ namespace TrainTicketPlatformAPI.Tests
                 DepartureStation = "StationA",
                 ArrivalStation = "StationB",
                 DepartureTime = DateTime.UtcNow.AddHours(-2),
-                ArrivalTime = DateTime.UtcNow.AddHours(-1),
-                Price = 50.0m
+                ArrivalTime = DateTime.UtcNow.AddHours(-1)
             });
         }
 
@@ -66,8 +65,49 @@ namespace TrainTicketPlatformAPI.Tests
             var result = await svc.CreateBookingAsync(toCreate);
 
             Assert.That(result.Id, Is.GreaterThan(0));
+            Assert.That(result.BookingReference, Does.StartWith("BKG-"));
+            Assert.That(result.BookingStatus, Is.EqualTo("PendingPayment"));
+            Assert.That(result.PaymentStatus, Is.EqualTo("Pending"));
+            Assert.That(result.ExpiresAtUtc, Is.Not.Null);
+            Assert.That(result.ExpiresAtUtc!.Value, Is.GreaterThan(DateTime.UtcNow.AddMinutes(14)));
             var seatAfter = await db.Seats.FindAsync(1);
             Assert.That(seatAfter!.IsAvailable, Is.True);
+        }
+
+        [Test]
+        public async Task CreateBookingAsync_AllowsSeat_WhenPreviousPendingHoldExpired()
+        {
+            var db = NewDb("CreateBookingExpiredHold");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            db.Bookings.Add(new Booking
+            {
+                Id = 1,
+                UserId = 42,
+                TrainId = 1,
+                SeatId = 1,
+                BookingDate = DateTime.UtcNow.AddMinutes(-20),
+                TravelDate = DateTime.UtcNow.AddDays(1),
+                ExpiresAtUtc = DateTime.UtcNow.AddMinutes(-5),
+                BookingStatus = "PendingPayment",
+                PaymentStatus = "Pending"
+            });
+            await db.SaveChangesAsync();
+
+            var svc = new BookingService(db);
+
+            var created = await svc.CreateBookingAsync(new Booking
+            {
+                UserId = 43,
+                TrainId = 1,
+                SeatId = 1,
+                TravelDate = DateTime.UtcNow.AddDays(1),
+                PaymentStatus = "Pending"
+            });
+
+            Assert.That(created.Id, Is.Not.EqualTo(1));
+            var expired = await db.Bookings.FindAsync(1);
+            Assert.That(expired!.BookingStatus, Is.EqualTo("Expired"));
         }
 
         [Test]
@@ -252,6 +292,7 @@ namespace TrainTicketPlatformAPI.Tests
             var b = await db.Bookings.FindAsync(1);
             Assert.That(b!.IsCancelled, Is.True);
             Assert.That(b.CancellationDate, Is.Not.Null);
+            Assert.That(b.BookingStatus, Is.EqualTo("Cancelled"));
             var seat = await db.Seats.FindAsync(1);
             Assert.That(seat!.IsAvailable, Is.True);
         }
@@ -327,6 +368,7 @@ namespace TrainTicketPlatformAPI.Tests
             var confirmed = await svc.ConfirmBookingAsync(1);
 
             Assert.That(confirmed.PaymentStatus, Is.EqualTo("Successful"));
+            Assert.That(confirmed.BookingStatus, Is.EqualTo("Confirmed"));
         }
 
         [Test]
@@ -485,8 +527,7 @@ namespace TrainTicketPlatformAPI.Tests
                 DepartureStation = "StationA",
                 ArrivalStation = "StationB",
                 DepartureTime = DateTime.UtcNow.AddHours(-2),
-                ArrivalTime = DateTime.UtcNow.AddHours(-1),
-                Price = 50.0m
+                ArrivalTime = DateTime.UtcNow.AddHours(-1)
             });
             SeedSeat(db, 1, true);
             db.Seats.Add(new Seat

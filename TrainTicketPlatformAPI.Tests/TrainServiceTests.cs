@@ -24,8 +24,7 @@ namespace TrainTicketPlatformAPI.Tests
                 DepartureStation = "StationA",
                 ArrivalStation = "StationB",
                 DepartureTime = DateTime.UtcNow.AddHours(-5),
-                ArrivalTime = DateTime.UtcNow.AddHours(-3),
-                Price = 99.99m
+                ArrivalTime = DateTime.UtcNow.AddHours(-3)
             });
         }
 
@@ -91,8 +90,7 @@ namespace TrainTicketPlatformAPI.Tests
                 DepartureStation = "Home",
                 ArrivalStation = "Away",
                 DepartureTime = DateTime.UtcNow,
-                ArrivalTime = DateTime.UtcNow.AddHours(2),
-                Price = 45.50m
+                ArrivalTime = DateTime.UtcNow.AddHours(2)
             };
 
             // Act
@@ -122,15 +120,14 @@ namespace TrainTicketPlatformAPI.Tests
                 DepartureStation = "X",
                 ArrivalStation = "Y",
                 DepartureTime = DateTime.UtcNow.AddHours(-1),
-                ArrivalTime = DateTime.UtcNow.AddHours(+1),
-                Price = 123.45m
+                ArrivalTime = DateTime.UtcNow.AddHours(+1)
             };
             var updated = await svc.UpdateTrainAsync(toUpdate);
 
             // Assert
             Assert.That(updated.Id, Is.EqualTo(7));
             Assert.That(updated.Name, Is.EqualTo("UpdatedName"));
-            Assert.That(updated.Price, Is.EqualTo(123.45m));
+            Assert.That(updated.ArrivalStation, Is.EqualTo("Y"));
         }
 
         [Test]
