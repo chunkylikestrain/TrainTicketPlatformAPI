@@ -108,17 +108,15 @@ namespace TrainTicketPlatformAPI.Services
                 .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            {
                 throw new KeyNotFoundException("Invalid credentials");
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
-            };
+        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+        new Claim(JwtRegisteredClaimNames.Email, user.Email),
+        new Claim(ClaimTypes.Role, user.Role)
+    };
 
-            // 2) Create the signing key & credentials
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
@@ -128,7 +126,6 @@ namespace TrainTicketPlatformAPI.Services
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: creds);
-            var token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
             var serializedToken = new JwtSecurityTokenHandler().WriteToken(token);
 

@@ -13,7 +13,6 @@ namespace TrainTicketPlatformAPI.Services
 
         public async Task<Booking> CreateBookingAsync(Booking booking)
         {
-            // 1. Check seat availability
             var seat = await _db.Seats.FindAsync(booking.SeatId);
             if (seat == null || !seat.IsAvailable)
                 throw new InvalidOperationException("Seat not available");
@@ -65,7 +64,6 @@ namespace TrainTicketPlatformAPI.Services
             // 2. Soft‐delete the booking
             booking.IsCancelled = true;
             booking.CancellationDate = DateTime.UtcNow;
-
             await _db.SaveChangesAsync();
         }
 

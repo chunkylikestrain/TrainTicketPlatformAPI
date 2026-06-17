@@ -12,4 +12,5 @@ namespace TrainTicketPlatformAPI.Services
         Task<User> RegisterAsync(RegisterDto dto);
         Task<LoginResponseDto> LoginAsync(LoginDto dto);
     }
+
 }

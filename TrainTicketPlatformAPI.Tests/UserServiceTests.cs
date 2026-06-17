@@ -135,7 +135,6 @@ namespace TrainTicketPlatformAPI.Tests
             // the sub claim should be the user's id:
             Assert.That(jwt.Subject, Is.EqualTo("1"));
         }
-
         [Test]
         public void LoginAsync_Throws_WhenEmailNotFound()
         {
