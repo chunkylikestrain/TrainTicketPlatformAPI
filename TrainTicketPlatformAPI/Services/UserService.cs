@@ -104,12 +104,13 @@ namespace TrainTicketPlatformAPI.Services
         // Authenticate / Login
         public async Task<LoginResponseDto> LoginAsync(LoginDto dto)
         {
-            var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
+            var user = await _db.Users
+                .FirstOrDefaultAsync(u => u.Email == dto.Email);
+
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
             {
                 throw new KeyNotFoundException("Invalid credentials");
-            }
-            // 1) Create claims with a "sub" claim:
+
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
@@ -120,8 +121,8 @@ namespace TrainTicketPlatformAPI.Services
             // 2) Create the signing key & credentials
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            // 3) Create the token
-            var jwt = new JwtSecurityToken(
+
+            var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
@@ -129,34 +130,14 @@ namespace TrainTicketPlatformAPI.Services
                 signingCredentials: creds);
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-            // 4) Return the serialized token
-            return new LoginResponseDto
-            {
-                Token = token,
-=======
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
             var serializedToken = new JwtSecurityTokenHandler().WriteToken(token);
 
             return new LoginResponseDto
             {
                 Token = serializedToken,
-<<<<<<< ours
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
                 UserId = user.Id,
                 Role = user.Role
             };
         }
-
     }
 }

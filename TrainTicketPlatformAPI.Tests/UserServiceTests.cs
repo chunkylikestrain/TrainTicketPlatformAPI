@@ -91,54 +91,30 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-        public async Task LoginAsync_ReturnsJwtandMetadata_WhenCredentialsValid()
-=======
         public async Task LoginAsync_ReturnsLoginResponse_WhenCredentialsValid()
->>>>>>> theirs
-=======
-        public async Task LoginAsync_ReturnsLoginResponse_WhenCredentialsValid()
->>>>>>> theirs
-=======
-        public async Task LoginAsync_ReturnsLoginResponse_WhenCredentialsValid()
->>>>>>> theirs
         {
-            // arrange a brand-new in-memory database
+            // Arrange
             var db = NewDb("UserLoginValid");
             var plain = "Secret123!";
-            var user = new User
+            var hash = BCrypt.Net.BCrypt.HashPassword(plain);
+
+            db.Users.Add(new User
             {
+                Id = 1,
                 Email = "carol@example.com",
-                PasswordHash = BCrypt.Net.BCrypt.HashPassword(plain),
-                Phone = "555-7777",
+                PasswordHash = hash,
+                Phone = "555-2222",
                 Role = "Passenger"
-            };
-            // add + save
-            await db.Users.AddAsync(user);
+            });
             await db.SaveChangesAsync();
 
             var svc = new UserService(db, _config);
             var dto = new LoginDto
             {
-                Email = user.Email,
+                Email = "carol@example.com",
                 Password = plain
             };
 
-<<<<<<< ours
-            // act
-            var result = await svc.LoginAsync(dto);
-
-            // assert
-            Assert.That(result, Is.Not.Null);
-            Assert.That(result.Token, Is.Not.Null.And.Not.Empty);
-            Assert.That(result.UserId, Is.EqualTo(user.Id));
-            Assert.That(result.Role, Is.EqualTo(user.Role));
-
-            // check JWT format
-            var parts = result.Token.Split('.');
-=======
             // Act
             var response = await svc.LoginAsync(dto);
 
@@ -149,35 +125,15 @@ namespace TrainTicketPlatformAPI.Tests
 
             // basic sanity: must be in JWT format
             var parts = response.Token.Split('.');
-<<<<<<< ours
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
             Assert.That(parts.Length, Is.EqualTo(3));
 
-            // check issuer/audience/subject
+            // can even parse it
             var handler = new JwtSecurityTokenHandler();
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-            var jwt = handler.ReadJwtToken(result.Token);
-=======
             var jwt = handler.ReadJwtToken(response.Token);
->>>>>>> theirs
-=======
-            var jwt = handler.ReadJwtToken(response.Token);
->>>>>>> theirs
-=======
-            var jwt = handler.ReadJwtToken(response.Token);
->>>>>>> theirs
             Assert.That(jwt.Issuer, Is.EqualTo("TestIssuer"));
             Assert.That(jwt.Audiences, Does.Contain("TestAudience"));
-            Assert.That(jwt.Subject, Is.EqualTo(user.Id.ToString()));
-
-            db.Dispose();
+            // the sub claim should be the user's id:
+            Assert.That(jwt.Subject, Is.EqualTo("1"));
         }
 
         [Test]

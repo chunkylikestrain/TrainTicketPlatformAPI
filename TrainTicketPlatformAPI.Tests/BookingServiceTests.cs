@@ -43,7 +43,7 @@ namespace TrainTicketPlatformAPI.Tests
         // 1) Creation Tests
 
         [Test]
-        public async Task CreateBookingAsync_ReservesSeat_WhenAvailable()
+        public async Task CreateBookingAsync_CreatesBooking_WhenSeatAvailableForTravelDate()
         {
             var db = NewDb("CreateBookingTest");
             SeedTrain(db);
@@ -67,7 +67,7 @@ namespace TrainTicketPlatformAPI.Tests
 
             Assert.That(result.Id, Is.GreaterThan(0));
             var seatAfter = await db.Seats.FindAsync(1);
-            Assert.That(seatAfter.IsAvailable, Is.False);
+            Assert.That(seatAfter.IsAvailable, Is.True);
         }
 
         [Test]
@@ -121,11 +121,11 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
-        public async Task CancelBookingAsync_MarksCancelled_AndFreesSeat()
+        public async Task CancelBookingAsync_MarksCancelled_WithoutChangingOperationalSeatFlag()
         {
             var db = NewDb("CancelBookingTest");
             SeedTrain(db);
-            SeedSeat(db, 1, false);
+            SeedSeat(db, 1, true);
             db.Bookings.Add(new Booking
             {
                 Id = 1,
@@ -155,7 +155,7 @@ namespace TrainTicketPlatformAPI.Tests
         {
             var db = NewDb("RescheduleSeatTest");
             SeedTrain(db);
-            SeedSeat(db, 1, false);
+            SeedSeat(db, 1, true);
             SeedSeat(db, 2, true);
             db.Bookings.Add(new Booking
             {
@@ -185,7 +185,7 @@ namespace TrainTicketPlatformAPI.Tests
             var oldSeat = await db.Seats.FindAsync(1);
             var newSeat = await db.Seats.FindAsync(2);
             Assert.That(oldSeat.IsAvailable, Is.True);
-            Assert.That(newSeat.IsAvailable, Is.False);
+            Assert.That(newSeat.IsAvailable, Is.True);
         }
 
         [Test]
@@ -221,7 +221,7 @@ namespace TrainTicketPlatformAPI.Tests
         {
             var db = NewDb("RescheduleDateTest");
             SeedTrain(db);
-            SeedSeat(db, 1, false);
+            SeedSeat(db, 1, true);
             db.Bookings.Add(new Booking
             {
                 Id = 1,
@@ -247,8 +247,65 @@ namespace TrainTicketPlatformAPI.Tests
 
             Assert.That(updated.TravelDate.Date, Is.EqualTo(newTravelDate.Date));
             var seat = await db.Seats.FindAsync(1);
-            Assert.That(seat.IsAvailable, Is.False);
+            Assert.That(seat.IsAvailable, Is.True);
+        }
+
+        [Test]
+        public async Task CheckSeatAvailabilityAsync_AllowsSameSeatOnDifferentDate()
+        {
+            var db = NewDb("SeatAvailableDifferentDate");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            var bookedDate = DateTime.UtcNow.AddDays(1);
+            db.Bookings.Add(new Booking
+            {
+                Id = 1,
+                UserId = 42,
+                TrainId = 1,
+                SeatId = 1,
+                BookingDate = DateTime.UtcNow,
+                TravelDate = bookedDate,
+                PaymentStatus = "Pending"
+            });
+            await db.SaveChangesAsync();
+
+            var svc = new BookingService(db);
+
+            var available = await svc.CheckSeatAvailabilityAsync(
+                trainId: 1,
+                seatId: 1,
+                travelDate: bookedDate.AddDays(1));
+
+            Assert.That(available, Is.True);
+        }
+
+        [Test]
+        public async Task CheckSeatAvailabilityAsync_BlocksSameSeatOnSameDate()
+        {
+            var db = NewDb("SeatUnavailableSameDate");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            var bookedDate = DateTime.UtcNow.AddDays(1);
+            db.Bookings.Add(new Booking
+            {
+                Id = 1,
+                UserId = 42,
+                TrainId = 1,
+                SeatId = 1,
+                BookingDate = DateTime.UtcNow,
+                TravelDate = bookedDate,
+                PaymentStatus = "Pending"
+            });
+            await db.SaveChangesAsync();
+
+            var svc = new BookingService(db);
+
+            var available = await svc.CheckSeatAvailabilityAsync(
+                trainId: 1,
+                seatId: 1,
+                travelDate: bookedDate);
+
+            Assert.That(available, Is.False);
         }
     }
 }
-

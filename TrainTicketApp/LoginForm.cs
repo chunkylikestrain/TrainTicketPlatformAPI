@@ -59,24 +59,6 @@ namespace TrainTicketApp
                     Password = password
                 };
 
-<<<<<<< ours
-<<<<<<< ours
-<<<<<<< ours
-                //now return the Dto 
-                var loginRsp = await _userService.LoginAsync(dto);
-
-                //stast Jwt & user info in your session
-                AppSession.JwtToken = loginRsp.Token;
-                AppSession.CurrentUserId = loginRsp.UserId;
-                var role = loginRsp.Role;
-
-                // Navigate to the search screen
-                if (role == "Admin")
-=======
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
                 var loginResponse = await _userService.LoginAsync(dto);
 
                 // Store in our session for later use
@@ -85,13 +67,6 @@ namespace TrainTicketApp
 
                 // Navigate to the search screen
                 if (loginResponse.Role == "Admin")
-<<<<<<< ours
-<<<<<<< ours
->>>>>>> theirs
-=======
->>>>>>> theirs
-=======
->>>>>>> theirs
                 {
                     var admin = Program.AppHost.Services.GetRequiredService<AdminMainForm>();
                     admin.Show();
@@ -101,11 +76,11 @@ namespace TrainTicketApp
                     var search = Program.AppHost.Services.GetRequiredService<SearchTrainsForm>();
                     search.Show();
                 }
+
                 this.Hide();
             }
             catch (KeyNotFoundException)
             {
-                // thrown when email not found or password mismatch
                 MessageBox.Show(
                     "Invalid email or password.",
                     "Login Failed",
@@ -123,7 +98,6 @@ namespace TrainTicketApp
                 );
             }
         }
-
         // ④ “Register” link click 
         private void btnGoToRegister_Click(object sender, EventArgs e)
         {
