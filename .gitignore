@@ -361,3 +361,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/TrainTicketPlatformAPI/Migrations/20260616174500_AddCoreTicketingDomain.cs
