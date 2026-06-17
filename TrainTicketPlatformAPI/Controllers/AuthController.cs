@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TrainTicketPlatformAPI.Contracts.Auth;
@@ -18,6 +19,7 @@ namespace TrainTicketPlatformAPI.Controllers
             => _userService = userService;
 
         // POST: api/Auth/register
+        [EnableRateLimiting("auth")]
         [HttpPost("register")]
         public async Task<ActionResult> Register([FromBody] RegisterDto dto)
         {
@@ -33,6 +35,7 @@ namespace TrainTicketPlatformAPI.Controllers
         }
 
         // POST: api/Auth/login
+        [EnableRateLimiting("auth")]
         [HttpPost("login")]
         public async Task<ActionResult<LoginResponseDto>> Login([FromBody] LoginDto dto)
         {
