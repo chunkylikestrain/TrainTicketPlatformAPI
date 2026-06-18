@@ -10,11 +10,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^5.6.1",
+    "@ant-design/pro-components": "^2.6.4",
+    "@plasmicapp/react-web": "^1.0.15",
+    "@plasmicpkgs/antd": "^2.0.171",
+    "@plasmicpkgs/antd5": "^0.0.352",
+    "@plasmicpkgs/plasmic-rich-components": "^1.0.258",
+    "@plasmicpkgs/react-aria": "^0.0.183",
+    "antd": "^5.29.3",
+    "axios": "^1.18.0",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "react-router-dom": "^7.18.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@plasmicapp/cli": "^0.1.364",
     "@types/node": "^24.12.3",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
