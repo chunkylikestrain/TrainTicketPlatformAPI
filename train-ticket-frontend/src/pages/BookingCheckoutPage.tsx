@@ -1,0 +1,319 @@
+import { useEffect, useState } from "react";
+import type { FormEvent } from "react";
+import { Link, useParams, useSearchParams } from "react-router-dom";
+import BookingExpiredModal from "../components/BookingExpiredModal";
+
+const paymentMethods = ["BLIK", "Payment by PayU transfer", "Payment card", "Google Pay"];
+type PaymentStatus = "form" | "processing" | "paid";
+
+function BookingCheckoutPage() {
+  const { tripId } = useParams();
+  const [searchParams] = useSearchParams();
+  const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
+  const email = searchParams.get("email") ?? "";
+  const price = selectedClass === "1" ? "134,00 PLN" : "90,00 PLN";
+  const vat = selectedClass === "1" ? "9,93 PLN" : "6,67 PLN";
+  const [travelerName, setTravelerName] = useState("Trong Nguyen");
+  const [needsInvoice, setNeedsInvoice] = useState(false);
+  const [acceptedRules, setAcceptedRules] = useState(true);
+  const [paymentMethod, setPaymentMethod] = useState("Google Pay");
+  const [co2Compensation, setCo2Compensation] = useState(false);
+  const [secondsLeft, setSecondsLeft] = useState(33);
+  const [isExpiredModalOpen, setIsExpiredModalOpen] = useState(searchParams.get("expired") === "true");
+  const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("form");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (secondsLeft <= 0) {
+      setIsExpiredModalOpen(true);
+      return;
+    }
+
+    const timerId = window.setTimeout(() => setSecondsLeft((current) => current - 1), 1000);
+    return () => window.clearTimeout(timerId);
+  }, [secondsLeft]);
+
+  function formatTimer(totalSeconds: number) {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}:${String(seconds).padStart(2, "0")}`;
+  }
+
+  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+
+    if (secondsLeft <= 0) {
+      setIsExpiredModalOpen(true);
+      return;
+    }
+
+    if (!travelerName.trim() || !acceptedRules || !paymentMethod) {
+      setError("Enter traveler name, accept the rules, and choose a payment method.");
+      return;
+    }
+
+    setError("");
+    setPaymentStatus("processing");
+    window.setTimeout(() => setPaymentStatus("paid"), 1400);
+  }
+
+  if (paymentStatus === "processing") {
+    return (
+      <main className="order-summary-page payment-page">
+        <section className="payment-processing-card">
+          <div className="processing-train-art" aria-hidden="true">
+            <div className="processing-city" />
+            <div className="processing-train" />
+          </div>
+          <h1>Payment processing.</h1>
+          <p>
+            Payment confirmation must be received within 15 minutes of booking, no later than the closing time
+            for a given connection. If there is no payment confirmation within this time, the ticket will be
+            canceled.
+          </p>
+        </section>
+      </main>
+    );
+  }
+
+  if (paymentStatus === "paid") {
+    return (
+      <main className="order-summary-page payment-page">
+        <section className="payment-success-content">
+          <Link to="/" className="success-close" aria-label="Close purchase confirmation">
+            x
+          </Link>
+
+          <h1>Thank you for purchasing all tickets</h1>
+
+          <section className="ticket-success-card">
+            <div className="qr-placeholder" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
+            <div>
+              <p>payment status <strong>PAID</strong></p>
+              <h2>Rzeszow Glowny &gt; Krakow Gl.</h2>
+              <p>
+                ticket numbers: <strong>WH57810598</strong><br />
+                <strong>WH57810600</strong>
+              </p>
+            </div>
+          </section>
+
+          <Link
+            to={`/bookings?email=${encodeURIComponent(email || "nguyentrongminhkhoa@gmail.com")}`}
+            className="show-tickets-button"
+          >
+            Show tickets
+          </Link>
+
+          <section className="loyalty-panel">
+            <div className="loyalty-logo">Moje IC</div>
+            <h2>Collect points with "Moje IC"</h2>
+            <p>Join the Program and redeem points for trips. Earn up to 500 welcome points.</p>
+            <p>By clicking "Join now" you will be asked to log in or register an account.</p>
+            <Link to="/register">Join now</Link>
+          </section>
+
+          <section className="post-purchase-panel">
+            <h2>Create an account and enjoy the benefits</h2>
+            <ul>
+              <li>Create shopping profiles</li>
+              <li>Use the shopping cart</li>
+              <li>Tickets are available at any time in your account</li>
+              <li>You do not have to enter all your data with every purchase</li>
+            </ul>
+            <Link to="/register">Create an account</Link>
+          </section>
+
+          <section className="feedback-weather">
+            <h2>Share your opinion</h2>
+            <a href="#feedback">https://www.railway.example/share-your-opinion</a>
+            <div className="weather-grid">
+              <article>
+                <span>19 June</span>
+                <strong>Rzeszow Glowny</strong>
+                <p>light rain</p>
+                <b>19 C</b>
+              </article>
+              <article>
+                <span>19 June</span>
+                <strong>Krakow Gl.</strong>
+                <p>light rain</p>
+                <b>22 C</b>
+              </article>
+            </div>
+          </section>
+        </section>
+      </main>
+    );
+  }
+
+  return (
+    <main className="order-summary-page payment-page">
+      <section className="order-summary-content">
+        <nav className="checkout-steps order-summary-steps" aria-label="Purchase steps">
+          <Link to="/">Home</Link>
+          <Link to="/">Search engine</Link>
+          <Link to="/search">List of connections</Link>
+          <Link to={`/summary/${tripId}?class=${selectedClass}`}>Your travel</Link>
+          <Link to={`/order-summary/${tripId}?class=${selectedClass}`}>Summary</Link>
+          <strong>Payment</strong>
+          <span>Ticket</span>
+        </nav>
+
+        <section className="final-summary-card">
+          <div className="final-summary-top">
+            <div className="final-timeline">
+              <h1>Friday, 19 June</h1>
+              <div>
+                <span className="final-line" aria-hidden="true" />
+                <p><strong>06:06</strong> Rzeszow Glowny</p>
+                <p><strong>07:27</strong> Krakow Gl.</p>
+              </div>
+            </div>
+
+            <div className="final-train-details">
+              <p><b>EIP</b> <strong>3508</strong></p>
+              <p>Car 1, seat 46, by the window</p>
+              <span>A place at the table</span>
+            </div>
+
+            <div className="final-passenger-details">
+              <span>Time to buy: <strong>{formatTimer(secondsLeft)}</strong></span>
+              <p>1 passenger</p>
+              <p>1x Normal Ticket</p>
+              <p>{selectedClass} class</p>
+              <a href="#offer">Check the offer details</a>
+            </div>
+          </div>
+
+          <div className="final-price-panel">
+            <div>
+              <strong>Outbound journey</strong>
+              <span>A-Base price</span>
+            </div>
+            <div>
+              <span>Price</span>
+              <strong>{price}</strong>
+            </div>
+          </div>
+        </section>
+
+        <form className="payment-form-card" onSubmit={handleSubmit}>
+          <section>
+            <h2>Traveler's first and last name</h2>
+            <label className="payment-text-field">
+              <span>First and last name</span>
+              <input value={travelerName} onChange={(event) => setTravelerName(event.target.value)} />
+            </label>
+            <p className="payment-help">
+              Enter your actual data. On the train, the conductor may ask you for proof of identity.
+            </p>
+            <p className="payment-help">Do not enter several last names for multiple travelers on one ticket.</p>
+          </section>
+
+          <section>
+            <h2>Invoice</h2>
+            <label className="payment-checkbox-row">
+              <input
+                checked={needsInvoice}
+                onChange={(event) => setNeedsInvoice(event.target.checked)}
+                type="checkbox"
+              />
+              <span>Provide billing information</span>
+            </label>
+          </section>
+
+          <section>
+            <h2>Rules and Regulations</h2>
+            <label className="payment-checkbox-row">
+              <input
+                checked={acceptedRules}
+                onChange={(event) => setAcceptedRules(event.target.checked)}
+                type="checkbox"
+              />
+              <span>I accept <a href="#rules">the ticket Rules and Regulations</a></span>
+            </label>
+          </section>
+
+          <section>
+            <h2>Payment method</h2>
+            <div className="payment-method-list">
+              {paymentMethods.map((method) => (
+                <label className="payment-method-row" key={method}>
+                  <input
+                    checked={paymentMethod === method}
+                    onChange={() => setPaymentMethod(method)}
+                    name="paymentMethod"
+                    type="radio"
+                  />
+                  <span>{method}</span>
+                  <b>{method === "Google Pay" ? "G Pay" : method === "Payment card" ? "Card" : method}</b>
+                </label>
+              ))}
+            </div>
+
+            <label className="co2-row">
+              <span>CO2 compensation</span>
+              <button
+                type="button"
+                className={co2Compensation ? "consent-switch consent-switch-on" : "consent-switch"}
+                onClick={() => setCo2Compensation(!co2Compensation)}
+                aria-pressed={co2Compensation}
+              />
+            </label>
+          </section>
+
+          <section className="amount-due-panel payment-amount-due">
+            <div>
+              <h2>Amount due</h2>
+              <span>8% VAT</span>
+              {email && <p>Ticket will be sent to {email}</p>}
+            </div>
+            <div>
+              <strong>{price}</strong>
+              <span>{vat}</span>
+            </div>
+          </section>
+
+          {error && <p className="data-error">{error}</p>}
+
+          <section className="order-summary-actions payment-actions">
+            <button type="submit">Pay</button>
+            <Link to={`/order-summary/${tripId}?class=${selectedClass}`}>Cancel</Link>
+          </section>
+        </form>
+      </section>
+
+      <section className="summary-footer-train" aria-hidden="true">
+        <div className="connection-train" />
+      </section>
+
+      <section className="summary-legal">
+        <div>
+          <h2>Technological break.</h2>
+          <p>
+            Please remember about scheduled technical breaks in the online sales system. You cannot buy tickets
+            during this break.
+          </p>
+          <a href="#accessibility">Declaration of Accessibility</a>
+        </div>
+        <div>
+          <p>
+            The prices presented are indicative and published for informational purposes. Final confirmation
+            appears after payment is completed.
+          </p>
+          <strong>RailWay demo frontend for TrainTicketPlatformAPI</strong>
+        </div>
+      </section>
+
+      <BookingExpiredModal isOpen={isExpiredModalOpen} />
+    </main>
+  );
+}
+
+export default BookingCheckoutPage;

@@ -21,5 +21,14 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src"]
+  "include": [
+    "src/App.tsx",
+    "src/main.tsx",
+    "src/api/**/*.ts",
+    "src/components/Navbar.tsx",
+    "src/components/TrainSearchForm.tsx",
+    "src/components/TripCard.tsx",
+    "src/pages/**/*.tsx",
+    "src/types/**/*.ts"
+  ]
 }
