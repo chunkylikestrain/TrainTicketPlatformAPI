@@ -39,7 +39,7 @@ namespace TrainTicketPlatformAPI.Controllers
             {
                 var payment = await _paymentService.GetPaymentByIdAsync(id);
                 var booking = await _bookingService.GetBookingByIdAsync(payment.BookingId);
-                if (!CanAccessUserResource(booking.UserId))
+                if (!CanAccessBooking(booking))
                     return Forbid();
 
                 return Ok(ToDto(payment));
@@ -57,7 +57,7 @@ namespace TrainTicketPlatformAPI.Controllers
             try
             {
                 var booking = await _bookingService.GetBookingByIdAsync(bookingId);
-                if (!CanAccessUserResource(booking.UserId))
+                if (!CanAccessBooking(booking))
                     return Forbid();
 
                 var payments = await _paymentService.GetPaymentsByBookingAsync(bookingId);
@@ -70,13 +70,14 @@ namespace TrainTicketPlatformAPI.Controllers
         }
 
         // POST: api/Payments/intent
+        [AllowAnonymous]
         [HttpPost("intent")]
         public async Task<ActionResult<PaymentIntentDto>> CreateIntent([FromBody] CreatePaymentIntentRequest request)
         {
             try
             {
                 var booking = await _bookingService.GetBookingByIdAsync(request.BookingId);
-                if (!CanAccessUserResource(booking.UserId))
+                if (!CanAccessBooking(booking))
                     return Forbid();
 
                 var intent = await _paymentService.CreatePaymentIntentAsync(request.BookingId);
@@ -93,6 +94,7 @@ namespace TrainTicketPlatformAPI.Controllers
         }
 
         // POST: api/Payments
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<PaymentDto>> Create([FromBody] ConfirmPaymentRequest request)
         {
@@ -100,6 +102,7 @@ namespace TrainTicketPlatformAPI.Controllers
         }
 
         // POST: api/Payments/confirm
+        [AllowAnonymous]
         [HttpPost("confirm")]
         public async Task<ActionResult<PaymentDto>> Confirm([FromBody] ConfirmPaymentRequest request)
         {
@@ -107,7 +110,7 @@ namespace TrainTicketPlatformAPI.Controllers
             {
                 var intentBookingId = GetBookingIdFromPaymentIntent(request.PaymentIntentId);
                 var booking = await _bookingService.GetBookingByIdAsync(intentBookingId);
-                if (!CanAccessUserResource(booking.UserId))
+                if (!CanAccessBooking(booking))
                     return Forbid();
 
                 var payment = await _paymentService.ConfirmPaymentAsync(
@@ -126,14 +129,28 @@ namespace TrainTicketPlatformAPI.Controllers
             }
         }
 
-        private bool CanAccessUserResource(int userId)
+        private bool CanAccessUserResource(int? userId)
         {
             if (User.IsInRole("Admin"))
                 return true;
 
+            if (!userId.HasValue)
+                return false;
+
             var subject = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
                           ?? User.FindFirstValue(ClaimTypes.NameIdentifier);
-            return int.TryParse(subject, out var currentUserId) && currentUserId == userId;
+            return int.TryParse(subject, out var currentUserId) && currentUserId == userId.Value;
+        }
+
+        private bool CanAccessBooking(Booking booking)
+        {
+            if (User.IsInRole("Admin"))
+                return true;
+
+            if (booking.UserId.HasValue)
+                return CanAccessUserResource(booking.UserId);
+
+            return true;
         }
 
         private static int GetBookingIdFromPaymentIntent(string paymentIntentId)

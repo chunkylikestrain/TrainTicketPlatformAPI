@@ -18,3 +18,22 @@ export type TripSearchResult = {
   lowestFare: number | null;
   currency: string;
 };
+
+export type Fare = {
+  classType: string;
+  price: number;
+  currency: string;
+};
+
+export type TripDetails = TripSearchResult & {
+  distanceKm: number;
+  fares: Fare[];
+};
+
+export type TripSeatAvailability = {
+  seatId: number;
+  coach: string;
+  number: string;
+  classType: string;
+  isAvailable: boolean;
+};

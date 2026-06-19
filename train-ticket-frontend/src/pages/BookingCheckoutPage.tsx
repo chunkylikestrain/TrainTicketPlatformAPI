@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import BookingExpiredModal from "../components/BookingExpiredModal";
+import { getGuestTickets, updateGuestBookingData } from "../api/bookingApi";
+import { confirmPayment, createPaymentIntent } from "../api/paymentApi";
 
 const paymentMethods = ["BLIK", "Payment by PayU transfer", "Payment card", "Google Pay"];
 type PaymentStatus = "form" | "processing" | "paid";
@@ -11,6 +13,9 @@ function BookingCheckoutPage() {
   const [searchParams] = useSearchParams();
   const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
   const email = searchParams.get("email") ?? "";
+  const bookingId = searchParams.get("bookingId") ?? "";
+  const selectedSeat = searchParams.get("seat") ?? "46";
+  const selectedCar = searchParams.get("car") ?? "1";
   const price = selectedClass === "1" ? "134,00 PLN" : "90,00 PLN";
   const vat = selectedClass === "1" ? "9,93 PLN" : "6,67 PLN";
   const [travelerName, setTravelerName] = useState("Trong Nguyen");
@@ -22,6 +27,17 @@ function BookingCheckoutPage() {
   const [isExpiredModalOpen, setIsExpiredModalOpen] = useState(searchParams.get("expired") === "true");
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("form");
   const [error, setError] = useState("");
+  const [ticketNumbers, setTicketNumbers] = useState<string[]>([]);
+  const flowParams = new URLSearchParams({ class: selectedClass, email });
+
+  if (bookingId) {
+    flowParams.set("bookingId", bookingId);
+  }
+
+  if (selectedSeat) {
+    flowParams.set("seat", selectedSeat);
+    flowParams.set("car", selectedCar);
+  }
 
   useEffect(() => {
     if (secondsLeft <= 0) {
@@ -39,7 +55,7 @@ function BookingCheckoutPage() {
     return `${minutes}:${String(seconds).padStart(2, "0")}`;
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
     if (secondsLeft <= 0) {
@@ -47,14 +63,36 @@ function BookingCheckoutPage() {
       return;
     }
 
-    if (!travelerName.trim() || !acceptedRules || !paymentMethod) {
-      setError("Enter traveler name, accept the rules, and choose a payment method.");
+    if (!travelerName.trim() || !acceptedRules || !paymentMethod || !bookingId || !email) {
+      setError("Enter traveler name, accept the rules, choose a payment method, and make sure guest data is saved.");
       return;
     }
 
     setError("");
     setPaymentStatus("processing");
-    window.setTimeout(() => setPaymentStatus("paid"), 1400);
+
+    try {
+      await updateGuestBookingData(bookingId, {
+        guestEmail: email,
+        passengerName: travelerName,
+        acceptedTerms: acceptedRules,
+        acceptedMarketing: false,
+      });
+
+      const intent = await createPaymentIntent(bookingId);
+      await confirmPayment(intent.paymentIntentId, "tok_success");
+      const guestTickets = await getGuestTickets(email);
+      const paidTicketNumbers = guestTickets
+        .filter((ticket) => ticket.id === Number(bookingId) || ticket.bookingStatus === "Confirmed")
+        .map((ticket) => ticket.ticketNumber)
+        .filter(Boolean);
+
+      setTicketNumbers(paidTicketNumbers.length > 0 ? paidTicketNumbers : ["Ticket pending"]);
+      setPaymentStatus("paid");
+    } catch {
+      setPaymentStatus("form");
+      setError("Payment could not be completed. The booking hold may have expired or the API is unavailable.");
+    }
   }
 
   if (paymentStatus === "processing") {
@@ -97,8 +135,12 @@ function BookingCheckoutPage() {
               <p>payment status <strong>PAID</strong></p>
               <h2>Rzeszow Glowny &gt; Krakow Gl.</h2>
               <p>
-                ticket numbers: <strong>WH57810598</strong><br />
-                <strong>WH57810600</strong>
+                ticket numbers:{" "}
+                {ticketNumbers.map((ticketNumber) => (
+                  <span key={ticketNumber}>
+                    <strong>{ticketNumber}</strong><br />
+                  </span>
+                ))}
               </p>
             </div>
           </section>
@@ -159,8 +201,8 @@ function BookingCheckoutPage() {
           <Link to="/">Home</Link>
           <Link to="/">Search engine</Link>
           <Link to="/search">List of connections</Link>
-          <Link to={`/summary/${tripId}?class=${selectedClass}`}>Your travel</Link>
-          <Link to={`/order-summary/${tripId}?class=${selectedClass}`}>Summary</Link>
+          <Link to={`/summary/${tripId}?${flowParams.toString()}`}>Your travel</Link>
+          <Link to={`/order-summary/${tripId}?${flowParams.toString()}`}>Summary</Link>
           <strong>Payment</strong>
           <span>Ticket</span>
         </nav>
@@ -178,7 +220,7 @@ function BookingCheckoutPage() {
 
             <div className="final-train-details">
               <p><b>EIP</b> <strong>3508</strong></p>
-              <p>Car 1, seat 46, by the window</p>
+              <p>Car {selectedCar}, seat {selectedSeat}, by the window</p>
               <span>A place at the table</span>
             </div>
 
@@ -284,7 +326,7 @@ function BookingCheckoutPage() {
 
           <section className="order-summary-actions payment-actions">
             <button type="submit">Pay</button>
-            <Link to={`/order-summary/${tripId}?class=${selectedClass}`}>Cancel</Link>
+            <Link to={`/order-summary/${tripId}?${flowParams.toString()}`}>Cancel</Link>
           </section>
         </form>
       </section>

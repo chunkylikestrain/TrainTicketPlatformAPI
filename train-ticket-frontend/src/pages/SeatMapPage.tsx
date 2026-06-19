@@ -1,51 +1,105 @@
-import { useMemo, useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { createBookingHold } from "../api/bookingApi";
+import { getTripById, getTripSeats } from "../api/tripApi";
+import type { TripDetails, TripSeatAvailability } from "../types/trip";
 
-const upperSeats = [86, 85, 76, 75, 66, 65, 56, 55, 46, 45, 36, 35, 26, 25, 16, 15];
-const middleSeats = [83, 74, 73, 64, 63, 54, 53, 44, 43, 34, 33, 24, 23, 14];
-const lowerSeats = [82, 81, 72, 71, 62, 61, 52, 51, 42, 41, 32, 31, 22, 21, 12];
-const availableSeats = new Set([76, 66, 65, 83, 74, 64, 46, 45, 43, 34, 25, 23, 14, 42, 41, 32, 22]);
+function formatDate(value?: string) {
+  if (!value) {
+    return "Selected date";
+  }
 
-type SeatButtonProps = {
-  seat: number;
-  selectedSeat: number | null;
-  onSelect: (seat: number) => void;
-};
+  return new Intl.DateTimeFormat("en", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(new Date(value));
+}
 
-function SeatButton({ seat, selectedSeat, onSelect }: SeatButtonProps) {
-  const isAvailable = availableSeats.has(seat);
-  const isSelected = selectedSeat === seat;
+function formatTime(value?: string) {
+  if (!value) {
+    return "--:--";
+  }
 
-  return (
-    <button
-      type="button"
-      className={`seat-cell ${isAvailable ? "seat-available" : "seat-unavailable"} ${
-        isSelected ? "seat-selected" : ""
-      }`}
-      disabled={!isAvailable}
-      onClick={() => onSelect(seat)}
-    >
-      {seat}
-    </button>
-  );
+  return new Intl.DateTimeFormat("en", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function chunkSeats(seats: TripSeatAvailability[]) {
+  const rows: TripSeatAvailability[][] = [[], [], []];
+
+  seats.forEach((seat, index) => {
+    rows[index % rows.length].push(seat);
+  });
+
+  return rows;
 }
 
 function SeatMapPage() {
-  const { tripId } = useParams();
+  const { tripId = "" } = useParams();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
-  const [selectedSeat, setSelectedSeat] = useState<number | null>(null);
+  const [trip, setTrip] = useState<TripDetails | null>(null);
+  const [seats, setSeats] = useState<TripSeatAvailability[]>([]);
+  const [selectedSeat, setSelectedSeat] = useState<TripSeatAvailability | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isCreatingHold, setIsCreatingHold] = useState(false);
+  const [error, setError] = useState("");
 
-  const confirmUrl = useMemo(() => {
-    const params = new URLSearchParams({ class: selectedClass });
-
-    if (selectedSeat) {
-      params.set("car", "1");
-      params.set("seat", String(selectedSeat));
+  useEffect(() => {
+    if (!tripId) {
+      return;
     }
 
-    return `/summary/${tripId}?${params.toString()}`;
-  }, [selectedClass, selectedSeat, tripId]);
+    setIsLoading(true);
+    setError("");
+
+    Promise.all([getTripById(tripId), getTripSeats(tripId)])
+      .then(([tripDetails, seatList]) => {
+        setTrip(tripDetails);
+        setSeats(seatList);
+      })
+      .catch(() => {
+        setError("Could not load live seat availability. Check that the API is running and the trip exists.");
+      })
+      .finally(() => setIsLoading(false));
+  }, [tripId]);
+
+  const seatRows = useMemo(() => chunkSeats(seats), [seats]);
+
+  async function handleConfirmSeat() {
+    if (!trip || !selectedSeat) {
+      return;
+    }
+
+    setIsCreatingHold(true);
+    setError("");
+
+    try {
+      const booking = await createBookingHold({
+        trainId: trip.trainId,
+        tripId: trip.tripId,
+        seatId: selectedSeat.seatId,
+        travelDate: trip.departureTime,
+      });
+
+      const params = new URLSearchParams({
+        class: selectedClass,
+        car: selectedSeat.coach,
+        seat: selectedSeat.number,
+        bookingId: String(booking.id),
+      });
+
+      navigate(`/summary/${tripId}?${params.toString()}`);
+    } catch {
+      setError("Could not reserve this seat. It may have just been booked by someone else.");
+    } finally {
+      setIsCreatingHold(false);
+    }
+  }
 
   return (
     <main className="seat-map-page">
@@ -63,10 +117,12 @@ function SeatMapPage() {
         </div>
 
         <section className="seat-trip-meta">
-          <strong>EIP 3508</strong>
-          <span>Friday, 19 June</span>
-          <span>06:06 &gt; 07:27</span>
-          <span>Rzeszow Glowny &gt; Krakow Gl.</span>
+          <strong>{trip?.trainName ?? "Train"}</strong>
+          <span>{formatDate(trip?.departureTime)}</span>
+          <span>{formatTime(trip?.departureTime)} &gt; {formatTime(trip?.arrivalTime)}</span>
+          <span>
+            {trip?.departureStationName ?? "Departure"} &gt; {trip?.arrivalStationName ?? "Arrival"}
+          </span>
         </section>
 
         <section className="car-strip" aria-label="Train cars">
@@ -74,42 +130,53 @@ function SeatMapPage() {
             <span aria-hidden="true">-&gt;</span>
             <strong>Train direction</strong>
           </div>
-          {[1, 2, 3, 4, 5, 6].map((car) => (
-            <button type="button" className={car === 1 ? "car-tab car-tab-active" : "car-tab"} key={car}>
-              <span>{car}</span>
-              <small>Car {car}</small>
+          {[...new Set(seats.map((seat) => seat.coach))].map((coach, index) => (
+            <button type="button" className={index === 0 ? "car-tab car-tab-active" : "car-tab"} key={coach}>
+              <span>{index + 1}</span>
+              <small>Car {coach}</small>
             </button>
           ))}
         </section>
 
-        <section className="seat-map-stage">
-          <button type="button" className="seat-nav" aria-label="Previous car">
-            &lt;
-          </button>
-          <div className="coach-layout" aria-label="Car 1 seat map">
-            <div className="seat-row">
-              {upperSeats.map((seat) => (
-                <SeatButton seat={seat} selectedSeat={selectedSeat} onSelect={setSelectedSeat} key={seat} />
+        {isLoading && <div className="seat-map-notice">Loading live seats...</div>}
+        {error && <div className="seat-map-notice">{error}</div>}
+
+        {!isLoading && seats.length > 0 && (
+          <section className="seat-map-stage">
+            <button type="button" className="seat-nav" aria-label="Previous car">
+              &lt;
+            </button>
+            <div className="coach-layout" aria-label="Car seat map">
+              {seatRows.map((row, rowIndex) => (
+                <div className={rowIndex === 1 ? "seat-row seat-row-middle" : "seat-row"} key={rowIndex}>
+                  {row.map((seat) => {
+                    const isSelected = selectedSeat?.seatId === seat.seatId;
+
+                    return (
+                      <button
+                        type="button"
+                        className={`seat-cell ${seat.isAvailable ? "seat-available" : "seat-unavailable"} ${
+                          isSelected ? "seat-selected" : ""
+                        }`}
+                        disabled={!seat.isAvailable}
+                        onClick={() => setSelectedSeat(seat)}
+                        key={seat.seatId}
+                      >
+                        {seat.number}
+                      </button>
+                    );
+                  })}
+                  {rowIndex === 0 && <span className="coach-facility">WC</span>}
+                  {rowIndex === 2 && <span className="coach-facility">Bag</span>}
+                </div>
               ))}
-              <span className="coach-facility">WC</span>
+              <div className="coach-class-marker">{selectedClass}</div>
             </div>
-            <div className="seat-row seat-row-middle">
-              {middleSeats.map((seat) => (
-                <SeatButton seat={seat} selectedSeat={selectedSeat} onSelect={setSelectedSeat} key={seat} />
-              ))}
-            </div>
-            <div className="coach-class-marker">1</div>
-            <div className="seat-row">
-              {lowerSeats.map((seat) => (
-                <SeatButton seat={seat} selectedSeat={selectedSeat} onSelect={setSelectedSeat} key={seat} />
-              ))}
-              <span className="coach-facility">Bag</span>
-            </div>
-          </div>
-          <button type="button" className="seat-nav" aria-label="Next car">
-            &gt;
-          </button>
-        </section>
+            <button type="button" className="seat-nav" aria-label="Next car">
+              &gt;
+            </button>
+          </section>
+        )}
 
         <section className="seat-legend">
           <span>Legend</span>
@@ -124,8 +191,8 @@ function SeatMapPage() {
           {selectedSeat ? (
             <>
               <strong>Class {selectedClass}</strong>
-              <strong>Seat {selectedSeat}</strong>
-              <strong>Car 1</strong>
+              <strong>Seat {selectedSeat.number}</strong>
+              <strong>Car {selectedSeat.coach}</strong>
             </>
           ) : (
             <strong>Not selected</strong>
@@ -136,9 +203,14 @@ function SeatMapPage() {
           Choose 1 seat to activate the confirm your choice button
         </div>
 
-        <Link className={`seat-confirm ${selectedSeat ? "seat-confirm-active" : ""}`} to={selectedSeat ? confirmUrl : "#"}>
-          I confirm my choice
-        </Link>
+        <button
+          className={`seat-confirm ${selectedSeat ? "seat-confirm-active" : ""}`}
+          type="button"
+          disabled={!selectedSeat || isCreatingHold}
+          onClick={handleConfirmSeat}
+        >
+          {isCreatingHold ? "Reserving..." : "I confirm my choice"}
+        </button>
       </section>
     </main>
   );

@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { updateGuestBookingData } from "../api/bookingApi";
 
 function DataRequestPage() {
   const { tripId } = useParams();
@@ -13,6 +14,21 @@ function DataRequestPage() {
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [electronicInfoConsent, setElectronicInfoConsent] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [apiError, setApiError] = useState("");
+  const bookingId = searchParams.get("bookingId") ?? "";
+  const selectedSeat = searchParams.get("seat") ?? "";
+  const selectedCar = searchParams.get("car") ?? "";
+  const backParams = new URLSearchParams({ class: selectedClass });
+
+  if (bookingId) {
+    backParams.set("bookingId", bookingId);
+  }
+
+  if (selectedSeat) {
+    backParams.set("seat", selectedSeat);
+    backParams.set("car", selectedCar || "1");
+  }
 
   const canSave = useMemo(() => {
     return email.length > 0 && email === emailRepeat && acceptedTerms;
@@ -25,21 +41,48 @@ function DataRequestPage() {
     setElectronicInfoConsent(nextValue);
   }
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!canSave) {
+    if (!canSave || !bookingId) {
       setShowError(true);
       return;
     }
 
-    navigate(`/order-summary/${tripId}?class=${selectedClass}&email=${encodeURIComponent(email)}`);
+    setIsSaving(true);
+    setApiError("");
+
+    try {
+      await updateGuestBookingData(bookingId, {
+        guestEmail: email,
+        passengerName: "Guest passenger",
+        acceptedTerms,
+        acceptedMarketing: marketingConsent,
+      });
+
+      const params = new URLSearchParams({
+        class: selectedClass,
+        email,
+        bookingId,
+      });
+
+      if (selectedSeat) {
+        params.set("seat", selectedSeat);
+        params.set("car", selectedCar || "1");
+      }
+
+      navigate(`/order-summary/${tripId}?${params.toString()}`);
+    } catch {
+      setApiError("Could not save guest data. Check that the API is running and the booking hold has not expired.");
+    } finally {
+      setIsSaving(false);
+    }
   }
 
   return (
     <main className="data-page">
       <form className="data-form" onSubmit={handleSubmit}>
-        <Link className="data-back-link" to={`/summary/${tripId}?class=${selectedClass}`}>
+        <Link className="data-back-link" to={`/summary/${tripId}?${backParams.toString()}`}>
           &lt; Enter data
         </Link>
 
@@ -124,12 +167,13 @@ function DataRequestPage() {
 
         {showError && (
           <p className="data-error">
-            Enter matching e-mail addresses and accept the mandatory consent before continuing.
+            Enter matching e-mail addresses, accept the mandatory consent, and choose a real seat first.
           </p>
         )}
+        {apiError && <p className="data-error">{apiError}</p>}
 
         <button className="data-save-button" type="submit">
-          Save
+          {isSaving ? "Saving..." : "Save"}
         </button>
       </form>
     </main>

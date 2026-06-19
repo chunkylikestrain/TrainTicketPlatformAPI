@@ -70,6 +70,14 @@ namespace TrainTicketPlatformAPI.Data
                 .IsUnique();
 
             modelBuilder.Entity<Booking>()
+                .HasIndex(b => b.TicketNumber)
+                .IsUnique()
+                .HasFilter("[TicketNumber] <> ''");
+
+            modelBuilder.Entity<Booking>()
+                .HasIndex(b => b.GuestEmail);
+
+            modelBuilder.Entity<Booking>()
                 .HasIndex(b => b.UserId);
 
             modelBuilder.Entity<Booking>()
@@ -82,6 +90,19 @@ namespace TrainTicketPlatformAPI.Data
                 .Property(b => b.BookingReference)
                 .HasMaxLength(40)
                 .HasDefaultValueSql("'BKG-' + CONVERT(varchar(36), NEWID())");
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.TicketNumber)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.GuestEmail)
+                .HasMaxLength(256);
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.PassengerName)
+                .HasMaxLength(200);
 
             modelBuilder.Entity<Booking>()
                 .Property(b => b.BookingStatus)
@@ -101,7 +122,7 @@ namespace TrainTicketPlatformAPI.Data
                 {
                     t.HasCheckConstraint(
                         "CK_Bookings_BookingStatus",
-                        "[BookingStatus] IN ('PendingPayment', 'Confirmed', 'Cancelled', 'Expired')");
+                        "[BookingStatus] IN ('PendingPayment', 'Confirmed', 'Cancelled', 'Expired', 'Refunded')");
                     t.HasCheckConstraint(
                         "CK_Bookings_PaymentStatus",
                         "[PaymentStatus] IN ('Pending', 'Successful', 'Failed', 'Refunded')");
@@ -282,8 +303,12 @@ namespace TrainTicketPlatformAPI.Data
 
             // Makes bookinf report keyless for querying
             modelBuilder
-           .Entity<BookingReport>()
-           .HasNoKey();
+                .Entity<BookingReport>()
+                .HasNoKey();
+
+            modelBuilder.Entity<BookingReport>()
+                .Property(r => r.TotalRevenue)
+                .HasPrecision(18, 2);
         }
     }
 }

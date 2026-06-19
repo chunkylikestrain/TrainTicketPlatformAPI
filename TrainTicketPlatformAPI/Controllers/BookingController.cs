@@ -46,7 +46,7 @@ namespace TrainTicketPlatformAPI.Controllers
             try
             {
                 var b = await _bookingService.GetBookingByIdAsync(id);
-                if (!CanAccessUserResource(b.UserId))
+                if (!CanAccessBooking(b))
                     return Forbid();
 
                 return Ok(ToDto(b));
@@ -82,22 +82,23 @@ namespace TrainTicketPlatformAPI.Controllers
         }
 
         // POST: api/Bookings
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<BookingDto>> Create([FromBody] CreateBookingRequest request)
         {
             try
             {
                 var currentUserId = GetCurrentUserId();
-                if (!currentUserId.HasValue)
-                    return Forbid();
 
                 var booking = new Booking
                 {
-                    UserId = currentUserId.Value,
+                    UserId = currentUserId,
                     TrainId = request.TrainId,
                     TripId = request.TripId,
                     SeatId = request.SeatId,
                     TravelDate = request.TravelDate,
+                    GuestEmail = request.GuestEmail,
+                    PassengerName = request.PassengerName,
                     BookingStatus = "PendingPayment",
                     PaymentStatus = "Pending"
                 };
@@ -110,6 +111,71 @@ namespace TrainTicketPlatformAPI.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // PUT: api/Bookings/5/guest-data
+        [AllowAnonymous]
+        [HttpPut("{id}/guest-data")]
+        public async Task<ActionResult<BookingDto>> UpdateGuestData(
+            int id,
+            [FromBody] UpdateGuestBookingDataRequest request)
+        {
+            try
+            {
+                var booking = await _bookingService.UpdateGuestBookingDataAsync(
+                    id,
+                    request.GuestEmail,
+                    request.PassengerName,
+                    request.AcceptedTerms);
+
+                return Ok(ToDto(booking));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // GET: api/Bookings/guest?email=guest@example.com
+        [AllowAnonymous]
+        [HttpGet("guest")]
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetGuestTickets([FromQuery] string email)
+        {
+            try
+            {
+                var bookings = await _bookingService.GetGuestTicketsByEmailAsync(email);
+                return Ok(bookings.Select(ToDto));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // POST: api/Bookings/tickets/WH123/refund
+        [AllowAnonymous]
+        [HttpPost("tickets/{ticketNumber}/refund")]
+        public async Task<ActionResult<BookingDto>> RefundTicket(
+            string ticketNumber,
+            [FromBody] RefundTicketRequest request)
+        {
+            try
+            {
+                var booking = await _bookingService.RefundTicketAsync(ticketNumber, request.Email);
+                return Ok(ToDto(booking));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
             }
             catch (InvalidOperationException ex)
             {
@@ -131,7 +197,7 @@ namespace TrainTicketPlatformAPI.Controllers
             try
             {
                 var booking = await _bookingService.GetBookingByIdAsync(id);
-                if (!CanAccessUserResource(booking.UserId))
+                if (!CanAccessBooking(booking))
                     return Forbid();
 
                 var confirmed = await _bookingService.ConfirmBookingAsync(id);
@@ -157,7 +223,7 @@ namespace TrainTicketPlatformAPI.Controllers
             try
             {
                 var existing = await _bookingService.GetBookingByIdAsync(id);
-                if (!CanAccessUserResource(existing.UserId))
+                if (!CanAccessBooking(existing))
                     return Forbid();
 
                 var updated = await _bookingService.UpdateBookingAsync(booking);
@@ -180,7 +246,7 @@ namespace TrainTicketPlatformAPI.Controllers
             try
             {
                 var booking = await _bookingService.GetBookingByIdAsync(id);
-                if (!CanAccessUserResource(booking.UserId))
+                if (!CanAccessBooking(booking))
                     return Forbid();
 
                 await _bookingService.CancelBookingAsync(id);
@@ -209,13 +275,24 @@ namespace TrainTicketPlatformAPI.Controllers
             return Ok(report);
         }
 
-        private bool CanAccessUserResource(int userId)
+        private bool CanAccessUserResource(int? userId)
         {
             if (User.IsInRole("Admin"))
                 return true;
 
+            if (!userId.HasValue)
+                return false;
+
             var currentUserId = GetCurrentUserId();
-            return currentUserId.HasValue && currentUserId.Value == userId;
+            return currentUserId.HasValue && currentUserId.Value == userId.Value;
+        }
+
+        private bool CanAccessBooking(Booking booking)
+        {
+            if (User.IsInRole("Admin"))
+                return true;
+
+            return booking.UserId.HasValue && CanAccessUserResource(booking.UserId);
         }
 
         private int? GetCurrentUserId()
@@ -235,13 +312,18 @@ namespace TrainTicketPlatformAPI.Controllers
             TripId = booking.TripId,
             SeatId = booking.SeatId,
             BookingReference = booking.BookingReference,
+            TicketNumber = booking.TicketNumber,
+            GuestEmail = booking.GuestEmail,
+            PassengerName = booking.PassengerName,
             BookingDate = booking.BookingDate,
             TravelDate = booking.TravelDate,
             ExpiresAtUtc = booking.ExpiresAtUtc,
             BookingStatus = booking.BookingStatus,
             PaymentStatus = booking.PaymentStatus,
             IsCancelled = booking.IsCancelled,
-            CancellationDate = booking.CancellationDate
+            CancellationDate = booking.CancellationDate,
+            ConfirmedAtUtc = booking.ConfirmedAtUtc,
+            RefundedAtUtc = booking.RefundedAtUtc
         };
     }
 }

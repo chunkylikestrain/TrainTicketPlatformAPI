@@ -93,13 +93,18 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             TripId = booking.TripId,
             SeatId = booking.SeatId,
             BookingReference = booking.BookingReference,
+            TicketNumber = booking.TicketNumber,
+            GuestEmail = booking.GuestEmail,
+            PassengerName = booking.PassengerName,
             BookingDate = booking.BookingDate,
             TravelDate = booking.TravelDate,
             ExpiresAtUtc = booking.ExpiresAtUtc,
             BookingStatus = booking.BookingStatus,
             PaymentStatus = booking.PaymentStatus,
             IsCancelled = booking.IsCancelled,
-            CancellationDate = booking.CancellationDate
+            CancellationDate = booking.CancellationDate,
+            ConfirmedAtUtc = booking.ConfirmedAtUtc,
+            RefundedAtUtc = booking.RefundedAtUtc
         };
     }
 }

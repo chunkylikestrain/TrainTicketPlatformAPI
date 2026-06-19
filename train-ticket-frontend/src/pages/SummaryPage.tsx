@@ -8,7 +8,19 @@ function SummaryPage() {
   const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
   const selectedSeat = searchParams.get("seat");
   const selectedCar = searchParams.get("car") ?? "1";
-  const dataRequestUrl = `/data/${tripId}?class=${selectedClass}`;
+  const bookingId = searchParams.get("bookingId") ?? "";
+  const summaryParams = new URLSearchParams({ class: selectedClass });
+
+  if (bookingId) {
+    summaryParams.set("bookingId", bookingId);
+  }
+
+  if (selectedSeat) {
+    summaryParams.set("seat", selectedSeat);
+    summaryParams.set("car", selectedCar);
+  }
+
+  const dataRequestUrl = `/data/${tripId}?${summaryParams.toString()}`;
 
   return (
     <main className="summary-page">

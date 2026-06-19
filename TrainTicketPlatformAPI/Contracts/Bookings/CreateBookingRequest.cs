@@ -14,5 +14,11 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
 
         [Required]
         public DateTime TravelDate { get; set; }
+
+        [EmailAddress]
+        public string? GuestEmail { get; set; }
+
+        [StringLength(200)]
+        public string? PassengerName { get; set; }
     }
 }

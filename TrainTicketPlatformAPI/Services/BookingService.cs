@@ -54,6 +54,15 @@ namespace TrainTicketPlatformAPI.Services
                 throw new InvalidOperationException("Seat already booked for this travel date");
             }
 
+            if (booking.UserId.HasValue)
+            {
+                var userExists = await _db.Users.AnyAsync(u => u.Id == booking.UserId.Value);
+                if (!userExists)
+                    throw new KeyNotFoundException("User not found");
+            }
+
+            booking.GuestEmail = NormalizeOptionalEmail(booking.GuestEmail);
+            booking.PassengerName = NormalizeOptionalText(booking.PassengerName);
             booking.BookingDate = DateTime.UtcNow;
 
             if (string.IsNullOrWhiteSpace(booking.BookingReference))
@@ -81,6 +90,37 @@ namespace TrainTicketPlatformAPI.Services
                 throw new InvalidOperationException("Seat already booked for this trip or travel date", ex);
             }
 
+            return booking;
+        }
+
+        public async Task<Booking> UpdateGuestBookingDataAsync(
+            int bookingId,
+            string guestEmail,
+            string passengerName,
+            bool acceptedTerms)
+        {
+            if (!acceptedTerms)
+                throw new InvalidOperationException("Terms must be accepted before continuing");
+
+            var booking = await _db.Bookings.FindAsync(bookingId)
+                          ?? throw new KeyNotFoundException("Booking not found");
+
+            if (ExpireIfPendingHoldElapsed(booking))
+            {
+                await _db.SaveChangesAsync();
+                throw new InvalidOperationException("Booking hold has expired");
+            }
+
+            if (booking.IsCancelled || booking.BookingStatus is "Cancelled" or "Expired" or "Refunded")
+                throw new InvalidOperationException("Cannot update data for this booking");
+
+            var normalizedEmail = NormalizeRequiredEmail(guestEmail);
+            var normalizedPassengerName = NormalizeRequiredText(passengerName, "Passenger name is required");
+
+            booking.GuestEmail = normalizedEmail;
+            booking.PassengerName = normalizedPassengerName;
+
+            await _db.SaveChangesAsync();
             return booking;
         }
 
@@ -199,6 +239,10 @@ namespace TrainTicketPlatformAPI.Services
 
             booking.PaymentStatus = "Successful";
             booking.BookingStatus = "Confirmed";
+            booking.ConfirmedAtUtc ??= DateTime.UtcNow;
+            if (string.IsNullOrWhiteSpace(booking.TicketNumber))
+                booking.TicketNumber = GenerateTicketNumber();
+
             await _db.SaveChangesAsync();
             return booking;
         }
@@ -208,6 +252,53 @@ namespace TrainTicketPlatformAPI.Services
             return await _db.Bookings
                 .Where(b => b.UserId == userId)
                 .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Booking>> GetGuestTicketsByEmailAsync(string guestEmail)
+        {
+            var normalizedEmail = NormalizeRequiredEmail(guestEmail);
+
+            return await _db.Bookings
+                .Include(b => b.Seat)
+                .Include(b => b.Train)
+                .Include(b => b.Trip)
+                .Where(b => b.GuestEmail != null &&
+                            b.GuestEmail.ToLower() == normalizedEmail.ToLower() &&
+                            b.BookingStatus != "Expired")
+                .OrderByDescending(b => b.BookingDate)
+                .ToListAsync();
+        }
+
+        public async Task<Booking> RefundTicketAsync(string ticketNumber, string guestEmail)
+        {
+            if (string.IsNullOrWhiteSpace(ticketNumber))
+                throw new InvalidOperationException("Ticket number is required");
+
+            var normalizedEmail = NormalizeRequiredEmail(guestEmail);
+            var normalizedTicketNumber = ticketNumber.Trim();
+
+            var booking = await _db.Bookings
+                .FirstOrDefaultAsync(b => b.TicketNumber == normalizedTicketNumber)
+                ?? throw new KeyNotFoundException("Ticket not found");
+
+            if (!string.Equals(booking.GuestEmail, normalizedEmail, StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("Ticket does not belong to this guest email");
+
+            if (booking.BookingStatus != "Confirmed" || booking.PaymentStatus != "Successful")
+                throw new InvalidOperationException("Only paid confirmed tickets can be refunded");
+
+            var cutoff = booking.TravelDate.AddHours(-1);
+            if (DateTime.UtcNow > cutoff)
+                throw new InvalidOperationException("Cannot refund ticket within 1 hour of travel date");
+
+            booking.BookingStatus = "Refunded";
+            booking.PaymentStatus = "Refunded";
+            booking.IsCancelled = true;
+            booking.CancellationDate = DateTime.UtcNow;
+            booking.RefundedAtUtc = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+            return booking;
         }
 
         public async Task<bool> CheckSeatAvailabilityAsync(int trainId, int seatId, DateTime travelDate)
@@ -301,6 +392,39 @@ namespace TrainTicketPlatformAPI.Services
 
         private static string GenerateBookingReference()
             => $"BKG-{DateTime.UtcNow:yyyyMMddHHmmssfff}-{Guid.NewGuid():N}"[..28];
+
+        private static string GenerateTicketNumber()
+            => $"WH{DateTime.UtcNow:yyMMdd}{Random.Shared.Next(1000, 9999)}";
+
+        private static string? NormalizeOptionalEmail(string? email)
+        {
+            return string.IsNullOrWhiteSpace(email)
+                ? null
+                : email.Trim().ToLowerInvariant();
+        }
+
+        private static string? NormalizeOptionalText(string? text)
+        {
+            return string.IsNullOrWhiteSpace(text)
+                ? null
+                : text.Trim();
+        }
+
+        private static string NormalizeRequiredEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                throw new InvalidOperationException("Guest email is required");
+
+            return email.Trim().ToLowerInvariant();
+        }
+
+        private static string NormalizeRequiredText(string text, string errorMessage)
+        {
+            if (string.IsNullOrWhiteSpace(text))
+                throw new InvalidOperationException(errorMessage);
+
+            return text.Trim();
+        }
 
         private async Task ExpireStalePendingBookingsAsync()
         {

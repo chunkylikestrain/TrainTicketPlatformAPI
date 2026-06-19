@@ -85,7 +85,12 @@ namespace TrainTicketPlatformAPI.Services
             _db.Payments.Add(payment);
             booking.PaymentStatus = status;
             if (status == "Successful")
+            {
                 booking.BookingStatus = "Confirmed";
+                booking.ConfirmedAtUtc ??= DateTime.UtcNow;
+                if (string.IsNullOrWhiteSpace(booking.TicketNumber))
+                    booking.TicketNumber = GenerateTicketNumber();
+            }
 
             await _db.SaveChangesAsync();
             return payment;
@@ -147,7 +152,17 @@ namespace TrainTicketPlatformAPI.Services
                 booking.BookingStatus = "Expired";
                 throw new InvalidOperationException("Booking hold has expired");
             }
+
+            if (!booking.UserId.HasValue &&
+                (string.IsNullOrWhiteSpace(booking.GuestEmail) ||
+                 string.IsNullOrWhiteSpace(booking.PassengerName)))
+            {
+                throw new InvalidOperationException("Guest email and passenger name are required before payment");
+            }
         }
+
+        private static string GenerateTicketNumber()
+            => $"WH{DateTime.UtcNow:yyMMdd}{Random.Shared.Next(1000, 9999)}";
 
         private async Task<Fare> GetFareForBookingAsync(Booking booking)
         {

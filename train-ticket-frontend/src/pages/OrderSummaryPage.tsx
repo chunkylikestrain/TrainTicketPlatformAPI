@@ -5,8 +5,25 @@ function OrderSummaryPage() {
   const [searchParams] = useSearchParams();
   const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
   const email = searchParams.get("email") ?? "";
+  const bookingId = searchParams.get("bookingId") ?? "";
+  const selectedSeat = searchParams.get("seat") ?? "46";
+  const selectedCar = searchParams.get("car") ?? "1";
   const price = selectedClass === "1" ? "134,00 PLN" : "90,00 PLN";
   const vat = selectedClass === "1" ? "9,93 PLN" : "6,67 PLN";
+  const checkoutParams = new URLSearchParams({ class: selectedClass, email });
+  const dataParams = new URLSearchParams({ class: selectedClass });
+
+  if (bookingId) {
+    checkoutParams.set("bookingId", bookingId);
+    dataParams.set("bookingId", bookingId);
+  }
+
+  if (selectedSeat) {
+    checkoutParams.set("seat", selectedSeat);
+    checkoutParams.set("car", selectedCar);
+    dataParams.set("seat", selectedSeat);
+    dataParams.set("car", selectedCar);
+  }
 
   return (
     <main className="order-summary-page">
@@ -42,7 +59,7 @@ function OrderSummaryPage() {
 
             <div className="final-train-details">
               <p><b>EIP</b> <strong>3508</strong></p>
-              <p>Car 1, seat 46, by the window</p>
+              <p>Car {selectedCar}, seat {selectedSeat}, by the window</p>
               <span>A place at the table</span>
             </div>
 
@@ -80,8 +97,8 @@ function OrderSummaryPage() {
         </section>
 
         <section className="order-summary-actions">
-          <Link to={`/checkout/${tripId}?class=${selectedClass}&email=${encodeURIComponent(email)}`}>Payment</Link>
-          <Link to={`/data/${tripId}?class=${selectedClass}`}>Cancel</Link>
+          <Link to={`/checkout/${tripId}?${checkoutParams.toString()}`}>Payment</Link>
+          <Link to={`/data/${tripId}?${dataParams.toString()}`}>Cancel</Link>
         </section>
       </section>
 

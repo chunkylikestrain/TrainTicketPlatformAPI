@@ -14,3 +14,10 @@ export type RegisterRequest = {
   password: string;
   phone: string;
 };
+
+export type CurrentUser = {
+  id: number;
+  email: string;
+  phone: string;
+  role: string;
+};

@@ -10,7 +10,7 @@ function Navbar() {
 
       <nav className="main-nav" aria-label="Primary navigation">
         <NavLink to="/">For Passengers</NavLink>
-        <NavLink to="/bookings">My Bookings</NavLink>
+        <NavLink to="/profile">My tickets</NavLink>
         <a href="#passenger-info">Help</a>
         <a href="#offers">Offers</a>
       </nav>
@@ -22,7 +22,7 @@ function Navbar() {
         <button type="button" className="icon-button" aria-label="Language English">
           EN
         </button>
-        <Link to="/login" className="login-link">
+        <Link to="/profile" className="login-link">
           Log in / Register
         </Link>
       </div>

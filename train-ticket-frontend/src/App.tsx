@@ -5,6 +5,7 @@ import DataRequestPage from "./pages/DataRequestPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import MyBookingsPage from "./pages/MyBookingsPage";
+import MyProfilePage from "./pages/MyProfilePage";
 import OrderSummaryPage from "./pages/OrderSummaryPage";
 import RegisterPage from "./pages/RegisterPage";
 import SearchResultsPage from "./pages/SearchResultsPage";
@@ -19,6 +20,7 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/search" element={<SearchResultsPage />} />
+        <Route path="/profile" element={<MyProfilePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/bookings" element={<MyBookingsPage />} />
