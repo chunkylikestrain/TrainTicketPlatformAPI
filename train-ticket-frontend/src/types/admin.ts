@@ -23,6 +23,7 @@ export type AdminTrain = {
 export type AdminRoute = {
   id: number;
   code: string;
+  name: string;
   departureStationId: number;
   arrivalStationId: number;
   departureStationName: string;
@@ -31,7 +32,16 @@ export type AdminRoute = {
   estimatedDurationMinutes: number;
   operatingDays: string;
   intermediateStops: string;
+  intermediateStopStationIds: number[];
+  stops: AdminRouteStop[];
   isActive: boolean;
+};
+
+export type AdminRouteStop = {
+  stationId: number;
+  stationCode: string;
+  stationName: string;
+  stopOrder: number;
 };
 
 export type AdminSchedule = {

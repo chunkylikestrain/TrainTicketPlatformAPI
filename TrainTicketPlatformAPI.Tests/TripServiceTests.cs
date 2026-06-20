@@ -202,6 +202,29 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
+        public async Task SearchTripsAsync_Matches_StationNamesWithoutDiacritics()
+        {
+            var db = NewDb("Trips_SearchWithoutDiacritics");
+            await SeedTripGraphAsync(db);
+
+            var departureStation = await db.Stations.FindAsync(1);
+            var arrivalStation = await db.Stations.FindAsync(2);
+            departureStation!.Name = "Warszawa Centralna";
+            arrivalStation!.Name = "Kraków Główny";
+            await db.SaveChangesAsync();
+
+            var svc = new TripService(db);
+
+            var results = (await svc.SearchTripsAsync(
+                "Warszawa Centralna",
+                "Krakow Glowny",
+                new DateTime(2026, 7, 1))).ToList();
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].ArrivalStationName, Is.EqualTo("Kraków Główny"));
+        }
+
+        [Test]
         public async Task GetSeatAvailabilityAsync_MarksBookedSeatUnavailable()
         {
             var db = NewDb("Trips_SeatAvailability");

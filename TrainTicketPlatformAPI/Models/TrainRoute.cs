@@ -6,6 +6,7 @@ namespace TrainTicketPlatformAPI.Models
     {
         public int Id { get; set; }
         public string Code { get; set; } = string.Empty;
+        public string Name { get; set; } = string.Empty;
         public int DepartureStationId { get; set; }
         public int ArrivalStationId { get; set; }
 
@@ -19,6 +20,9 @@ namespace TrainTicketPlatformAPI.Models
 
         public Station DepartureStation { get; set; } = null!;
         public Station ArrivalStation { get; set; } = null!;
+
+        public ICollection<TrainRouteStop> RouteStops { get; set; }
+            = new List<TrainRouteStop>();
 
         public ICollection<Trip> Trips { get; set; }
             = new List<Trip>();

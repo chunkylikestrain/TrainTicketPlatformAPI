@@ -4,6 +4,14 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import BookingExpiredModal from "../components/BookingExpiredModal";
 import { getGuestTickets, updateGuestBookingData } from "../api/bookingApi";
 import { confirmPayment, createPaymentIntent } from "../api/paymentApi";
+import { getTripById } from "../api/tripApi";
+import type { TripDetails } from "../types/trip";
+import {
+  formatTripDate,
+  formatTripTime,
+  getTripPriceLabel,
+  getTripVatLabel,
+} from "../utils/tripDisplay";
 
 const paymentMethods = ["BLIK", "Payment by PayU transfer", "Payment card", "Google Pay"];
 type PaymentStatus = "form" | "processing" | "paid";
@@ -16,8 +24,10 @@ function BookingCheckoutPage() {
   const bookingId = searchParams.get("bookingId") ?? "";
   const selectedSeat = searchParams.get("seat") ?? "46";
   const selectedCar = searchParams.get("car") ?? "1";
-  const price = selectedClass === "1" ? "134,00 PLN" : "90,00 PLN";
-  const vat = selectedClass === "1" ? "9,93 PLN" : "6,67 PLN";
+  const [trip, setTrip] = useState<TripDetails | null>(null);
+  const [tripError, setTripError] = useState("");
+  const price = getTripPriceLabel(trip, selectedClass);
+  const vat = getTripVatLabel(trip, selectedClass);
   const [travelerName, setTravelerName] = useState("Trong Nguyen");
   const [needsInvoice, setNeedsInvoice] = useState(false);
   const [acceptedRules, setAcceptedRules] = useState(true);
@@ -38,6 +48,22 @@ function BookingCheckoutPage() {
     flowParams.set("seat", selectedSeat);
     flowParams.set("car", selectedCar);
   }
+
+  useEffect(() => {
+    if (!tripId) {
+      return;
+    }
+
+    getTripById(tripId)
+      .then((tripDetails) => {
+        setTrip(tripDetails);
+        setTripError("");
+      })
+      .catch(() => {
+        setTrip(null);
+        setTripError("Selected trip details could not be loaded. Go back to the connection list and choose the train again.");
+      });
+  }, [tripId]);
 
   useEffect(() => {
     if (secondsLeft <= 0) {
@@ -133,7 +159,7 @@ function BookingCheckoutPage() {
             </div>
             <div>
               <p>payment status <strong>PAID</strong></p>
-              <h2>Rzeszow Glowny &gt; Krakow Gl.</h2>
+              <h2>{trip?.departureStationName ?? "Departure"} &gt; {trip?.arrivalStationName ?? "Arrival"}</h2>
               <p>
                 ticket numbers:{" "}
                 {ticketNumbers.map((ticketNumber) => (
@@ -173,17 +199,17 @@ function BookingCheckoutPage() {
 
           <section className="feedback-weather">
             <h2>Share your opinion</h2>
-            <a href="#feedback">https://www.railway.example/share-your-opinion</a>
+            <a href="#feedback">Open passenger feedback form</a>
             <div className="weather-grid">
               <article>
-                <span>19 June</span>
-                <strong>Rzeszow Glowny</strong>
+                <span>{formatTripDate(trip?.departureTime)}</span>
+                <strong>{trip?.departureStationName ?? "Departure"}</strong>
                 <p>light rain</p>
                 <b>19 C</b>
               </article>
               <article>
-                <span>19 June</span>
-                <strong>Krakow Gl.</strong>
+                <span>{formatTripDate(trip?.arrivalTime)}</span>
+                <strong>{trip?.arrivalStationName ?? "Arrival"}</strong>
                 <p>light rain</p>
                 <b>22 C</b>
               </article>
@@ -210,16 +236,16 @@ function BookingCheckoutPage() {
         <section className="final-summary-card">
           <div className="final-summary-top">
             <div className="final-timeline">
-              <h1>Friday, 19 June</h1>
+              <h1>{formatTripDate(trip?.departureTime)}</h1>
               <div>
                 <span className="final-line" aria-hidden="true" />
-                <p><strong>06:06</strong> Rzeszow Glowny</p>
-                <p><strong>07:27</strong> Krakow Gl.</p>
+                <p><strong>{formatTripTime(trip?.departureTime)}</strong> {trip?.departureStationName ?? "Departure"}</p>
+                <p><strong>{formatTripTime(trip?.arrivalTime)}</strong> {trip?.arrivalStationName ?? "Arrival"}</p>
               </div>
             </div>
 
             <div className="final-train-details">
-              <p><b>EIP</b> <strong>3508</strong></p>
+              <p><strong>{trip?.trainName ?? "Selected train"}</strong></p>
               <p>Car {selectedCar}, seat {selectedSeat}, by the window</p>
               <span>A place at the table</span>
             </div>
@@ -244,6 +270,8 @@ function BookingCheckoutPage() {
             </div>
           </div>
         </section>
+
+        {tripError && <p className="data-error">{tripError}</p>}
 
         <form className="payment-form-card" onSubmit={handleSubmit}>
           <section>
@@ -349,7 +377,7 @@ function BookingCheckoutPage() {
             The prices presented are indicative and published for informational purposes. Final confirmation
             appears after payment is completed.
           </p>
-          <strong>RailWay demo frontend for TrainTicketPlatformAPI</strong>
+          <strong>RailWay ticket platform</strong>
         </div>
       </section>
 

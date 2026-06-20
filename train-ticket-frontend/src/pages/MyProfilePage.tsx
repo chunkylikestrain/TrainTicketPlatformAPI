@@ -94,8 +94,7 @@ function MyProfilePage() {
       </section>
 
       <p className="previous-system-note">
-        Previous system: <a href="#previous-system">sklep.railway.example</a> - only invoices, refunds, data changes{" "}
-        <a href="#details">Details</a>
+        Account services: invoices, refunds, and passenger data changes are available from your profile.
       </p>
 
       <section className="tickets-content">

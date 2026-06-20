@@ -1,15 +1,26 @@
+import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
+import { getTripById } from "../api/tripApi";
+import type { TripDetails } from "../types/trip";
+import {
+  formatTripDate,
+  formatTripTime,
+  getTripPriceLabel,
+  getTripVatLabel,
+} from "../utils/tripDisplay";
 
 function OrderSummaryPage() {
   const { tripId } = useParams();
   const [searchParams] = useSearchParams();
+  const [trip, setTrip] = useState<TripDetails | null>(null);
+  const [tripError, setTripError] = useState("");
   const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
   const email = searchParams.get("email") ?? "";
   const bookingId = searchParams.get("bookingId") ?? "";
   const selectedSeat = searchParams.get("seat") ?? "46";
   const selectedCar = searchParams.get("car") ?? "1";
-  const price = selectedClass === "1" ? "134,00 PLN" : "90,00 PLN";
-  const vat = selectedClass === "1" ? "9,93 PLN" : "6,67 PLN";
+  const price = getTripPriceLabel(trip, selectedClass);
+  const vat = getTripVatLabel(trip, selectedClass);
   const checkoutParams = new URLSearchParams({ class: selectedClass, email });
   const dataParams = new URLSearchParams({ class: selectedClass });
 
@@ -25,6 +36,22 @@ function OrderSummaryPage() {
     dataParams.set("car", selectedCar);
   }
 
+  useEffect(() => {
+    if (!tripId) {
+      return;
+    }
+
+    getTripById(tripId)
+      .then((tripDetails) => {
+        setTrip(tripDetails);
+        setTripError("");
+      })
+      .catch(() => {
+        setTrip(null);
+        setTripError("Selected trip details could not be loaded. Go back to the connection list and choose the train again.");
+      });
+  }, [tripId]);
+
   return (
     <main className="order-summary-page">
       <section className="connection-hero order-summary-hero" aria-hidden="true">
@@ -33,7 +60,7 @@ function OrderSummaryPage() {
 
       <section className="order-summary-content">
         <p className="previous-system-note">
-          Previous system: <a href="#previous">old-ticket.example</a> - invoices, refunds, and data changes
+          Account services: invoices, refunds, and passenger data changes are available after purchase.
         </p>
 
         <nav className="checkout-steps order-summary-steps" aria-label="Purchase steps">
@@ -49,16 +76,16 @@ function OrderSummaryPage() {
         <section className="final-summary-card">
           <div className="final-summary-top">
             <div className="final-timeline">
-              <h1>Friday, 19 June</h1>
+              <h1>{formatTripDate(trip?.departureTime)}</h1>
               <div>
                 <span className="final-line" aria-hidden="true" />
-                <p><strong>06:06</strong> Rzeszow Glowny</p>
-                <p><strong>07:27</strong> Krakow Gl.</p>
+                <p><strong>{formatTripTime(trip?.departureTime)}</strong> {trip?.departureStationName ?? "Departure"}</p>
+                <p><strong>{formatTripTime(trip?.arrivalTime)}</strong> {trip?.arrivalStationName ?? "Arrival"}</p>
               </div>
             </div>
 
             <div className="final-train-details">
-              <p><b>EIP</b> <strong>3508</strong></p>
+              <p><strong>{trip?.trainName ?? "Selected train"}</strong></p>
               <p>Car {selectedCar}, seat {selectedSeat}, by the window</p>
               <span>A place at the table</span>
             </div>
@@ -83,6 +110,8 @@ function OrderSummaryPage() {
             </div>
           </div>
         </section>
+
+        {tripError && <p className="data-error">{tripError}</p>}
 
         <section className="amount-due-panel">
           <div>
@@ -120,7 +149,7 @@ function OrderSummaryPage() {
             The prices presented are indicative and published for informational purposes. The final prices are
             available in this purchase summary before payment.
           </p>
-          <strong>RailWay demo frontend for TrainTicketPlatformAPI</strong>
+          <strong>RailWay ticket platform</strong>
         </div>
       </section>
     </main>

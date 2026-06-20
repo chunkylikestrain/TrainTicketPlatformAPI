@@ -4,51 +4,6 @@ import TripCard from "../components/TripCard";
 import { searchTrips } from "../api/tripApi";
 import type { TripSearchResult } from "../types/trip";
 
-const demoTrips: TripSearchResult[] = [
-  {
-    tripId: 9001,
-    trainId: 3508,
-    trainName: "EIP 3508",
-    departureStationCode: "RZE",
-    departureStationName: "Rzeszow Glowny",
-    arrivalStationCode: "KRA",
-    arrivalStationName: "Krakow Gl.",
-    departureTime: "2026-06-19T06:06:00",
-    arrivalTime: "2026-06-19T07:27:00",
-    status: "Direct",
-    lowestFare: 90,
-    currency: "PLN",
-  },
-  {
-    tripId: 9002,
-    trainId: 56,
-    trainName: "IC 56 Wawel",
-    departureStationCode: "RZE",
-    departureStationName: "Rzeszow Glowny",
-    arrivalStationCode: "KRA",
-    arrivalStationName: "Krakow Gl.",
-    departureTime: "2026-06-19T06:19:00",
-    arrivalTime: "2026-06-19T07:40:00",
-    status: "Direct",
-    lowestFare: 47,
-    currency: "PLN",
-  },
-  {
-    tripId: 9003,
-    trainId: 3806,
-    trainName: "IC 3806 Zefir",
-    departureStationCode: "RZE",
-    departureStationName: "Rzeszow Glowny",
-    arrivalStationCode: "KRA",
-    arrivalStationName: "Krakow Gl.",
-    departureTime: "2026-06-19T06:54:00",
-    arrivalTime: "2026-06-19T08:27:00",
-    status: "Direct",
-    lowestFare: 47,
-    currency: "PLN",
-  },
-];
-
 function formatLongDate(value: string) {
   if (!value) {
     return "Select a date";
@@ -92,12 +47,10 @@ function SearchResultsPage() {
       .then(setTrips)
       .catch(() => {
         setTrips([]);
-        setError("Live connections are not available, so demo connections are shown for layout preview.");
+        setError("Connections could not be loaded from the API. Check that the backend is running and your search date has schedules.");
       })
       .finally(() => setIsLoading(false));
   }, [arrivalStation, date, departureStation]);
-
-  const displayTrips = trips.length > 0 ? trips : demoTrips;
 
   return (
     <main className="connection-page">
@@ -146,7 +99,7 @@ function SearchResultsPage() {
             </strong>
             <p>
               {error ||
-                "Demo connections are displayed so the anonymous search results page can be reviewed before the backend is fully seeded."}
+                "Try another date, route, or make sure this route has a schedule in the admin panel."}
             </p>
           </div>
         )}
@@ -156,7 +109,7 @@ function SearchResultsPage() {
         </button>
 
         <section className="connection-list" aria-label="Available connections">
-          {displayTrips.map((trip, index) => (
+          {trips.map((trip, index) => (
             <TripCard
               trip={trip}
               key={trip.tripId}
@@ -189,7 +142,7 @@ function SearchResultsPage() {
               The prices presented are indicative and shown for information purposes. Final prices and seat
               availability are confirmed in the purchase summary.
             </p>
-            <strong>RailWay demo frontend for TrainTicketPlatformAPI</strong>
+            <strong>RailWay ticket platform</strong>
           </div>
         </section>
       </section>

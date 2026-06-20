@@ -14,11 +14,11 @@ const informationCards = [
   },
   {
     title: "Mobile Application",
-    text: "A future home for app links and mobile tickets.",
+    text: "Account access and ticket information for mobile travelers.",
   },
   {
     title: "Railway Cards",
-    text: "Placeholder for loyalty cards and passenger discounts.",
+    text: "Manage passenger discounts and reusable travel preferences.",
   },
 ];
 
@@ -129,7 +129,7 @@ function HomePage() {
 
       <footer className="site-footer">
         <span>RailWay ticket platform</span>
-        <span>Demo frontend for TrainTicketPlatformAPI</span>
+        <span>ASP.NET Core and React ticket booking system</span>
       </footer>
     </main>
   );

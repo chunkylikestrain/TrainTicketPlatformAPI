@@ -15,6 +15,26 @@ namespace TrainTicketPlatformAPI.Tests
 
         private void SeedTrain(TrainTicketDbContext db)
         {
+            db.Users.AddRange(
+                new User
+                {
+                    Id = 42,
+                    Email = "passenger42@trainticket.dev",
+                    NormalizedEmail = "PASSENGER42@TRAINTICKET.DEV",
+                    PasswordHash = "hash",
+                    Phone = "000-000-0042",
+                    Role = "Passenger"
+                },
+                new User
+                {
+                    Id = 43,
+                    Email = "passenger43@trainticket.dev",
+                    NormalizedEmail = "PASSENGER43@TRAINTICKET.DEV",
+                    PasswordHash = "hash",
+                    Phone = "000-000-0043",
+                    Role = "Passenger"
+                });
+
             db.Trains.Add(new Train
             {
                 Id = 1,

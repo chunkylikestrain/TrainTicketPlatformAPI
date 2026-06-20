@@ -15,6 +15,7 @@ namespace TrainTicketPlatformAPI.Data
         public DbSet<Locality> Localities { get; set; }
         public DbSet<Station> Stations { get; set; }
         public DbSet<TrainRoute> TrainRoutes { get; set; }
+        public DbSet<TrainRouteStop> TrainRouteStops { get; set; }
         public DbSet<Train> Trains { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<Fare> Fares { get; set; }
@@ -278,6 +279,26 @@ namespace TrainTicketPlatformAPI.Data
                 .HasForeignKey(r => r.ArrivalStationId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<TrainRouteStop>()
+                .HasOne(s => s.TrainRoute)
+                .WithMany(r => r.RouteStops)
+                .HasForeignKey(s => s.TrainRouteId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TrainRouteStop>()
+                .HasOne(s => s.Station)
+                .WithMany()
+                .HasForeignKey(s => s.StationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TrainRouteStop>()
+                .HasIndex(s => new { s.TrainRouteId, s.StopOrder })
+                .IsUnique();
+
+            modelBuilder.Entity<TrainRouteStop>()
+                .HasIndex(s => new { s.TrainRouteId, s.StationId })
+                .IsUnique();
+
             modelBuilder.Entity<Trip>()
                 .HasOne(t => t.Train)
                 .WithMany(t => t.Trips)
@@ -298,6 +319,11 @@ namespace TrainTicketPlatformAPI.Data
             modelBuilder.Entity<TrainRoute>()
                 .Property(r => r.Code)
                 .HasMaxLength(32)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TrainRoute>()
+                .Property(r => r.Name)
+                .HasMaxLength(240)
                 .HasDefaultValue("");
 
             modelBuilder.Entity<TrainRoute>()

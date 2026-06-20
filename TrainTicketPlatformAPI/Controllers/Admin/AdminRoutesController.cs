@@ -26,6 +26,8 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
                 .AsNoTracking()
                 .Include(r => r.DepartureStation)
                 .Include(r => r.ArrivalStation)
+                .Include(r => r.RouteStops)
+                    .ThenInclude(s => s.Station)
                 .OrderBy(r => r.Code)
                 .ToListAsync();
 
@@ -35,20 +37,27 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
         [HttpPost]
         public async Task<ActionResult<AdminRouteDto>> Create(AdminRouteDto request)
         {
-            await EnsureStationsExistAsync(request.DepartureStationId, request.ArrivalStationId);
+            var stations = await LoadRouteStationsAsync(request);
+            var departureStation = stations[request.DepartureStationId];
+            var arrivalStation = stations[request.ArrivalStationId];
 
             var route = new TrainRoute
             {
-                Code = request.Code.Trim(),
+                Code = BuildRouteCode(request, departureStation, arrivalStation),
+                Name = BuildRouteName(request, departureStation, arrivalStation),
                 DepartureStationId = request.DepartureStationId,
                 ArrivalStationId = request.ArrivalStationId,
                 DistanceKm = request.DistanceKm,
                 EstimatedDurationMinutes = request.EstimatedDurationMinutes,
                 OperatingDays = request.OperatingDays,
-                IntermediateStops = request.IntermediateStops,
+                IntermediateStops = BuildIntermediateStopsText(request, stations),
                 IsActive = request.IsActive
             };
 
+            if (await _db.TrainRoutes.AnyAsync(r => r.Code == route.Code))
+                return Conflict($"Route code '{route.Code}' already exists.");
+
+            AddRouteStops(route, request.IntermediateStopStationIds);
             _db.TrainRoutes.Add(route);
             await _db.SaveChangesAsync();
 
@@ -69,16 +78,31 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             var route = await _db.TrainRoutes.FindAsync(id)
                 ?? throw new KeyNotFoundException("Route not found");
 
-            await EnsureStationsExistAsync(request.DepartureStationId, request.ArrivalStationId);
+            var stations = await LoadRouteStationsAsync(request);
+            var departureStation = stations[request.DepartureStationId];
+            var arrivalStation = stations[request.ArrivalStationId];
 
-            route.Code = request.Code.Trim();
+            route.Code = BuildRouteCode(request, departureStation, arrivalStation);
+            route.Name = BuildRouteName(request, departureStation, arrivalStation);
             route.DepartureStationId = request.DepartureStationId;
             route.ArrivalStationId = request.ArrivalStationId;
             route.DistanceKm = request.DistanceKm;
             route.EstimatedDurationMinutes = request.EstimatedDurationMinutes;
             route.OperatingDays = request.OperatingDays;
-            route.IntermediateStops = request.IntermediateStops;
+            route.IntermediateStops = BuildIntermediateStopsText(request, stations);
             route.IsActive = request.IsActive;
+
+            if (await _db.TrainRoutes.AnyAsync(r => r.Id != id && r.Code == route.Code))
+                return Conflict($"Route code '{route.Code}' already exists.");
+
+            var existingStops = await _db.TrainRouteStops
+                .Where(s => s.TrainRouteId == route.Id)
+                .ToListAsync();
+            _db.TrainRouteStops.RemoveRange(existingStops);
+
+            await _db.SaveChangesAsync();
+
+            AddRouteStops(route, request.IntermediateStopStationIds);
 
             await _db.SaveChangesAsync();
             return Ok(ToDto(await LoadRouteAsync(route.Id)));
@@ -98,11 +122,31 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             return NoContent();
         }
 
-        private async Task EnsureStationsExistAsync(int departureStationId, int arrivalStationId)
+        private async Task<Dictionary<int, Station>> LoadRouteStationsAsync(AdminRouteDto request)
         {
-            var count = await _db.Stations.CountAsync(s => s.Id == departureStationId || s.Id == arrivalStationId);
-            if (count < 2)
+            if (request.DepartureStationId == request.ArrivalStationId)
+                throw new InvalidOperationException("Departure and arrival stations must be different");
+
+            var requestedStationIds = request.IntermediateStopStationIds
+                .Prepend(request.DepartureStationId)
+                .Append(request.ArrivalStationId)
+                .Distinct()
+                .ToList();
+
+            if (request.IntermediateStopStationIds.Any(id => id == request.DepartureStationId || id == request.ArrivalStationId))
+                throw new InvalidOperationException("Intermediate stops cannot include the origin or destination station");
+
+            if (request.IntermediateStopStationIds.Count != request.IntermediateStopStationIds.Distinct().Count())
+                throw new InvalidOperationException("Intermediate stops cannot contain duplicates");
+
+            var stations = await _db.Stations
+                .Where(s => requestedStationIds.Contains(s.Id))
+                .ToDictionaryAsync(s => s.Id);
+
+            if (stations.Count != requestedStationIds.Count)
                 throw new KeyNotFoundException("Departure or arrival station not found");
+
+            return stations;
         }
 
         private async Task<TrainRoute> LoadRouteAsync(int id)
@@ -110,6 +154,8 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             return await _db.TrainRoutes
                 .Include(r => r.DepartureStation)
                 .Include(r => r.ArrivalStation)
+                .Include(r => r.RouteStops)
+                    .ThenInclude(s => s.Station)
                 .FirstOrDefaultAsync(r => r.Id == id)
                 ?? throw new KeyNotFoundException("Route not found");
         }
@@ -118,6 +164,7 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
         {
             Id = route.Id,
             Code = route.Code,
+            Name = route.Name,
             DepartureStationId = route.DepartureStationId,
             ArrivalStationId = route.ArrivalStationId,
             DepartureStationName = route.DepartureStation.Name,
@@ -126,7 +173,61 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             EstimatedDurationMinutes = route.EstimatedDurationMinutes,
             OperatingDays = route.OperatingDays,
             IntermediateStops = route.IntermediateStops,
+            IntermediateStopStationIds = route.RouteStops
+                .OrderBy(s => s.StopOrder)
+                .Select(s => s.StationId)
+                .ToList(),
+            Stops = route.RouteStops
+                .OrderBy(s => s.StopOrder)
+                .Select(s => new AdminRouteStopDto
+                {
+                    StationId = s.StationId,
+                    StationCode = s.Station.Code,
+                    StationName = s.Station.Name,
+                    StopOrder = s.StopOrder
+                })
+                .ToList(),
             IsActive = route.IsActive
         };
+
+        private static string BuildRouteCode(AdminRouteDto request, Station departureStation, Station arrivalStation)
+        {
+            var requestedCode = request.Code.Trim();
+            return string.IsNullOrWhiteSpace(requestedCode)
+                ? $"{departureStation.Code}-{arrivalStation.Code}"
+                : requestedCode;
+        }
+
+        private static string BuildRouteName(AdminRouteDto request, Station departureStation, Station arrivalStation)
+        {
+            var requestedName = request.Name.Trim();
+            return string.IsNullOrWhiteSpace(requestedName)
+                ? $"{departureStation.Name} to {arrivalStation.Name}"
+                : requestedName;
+        }
+
+        private static string BuildIntermediateStopsText(AdminRouteDto request, Dictionary<int, Station> stations)
+        {
+            if (request.IntermediateStopStationIds.Count > 0)
+            {
+                return string.Join(
+                    Environment.NewLine,
+                    request.IntermediateStopStationIds.Select(id => stations[id].Name));
+            }
+
+            return request.IntermediateStops.Trim();
+        }
+
+        private static void AddRouteStops(TrainRoute route, IReadOnlyList<int> intermediateStopStationIds)
+        {
+            for (var i = 0; i < intermediateStopStationIds.Count; i++)
+            {
+                route.RouteStops.Add(new TrainRouteStop
+                {
+                    StationId = intermediateStopStationIds[i],
+                    StopOrder = i + 1
+                });
+            }
+        }
     }
 }

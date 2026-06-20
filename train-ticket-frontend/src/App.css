@@ -73,6 +73,15 @@
   text-decoration: none;
 }
 
+.navbar-account-name {
+  display: inline-block;
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+  white-space: nowrap;
+}
+
 .main-nav a:hover,
 .login-link:hover {
   color: var(--orange);
@@ -239,6 +248,16 @@
 
 .journey-field input:focus {
   border-bottom-color: var(--orange);
+}
+
+.journey-search-message {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding: 10px 14px;
+  border-left: 4px solid var(--orange);
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--white);
+  font-weight: 800;
 }
 
 .journey-field input::-webkit-calendar-picker-indicator {
@@ -4126,6 +4145,13 @@
   white-space: nowrap;
 }
 
+.admin-table td:last-child a {
+  margin-right: 10px;
+  color: #9aabc2;
+  font-size: 16px;
+  text-decoration: none;
+}
+
 .admin-table td:last-child button {
   margin-right: 10px;
   color: #9aabc2;
@@ -4286,6 +4312,116 @@
   resize: vertical;
 }
 
+.admin-detail-form input[readonly] {
+  background: #f5f8fc;
+  color: #526176;
+}
+
+.admin-station-stack {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 10px;
+}
+
+.admin-station-stack > label {
+  color: #526176;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.admin-stop-search {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 120px;
+  gap: 10px;
+}
+
+.admin-stop-search input {
+  width: 100%;
+}
+
+.admin-stop-search button,
+.admin-stop-list button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #cfd8e5;
+  border-radius: 5px;
+  background: var(--white);
+  color: var(--orange);
+  font: inherit;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.admin-stop-search button {
+  min-height: 48px;
+  gap: 8px;
+}
+
+.admin-stop-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-stop-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 40px 40px 40px;
+  align-items: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 8px 10px;
+  border: 1px solid #e1e7ef;
+  border-radius: 6px;
+  background: #fbfdff;
+}
+
+.admin-stop-list li > span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  color: var(--navy);
+  font-weight: 900;
+}
+
+.admin-stop-list li b {
+  display: grid;
+  flex: 0 0 28px;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--white);
+  font-size: 12px;
+}
+
+.admin-stop-list li small {
+  color: #758297;
+  font-weight: 900;
+}
+
+.admin-stop-list button {
+  width: 40px;
+  height: 36px;
+  padding: 0;
+}
+
+.admin-stop-list button:disabled {
+  color: #b8c3d1;
+  cursor: not-allowed;
+}
+
+.admin-stop-empty {
+  grid-template-columns: 1fr !important;
+  color: #758297;
+  font-weight: 800;
+}
+
 .admin-preview-card {
   position: sticky;
   top: 88px;
@@ -4327,6 +4463,17 @@
   display: grid;
   gap: 12px;
   margin: 10px 0 0;
+}
+
+.admin-preview-stops {
+  display: grid;
+  gap: 7px;
+  max-height: 190px;
+  margin: 4px 0 0;
+  padding-left: 22px;
+  overflow: auto;
+  color: #dceeff;
+  font-weight: 800;
 }
 
 .admin-preview-card dl div {

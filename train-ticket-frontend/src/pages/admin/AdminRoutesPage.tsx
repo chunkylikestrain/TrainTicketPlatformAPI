@@ -1,4 +1,4 @@
-import { DeleteOutlined, PlusOutlined, ShareAltOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined, ShareAltOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { deleteAdminRoute, getAdminRoutes } from "../../api/adminApi";
@@ -44,7 +44,10 @@ function AdminRoutesPage() {
                 <td>{route.distanceKm} km</td>
                 <td>{route.estimatedDurationMinutes} min</td>
                 <td><span className={route.isActive ? "status-pill status-active" : "status-pill status-warning"}>{route.isActive ? "Active" : "Draft"}</span></td>
-                <td><button type="button" onClick={() => handleDelete(route.id)} aria-label={`Delete ${route.code}`}><DeleteOutlined /></button></td>
+                <td>
+                  <Link to={`/admin/routes/${route.id}/edit`} aria-label={`Edit ${route.code}`}><EditOutlined /></Link>
+                  <button type="button" onClick={() => handleDelete(route.id)} aria-label={`Delete ${route.code}`}><DeleteOutlined /></button>
+                </td>
               </tr>
             ))}
           </tbody>

@@ -1,10 +1,17 @@
-import { useState } from "react";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { getUserEmail, hasAuthToken } from "../api/authSession";
+import { getTripById } from "../api/tripApi";
+import type { TripDetails } from "../types/trip";
+import { formatTripDate, formatTripTime } from "../utils/tripDisplay";
 
 function SummaryPage() {
   const { tripId } = useParams();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isAccountPromptOpen, setIsAccountPromptOpen] = useState(false);
+  const [trip, setTrip] = useState<TripDetails | null>(null);
+  const [tripError, setTripError] = useState("");
   const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
   const selectedSeat = searchParams.get("seat");
   const selectedCar = searchParams.get("car") ?? "1";
@@ -22,11 +29,40 @@ function SummaryPage() {
 
   const dataRequestUrl = `/data/${tripId}?${summaryParams.toString()}`;
 
+  useEffect(() => {
+    if (!tripId) {
+      return;
+    }
+
+    getTripById(tripId)
+      .then((tripDetails) => {
+        setTrip(tripDetails);
+        setTripError("");
+      })
+      .catch(() => {
+        setTrip(null);
+        setTripError("Selected trip details could not be loaded. Go back to the connection list and choose the train again.");
+      });
+  }, [tripId]);
+
+  function handleGoToPayments() {
+    const userEmail = getUserEmail();
+
+    if (hasAuthToken() && userEmail) {
+      const loggedInParams = new URLSearchParams(summaryParams);
+      loggedInParams.set("email", userEmail);
+      navigate(`/order-summary/${tripId}?${loggedInParams.toString()}`);
+      return;
+    }
+
+    setIsAccountPromptOpen(true);
+  }
+
   return (
     <main className="summary-page">
       <section className="summary-content">
         <p className="previous-system-note">
-          Previous system: <a href="#previous">old-ticket.example</a> - invoices, refunds, and data changes
+          Account services: invoices, refunds, and passenger data changes are available after purchase.
         </p>
 
         <nav className="checkout-steps summary-steps" aria-label="Purchase steps">
@@ -42,18 +78,23 @@ function SummaryPage() {
         <section className="summary-trip-panel">
           <div>
             <span>From</span>
-            <strong>Rzeszow Glowny</strong>
+            <strong>{trip?.departureStationName ?? "Loading..."}</strong>
           </div>
           <div>
             <span>To</span>
-            <strong>Krakow Gl.</strong>
+            <strong>{trip?.arrivalStationName ?? "Loading..."}</strong>
           </div>
           <div>
-            <h1>Fri 19.06.2026 06:06 &gt; 07:27</h1>
-            <p>Rzeszow Glowny &gt; Krakow Gl.</p>
-            <b>EIP 3508</b>
+            <h1>
+              {formatTripDate(trip?.departureTime)} {formatTripTime(trip?.departureTime)} &gt;{" "}
+              {formatTripTime(trip?.arrivalTime)}
+            </h1>
+            <p>{trip?.departureStationName ?? "Departure"} &gt; {trip?.arrivalStationName ?? "Arrival"}</p>
+            <b>{trip?.trainName ?? "Selected train"}</b>
           </div>
         </section>
+
+        {tripError && <p className="data-error">{tripError}</p>}
 
         <section className="summary-ticket-strip">
           <div>
@@ -122,7 +163,7 @@ function SummaryPage() {
         </section>
 
         <section className="summary-actions">
-          <button type="button" onClick={() => setIsAccountPromptOpen(true)}>
+          <button type="button" onClick={handleGoToPayments}>
             Go to payments
           </button>
           <Link to="/search">Go back</Link>
@@ -147,7 +188,7 @@ function SummaryPage() {
             The prices presented are indicative and published for informational purposes. The final price is
             available in the purchase summary before payment.
           </p>
-          <strong>RailWay demo frontend for TrainTicketPlatformAPI</strong>
+          <strong>RailWay ticket platform</strong>
         </div>
       </section>
 

@@ -66,8 +66,7 @@ function MyBookingsPage() {
       </section>
 
       <p className="previous-system-note">
-        Previous system: <a href="#previous-system">ticket.railway.example</a> - only invoices, refunds, data
-        changes <a href="#details">Details</a>
+        Account services: invoices, refunds, and passenger data changes are available from this page.
       </p>
 
       <section className="tickets-content">

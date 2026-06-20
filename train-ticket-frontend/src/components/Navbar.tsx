@@ -1,7 +1,21 @@
 import { Link, NavLink } from "react-router-dom";
+import { getProfileDisplayName, getUserEmail, getUserRole, hasAuthToken } from "../api/authSession";
+
+function getNavbarDisplayName(email: string) {
+  const savedName = getProfileDisplayName(email);
+
+  if (savedName !== email) {
+    return savedName;
+  }
+
+  return email.split("@")[0] || "My account";
+}
 
 function Navbar() {
-  const isAdmin = localStorage.getItem("userRole") === "Admin";
+  const userEmail = getUserEmail();
+  const isLoggedIn = hasAuthToken() && Boolean(userEmail);
+  const isAdmin = getUserRole() === "Admin";
+  const displayName = isLoggedIn && userEmail ? getNavbarDisplayName(userEmail) : "";
 
   return (
     <header className="site-header">
@@ -26,7 +40,7 @@ function Navbar() {
           EN
         </button>
         <Link to="/profile" className="login-link">
-          Log in / Register
+          {isLoggedIn ? <span className="navbar-account-name">{displayName}</span> : "Log in / Register"}
         </Link>
       </div>
     </header>

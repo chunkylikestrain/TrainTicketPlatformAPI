@@ -62,8 +62,18 @@ export async function getAdminRoutes() {
   return response.data;
 }
 
+export async function getAdminRoute(id: number) {
+  const response = await apiClient.get<AdminRoute>(`/admin/routes/${id}`);
+  return response.data;
+}
+
 export async function createAdminRoute(route: Omit<AdminRoute, "id" | "departureStationName" | "arrivalStationName">) {
   const response = await apiClient.post<AdminRoute>("/admin/routes", route);
+  return response.data;
+}
+
+export async function updateAdminRoute(route: AdminRoute) {
+  const response = await apiClient.put<AdminRoute>(`/admin/routes/${route.id}`, route);
   return response.data;
 }
 
