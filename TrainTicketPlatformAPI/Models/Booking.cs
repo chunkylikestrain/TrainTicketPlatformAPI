@@ -18,6 +18,7 @@
         public string PaymentStatus { get; set; } = string.Empty;
         public bool IsCancelled { get; set; } = false;
         public DateTime? CancellationDate { get; set; }
+        public string? CancellationReason { get; set; }
         public DateTime? ConfirmedAtUtc { get; set; }
         public DateTime? RefundedAtUtc { get; set; }
 

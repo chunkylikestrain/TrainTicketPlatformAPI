@@ -14,6 +14,7 @@ namespace TrainTicketPlatformAPI.Services
             string passengerName,
             bool acceptedTerms);
         Task CancelBookingAsync(int bookingId);
+        Task<Booking> AdminCancelAndRefundAsync(int bookingId, string reason);
         Task<Booking> RefundTicketAsync(string ticketNumber, string guestEmail);
         Task<Booking> UpdateBookingAsync(Booking booking);
         Task<Booking> ConfirmBookingAsync(int bookingId);

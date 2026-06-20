@@ -9,6 +9,14 @@ export function hasAuthToken() {
   return Boolean(localStorage.getItem(AUTH_TOKEN_KEY));
 }
 
+export function getUserRole() {
+  return localStorage.getItem(USER_ROLE_KEY);
+}
+
+export function getUserEmail() {
+  return localStorage.getItem(USER_EMAIL_KEY);
+}
+
 export function saveLoginSession(response: LoginResponse, email: string) {
   localStorage.setItem(AUTH_TOKEN_KEY, response.token);
   localStorage.setItem(USER_ROLE_KEY, response.role);

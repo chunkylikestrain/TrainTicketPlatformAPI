@@ -22,6 +22,7 @@ namespace TrainTicketPlatformAPI.Data
         public DbSet<Booking> Bookings { get; set; }
         public DbSet<BookingReport> bookingReports { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<DiscountRule> DiscountRules { get; set; }
 
         // Optional: Fluent API configuration
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -115,6 +116,10 @@ namespace TrainTicketPlatformAPI.Data
                 .HasDefaultValue("Pending");
 
             modelBuilder.Entity<Booking>()
+                .Property(b => b.CancellationReason)
+                .HasMaxLength(300);
+
+            modelBuilder.Entity<Booking>()
                 .Property(b => b.ExpiresAtUtc);
 
             modelBuilder.Entity<Booking>()
@@ -168,6 +173,16 @@ namespace TrainTicketPlatformAPI.Data
             modelBuilder.Entity<User>()
                 .Property(u => u.Email)
                 .HasMaxLength(256);
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.DisplayName)
+                .HasMaxLength(200)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<User>()
+                .Property(u => u.Status)
+                .HasMaxLength(32)
+                .HasDefaultValue("Active");
 
             modelBuilder.Entity<User>()
                 .Property(u => u.NormalizedEmail)
@@ -275,8 +290,38 @@ namespace TrainTicketPlatformAPI.Data
                 .HasForeignKey(t => t.TrainRouteId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<TrainRoute>()
+                .HasIndex(r => r.Code)
+                .IsUnique()
+                .HasFilter("[Code] <> ''");
+
+            modelBuilder.Entity<TrainRoute>()
+                .Property(r => r.Code)
+                .HasMaxLength(32)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TrainRoute>()
+                .Property(r => r.OperatingDays)
+                .HasMaxLength(80)
+                .HasDefaultValue("Daily");
+
+            modelBuilder.Entity<TrainRoute>()
+                .Property(r => r.IntermediateStops)
+                .HasMaxLength(1000)
+                .HasDefaultValue("");
+
             modelBuilder.Entity<Trip>()
                 .HasIndex(t => new { t.TrainRouteId, t.DepartureTime });
+
+            modelBuilder.Entity<Trip>()
+                .Property(t => t.Platform)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Trip>()
+                .Property(t => t.Track)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
 
             modelBuilder.Entity<Fare>()
                 .HasOne(f => f.Trip)
@@ -292,6 +337,26 @@ namespace TrainTicketPlatformAPI.Data
             modelBuilder.Entity<TrainRoute>()
                 .Property(r => r.DistanceKm)
                 .HasPrecision(10, 2);
+
+            modelBuilder.Entity<Train>()
+                .HasIndex(t => t.Code)
+                .IsUnique()
+                .HasFilter("[Code] <> ''");
+
+            modelBuilder.Entity<Train>()
+                .Property(t => t.Code)
+                .HasMaxLength(32)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Train>()
+                .Property(t => t.Type)
+                .HasMaxLength(80)
+                .HasDefaultValue("InterCity");
+
+            modelBuilder.Entity<Train>()
+                .Property(t => t.Status)
+                .HasMaxLength(32)
+                .HasDefaultValue("Active");
 
             modelBuilder.Entity<Fare>()
                 .Property(f => f.Price)
@@ -309,6 +374,31 @@ namespace TrainTicketPlatformAPI.Data
             modelBuilder.Entity<BookingReport>()
                 .Property(r => r.TotalRevenue)
                 .HasPrecision(18, 2);
+
+            modelBuilder.Entity<DiscountRule>()
+                .HasIndex(d => d.Name)
+                .IsUnique();
+
+            modelBuilder.Entity<DiscountRule>()
+                .Property(d => d.Name)
+                .HasMaxLength(120);
+
+            modelBuilder.Entity<DiscountRule>()
+                .Property(d => d.Percent)
+                .HasPrecision(5, 2);
+
+            modelBuilder.Entity<DiscountRule>()
+                .Property(d => d.EligibleClass)
+                .HasMaxLength(40);
+
+            modelBuilder.Entity<DiscountRule>()
+                .Property(d => d.DocumentHint)
+                .HasMaxLength(300);
+
+            modelBuilder.Entity<DiscountRule>()
+                .Property(d => d.Status)
+                .HasMaxLength(32)
+                .HasDefaultValue("Active");
         }
     }
 }

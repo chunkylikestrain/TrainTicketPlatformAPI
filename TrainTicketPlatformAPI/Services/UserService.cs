@@ -64,6 +64,8 @@ namespace TrainTicketPlatformAPI.Services
             // update other allowed fields
             existing.Phone = user.Phone;
             existing.Role = user.Role;
+            existing.DisplayName = user.DisplayName;
+            existing.Status = user.Status;
 
             await _db.SaveChangesAsync();
             return existing;

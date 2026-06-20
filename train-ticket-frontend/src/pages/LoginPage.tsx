@@ -4,7 +4,7 @@ import type { FormEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { login } from "../api/authApi";
-import { hasAuthToken, saveLoginSession } from "../api/authSession";
+import { getUserRole, hasAuthToken, saveLoginSession } from "../api/authSession";
 
 function LoginPage() {
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ function LoginPage() {
 
   useEffect(() => {
     if (hasAuthToken()) {
-      navigate("/profile", { replace: true });
+      navigate(getUserRole() === "Admin" ? "/admin" : "/profile", { replace: true });
     }
   }, [navigate]);
 
@@ -33,7 +33,7 @@ function LoginPage() {
     try {
       const response = await login({ email, password });
       saveLoginSession(response, email);
-      navigate("/profile?loggedIn=true");
+      navigate(response.role === "Admin" ? "/admin" : "/profile?loggedIn=true");
     } catch (loginError) {
       if (axios.isAxiosError(loginError)) {
         if (!loginError.response) {

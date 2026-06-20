@@ -18,12 +18,24 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             _trainService = trainService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<AdminTrainDto>>> GetAll()
+        {
+            var trains = await _trainService.GetAllTrainsAsync();
+            return Ok(trains.Select(ToDto));
+        }
+
         [HttpPost]
         public async Task<ActionResult<AdminTrainDto>> Create([FromBody] AdminTrainDto request)
         {
             var train = new Train
             {
+                Code = request.Code.Trim(),
                 Name = request.Name,
+                Type = request.Type,
+                CarriageCount = request.CarriageCount,
+                SeatsPerCarriage = request.SeatsPerCarriage,
+                Status = request.Status,
                 DepartureStation = request.DepartureStation,
                 ArrivalStation = request.ArrivalStation,
                 DepartureTime = request.DepartureTime,
@@ -54,7 +66,12 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             var train = new Train
             {
                 Id = id,
+                Code = request.Code.Trim(),
                 Name = request.Name,
+                Type = request.Type,
+                CarriageCount = request.CarriageCount,
+                SeatsPerCarriage = request.SeatsPerCarriage,
+                Status = request.Status,
                 DepartureStation = request.DepartureStation,
                 ArrivalStation = request.ArrivalStation,
                 DepartureTime = request.DepartureTime,
@@ -93,7 +110,12 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
         private static AdminTrainDto ToDto(Train train) => new()
         {
             Id = train.Id,
+            Code = train.Code,
             Name = train.Name,
+            Type = train.Type,
+            CarriageCount = train.CarriageCount,
+            SeatsPerCarriage = train.SeatsPerCarriage,
+            Status = train.Status,
             DepartureStation = train.DepartureStation,
             ArrivalStation = train.ArrivalStation,
             DepartureTime = train.DepartureTime,

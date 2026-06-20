@@ -146,6 +146,38 @@ namespace TrainTicketPlatformAPI.Services
             await _db.SaveChangesAsync();
         }
 
+        public async Task<Booking> AdminCancelAndRefundAsync(int bookingId, string reason)
+        {
+            if (string.IsNullOrWhiteSpace(reason))
+                throw new InvalidOperationException("Cancellation reason is required");
+
+            var booking = await _db.Bookings.FindAsync(bookingId)
+                          ?? throw new KeyNotFoundException("Booking not found");
+
+            if (booking.BookingStatus == "Refunded")
+                return booking;
+
+            if (booking.BookingStatus != "Confirmed" || booking.PaymentStatus != "Successful")
+                throw new InvalidOperationException("Only paid confirmed bookings can be refunded by an admin");
+
+            booking.BookingStatus = "Refunded";
+            booking.PaymentStatus = "Refunded";
+            booking.IsCancelled = true;
+            booking.CancellationDate = DateTime.UtcNow;
+            booking.CancellationReason = reason.Trim();
+            booking.RefundedAtUtc = DateTime.UtcNow;
+
+            var successfulPayments = await _db.Payments
+                .Where(p => p.BookingId == bookingId && p.Status == "Successful")
+                .ToListAsync();
+
+            foreach (var payment in successfulPayments)
+                payment.Status = "Refunded";
+
+            await _db.SaveChangesAsync();
+            return booking;
+        }
+
         public async Task<Booking> GetBookingByIdAsync(int bookingId)
         {
             var booking = await _db.Bookings.FindAsync(bookingId);
@@ -156,7 +188,18 @@ namespace TrainTicketPlatformAPI.Services
         }
 
         public async Task<IEnumerable<Booking>> GetAllBookingsAsync()
-            => await _db.Bookings.ToListAsync();
+            => await _db.Bookings
+                .Include(b => b.Train)
+                .Include(b => b.Seat)
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t!.TrainRoute)
+                        .ThenInclude(r => r.DepartureStation)
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t!.TrainRoute)
+                        .ThenInclude(r => r.ArrivalStation)
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t!.Fares)
+                .ToListAsync();
 
         public async Task<Booking> UpdateBookingAsync(Booking booking)
         {
@@ -295,6 +338,7 @@ namespace TrainTicketPlatformAPI.Services
             booking.PaymentStatus = "Refunded";
             booking.IsCancelled = true;
             booking.CancellationDate = DateTime.UtcNow;
+            booking.CancellationReason = "Passenger requested refund";
             booking.RefundedAtUtc = DateTime.UtcNow;
 
             await _db.SaveChangesAsync();

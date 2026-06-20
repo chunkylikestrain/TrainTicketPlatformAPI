@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TrainTicketPlatformAPI.Contracts.Admin;
 using TrainTicketPlatformAPI.Contracts.Common;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
@@ -51,6 +52,51 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             return Ok(response);
         }
 
+        [HttpPut("{id}")]
+        public async Task<ActionResult<UserResponseDto>> Update(int id, [FromBody] AdminUserUpdateRequest request)
+        {
+            try
+            {
+                var updated = await _userService.UpdateUserAsync(new User
+                {
+                    Id = id,
+                    Email = request.Email,
+                    Phone = request.Phone,
+                    Role = request.Role,
+                    DisplayName = request.DisplayName,
+                    Status = request.Status
+                });
+
+                return Ok(ToResponse(updated));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            try
+            {
+                await _userService.DeleteUserAsync(id);
+                return NoContent();
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         private static PagedResponse<T> ToPagedResponse<T>(
             IEnumerable<T> source,
             int page,
@@ -80,7 +126,9 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             Id = user.Id,
             Email = user.Email,
             Phone = user.Phone,
-            Role = user.Role
+            Role = user.Role,
+            DisplayName = user.DisplayName,
+            Status = user.Status
         };
     }
 }

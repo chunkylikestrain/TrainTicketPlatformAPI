@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TrainTicketPlatformAPI.Contracts.Admin;
 using TrainTicketPlatformAPI.Contracts.Bookings;
 using TrainTicketPlatformAPI.Contracts.Common;
 using TrainTicketPlatformAPI.Models;
@@ -61,6 +62,24 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             return Ok(response);
         }
 
+        [HttpPost("{id}/cancel-refund")]
+        public async Task<ActionResult<BookingDto>> CancelAndRefund(int id, [FromBody] AdminCancelBookingRequest request)
+        {
+            try
+            {
+                var booking = await _bookingService.AdminCancelAndRefundAsync(id, request.Reason);
+                return Ok(ToDto(booking));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         private static PagedResponse<T> ToPagedResponse<T>(
             IEnumerable<T> source,
             int page,
@@ -103,8 +122,18 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             PaymentStatus = booking.PaymentStatus,
             IsCancelled = booking.IsCancelled,
             CancellationDate = booking.CancellationDate,
+            CancellationReason = booking.CancellationReason,
             ConfirmedAtUtc = booking.ConfirmedAtUtc,
-            RefundedAtUtc = booking.RefundedAtUtc
+            RefundedAtUtc = booking.RefundedAtUtc,
+            TrainName = string.IsNullOrWhiteSpace(booking.Train.Code) ? booking.Train.Name : booking.Train.Code,
+            Route = booking.Trip?.TrainRoute == null
+                ? $"{booking.Train.DepartureStation} -> {booking.Train.ArrivalStation}"
+                : $"{booking.Trip.TrainRoute.DepartureStation.Name} -> {booking.Trip.TrainRoute.ArrivalStation.Name}",
+            SeatLabel = $"Coach {booking.Seat.Coach}, seat {booking.Seat.Number}",
+            Amount = booking.Trip?.Fares
+                .OrderByDescending(f => f.ClassType == booking.Seat.ClassType)
+                .ThenBy(f => f.Price)
+                .FirstOrDefault()?.Price ?? 0m
         };
     }
 }

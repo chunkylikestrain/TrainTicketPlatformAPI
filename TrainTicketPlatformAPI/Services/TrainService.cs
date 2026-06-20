@@ -48,6 +48,11 @@ namespace TrainTicketPlatformAPI.Services
                           ?? throw new KeyNotFoundException("Train not found");
 
             existing.Name = train.Name;
+            existing.Code = train.Code;
+            existing.Type = train.Type;
+            existing.CarriageCount = train.CarriageCount;
+            existing.SeatsPerCarriage = train.SeatsPerCarriage;
+            existing.Status = train.Status;
             existing.DepartureStation = train.DepartureStation;
             existing.ArrivalStation = train.ArrivalStation;
             existing.DepartureTime = train.DepartureTime;

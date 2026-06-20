@@ -1,6 +1,8 @@
 import { Link, NavLink } from "react-router-dom";
 
 function Navbar() {
+  const isAdmin = localStorage.getItem("userRole") === "Admin";
+
   return (
     <header className="site-header">
       <Link to="/" className="brand" aria-label="RailWay home">
@@ -11,6 +13,7 @@ function Navbar() {
       <nav className="main-nav" aria-label="Primary navigation">
         <NavLink to="/">For Passengers</NavLink>
         <NavLink to="/profile">My tickets</NavLink>
+        {isAdmin && <NavLink to="/admin">Admin</NavLink>}
         <a href="#passenger-info">Help</a>
         <a href="#offers">Offers</a>
       </nav>

@@ -18,7 +18,12 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         public string PaymentStatus { get; set; } = string.Empty;
         public bool IsCancelled { get; set; }
         public DateTime? CancellationDate { get; set; }
+        public string? CancellationReason { get; set; }
         public DateTime? ConfirmedAtUtc { get; set; }
         public DateTime? RefundedAtUtc { get; set; }
+        public string TrainName { get; set; } = string.Empty;
+        public string Route { get; set; } = string.Empty;
+        public string SeatLabel { get; set; } = string.Empty;
+        public decimal Amount { get; set; }
     }
 }
