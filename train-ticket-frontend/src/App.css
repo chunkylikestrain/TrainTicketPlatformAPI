@@ -978,15 +978,16 @@
 
 .trip-action {
   min-height: 76px;
-  border: 1px solid #cfd3da;
-  background: var(--white);
-  color: var(--orange);
+  border: 1px solid var(--orange);
+  background: var(--orange);
+  color: var(--white);
   font-size: 21px;
+  box-shadow: 0 10px 20px rgba(255, 96, 43, 0.18);
   text-transform: uppercase;
 }
 
 .trip-action:hover {
-  background: var(--orange);
+  background: #e94f20;
   color: var(--white);
 }
 
@@ -1223,6 +1224,36 @@
 .summary-outline-button a {
   color: var(--orange);
   text-decoration: none;
+}
+
+.summary-outline-button.summary-seat-empty {
+  padding: 0;
+  border-color: var(--orange);
+  background: var(--orange);
+}
+
+.summary-outline-button.summary-seat-empty a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 70px;
+  color: var(--white);
+}
+
+.summary-outline-button.summary-seat-empty:hover {
+  background: #e94f20;
+}
+
+.summary-seat-change {
+  text-decoration: underline;
+}
+
+.account-saved-panel p {
+  max-width: 760px;
+  color: var(--navy);
+  font-size: 20px;
+  line-height: 1.5;
 }
 
 .addon-row {
@@ -1894,20 +1925,6 @@
 
 .coach-space-long {
   flex-basis: 180px;
-}
-
-.coach-scrollbar {
-  height: 18px;
-  padding: 6px 8px;
-  background: #f0f0f0;
-}
-
-.coach-scrollbar span {
-  display: block;
-  width: 82%;
-  height: 6px;
-  border-radius: 999px;
-  background: #c3c3c3;
 }
 
 .coach-caption {

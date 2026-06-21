@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import BookingExpiredModal from "../components/BookingExpiredModal";
+import { getUserEmail, hasAuthToken } from "../api/authSession";
 import { getGuestTickets, updateGuestBookingData } from "../api/bookingApi";
 import { confirmPayment, createPaymentIntent } from "../api/paymentApi";
 import { getTripById } from "../api/tripApi";
@@ -38,6 +39,9 @@ function BookingCheckoutPage() {
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("form");
   const [error, setError] = useState("");
   const [ticketNumbers, setTicketNumbers] = useState<string[]>([]);
+  const sessionEmail = getUserEmail();
+  const effectiveEmail = email || sessionEmail || "";
+  const isLoggedInPurchase = hasAuthToken() && Boolean(sessionEmail);
   const flowParams = new URLSearchParams({ class: selectedClass, email });
 
   if (bookingId) {
@@ -89,7 +93,7 @@ function BookingCheckoutPage() {
       return;
     }
 
-    if (!travelerName.trim() || !acceptedRules || !paymentMethod || !bookingId || !email) {
+    if (!travelerName.trim() || !acceptedRules || !paymentMethod || !bookingId || !effectiveEmail) {
       setError("Enter traveler name, accept the rules, choose a payment method, and make sure guest data is saved.");
       return;
     }
@@ -99,7 +103,7 @@ function BookingCheckoutPage() {
 
     try {
       await updateGuestBookingData(bookingId, {
-        guestEmail: email,
+        guestEmail: effectiveEmail,
         passengerName: travelerName,
         acceptedTerms: acceptedRules,
         acceptedMarketing: false,
@@ -107,11 +111,9 @@ function BookingCheckoutPage() {
 
       const intent = await createPaymentIntent(bookingId);
       await confirmPayment(intent.paymentIntentId, "tok_success");
-      const guestTickets = await getGuestTickets(email);
-      const paidTicketNumbers = guestTickets
-        .filter((ticket) => ticket.id === Number(bookingId) || ticket.bookingStatus === "Confirmed")
-        .map((ticket) => ticket.ticketNumber)
-        .filter(Boolean);
+      const guestTickets = await getGuestTickets(effectiveEmail);
+      const paidTicket = guestTickets.find((ticket) => ticket.id === Number(bookingId));
+      const paidTicketNumbers = paidTicket?.ticketNumber ? [paidTicket.ticketNumber] : [];
 
       setTicketNumbers(paidTicketNumbers.length > 0 ? paidTicketNumbers : ["Ticket pending"]);
       setPaymentStatus("paid");
@@ -161,7 +163,7 @@ function BookingCheckoutPage() {
               <p>payment status <strong>PAID</strong></p>
               <h2>{trip?.departureStationName ?? "Departure"} &gt; {trip?.arrivalStationName ?? "Arrival"}</h2>
               <p>
-                ticket numbers:{" "}
+                {ticketNumbers.length === 1 ? "ticket number: " : "ticket numbers: "}
                 {ticketNumbers.map((ticketNumber) => (
                   <span key={ticketNumber}>
                     <strong>{ticketNumber}</strong><br />
@@ -172,7 +174,7 @@ function BookingCheckoutPage() {
           </section>
 
           <Link
-            to={`/bookings?email=${encodeURIComponent(email || "nguyentrongminhkhoa@gmail.com")}`}
+            to={`/bookings?email=${encodeURIComponent(effectiveEmail || "nguyentrongminhkhoa@gmail.com")}`}
             className="show-tickets-button"
           >
             Show tickets
@@ -181,21 +183,38 @@ function BookingCheckoutPage() {
           <section className="loyalty-panel">
             <div className="loyalty-logo">Moje IC</div>
             <h2>Collect points with "Moje IC"</h2>
-            <p>Join the Program and redeem points for trips. Earn up to 500 welcome points.</p>
-            <p>By clicking "Join now" you will be asked to log in or register an account.</p>
-            <Link to="/register">Join now</Link>
+            {isLoggedInPurchase ? (
+              <>
+                <p>Your account can keep tickets, shopping profiles, and loyalty activity together.</p>
+                <Link to="/profile">Open account</Link>
+              </>
+            ) : (
+              <>
+                <p>Join the Program and redeem points for trips. Earn up to 500 welcome points.</p>
+                <p>By clicking "Join now" you will be asked to log in or register an account.</p>
+                <Link to="/register">Join now</Link>
+              </>
+            )}
           </section>
 
-          <section className="post-purchase-panel">
-            <h2>Create an account and enjoy the benefits</h2>
-            <ul>
-              <li>Create shopping profiles</li>
-              <li>Use the shopping cart</li>
-              <li>Tickets are available at any time in your account</li>
-              <li>You do not have to enter all your data with every purchase</li>
-            </ul>
-            <Link to="/register">Create an account</Link>
-          </section>
+          {isLoggedInPurchase ? (
+            <section className="post-purchase-panel account-saved-panel">
+              <h2>Your ticket is saved in your account</h2>
+              <p>You can open it from My tickets whenever you need the QR code, refund options, or passenger data.</p>
+              <Link to={`/bookings?email=${encodeURIComponent(effectiveEmail)}`}>Open My tickets</Link>
+            </section>
+          ) : (
+            <section className="post-purchase-panel">
+              <h2>Create an account and enjoy the benefits</h2>
+              <ul>
+                <li>Create shopping profiles</li>
+                <li>Use the shopping cart</li>
+                <li>Tickets are available at any time in your account</li>
+                <li>You do not have to enter all your data with every purchase</li>
+              </ul>
+              <Link to="/register">Create an account</Link>
+            </section>
+          )}
 
           <section className="feedback-weather">
             <h2>Share your opinion</h2>

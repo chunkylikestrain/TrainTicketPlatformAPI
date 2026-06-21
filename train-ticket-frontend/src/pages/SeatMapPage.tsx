@@ -330,6 +330,26 @@ function getTemplateForCoach(
     return "emu-second-quiet";
   }
 
+  if (layoutType === "emudartfirstcab") {
+    return "emu-dart-first-cab";
+  }
+
+  if (layoutType === "emudartfirstaccessible") {
+    return "emu-dart-first-accessible";
+  }
+
+  if (layoutType === "emudartrestaurant") {
+    return "emu-dart-restaurant";
+  }
+
+  if (layoutType === "emudartsecondopen") {
+    return "emu-dart-second-open";
+  }
+
+  if (layoutType === "emudartsecondcab") {
+    return "emu-dart-second-cab";
+  }
+
   if (layoutType === "restaurant") {
     return "restaurant";
   }
@@ -372,6 +392,18 @@ function getCarBadge(
 
   if (layoutType === "emusecondquiet") {
     return "2 quiet";
+  }
+
+  if (layoutType === "emudartfirstcab" || layoutType === "emudartfirstaccessible") {
+    return "1";
+  }
+
+  if (layoutType === "emudartrestaurant") {
+    return "2 WARS";
+  }
+
+  if (layoutType === "emudartsecondopen" || layoutType === "emudartsecondcab") {
+    return "2";
   }
 
   if (carriageClass.includes("1") && carriageClass.includes("2")) {

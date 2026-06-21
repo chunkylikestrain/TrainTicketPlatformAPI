@@ -16,6 +16,11 @@ type CarriageTemplate =
   | "emu-second-family-open"
   | "emu-dining-accessible"
   | "emu-second-quiet"
+  | "emu-dart-first-cab"
+  | "emu-dart-first-accessible"
+  | "emu-dart-restaurant"
+  | "emu-dart-second-open"
+  | "emu-dart-second-cab"
   | "restaurant";
 
 type SeatPlanSlot =
@@ -58,7 +63,7 @@ function buildTemplate(template: CarriageTemplate, seats: TripSeatAvailability[]
   }
 
   if (template === "open-first") {
-    return buildOpenTemplate(Math.max(seatCount, 54), "1", "Class 1");
+    return buildFirstOpenTemplate(Math.max(seatCount, 54));
   }
 
   if (template === "open-second" || template === "emu-second-open") {
@@ -66,30 +71,27 @@ function buildTemplate(template: CarriageTemplate, seats: TripSeatAvailability[]
   }
 
   if (template === "emu-second-family-open") {
-    return [
-      [
-        { type: "facility", label: "Family", tone: "long" },
-        { type: "divider" },
-        ...seatSlots(18, "Class 2"),
-        { type: "space" },
-        ...seatSlots(16, "Class 2"),
-        { type: "divider" },
-        { type: "facility", label: "WC", tone: "large" },
-      ],
-      [
-        { type: "space", size: "wide" },
-        { type: "corridor", label: "2" },
-        { type: "space", size: "wide" },
-      ],
-      [
-        { type: "facility", label: "Bag", tone: "large" },
-        { type: "divider" },
-        ...seatSlots(24, "Class 2"),
-        { type: "space" },
-        ...seatSlots(Math.max(18, seatCount - 58), "Class 2"),
-        { type: "facility", label: "WC", tone: "large" },
-      ],
-    ];
+    return buildSecondFamilyOpenTemplate(Math.max(seatCount, 98));
+  }
+
+  if (template === "emu-dart-first-cab") {
+    return buildFirstOpenTemplate(Math.max(seatCount, 54));
+  }
+
+  if (template === "emu-dart-first-accessible") {
+    return buildDartFirstAccessibleTemplate(Math.max(seatCount, 42));
+  }
+
+  if (template === "emu-dart-restaurant") {
+    return buildDartRestaurantTemplate(Math.max(seatCount, 16));
+  }
+
+  if (template === "emu-dart-second-open") {
+    return buildOpenTemplate(Math.max(seatCount, 76), "2", "Class 2");
+  }
+
+  if (template === "emu-dart-second-cab") {
+    return buildDartSecondCabTemplate(Math.max(seatCount, 76));
   }
 
   if (template === "emu-dining-accessible") {
@@ -224,9 +226,165 @@ function defaultSeatCount(template: CarriageTemplate) {
   if (template === "emu-second-family-open") return 98;
   if (template === "emu-dining-accessible") return 12;
   if (template === "emu-second-quiet") return 88;
+  if (template === "emu-dart-first-cab") return 54;
+  if (template === "emu-dart-first-accessible") return 42;
+  if (template === "emu-dart-restaurant") return 16;
+  if (template === "emu-dart-second-open" || template === "emu-dart-second-cab") return 76;
   if (template === "combo-accessible" || template === "combo-second-wheelchair-bike") return 56;
   if (template === "restaurant") return 0;
   return 88;
+}
+
+function splitAcrossRows(total: number, rowCount: number) {
+  const base = Math.floor(total / rowCount);
+  const remainder = total % rowCount;
+  return Array.from({ length: rowCount }, (_, index) => base + (index < remainder ? 1 : 0));
+}
+
+function buildFirstOpenTemplate(seatCount: number): SeatPlanSlot[][] {
+  const seatsPerRow = Math.ceil(seatCount / 3);
+  const bottomRowSeats = Math.max(0, seatCount - seatsPerRow * 2);
+
+  return [
+    [
+      { type: "facility", label: "WC", tone: "large" },
+      { type: "divider" },
+      ...openRowSeats(seatsPerRow, "Class 1"),
+      { type: "facility", label: "Bag" },
+    ],
+    [
+      { type: "facility", label: "Cabin", tone: "large" },
+      { type: "divider" },
+      ...openRowSeats(seatsPerRow, "Class 1"),
+      { type: "divider" },
+      { type: "facility", label: "WC", tone: "large" },
+    ],
+    [
+      { type: "space", size: "wide" },
+      { type: "corridor", label: "1" },
+      { type: "space", size: "wide" },
+    ],
+    [
+      { type: "facility", label: "Bag", tone: "large" },
+      { type: "divider" },
+      ...openRowSeats(bottomRowSeats, "Class 1"),
+      { type: "divider" },
+      { type: "facility", label: "Bag" },
+    ],
+  ];
+}
+
+function buildSecondFamilyOpenTemplate(seatCount: number): SeatPlanSlot[][] {
+  const familyCompartmentCount = 6;
+  const familySeats = familyCompartmentCount * 4;
+  const openSeatCount = Math.max(64, seatCount - familySeats);
+  const rowSeats = splitAcrossRows(openSeatCount, 4);
+  const familyCompartments = Array.from({ length: familyCompartmentCount }, () =>
+    ({ type: "compartment", seats: 4, classType: "Class 2" }) as SeatPlanSlot);
+  const firstFamilyBlock = familyCompartments.slice(0, 3);
+  const secondFamilyBlock = familyCompartments.slice(3);
+
+  return [
+    [
+      { type: "facility", label: "WC", tone: "large" },
+      { type: "divider" },
+      ...firstFamilyBlock,
+      { type: "facility", label: "Family", tone: "long" },
+      { type: "divider" },
+      ...openRowSeats(rowSeats[0], "Class 2"),
+    ],
+    [
+      { type: "facility", label: "Cabin", tone: "large" },
+      { type: "divider" },
+      ...secondFamilyBlock,
+      { type: "space", size: "wide" },
+      ...openRowSeats(rowSeats[1], "Class 2"),
+      { type: "divider" },
+      { type: "facility", label: "WC", tone: "large" },
+    ],
+    [
+      { type: "space", size: "wide" },
+      { type: "corridor", label: "2" },
+      { type: "space", size: "wide" },
+    ],
+    [
+      { type: "facility", label: "Bag" },
+      { type: "divider" },
+      ...openRowSeats(rowSeats[2], "Class 2"),
+      { type: "divider" },
+      { type: "facility", label: "Bag" },
+    ],
+    [
+      { type: "facility", label: "Stroller", tone: "long" },
+      { type: "divider" },
+      ...openRowSeats(rowSeats[3], "Class 2"),
+      { type: "divider" },
+      { type: "facility", label: "WC", tone: "large" },
+    ],
+  ];
+}
+
+function buildDartFirstAccessibleTemplate(seatCount: number): SeatPlanSlot[][] {
+  const standardSeats = Math.max(24, seatCount - 4);
+  const rowSeats = splitAcrossRows(standardSeats, 3);
+
+  return [
+    [
+      { type: "facility", label: "Wheel", tone: "large" },
+      { type: "facility", label: "WC", tone: "large" },
+      { type: "divider" },
+      ...openRowSeats(rowSeats[0], "Class 1"),
+      { type: "facility", label: "Bag" },
+    ],
+    [
+      { type: "facility", label: "Ramp", tone: "large" },
+      { type: "divider" },
+      ...openRowSeats(rowSeats[1], "Class 1"),
+      { type: "facility", label: "WC", tone: "large" },
+    ],
+    [
+      { type: "space", size: "wide" },
+      { type: "corridor", label: "1" },
+      { type: "space", size: "wide" },
+    ],
+    [
+      { type: "facility", label: "Companion", tone: "long" },
+      { type: "divider" },
+      ...openRowSeats(rowSeats[2], "Class 1"),
+    ],
+  ];
+}
+
+function buildDartRestaurantTemplate(seatCount: number): SeatPlanSlot[][] {
+  const rowSeats = splitAcrossRows(Math.max(12, seatCount), 2);
+
+  return [
+    [
+      { type: "facility", label: "Bar", tone: "long" },
+      { type: "facility", label: "Kitchen", tone: "long" },
+      { type: "facility", label: "Staff", tone: "large" },
+      { type: "divider" },
+      ...openRowSeats(rowSeats[0], "Class 2"),
+    ],
+    [
+      { type: "space", size: "wide" },
+      { type: "corridor", label: "WARS" },
+      { type: "space", size: "wide" },
+    ],
+    [
+      { type: "facility", label: "Dining", tone: "long" },
+      { type: "facility", label: "WC", tone: "large" },
+      { type: "divider" },
+      ...openRowSeats(rowSeats[1], "Class 2"),
+    ],
+  ];
+}
+
+function buildDartSecondCabTemplate(seatCount: number): SeatPlanSlot[][] {
+  return buildOpenTemplate(Math.max(seatCount, 76), "2", "Class 2", {
+    start: [{ type: "facility", label: "Cab", tone: "large" }],
+    end: [{ type: "facility", label: "WC", tone: "large" }],
+  });
 }
 
 function buildOpenTemplate(
@@ -379,9 +537,6 @@ function CarriageSeatMap({
           </div>
         ))}
       </div>
-      <div className="coach-scrollbar" aria-hidden="true">
-        <span />
-      </div>
       <p className="coach-caption">
         Car {coach} - Class {selectedClass} - {templateLabel(template)}
       </p>
@@ -507,6 +662,26 @@ function templateLabel(template: CarriageTemplate) {
 
   if (template === "emu-second-quiet") {
     return "quiet second class unit";
+  }
+
+  if (template === "emu-dart-first-cab") {
+    return "first class cab unit";
+  }
+
+  if (template === "emu-dart-first-accessible") {
+    return "first class accessible unit";
+  }
+
+  if (template === "emu-dart-restaurant") {
+    return "restaurant unit with passenger seating";
+  }
+
+  if (template === "emu-dart-second-open") {
+    return "second class open-space unit";
+  }
+
+  if (template === "emu-dart-second-cab") {
+    return "second class cab unit";
   }
 
   if (template === "first-compartment") {

@@ -175,6 +175,18 @@ const emuPresets: EmuPreset[] = [
     ],
   },
   {
+    label: "ED161 Dart - 8-unit set",
+    model: "ED161 Dart",
+    codePrefix: "ED161",
+    carriages: [
+      { label: "Unit 1", classType: "Class 1", layoutType: "EmuDartFirstCab", vehicleType: "ED161-1 first-class cab unit", seatCount: "54", notes: "First-class cab unit" },
+      { label: "Unit 2", classType: "Class 1", layoutType: "EmuDartFirstAccessible", vehicleType: "ED161-2 first-class accessible unit", seatCount: "42", hasAccessibleSpace: true, notes: "First-class unit with wheelchair spaces" },
+      { label: "Unit 3", classType: "Class 2", layoutType: "EmuDartRestaurant", vehicleType: "ED161-3 WARS restaurant unit", seatCount: "16", hasDiningSection: true, notes: "Restaurant unit with a small second-class seating section" },
+      ...Array.from({ length: 4 }, (_, index) => ({ label: `Unit ${index + 4}`, classType: "Class 2", layoutType: "EmuDartSecondOpen", vehicleType: `ED161-${index + 4} second-class open unit`, seatCount: "76", notes: "Second-class open-space unit" })),
+      { label: "Unit 8", classType: "Class 2", layoutType: "EmuDartSecondCab", vehicleType: "ED161-8 second-class cab unit", seatCount: "76", notes: "Second-class cab unit" },
+    ],
+  },
+  {
     label: "ED250 Pendolino - 7-unit EIP set",
     model: "ED250 Pendolino",
     codePrefix: "EIP",
@@ -259,7 +271,7 @@ function AdminCreateTrainPage() {
     () => emuPresets.find((preset) => preset.label === emuModel) ?? emuPresets[0],
     [emuModel]);
   const ed250Preset = useMemo(
-    () => emuPresets.find((preset) => preset.model === "ED250 Pendolino") ?? emuPresets[2],
+    () => emuPresets.find((preset) => preset.model === "ED250 Pendolino") ?? emuPresets[emuPresets.length - 1],
     []);
   const rollingStockDatalistOptions = useMemo(() => {
     const apiOptions = rollingStockOptions
@@ -470,6 +482,11 @@ function AdminCreateTrainPage() {
                       <option>EmuSecondFamilyOpen</option>
                       <option>EmuDiningAccessible</option>
                       <option>EmuSecondQuiet</option>
+                      <option>EmuDartFirstCab</option>
+                      <option>EmuDartFirstAccessible</option>
+                      <option>EmuDartRestaurant</option>
+                      <option>EmuDartSecondOpen</option>
+                      <option>EmuDartSecondCab</option>
                       <option>Restaurant</option>
                     </select></label>
                     <label>Vehicle type<input value={carriage.vehicleType} onChange={(event) => updateCarriage(index, { vehicleType: event.target.value })} placeholder="Example: B9nopuvz" /></label>
@@ -583,7 +600,11 @@ function toAdminTrainPayload(form: {
 }): AdminTrain {
   const normalizedCarriages = form.carriages.map((carriage, index) => {
     const isRestaurantOnly = carriage.layoutType === "Restaurant";
-    const hasDiningSection = carriage.hasDiningSection || isRestaurantOnly || carriage.layoutType === "EmuDiningAccessible";
+    const hasDiningSection =
+      carriage.hasDiningSection ||
+      isRestaurantOnly ||
+      carriage.layoutType === "EmuDiningAccessible" ||
+      carriage.layoutType === "EmuDartRestaurant";
     return {
       id: carriage.id ?? 0,
       coach: carriage.coach.trim(),

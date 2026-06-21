@@ -123,14 +123,18 @@ function SummaryPage() {
               <button type="button" aria-label="Bicycle space" />
               <button type="button" aria-label="Quiet coach" />
             </div>
-            <div className="summary-outline-button">
+            <div className={`summary-outline-button ${selectedSeat ? "summary-seat-selected" : "summary-seat-empty"}`}>
               {selectedSeat ? (
                 <>
                   <span>Car {selectedCar}, seat {selectedSeat}</span>
-                  <Link to={`/seat-map/${tripId}?class=${selectedClass}`}>Change</Link>
+                  <Link className="summary-seat-change" to={`/seat-map/${tripId}?class=${selectedClass}`}>
+                    Change
+                  </Link>
                 </>
               ) : (
-                <Link to={`/seat-map/${tripId}?class=${selectedClass}`}>Choose a place</Link>
+                <Link className="summary-seat-action" to={`/seat-map/${tripId}?class=${selectedClass}`}>
+                  Choose a place
+                </Link>
               )}
             </div>
           </fieldset>
