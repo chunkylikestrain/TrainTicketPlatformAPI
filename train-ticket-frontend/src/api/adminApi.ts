@@ -2,6 +2,7 @@ import apiClient from "./apiClient";
 import type {
   AdminBooking,
   AdminDiscount,
+  AdminRollingStockOption,
   AdminRevenueReport,
   AdminRoute,
   AdminSchedule,
@@ -48,13 +49,28 @@ export async function getAdminTrains() {
   return response.data;
 }
 
+export async function getAdminTrain(id: number) {
+  const response = await apiClient.get<AdminTrain>(`/admin/trains/${id}`);
+  return response.data;
+}
+
 export async function createAdminTrain(train: Omit<AdminTrain, "id">) {
   const response = await apiClient.post<AdminTrain>("/admin/trains", train);
   return response.data;
 }
 
+export async function updateAdminTrain(train: AdminTrain) {
+  const response = await apiClient.put<AdminTrain>(`/admin/trains/${train.id}`, train);
+  return response.data;
+}
+
 export async function deleteAdminTrain(id: number) {
   await apiClient.delete(`/admin/trains/${id}`);
+}
+
+export async function getAdminRollingStockOptions() {
+  const response = await apiClient.get<AdminRollingStockOption[]>("/admin/trains/rolling-stock-options");
+  return response.data;
 }
 
 export async function getAdminRoutes() {

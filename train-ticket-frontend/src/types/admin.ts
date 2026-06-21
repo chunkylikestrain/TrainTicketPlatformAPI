@@ -11,6 +11,7 @@ export type AdminTrain = {
   code: string;
   name: string;
   type: string;
+  locomotive: string;
   carriageCount: number;
   seatsPerCarriage: number;
   status: string;
@@ -18,6 +19,35 @@ export type AdminTrain = {
   arrivalStation: string;
   departureTime: string;
   arrivalTime: string;
+  carriages: AdminTrainCarriage[];
+};
+
+export type AdminTrainCarriage = {
+  id: number;
+  coach: string;
+  position: number;
+  classType: string;
+  layoutType: string;
+  vehicleType: string;
+  seatCount: number;
+  hasBikeSpace: boolean;
+  hasAccessibleSpace: boolean;
+  hasFamilyCompartment: boolean;
+  hasDiningSection: boolean;
+  notes: string;
+};
+
+export type AdminRollingStockOption = {
+  id: number;
+  category: string;
+  series: string;
+  displayName: string;
+  manufacturer: string;
+  maxSpeed: string;
+  fleetCount: number | null;
+  unitCount: number | null;
+  notes: string;
+  status: string;
 };
 
 export type AdminRoute = {

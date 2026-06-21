@@ -17,6 +17,8 @@ namespace TrainTicketPlatformAPI.Data
         public DbSet<TrainRoute> TrainRoutes { get; set; }
         public DbSet<TrainRouteStop> TrainRouteStops { get; set; }
         public DbSet<Train> Trains { get; set; }
+        public DbSet<TrainCarriage> TrainCarriages { get; set; }
+        public DbSet<RollingStockOption> RollingStockOptions { get; set; }
         public DbSet<Trip> Trips { get; set; }
         public DbSet<Fare> Fares { get; set; }
         public DbSet<Seat> Seats { get; set; }
@@ -382,6 +384,69 @@ namespace TrainTicketPlatformAPI.Data
             modelBuilder.Entity<Train>()
                 .Property(t => t.Status)
                 .HasMaxLength(32)
+                .HasDefaultValue("Active");
+
+            modelBuilder.Entity<TrainCarriage>()
+                .HasOne(c => c.Train)
+                .WithMany(t => t.Carriages)
+                .HasForeignKey(c => c.TrainId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TrainCarriage>()
+                .HasIndex(c => new { c.TrainId, c.Coach })
+                .IsUnique();
+
+            modelBuilder.Entity<TrainCarriage>()
+                .Property(c => c.Coach)
+                .HasMaxLength(20);
+
+            modelBuilder.Entity<TrainCarriage>()
+                .Property(c => c.ClassType)
+                .HasMaxLength(40);
+
+            modelBuilder.Entity<TrainCarriage>()
+                .Property(c => c.LayoutType)
+                .HasMaxLength(60);
+
+            modelBuilder.Entity<TrainCarriage>()
+                .Property(c => c.VehicleType)
+                .HasMaxLength(120);
+
+            modelBuilder.Entity<TrainCarriage>()
+                .Property(c => c.Notes)
+                .HasMaxLength(500);
+
+            modelBuilder.Entity<RollingStockOption>()
+                .HasIndex(r => new { r.Category, r.Series })
+                .IsUnique();
+
+            modelBuilder.Entity<RollingStockOption>()
+                .Property(r => r.Category)
+                .HasMaxLength(40);
+
+            modelBuilder.Entity<RollingStockOption>()
+                .Property(r => r.Series)
+                .HasMaxLength(40);
+
+            modelBuilder.Entity<RollingStockOption>()
+                .Property(r => r.DisplayName)
+                .HasMaxLength(120);
+
+            modelBuilder.Entity<RollingStockOption>()
+                .Property(r => r.Manufacturer)
+                .HasMaxLength(120);
+
+            modelBuilder.Entity<RollingStockOption>()
+                .Property(r => r.MaxSpeed)
+                .HasMaxLength(40);
+
+            modelBuilder.Entity<RollingStockOption>()
+                .Property(r => r.Notes)
+                .HasMaxLength(500);
+
+            modelBuilder.Entity<RollingStockOption>()
+                .Property(r => r.Status)
+                .HasMaxLength(40)
                 .HasDefaultValue("Active");
 
             modelBuilder.Entity<Fare>()

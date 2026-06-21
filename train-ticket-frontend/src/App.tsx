@@ -38,6 +38,7 @@ function App() {
         <Route path="/admin" element={<AdminDashboardPage />} />
         <Route path="/admin/trains" element={<AdminTrainsPage />} />
         <Route path="/admin/trains/new" element={<AdminCreateTrainPage />} />
+        <Route path="/admin/trains/:trainId/edit" element={<AdminCreateTrainPage />} />
         <Route path="/admin/routes" element={<AdminRoutesPage />} />
         <Route path="/admin/routes/new" element={<AdminCreateRoutePage />} />
         <Route path="/admin/routes/:routeId/edit" element={<AdminCreateRoutePage />} />

@@ -17,6 +17,8 @@ namespace TrainTicketPlatformAPI.Models
         public DateTime ArrivalTime { get; set; }
         public ICollection<Trip> Trips { get; set; }
             = new List<Trip>();
+        public ICollection<TrainCarriage> Carriages { get; set; }
+            = new List<TrainCarriage>();
         public ICollection<Booking> Bookings { get; set; } 
             = new List<Booking>();
     }

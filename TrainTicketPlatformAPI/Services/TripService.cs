@@ -94,20 +94,73 @@ namespace TrainTicketPlatformAPI.Services
                 .Select(b => b.SeatId)
                 .ToListAsync();
 
-            return await _db.Seats
+            var carriages = await _db.TrainCarriages
+                .AsNoTracking()
+                .Where(c => c.TrainId == trip.TrainId)
+                .ToDictionaryAsync(c => c.Coach, StringComparer.OrdinalIgnoreCase, cancellationToken: default);
+
+            var seats = await _db.Seats
                 .AsNoTracking()
                 .Where(s => s.TrainId == trip.TrainId)
                 .OrderBy(s => s.Coach)
                 .ThenBy(s => s.Number)
-                .Select(s => new TripSeatAvailabilityDto
-                {
-                    SeatId = s.Id,
-                    Coach = s.Coach,
-                    Number = s.Number,
-                    ClassType = s.ClassType,
-                    IsAvailable = s.IsAvailable && !bookedSeatIds.Contains(s.Id)
-                })
                 .ToListAsync();
+
+            return seats
+                .OrderBy(s => GetCarriagePosition(s.Coach, carriages))
+                .ThenBy(s => ParseSeatNumber(s.Number))
+                .ThenBy(s => s.Number)
+                .Select(s =>
+                {
+                    var carriage = carriages.GetValueOrDefault(s.Coach);
+                    var fallbackLayout = GetFallbackLayout(s.ClassType, s.Coach);
+
+                    return new TripSeatAvailabilityDto
+                    {
+                        SeatId = s.Id,
+                        Coach = s.Coach,
+                        Number = s.Number,
+                        ClassType = s.ClassType,
+                        IsAvailable = s.IsAvailable && !bookedSeatIds.Contains(s.Id),
+                        CarriagePosition = carriage?.Position ?? GetFallbackCoachNumber(s.Coach),
+                        CarriageClass = carriage?.ClassType ?? s.ClassType,
+                        LayoutType = string.IsNullOrWhiteSpace(carriage?.LayoutType) ? fallbackLayout : carriage.LayoutType,
+                        VehicleType = carriage?.VehicleType ?? string.Empty,
+                        HasBikeSpace = carriage?.HasBikeSpace ?? false,
+                        HasAccessibleSpace = carriage?.HasAccessibleSpace ?? false,
+                        HasFamilyCompartment = carriage?.HasFamilyCompartment ?? false,
+                        HasDiningSection = carriage?.HasDiningSection ?? false,
+                        CarriageNotes = carriage?.Notes ?? string.Empty
+                    };
+                })
+                .ToList();
+        }
+
+        private static int GetCarriagePosition(string coach, IReadOnlyDictionary<string, TrainCarriage> carriages)
+        {
+            if (carriages.TryGetValue(coach, out var carriage))
+                return carriage.Position;
+
+            return GetFallbackCoachNumber(coach);
+        }
+
+        private static int GetFallbackCoachNumber(string value)
+        {
+            return int.TryParse(value, out var number) ? number : int.MaxValue;
+        }
+
+        private static int ParseSeatNumber(string value)
+        {
+            return int.TryParse(value, out var number) ? number : int.MaxValue;
+        }
+
+        private static string GetFallbackLayout(string classType, string coach)
+        {
+            if (classType.Contains("1", StringComparison.OrdinalIgnoreCase))
+                return "FirstCompartment";
+
+            var coachNumber = GetFallbackCoachNumber(coach);
+            return coachNumber == 2 ? "ComboAccessible" : "OpenSecond";
         }
 
         private static TripSearchResultDto ToSearchResult(Trip trip)

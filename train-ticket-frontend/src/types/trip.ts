@@ -36,4 +36,13 @@ export type TripSeatAvailability = {
   number: string;
   classType: string;
   isAvailable: boolean;
+  carriagePosition: number;
+  carriageClass: string;
+  layoutType: string;
+  vehicleType: string;
+  hasBikeSpace: boolean;
+  hasAccessibleSpace: boolean;
+  hasFamilyCompartment: boolean;
+  hasDiningSection: boolean;
+  carriageNotes: string;
 };

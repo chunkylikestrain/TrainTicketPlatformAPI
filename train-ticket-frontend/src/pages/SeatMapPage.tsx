@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { createBookingHold } from "../api/bookingApi";
 import { getTripById, getTripSeats } from "../api/tripApi";
+import CarriageSeatMap, { type CarriageTemplate } from "../components/CarriageSeatMap";
 import type { TripDetails, TripSeatAvailability } from "../types/trip";
 
 function formatDate(value?: string) {
@@ -27,16 +28,6 @@ function formatTime(value?: string) {
   }).format(new Date(value));
 }
 
-function chunkSeats(seats: TripSeatAvailability[]) {
-  const rows: TripSeatAvailability[][] = [[], [], []];
-
-  seats.forEach((seat, index) => {
-    rows[index % rows.length].push(seat);
-  });
-
-  return rows;
-}
-
 function SeatMapPage() {
   const { tripId = "" } = useParams();
   const navigate = useNavigate();
@@ -44,6 +35,7 @@ function SeatMapPage() {
   const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
   const [trip, setTrip] = useState<TripDetails | null>(null);
   const [seats, setSeats] = useState<TripSeatAvailability[]>([]);
+  const [activeCoach, setActiveCoach] = useState("");
   const [selectedSeat, setSelectedSeat] = useState<TripSeatAvailability | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreatingHold, setIsCreatingHold] = useState(false);
@@ -68,7 +60,34 @@ function SeatMapPage() {
       .finally(() => setIsLoading(false));
   }, [tripId]);
 
-  const seatRows = useMemo(() => chunkSeats(seats), [seats]);
+  const coachOptions = useMemo(() => {
+    return [...new Set(seats.map((seat) => seat.coach))].sort((first, second) => {
+      return getCoachPosition(seats, first) - getCoachPosition(seats, second);
+    });
+  }, [seats]);
+
+  useEffect(() => {
+    if (coachOptions.length === 0) {
+      setActiveCoach("");
+      return;
+    }
+
+    setActiveCoach((currentCoach) => {
+      if (currentCoach && coachOptions.includes(currentCoach)) {
+        return currentCoach;
+      }
+
+      return coachOptions.find((coach) =>
+        seats.some((seat) => seat.coach === coach && matchesSelectedClass(seat.classType, selectedClass)),
+      ) ?? coachOptions[0];
+    });
+  }, [coachOptions, seats, selectedClass]);
+
+  const activeCoachIndex = Math.max(0, coachOptions.indexOf(activeCoach));
+  const activeCoachSeats = useMemo(() => {
+    return seats.filter((seat) => seat.coach === activeCoach);
+  }, [activeCoach, seats]);
+  const activeTemplate = getTemplateForCoach(activeCoachSeats, selectedClass, activeCoachIndex, coachOptions.length);
 
   async function handleConfirmSeat() {
     if (!trip || !selectedSeat) {
@@ -101,6 +120,15 @@ function SeatMapPage() {
     }
   }
 
+  function moveCoach(direction: -1 | 1) {
+    if (coachOptions.length <= 1) {
+      return;
+    }
+
+    const nextIndex = (activeCoachIndex + direction + coachOptions.length) % coachOptions.length;
+    setActiveCoach(coachOptions[nextIndex]);
+  }
+
   return (
     <main className="seat-map-page">
       <section className="seat-map-panel">
@@ -130,52 +158,56 @@ function SeatMapPage() {
             <span aria-hidden="true">-&gt;</span>
             <strong>Train direction</strong>
           </div>
-          {[...new Set(seats.map((seat) => seat.coach))].map((coach, index) => (
-            <button type="button" className={index === 0 ? "car-tab car-tab-active" : "car-tab"} key={coach}>
-              <span>{index + 1}</span>
+          {coachOptions.map((coach, index) => {
+            const coachSeats = seats.filter((seat) => seat.coach === coach);
+            const hasSelectedClass = coachSeats.some((seat) => matchesSelectedClass(seat.classType, selectedClass));
+            return (
+            <button
+              type="button"
+              className={[
+                "car-tab",
+                coach === activeCoach ? "car-tab-active" : "",
+                hasSelectedClass ? "" : "car-tab-muted",
+              ].join(" ")}
+              onClick={() => setActiveCoach(coach)}
+              key={coach}
+            >
+              <span>{getCarBadge(seats, coach, selectedClass, index, coachOptions.length)}</span>
               <small>Car {coach}</small>
             </button>
-          ))}
+            );
+          })}
+          <span className="car-tab car-tab-locomotive" aria-hidden="true">
+            <span />
+            <small>Locomotive</small>
+          </span>
         </section>
 
         {isLoading && <div className="seat-map-notice">Loading live seats...</div>}
         {error && <div className="seat-map-notice">{error}</div>}
 
-        {!isLoading && seats.length > 0 && (
+        {!isLoading && activeCoachSeats.length > 0 && (
           <section className="seat-map-stage">
-            <button type="button" className="seat-nav" aria-label="Previous car">
+            <button type="button" className="seat-nav" aria-label="Previous car" onClick={() => moveCoach(-1)}>
               &lt;
             </button>
-            <div className="coach-layout" aria-label="Car seat map">
-              {seatRows.map((row, rowIndex) => (
-                <div className={rowIndex === 1 ? "seat-row seat-row-middle" : "seat-row"} key={rowIndex}>
-                  {row.map((seat) => {
-                    const isSelected = selectedSeat?.seatId === seat.seatId;
-
-                    return (
-                      <button
-                        type="button"
-                        className={`seat-cell ${seat.isAvailable ? "seat-available" : "seat-unavailable"} ${
-                          isSelected ? "seat-selected" : ""
-                        }`}
-                        disabled={!seat.isAvailable}
-                        onClick={() => setSelectedSeat(seat)}
-                        key={seat.seatId}
-                      >
-                        {seat.number}
-                      </button>
-                    );
-                  })}
-                  {rowIndex === 0 && <span className="coach-facility">WC</span>}
-                  {rowIndex === 2 && <span className="coach-facility">Bag</span>}
-                </div>
-              ))}
-              <div className="coach-class-marker">{selectedClass}</div>
-            </div>
-            <button type="button" className="seat-nav" aria-label="Next car">
+            <CarriageSeatMap
+              coach={activeCoach}
+              selectedClass={selectedClass}
+              selectedSeat={selectedSeat}
+              seats={activeCoachSeats}
+              template={activeTemplate}
+              isSeatSelectable={(seat) => matchesSelectedClass(seat.classType, selectedClass)}
+              onSelectSeat={setSelectedSeat}
+            />
+            <button type="button" className="seat-nav" aria-label="Next car" onClick={() => moveCoach(1)}>
               &gt;
             </button>
           </section>
+        )}
+
+        {!isLoading && seats.length > 0 && activeCoachSeats.length === 0 && (
+          <div className="seat-map-notice">No seats are available for this class on the selected car.</div>
         )}
 
         <section className="seat-legend">
@@ -214,6 +246,155 @@ function SeatMapPage() {
       </section>
     </main>
   );
+}
+
+function matchesSelectedClass(classType: string, selectedClass: string) {
+  return classType.toLowerCase().includes(selectedClass);
+}
+
+function getCoachPosition(seats: TripSeatAvailability[], coach: string) {
+  const seat = seats.find((item) => item.coach === coach);
+  if (seat?.carriagePosition) {
+    return seat.carriagePosition;
+  }
+
+  const parsed = Number.parseInt(coach, 10);
+  return Number.isNaN(parsed) ? Number.MAX_SAFE_INTEGER : parsed;
+}
+
+function getTemplateForCoach(
+  coachSeats: TripSeatAvailability[],
+  selectedClass: string,
+  coachIndex: number,
+  coachCount: number,
+): CarriageTemplate {
+  const layoutType = coachSeats[0]?.layoutType?.toLowerCase();
+
+  if (layoutType === "opensecond") {
+    return "open-second";
+  }
+
+  if (layoutType === "opensecondaccessible") {
+    return "open-second-accessible";
+  }
+
+  if (layoutType === "opensecondbike") {
+    return "open-second-bike";
+  }
+
+  if (layoutType === "openfirst") {
+    return "open-first";
+  }
+
+  if (layoutType === "comboaccessible") {
+    return "combo-accessible";
+  }
+
+  if (layoutType === "combosecondwheelchairbike") {
+    return "combo-second-wheelchair-bike";
+  }
+
+  if (layoutType === "combofirstsecond") {
+    return "combo-first-second";
+  }
+
+  if (layoutType === "firstcompartment") {
+    return "first-compartment";
+  }
+
+  if (layoutType === "secondcompartment") {
+    return "second-compartment";
+  }
+
+  if (layoutType === "mixedfirstsecond") {
+    return "mixed";
+  }
+
+  if (layoutType === "emufirstsecond") {
+    return "emu-first-second";
+  }
+
+  if (layoutType === "emusecondopen") {
+    return "emu-second-open";
+  }
+
+  if (layoutType === "emusecondfamilyopen") {
+    return "emu-second-family-open";
+  }
+
+  if (layoutType === "emudiningaccessible") {
+    return "emu-dining-accessible";
+  }
+
+  if (layoutType === "emusecondquiet") {
+    return "emu-second-quiet";
+  }
+
+  if (layoutType === "restaurant") {
+    return "restaurant";
+  }
+
+  if (selectedClass === "1") {
+    return coachCount > 1 && coachIndex === 0 ? "mixed" : "first-compartment";
+  }
+
+  if (coachIndex === 1) {
+    return "combo-accessible";
+  }
+
+  if (coachIndex === 2) {
+    return "second-compartment";
+  }
+
+  if (coachIndex === 0 && coachCount > 3) {
+    return "mixed";
+  }
+
+  return "open-second";
+}
+
+function getCarBadge(
+  seats: TripSeatAvailability[],
+  coach: string,
+  selectedClass: string,
+  coachIndex: number,
+  coachCount: number,
+) {
+  const layoutType = seats.find((seat) => seat.coach === coach)?.layoutType?.toLowerCase() ?? "";
+  const carriageClass = seats.find((seat) => seat.coach === coach)?.carriageClass?.toLowerCase() ?? "";
+  if (layoutType === "combofirstsecond" || layoutType === "mixedfirstsecond" || layoutType === "emufirstsecond") {
+    return "1 2";
+  }
+
+  if (layoutType === "emudiningaccessible") {
+    return "2 WARS";
+  }
+
+  if (layoutType === "emusecondquiet") {
+    return "2 quiet";
+  }
+
+  if (carriageClass.includes("1") && carriageClass.includes("2")) {
+    return "1 2";
+  }
+
+  if (carriageClass.includes("1")) {
+    return "1";
+  }
+
+  if (carriageClass.includes("2")) {
+    return "2";
+  }
+
+  if (selectedClass === "1" && (coachIndex === 0 || coachCount === 1)) {
+    return "1";
+  }
+
+  if (selectedClass === "2" && coachIndex === 0 && coachCount > 3) {
+    return "1 2";
+  }
+
+  return "2";
 }
 
 export default SeatMapPage;

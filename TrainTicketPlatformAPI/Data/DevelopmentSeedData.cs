@@ -42,6 +42,29 @@ namespace TrainTicketPlatformAPI.Data
             decimal Class2Price,
             string Platform,
             string Track);
+        private sealed record DemoCarriageSeed(
+            string TrainCode,
+            string Coach,
+            int Position,
+            string ClassType,
+            string LayoutType,
+            string VehicleType,
+            int SeatCount,
+            bool HasBikeSpace = false,
+            bool HasAccessibleSpace = false,
+            bool HasFamilyCompartment = false,
+            bool HasDiningSection = false,
+            string Notes = "");
+        private sealed record RollingStockOptionSeed(
+            string Category,
+            string Series,
+            string DisplayName,
+            string Manufacturer,
+            string MaxSpeed,
+            int? FleetCount = null,
+            int? UnitCount = null,
+            string Notes = "",
+            string Status = "Active");
         private sealed record StationDisplaySeed(string Code, string Name, string City, string LocalityName);
 
         private static readonly CountrySeed[] ReferenceCountries =
@@ -217,15 +240,65 @@ namespace TrainTicketPlatformAPI.Data
 
         private static readonly DemoTrainSeed[] DemoTrains =
         [
-            new("EIP-3508", "EIP 3508", "Express InterCity Premium", 6, 48),
-            new("EIP-3510", "EIP 3510", "Express InterCity Premium", 6, 48),
+            new("EIP-3508", "EIP 3508", "Express InterCity Premium", 7, 98),
+            new("EIP-3510", "EIP 3510", "Express InterCity Premium", 7, 98),
             new("EIC-1602", "EIC 1602 Kaszub", "Express InterCity", 5, 52),
             new("IC-56", "IC 56 Wawel", "InterCity", 5, 56),
             new("IC-3806", "IC 3806 Zefir", "InterCity", 4, 56),
             new("IC-6102", "IC 6102 Heweliusz", "InterCity", 5, 56),
             new("IC-7310", "IC 7310 Malczewski", "InterCity", 4, 56),
+            new("IC-3810", "IC 3810/1 Kossak", "InterCity", 8, 72),
             new("IC-8120", "IC 8120 Odra", "InterCity", 4, 56),
             new("TLK-38170", "TLK 38170 Ustronie", "Twoje Linie Kolejowe", 6, 60)
+        ];
+
+        private static readonly DemoCarriageSeed[] DemoCarriages =
+        [
+            new("EIP-3508", "1", 1, "Class 1", "OpenFirst", "ED250-1 first class cab unit", 54, Notes: "Fixed first-class Pendolino cab unit."),
+            new("EIP-3508", "2", 2, "Class 2", "EmuSecondFamilyOpen", "ED250-2 family and open second class", 98, HasFamilyCompartment: true, Notes: "Second-class unit with family compartment and open-space seating."),
+            new("EIP-3508", "3", 3, "Class 2", "EmuDiningAccessible", "ED250-3 accessible dining unit", 12, HasAccessibleSpace: true, HasDiningSection: true, Notes: "Accessible WARS dining unit with wheelchair spaces."),
+            new("EIP-3508", "4", 4, "Class 2", "EmuSecondOpen", "ED250-4 second class open unit", 88, Notes: "Fixed second-class open-space unit."),
+            new("EIP-3508", "5", 5, "Class 2", "EmuSecondOpen", "ED250-5 second class open unit", 88, Notes: "Fixed second-class open-space unit."),
+            new("EIP-3508", "6", 6, "Class 2", "EmuSecondOpen", "ED250-6 second class open unit", 88, Notes: "Fixed second-class open-space unit."),
+            new("EIP-3508", "7", 7, "Class 2", "EmuSecondQuiet", "ED250-7 quiet second class cab unit", 88, Notes: "Dedicated quiet second-class end unit, not an accessible coach."),
+            new("EIP-3510", "1", 1, "Class 1", "OpenFirst", "ED250-1 first class cab unit", 54, Notes: "Fixed first-class Pendolino cab unit."),
+            new("EIP-3510", "2", 2, "Class 2", "EmuSecondFamilyOpen", "ED250-2 family and open second class", 98, HasFamilyCompartment: true, Notes: "Second-class unit with family compartment and open-space seating."),
+            new("EIP-3510", "3", 3, "Class 2", "EmuDiningAccessible", "ED250-3 accessible dining unit", 12, HasAccessibleSpace: true, HasDiningSection: true, Notes: "Accessible WARS dining unit with wheelchair spaces."),
+            new("EIP-3510", "4", 4, "Class 2", "EmuSecondOpen", "ED250-4 second class open unit", 88, Notes: "Fixed second-class open-space unit."),
+            new("EIP-3510", "5", 5, "Class 2", "EmuSecondOpen", "ED250-5 second class open unit", 88, Notes: "Fixed second-class open-space unit."),
+            new("EIP-3510", "6", 6, "Class 2", "EmuSecondOpen", "ED250-6 second class open unit", 88, Notes: "Fixed second-class open-space unit."),
+            new("EIP-3510", "7", 7, "Class 2", "EmuSecondQuiet", "ED250-7 quiet second class cab unit", 88, Notes: "Dedicated quiet second-class end unit, not an accessible coach."),
+            new("IC-3810", "18", 1, "Class 2", "SecondCompartment", "B10nouz 112A", 66, Notes: "Second-class compartment coach with 10 compartments."),
+            new("IC-3810", "17", 2, "Class 2", "OpenSecond", "B9nopu(v)z", 88, Notes: "High-capacity second-class open-space coach with 2+2 seating."),
+            new("IC-3810", "16", 3, "Class 2", "OpenSecondBike", "111Arow B7nopuvz", 72, HasBikeSpace: true, Notes: "Second-class open-space coach with bicycle racks."),
+            new("IC-3810", "15", 4, "Class 2", "OpenSecond", "B9nopuvz", 88, Notes: "High-capacity second-class open-space coach with 2+2 seating."),
+            new("IC-3810", "14", 5, "Class 2", "OpenSecondAccessible", "111Ainw B8bnopuz", 82, HasAccessibleSpace: true, Notes: "Second-class open-space coach with wheelchair places and accessible toilet."),
+            new("IC-3810", "13", 6, "Class 2", "ComboSecondWheelchairBike", "111A-30 B6bnouvz", 64, HasBikeSpace: true, HasAccessibleSpace: true, HasFamilyCompartment: true, Notes: "Combo coach with wheelchair spaces, open seats, compartment section, and bike racks."),
+            new("IC-3810", "12", 7, "Dining", "Restaurant", "WRnouz 113Aa", 0, HasDiningSection: true, Notes: "Restaurant and bar car operated by WARS."),
+            new("IC-3810", "11", 8, "Class 1", "FirstCompartment", "A9nouz 140A-z", 54)
+        ];
+
+        private static readonly RollingStockOptionSeed[] RollingStockOptions =
+        [
+            new("Electric locomotive", "EP05", "EP05", "Skoda", "160 km/h", 1, Notes: "Modernized by ZNTK Gdansk."),
+            new("Electric locomotive", "EU07", "EU07", "Pafawag / HCP", "125 km/h", 175),
+            new("Electric locomotive", "EP07", "EP07", "Pafawag / HCP", "125 km/h", 175, Notes: "Modernized by ZNTKiM."),
+            new("Electric locomotive", "EU07A", "EU07A", "HCP", "160 km/h", 3, Notes: "Modernized by ZNTK Olesnica / Olkol."),
+            new("Electric locomotive", "EP08", "EP08", "Pafawag", "140 km/h", 9),
+            new("Electric locomotive", "EP09", "EP09", "Pafawag", "160 km/h", 41),
+            new("Electric locomotive", "EU44", "EU44 Husarz", "Siemens", "230 km/h", 10),
+            new("Electric locomotive", "EU160", "EU160 Griffin", "Newag", "160 km/h", 96),
+            new("Electric locomotive", "EU200", "EU200 Griffin", "Newag", "200 km/h", 21, Notes: "21 in service out of 78 listed in source snapshot."),
+            new("Diesel locomotive", "SM42-6D", "SM42 6D", "Fablok", "90 km/h", 17),
+            new("Diesel locomotive", "SM42-18D", "SM42 18D", "Fablok", "90 km/h", 10, Notes: "Modernized by Newag."),
+            new("Diesel locomotive", "SU42", "SU42", "Fablok", "90 km/h", 10, Notes: "Modernized by Newag."),
+            new("Diesel locomotive", "SU160", "SU160 Gama", "Pesa", "160 km/h", 10, Notes: "Type 111Db."),
+            new("Diesel locomotive", "SM60", "SM60 EffiShunter 300", "CZ Loko", "60 km/h", 10),
+            new("Electric multiple unit", "ED74", "ED74 Bydgostia", "Pesa", "160 km/h", 14, 4),
+            new("Electric multiple unit", "ED160", "ED160 FLIRT3", "Stadler Polska", "160 km/h", 32, 8),
+            new("Electric multiple unit", "ED161", "ED161 Dart", "Pesa", "160 km/h", 20, 8),
+            new("Electric multiple unit", "ED250", "ED250 Pendolino", "Alstom", "250 km/h", 20, 7),
+            new("Electric multiple unit", "CORADIA-MAX", "Coradia Max", "Alstom", "200 km/h", 0, 6, "Planned fleet entry; source snapshot lists 0 out of 42.")
         ];
 
         private static readonly DemoScheduleSeed[] DemoSchedules =
@@ -239,6 +312,7 @@ namespace TrainTicketPlatformAPI.Data
             new("IC-6102", "GDN-WAW", new TimeSpan(16, 40, 0), 185, 98m, 65m, "2", "4"),
             new("IC-7310", "RZE-WAW", new TimeSpan(5, 48, 0), 250, 92m, 64m, "1", "2"),
             new("IC-7310", "WAW-RZE", new TimeSpan(17, 35, 0), 250, 92m, 64m, "6", "1"),
+            new("IC-3810", "PRZ-KOL", new TimeSpan(7, 50, 0), 683, 156m, 98m, "4", "2"),
             new("IC-8120", "WRO-WAW", new TimeSpan(9, 5, 0), 245, 99m, 69m, "3", "5"),
             new("IC-8120", "WAW-WRO", new TimeSpan(18, 15, 0), 245, 99m, 69m, "7", "2"),
             new("EIC-1602", "POZ-WAW", new TimeSpan(6, 45, 0), 170, 89m, 57m, "4", "4"),
@@ -290,6 +364,7 @@ namespace TrainTicketPlatformAPI.Data
 
             var seedLocations = await EnsureReferenceLocationsAsync(db, cancellationToken);
             await EnsureCleanStationDisplaysAsync(db, cancellationToken);
+            await EnsureRollingStockOptionsAsync(db, cancellationToken);
 
             var country = seedLocations.Countries["PL"];
             var mazowieckie = seedLocations.Regions[RegionKey("PL", "MZ")];
@@ -608,33 +683,134 @@ namespace TrainTicketPlatformAPI.Data
             await db.SaveChangesAsync(cancellationToken);
         }
 
-        private static async Task EnsureSeatsAsync(TrainTicketDbContext db, Train train, CancellationToken cancellationToken)
+        private static async Task EnsureSeatsAsync(
+            TrainTicketDbContext db,
+            Train train,
+            CancellationToken cancellationToken,
+            bool refreshExistingDemoSeats = false)
         {
-            if (await db.Seats.AnyAsync(s => s.TrainId == train.Id, cancellationToken))
-                return;
+            var existingSeats = await db.Seats
+                .Where(s => s.TrainId == train.Id)
+                .ToListAsync(cancellationToken);
 
-            var carriageCount = Math.Max(1, train.CarriageCount);
-            var seatsPerCarriage = Math.Max(4, train.SeatsPerCarriage);
+            if (existingSeats.Count > 0)
+            {
+                if (!refreshExistingDemoSeats)
+                    return;
+
+                var hasBookings = await db.Bookings
+                    .AnyAsync(b => b.TrainId == train.Id, cancellationToken);
+
+                if (hasBookings)
+                    return;
+
+                db.Seats.RemoveRange(existingSeats);
+                await db.SaveChangesAsync(cancellationToken);
+            }
+
+            var carriages = await db.TrainCarriages
+                .Where(c => c.TrainId == train.Id && c.SeatCount > 0)
+                .OrderBy(c => c.Position)
+                .ToListAsync(cancellationToken);
             var seats = new List<Seat>();
 
-            for (var carriage = 1; carriage <= carriageCount; carriage++)
+            if (carriages.Count == 0)
             {
-                var classType = carriage == 1 ? "Class 1" : "Class 2";
-                for (var number = 1; number <= seatsPerCarriage; number++)
+                var carriageCount = Math.Max(1, train.CarriageCount);
+                var seatsPerCarriage = Math.Max(4, train.SeatsPerCarriage);
+
+                for (var carriage = 1; carriage <= carriageCount; carriage++)
                 {
-                    seats.Add(new Seat
+                    var classType = carriage == 1 ? "Class 1" : "Class 2";
+                    for (var number = 1; number <= seatsPerCarriage; number++)
                     {
-                        TrainId = train.Id,
-                        Coach = carriage.ToString(),
-                        Number = number.ToString(),
-                        ClassType = classType,
-                        IsAvailable = true
-                    });
+                        seats.Add(new Seat
+                        {
+                            TrainId = train.Id,
+                            Coach = carriage.ToString(),
+                            Number = number.ToString(),
+                            ClassType = classType,
+                            IsAvailable = true
+                        });
+                    }
+                }
+            }
+            else
+            {
+                foreach (var carriage in carriages)
+                {
+                    for (var number = 1; number <= carriage.SeatCount; number++)
+                    {
+                        seats.Add(new Seat
+                        {
+                            TrainId = train.Id,
+                            Coach = carriage.Coach,
+                            Number = number.ToString(),
+                            ClassType = GetSeatClassType(carriage, number),
+                            IsAvailable = true
+                        });
+                    }
                 }
             }
 
             db.Seats.AddRange(seats);
             await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static async Task EnsureRollingStockOptionsAsync(
+            TrainTicketDbContext db,
+            CancellationToken cancellationToken)
+        {
+            foreach (var seed in RollingStockOptions)
+            {
+                var option = await db.RollingStockOptions
+                    .FirstOrDefaultAsync(
+                        item => item.Category == seed.Category && item.Series == seed.Series,
+                        cancellationToken);
+
+                if (option == null)
+                {
+                    option = new RollingStockOption
+                    {
+                        Category = seed.Category,
+                        Series = seed.Series
+                    };
+                    db.RollingStockOptions.Add(option);
+                }
+
+                option.DisplayName = seed.DisplayName;
+                option.Manufacturer = seed.Manufacturer;
+                option.MaxSpeed = seed.MaxSpeed;
+                option.FleetCount = seed.FleetCount;
+                option.UnitCount = seed.UnitCount;
+                option.Notes = seed.Notes;
+                option.Status = seed.Status;
+            }
+
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static string GetSeatClassType(TrainCarriage carriage, int seatNumber)
+        {
+            if (IsMixedClassCarriage(carriage))
+                return seatNumber <= GetFirstClassSeatCount(carriage) ? "Class 1" : "Class 2";
+
+            return carriage.ClassType == "Class 1/2" ? "Class 2" : carriage.ClassType;
+        }
+
+        private static bool IsMixedClassCarriage(TrainCarriage carriage) =>
+            carriage.ClassType == "Class 1/2" ||
+            carriage.LayoutType.Contains("FirstSecond", StringComparison.OrdinalIgnoreCase);
+
+        private static int GetFirstClassSeatCount(TrainCarriage carriage)
+        {
+            if (carriage.LayoutType.Equals("ComboFirstSecond", StringComparison.OrdinalIgnoreCase))
+                return Math.Min(18, carriage.SeatCount);
+
+            if (carriage.LayoutType.Equals("EmuFirstSecond", StringComparison.OrdinalIgnoreCase))
+                return Math.Min(16, carriage.SeatCount);
+
+            return Math.Min(18, carriage.SeatCount);
         }
 
         private static async Task EnsureDemoSchedulesAsync(
@@ -651,7 +827,8 @@ namespace TrainTicketPlatformAPI.Data
             foreach (var trainSeed in DemoTrains)
             {
                 var train = await EnsureDemoTrainAsync(db, trainSeed, cancellationToken);
-                await EnsureSeatsAsync(db, train, cancellationToken);
+                await EnsureDemoCarriagesAsync(db, train, trainSeed.Code, cancellationToken);
+                await EnsureSeatsAsync(db, train, cancellationToken, refreshExistingDemoSeats: true);
                 trains[trainSeed.Code] = train;
             }
 
@@ -771,6 +948,82 @@ namespace TrainTicketPlatformAPI.Data
 
             await db.SaveChangesAsync(cancellationToken);
             return train;
+        }
+
+        private static async Task EnsureDemoCarriagesAsync(
+            TrainTicketDbContext db,
+            Train train,
+            string trainCode,
+            CancellationToken cancellationToken)
+        {
+            var carriageSeeds = DemoCarriages
+                .Where(c => c.TrainCode.Equals(trainCode, StringComparison.OrdinalIgnoreCase))
+                .ToArray();
+
+            if (carriageSeeds.Length == 0)
+            {
+                carriageSeeds = Enumerable.Range(1, Math.Max(1, train.CarriageCount))
+                    .Select(position =>
+                    {
+                        var classType = position == 1 ? "Class 1" : "Class 2";
+                        var layoutType = position == 1 ? "FirstCompartment" : position == 2 ? "ComboAccessible" : "OpenSecond";
+                        return new DemoCarriageSeed(
+                            trainCode,
+                            position.ToString(),
+                            position,
+                            classType,
+                            layoutType,
+                            string.Empty,
+                            Math.Max(4, train.SeatsPerCarriage),
+                            HasAccessibleSpace: layoutType == "ComboAccessible",
+                            HasFamilyCompartment: layoutType == "ComboAccessible");
+                    })
+                    .ToArray();
+            }
+
+            var expectedCoaches = carriageSeeds
+                .Select(seed => seed.Coach)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var currentCarriages = await db.TrainCarriages
+                .Where(c => c.TrainId == train.Id)
+                .ToListAsync(cancellationToken);
+            var staleCarriages = currentCarriages
+                .Where(c => !expectedCoaches.Contains(c.Coach))
+                .ToList();
+
+            if (staleCarriages.Count > 0)
+                db.TrainCarriages.RemoveRange(staleCarriages);
+
+            foreach (var seed in carriageSeeds)
+            {
+                var carriage = await db.TrainCarriages
+                    .FirstOrDefaultAsync(
+                        c => c.TrainId == train.Id && c.Coach == seed.Coach,
+                        cancellationToken);
+
+                if (carriage == null)
+                {
+                    carriage = new TrainCarriage
+                    {
+                        TrainId = train.Id,
+                        Coach = seed.Coach
+                    };
+                    db.TrainCarriages.Add(carriage);
+                }
+
+                carriage.Position = seed.Position;
+                carriage.ClassType = seed.ClassType;
+                carriage.LayoutType = seed.LayoutType;
+                carriage.VehicleType = seed.VehicleType;
+                carriage.SeatCount = seed.SeatCount;
+                carriage.HasBikeSpace = seed.HasBikeSpace;
+                carriage.HasAccessibleSpace = seed.HasAccessibleSpace;
+                carriage.HasFamilyCompartment = seed.HasFamilyCompartment;
+                carriage.HasDiningSection = seed.HasDiningSection;
+                carriage.Notes = seed.Notes;
+            }
+
+            await db.SaveChangesAsync(cancellationToken);
         }
 
         private static async Task EnsureFaresAsync(
