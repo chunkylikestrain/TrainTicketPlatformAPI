@@ -10,7 +10,6 @@ The project demonstrates passenger ticket search and booking, guest checkout, lo
 TrainTicketPlatformAPI/       ASP.NET Core Web API, EF Core models, services, controllers, migrations, seed data
 train-ticket-frontend/        Vite + React + TypeScript frontend
 TrainTicketPlatformAPI.Tests/ NUnit tests for services and API behavior
-TrainTicketApp/               Legacy WinForms client kept for compatibility/reference
 PasswordHasher/               Small helper utility for password hash generation
 ```
 
