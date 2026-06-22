@@ -1,0 +1,2 @@
+train-ticket-frontend/src\pages\SeatMapPage.tsx
+train-ticket-frontend/src\pages\admin\AdminCreateTrainPage.tsx

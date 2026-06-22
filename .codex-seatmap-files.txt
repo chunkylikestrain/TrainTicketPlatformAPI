@@ -1,0 +1,7 @@
+train-ticket-frontend/src\App.css
+train-ticket-frontend/src\App.tsx
+train-ticket-frontend/src\components\TripCard.tsx
+train-ticket-frontend/src\components\CarriageSeatMap.tsx
+train-ticket-frontend/src\pages\admin\AdminCreateTrainPage.tsx
+train-ticket-frontend/src\pages\SummaryPage.tsx
+train-ticket-frontend/src\pages\SeatMapPage.tsx

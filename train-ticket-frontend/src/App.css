@@ -1839,6 +1839,12 @@
     #fff;
 }
 
+.coach-corridor-short {
+  flex: 0 0 318px;
+  min-height: 34px;
+  border-bottom-color: #c8ccd2;
+}
+
 .coach-corridor b {
   display: grid;
   place-items: center;
@@ -1891,6 +1897,117 @@
 .real-coach-emu-second-open .coach-corridor {
   flex-basis: 1040px;
   min-height: 42px;
+}
+
+.real-coach-emu-second-family-open .coach-shell {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.real-coach-emu-second-family-open .coach-plan-row:nth-child(3) {
+  min-height: 52px;
+}
+
+.real-coach-emu-second-family-open .coach-plan-row:nth-child(4),
+.real-coach-emu-second-family-open .coach-plan-row:nth-child(5) {
+  margin-left: 8px;
+}
+
+.graphic-coach-shell {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 0 12px;
+  border-block: 1px solid #a6adba;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.graphic-coach-canvas {
+  position: relative;
+  width: 1320px;
+  height: 392px;
+  background: var(--white);
+}
+
+.graphic-coach-lines {
+  position: absolute;
+  inset: 0;
+  width: 1320px;
+  height: 392px;
+  pointer-events: none;
+}
+
+.graphic-coach-outline,
+.graphic-open-row-guide {
+  stroke: #9aa4b5;
+  stroke-width: 1;
+}
+
+.graphic-corridor-band {
+  fill: none;
+  stroke: #e8f3fb;
+  stroke-width: 46;
+  stroke-linecap: square;
+  stroke-linejoin: round;
+}
+
+.graphic-corridor-spine {
+  fill: none;
+  stroke: #061a55;
+  stroke-width: 3;
+  stroke-linecap: square;
+  stroke-linejoin: round;
+}
+
+.graphic-transition-line {
+  stroke: #111827;
+  stroke-width: 2;
+}
+
+.graphic-compartment-box {
+  position: absolute;
+  z-index: 1;
+  width: 118px;
+  height: 118px;
+  box-sizing: border-box;
+  border: 2px solid #111827;
+  border-bottom-width: 1px;
+  border-bottom-color: #d8dee8;
+  background: var(--white);
+}
+
+.graphic-facility {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  border: 2px solid #174176;
+  border-radius: 8px;
+  background: var(--white);
+  color: #061a55;
+  font-size: 0.82rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.graphic-seat-cell {
+  position: absolute;
+  z-index: 3;
+}
+
+.graphic-class-marker {
+  position: absolute;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 2px solid #174176;
+  border-radius: 999px;
+  background: var(--white);
+  color: #061a55;
+  font-size: 2rem;
 }
 
 .real-coach-first-compartment .coach-plan-row:first-child,

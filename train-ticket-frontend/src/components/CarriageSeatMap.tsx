@@ -28,7 +28,7 @@ type SeatPlanSlot =
   | { type: "compartment"; seats: number; classType?: "Class 1" | "Class 2" }
   | { type: "facility"; label: string; tone?: "large" | "long" }
   | { type: "class"; label: string }
-  | { type: "corridor"; label?: string }
+  | { type: "corridor"; label?: string; size?: "short" }
   | { type: "divider" }
   | { type: "space"; size?: "wide" | "long" };
 
@@ -45,6 +45,25 @@ type CarriageSeatMapProps = {
   template: CarriageTemplate;
   isSeatSelectable?: (seat: TripSeatAvailability) => boolean;
   onSelectSeat: (seat: TripSeatAvailability) => void;
+};
+
+type GraphicSeatSlot = {
+  number: string;
+  x: number;
+  y: number;
+};
+
+type GraphicFacilitySlot = {
+  label: string;
+  x: number;
+  y: number;
+  width?: number;
+  height?: number;
+};
+
+type GraphicCompartmentSlot = {
+  x: number;
+  y: number;
 };
 
 function seatSlots(count: number, classType?: "Class 1" | "Class 2"): SeatPlanSlot[] {
@@ -288,7 +307,7 @@ function buildSecondFamilyOpenTemplate(seatCount: number): SeatPlanSlot[][] {
     [
       { type: "facility", label: "WC", tone: "large" },
       { type: "divider" },
-      ...firstFamilyBlock,
+      { type: "corridor", size: "short" },
       { type: "facility", label: "Family", tone: "long" },
       { type: "divider" },
       ...openRowSeats(rowSeats[0], "Class 2"),
@@ -296,20 +315,24 @@ function buildSecondFamilyOpenTemplate(seatCount: number): SeatPlanSlot[][] {
     [
       { type: "facility", label: "Cabin", tone: "large" },
       { type: "divider" },
-      ...secondFamilyBlock,
-      { type: "space", size: "wide" },
+      ...firstFamilyBlock,
+      { type: "space", size: "long" },
       ...openRowSeats(rowSeats[1], "Class 2"),
       { type: "divider" },
       { type: "facility", label: "WC", tone: "large" },
     ],
     [
       { type: "space", size: "wide" },
-      { type: "corridor", label: "2" },
+      { type: "divider" },
+      ...secondFamilyBlock,
       { type: "space", size: "wide" },
+      { type: "corridor", label: "2" },
     ],
     [
       { type: "facility", label: "Bag" },
       { type: "divider" },
+      { type: "space", size: "long" },
+      { type: "space", size: "wide" },
       ...openRowSeats(rowSeats[2], "Class 2"),
       { type: "divider" },
       { type: "facility", label: "Bag" },
@@ -317,6 +340,8 @@ function buildSecondFamilyOpenTemplate(seatCount: number): SeatPlanSlot[][] {
     [
       { type: "facility", label: "Stroller", tone: "long" },
       { type: "divider" },
+      { type: "space", size: "long" },
+      { type: "space", size: "wide" },
       ...openRowSeats(rowSeats[3], "Class 2"),
       { type: "divider" },
       { type: "facility", label: "WC", tone: "large" },
@@ -517,6 +542,60 @@ function takeNextSeat(
   return seat;
 }
 
+function numberRange(start: number, end: number) {
+  return Array.from({ length: end - start + 1 }, (_, index) => String(start + index));
+}
+
+function graphicSplitRow(numbers: string[], x: number, y: number): GraphicSeatSlot[] {
+  return numbers.map((number, index) => ({
+    number,
+    x: x + index * 54 + (index >= 6 ? 54 : 0),
+    y,
+  }));
+}
+
+function graphicCompartment(numbers: string[], x: number, y: number): GraphicSeatSlot[] {
+  const positions = [
+    { x, y },
+    { x: x + 54, y },
+    { x, y: y + 54 },
+    { x: x + 54, y: y + 54 },
+  ];
+
+  return numbers.slice(0, 4).map((number, index) => ({
+    number,
+    x: positions[index].x,
+    y: positions[index].y,
+  }));
+}
+
+function buildFamilyOpenGraphicSeats(): GraphicSeatSlot[] {
+  return [
+    ...graphicCompartment(numberRange(1, 4), 190, 144),
+    ...graphicCompartment(numberRange(5, 8), 312, 144),
+    ...graphicCompartment(numberRange(9, 12), 434, 144),
+    ...graphicSplitRow(numberRange(13, 23), 640, 74),
+    ...graphicSplitRow(numberRange(24, 34), 640, 130),
+    ...graphicSplitRow(numberRange(35, 45), 640, 250),
+    ...graphicSplitRow(numberRange(46, 56), 640, 306),
+  ];
+}
+
+const familyOpenFacilities: GraphicFacilitySlot[] = [
+  { label: "WC", x: 26, y: 72, width: 82, height: 48 },
+  { label: "Cabin", x: 26, y: 184, width: 82, height: 48 },
+  { label: "Bag", x: 26, y: 298, width: 72, height: 48 },
+  { label: "Family", x: 556, y: 126, width: 94, height: 48 },
+  { label: "WC", x: 1214, y: 72, width: 82, height: 48 },
+  { label: "WC", x: 1214, y: 130, width: 82, height: 48 },
+];
+
+const familyOpenCompartments: GraphicCompartmentSlot[] = [
+  { x: 180, y: 128 },
+  { x: 302, y: 128 },
+  { x: 424, y: 128 },
+];
+
 function CarriageSeatMap({
   coach,
   selectedClass,
@@ -526,6 +605,20 @@ function CarriageSeatMap({
   isSeatSelectable,
   onSelectSeat,
 }: CarriageSeatMapProps) {
+  if (template === "emu-second-family-open") {
+    return (
+      <GraphicFamilyOpenCoach
+        coach={coach}
+        selectedClass={selectedClass}
+        selectedSeat={selectedSeat}
+        seats={seats}
+        template={template}
+        isSeatSelectable={isSeatSelectable}
+        onSelectSeat={onSelectSeat}
+      />
+    );
+  }
+
   const rows = buildRows(template, seats);
 
   return (
@@ -536,6 +629,72 @@ function CarriageSeatMap({
             {row.map((slot, slotIndex) => renderSlot(slot, coach, slotIndex, selectedSeat, isSeatSelectable, onSelectSeat))}
           </div>
         ))}
+      </div>
+      <p className="coach-caption">
+        Car {coach} - Class {selectedClass} - {templateLabel(template)}
+      </p>
+    </div>
+  );
+}
+
+function GraphicFamilyOpenCoach({
+  coach,
+  selectedClass,
+  selectedSeat,
+  seats,
+  template,
+  isSeatSelectable,
+  onSelectSeat,
+}: CarriageSeatMapProps) {
+  const seatsByNumber = new Map(seats.map((seat) => [seat.number.trim(), seat]));
+  const slots = buildFamilyOpenGraphicSeats();
+
+  return (
+    <div className={`real-coach-layout real-coach-${template} graphic-coach-layout`} aria-label={`Car ${coach} seat map`}>
+      <div className="graphic-coach-shell">
+        <div className="graphic-coach-canvas">
+          <svg className="graphic-coach-lines" viewBox="0 0 1320 392" aria-hidden="true">
+            <line className="graphic-coach-outline" x1="0" y1="24" x2="1300" y2="24" />
+            <line className="graphic-coach-outline" x1="0" y1="368" x2="1300" y2="368" />
+            <path className="graphic-corridor-band" d="M 0 220 H 150 V 70 H 608 V 220 H 1300" />
+            <path className="graphic-corridor-spine" d="M 0 220 H 150 V 70 H 608 V 220 H 1300" />
+            <line className="graphic-transition-line" x1="150" y1="62" x2="150" y2="340" />
+            <line className="graphic-transition-line" x1="608" y1="62" x2="608" y2="340" />
+            <line className="graphic-transition-line" x1="1168" y1="62" x2="1168" y2="178" />
+            <line className="graphic-transition-line" x1="1168" y1="250" x2="1168" y2="340" />
+            <line className="graphic-open-row-guide" x1="626" y1="194" x2="1156" y2="194" />
+            <line className="graphic-open-row-guide" x1="626" y1="348" x2="1156" y2="348" />
+          </svg>
+
+          {familyOpenCompartments.map((slot, index) => (
+            <span className="graphic-compartment-box" style={{ left: slot.x, top: slot.y }} key={`family-compartment-${index}`} />
+          ))}
+
+          {familyOpenFacilities.map((facility) => (
+            <span
+              className="graphic-facility"
+              style={{ left: facility.x, top: facility.y, width: facility.width, height: facility.height }}
+              key={`${facility.label}-${facility.x}-${facility.y}`}
+            >
+              {facility.label}
+            </span>
+          ))}
+
+          <span className="graphic-class-marker" style={{ left: 878, top: 194 }}>
+            2
+          </span>
+
+          {slots.map((slot) =>
+            renderGraphicSeatCell(
+              seatsByNumber.get(slot.number) ?? null,
+              slot,
+              selectedSeat,
+              isSeatSelectable,
+              onSelectSeat,
+              `${coach}-graphic-seat-${slot.number}`,
+            ),
+          )}
+        </div>
       </div>
       <p className="coach-caption">
         Car {coach} - Class {selectedClass} - {templateLabel(template)}
@@ -597,7 +756,7 @@ function renderSlot(
 
   if (slot.type === "corridor") {
     return (
-      <span className="coach-corridor" key={`${coach}-corridor-${slotIndex}`}>
+      <span className={`coach-corridor ${slot.size === "short" ? "coach-corridor-short" : ""}`} key={`${coach}-corridor-${slotIndex}`}>
         {slot.label && <b>{slot.label}</b>}
       </span>
     );
@@ -617,6 +776,31 @@ function renderSlot(
       aria-hidden="true"
       key={`${coach}-space-${slotIndex}`}
     />
+  );
+}
+
+function renderGraphicSeatCell(
+  seat: TripSeatAvailability | null,
+  slot: GraphicSeatSlot,
+  selectedSeat: TripSeatAvailability | null,
+  isSeatSelectable: ((seat: TripSeatAvailability) => boolean) | undefined,
+  onSelectSeat: (seat: TripSeatAvailability) => void,
+  key: string,
+) {
+  const isSelected = Boolean(seat && selectedSeat?.seatId === seat.seatId);
+  const canSelect = Boolean(seat?.isAvailable && (!isSeatSelectable || isSeatSelectable(seat)));
+
+  return (
+    <button
+      type="button"
+      className={`graphic-seat-cell seat-cell ${canSelect ? "seat-available" : "seat-unavailable"} ${isSelected ? "seat-selected" : ""}`}
+      style={{ left: slot.x, top: slot.y }}
+      disabled={!canSelect}
+      onClick={() => canSelect && seat && onSelectSeat(seat)}
+      key={key}
+    >
+      {seat?.number ?? slot.number}
+    </button>
   );
 }
 

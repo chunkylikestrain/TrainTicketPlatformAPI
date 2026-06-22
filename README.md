@@ -39,6 +39,42 @@ flowchart TD
   Payment --> Ticket["Ticket confirmation and My tickets"]
 ```
 
+## Screenshots
+
+### Passenger Experience
+
+Home page with station search and autocomplete-ready booking form:
+
+![Passenger home page](docs/screenshots/homepage.png)
+
+Live connection results and class selection:
+
+![Search results page](docs/screenshots/searchresults.png)
+
+Seat selection with train consist and carriage layout:
+
+![Seat map page](docs/screenshots/seatmap.png)
+
+Travel summary, payment, and successful booking confirmation:
+
+![Travel summary page](docs/screenshots/travelsummary.png)
+
+![Payment page](docs/screenshots/payment.png)
+
+![Successful booking page](docs/screenshots/booking-successful.png)
+
+### Admin Experience
+
+Admin dashboard and operating views for train, route, and schedule management:
+
+![Admin dashboard](docs/screenshots/admindashboard.png)
+
+![Admin train manager](docs/screenshots/admintrainmanager.png)
+
+![Admin route manager](docs/screenshots/adminroutemanager.png)
+
+![Admin schedule manager](docs/screenshots/adminschedulemanager.png)
+
 ## Admin Flow
 
 ```mermaid
