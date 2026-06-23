@@ -7,6 +7,7 @@ import { clearAuthSession, getProfileDisplayName, saveCurrentUser } from "../api
 import { downloadTicketPdf } from "../api/ticketApi";
 import type { CurrentUser } from "../types/auth";
 import type { Booking } from "../types/booking";
+import { getDisruptionMessage, getDisruptionSeverity, hasDisruption } from "../utils/disruptions";
 
 const accountMenuItems = [
   "My tickets",
@@ -287,6 +288,13 @@ function MyProfilePage() {
                             <strong>{ticket.bookingStatus}</strong>
                           </div>
                         </div>
+
+                        {activeTicketSection === "tickets" && hasDisruption(ticket) && (
+                          <div className={`ticket-disruption-banner disruption-${getDisruptionSeverity(ticket) || "notice"}`}>
+                            <strong>Service update</strong>
+                            <span>{getDisruptionMessage(ticket)}</span>
+                          </div>
+                        )}
 
                         <div className="ticket-route-row">
                           <span>Route</span>

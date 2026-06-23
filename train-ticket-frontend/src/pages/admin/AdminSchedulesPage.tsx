@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { deleteAdminSchedule, getAdminSchedules } from "../../api/adminApi";
 import AdminLayout from "../../components/AdminLayout";
 import type { AdminSchedule } from "../../types/admin";
+import { getDisruptionMessage, getDisruptionSeverity, hasDisruption } from "../../utils/disruptions";
 
 function AdminSchedulesPage() {
   const [schedules, setSchedules] = useState<AdminSchedule[]>([]);
@@ -39,8 +40,20 @@ function AdminSchedulesPage() {
                 <td><strong>{schedule.trainCode}</strong></td>
                 <td>{schedule.route}</td>
                 <td><strong>Dep:</strong> {formatDate(schedule.departureTime)}<br /><small>Arr: {formatDate(schedule.arrivalTime)}</small></td>
-                <td>Plat. {schedule.platform || "-"} track {schedule.track || "-"}</td>
-                <td><span className={`status-pill status-${schedule.status.toLowerCase().replace(" ", "-")}`}>{schedule.status}</span></td>
+                <td>
+                  Plat. {schedule.platform || "-"} track {schedule.track || "-"}
+                  {schedule.hasPlatformChange && (
+                    <small>Changed from {schedule.originalPlatform || "-"} / {schedule.originalTrack || "-"}</small>
+                  )}
+                </td>
+                <td>
+                  <span className={`status-pill status-${schedule.status.toLowerCase().replace(" ", "-")}`}>{schedule.status}</span>
+                  {hasDisruption(schedule) && (
+                    <div className={`admin-disruption-note disruption-${getDisruptionSeverity(schedule) || "notice"}`}>
+                      {getDisruptionMessage(schedule)}
+                    </div>
+                  )}
+                </td>
                 <td><button type="button" onClick={() => handleDelete(schedule.id)} aria-label="Delete schedule"><DeleteOutlined /></button></td>
               </tr>
             ))}

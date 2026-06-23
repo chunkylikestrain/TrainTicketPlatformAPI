@@ -24,5 +24,10 @@ namespace TrainTicketPlatformAPI.Contracts.Admin
         public string StationCode { get; set; } = string.Empty;
         public string StationName { get; set; } = string.Empty;
         public int StopOrder { get; set; }
+        public int? ArrivalOffsetMinutes { get; set; }
+        public int? DepartureOffsetMinutes { get; set; }
+        public string Platform { get; set; } = string.Empty;
+        public string Track { get; set; } = string.Empty;
+        public string StopType { get; set; } = string.Empty;
     }
 }

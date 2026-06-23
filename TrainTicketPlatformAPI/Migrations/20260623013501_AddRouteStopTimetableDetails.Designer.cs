@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrainTicketPlatformAPI.Data;
 
@@ -11,9 +12,11 @@ using TrainTicketPlatformAPI.Data;
 namespace TrainTicketPlatformAPI.Migrations
 {
     [DbContext(typeof(TrainTicketDbContext))]
-    partial class TrainTicketDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260623013501_AddRouteStopTimetableDetails")]
+    partial class AddRouteStopTimetableDetails
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -859,46 +862,8 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.Property<DateTime>("ArrivalTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("CancellationReason")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)")
-                        .HasDefaultValue("");
-
-                    b.Property<int>("DelayMinutes")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DepartureTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("DisruptionMessage")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)")
-                        .HasDefaultValue("");
-
-                    b.Property<string>("DisruptionSeverity")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(30)
-                        .HasColumnType("nvarchar(30)")
-                        .HasDefaultValue("");
-
-                    b.Property<string>("OriginalPlatform")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
-                        .HasDefaultValue("");
-
-                    b.Property<string>("OriginalTrack")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)")
-                        .HasDefaultValue("");
 
                     b.Property<string>("Platform")
                         .IsRequired()

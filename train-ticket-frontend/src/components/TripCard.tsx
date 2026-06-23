@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
-import type { TripSearchResult } from "../types/trip";
+import type { TripCallingPatternStop, TripSearchResult } from "../types/trip";
+import { getDisruptionMessage, getDisruptionSeverity, hasDisruption } from "../utils/disruptions";
 
 type TripCardProps = {
   trip: TripSearchResult;
@@ -24,6 +25,21 @@ function formatDuration(start: string, end: string) {
   return `${hours}h ${rest}min`;
 }
 
+function formatStopTime(stop: TripCallingPatternStop) {
+  if (stop.arrivalTime && stop.departureTime && stop.arrivalTime !== stop.departureTime) {
+    return `${formatTime(stop.arrivalTime)}-${formatTime(stop.departureTime)}`;
+  }
+
+  const time = stop.departureTime ?? stop.arrivalTime;
+  return time ? formatTime(time) : "-";
+}
+
+function formatPlatform(stop: TripCallingPatternStop) {
+  const platform = stop.platform ? `Plat. ${stop.platform}` : "Plat. -";
+  const track = stop.track ? `track ${stop.track}` : "track -";
+  return `${platform} ${track}`;
+}
+
 function formatPrice(value: number | null, classOffset: number, currency: string) {
   if (value == null) {
     return "TBA";
@@ -36,6 +52,8 @@ function TripCard({ trip, rank = 0, isExpanded = false, purchaseQuery = "", onSe
   const isFast = rank < 2;
   const classOnePrice = formatPrice(trip.lowestFare, 44, trip.currency);
   const classTwoPrice = formatPrice(trip.lowestFare, 0, trip.currency);
+  const disruptionMessage = getDisruptionMessage(trip);
+  const disruptionSeverity = getDisruptionSeverity(trip);
 
   function classUrl(selectedClass: "1" | "2") {
     const params = new URLSearchParams(purchaseQuery);
@@ -81,6 +99,13 @@ function TripCard({ trip, rank = 0, isExpanded = false, purchaseQuery = "", onSe
         </div>
       </div>
 
+      {hasDisruption(trip) && disruptionMessage && (
+        <div className={`disruption-banner disruption-${disruptionSeverity || "notice"}`}>
+          <strong>Service update</strong>
+          <span>{disruptionMessage}</span>
+        </div>
+      )}
+
       {isExpanded && (
         <div className="connection-expanded-panel">
           <div className="connection-details">
@@ -89,24 +114,54 @@ function TripCard({ trip, rank = 0, isExpanded = false, purchaseQuery = "", onSe
             </button>
 
             <div className="route-timeline">
-              <div className="route-stop">
-                <strong>{formatTime(trip.departureTime)}</strong>
-                <span className="timeline-dot" />
-                <div>
-                  <b>{trip.departureStationName}</b>
-                  <small>{trip.trainName}</small>
+              {(trip.callingPattern.length > 0
+                ? trip.callingPattern
+                : [
+                    {
+                      stationId: trip.departureStationId,
+                      stationCode: trip.departureStationCode,
+                      stationName: trip.departureStationName,
+                      stopOrder: trip.departureStopOrder,
+                      arrivalTime: null,
+                      departureTime: trip.departureTime,
+                      arrivalOffsetMinutes: null,
+                      departureOffsetMinutes: null,
+                      dwellMinutes: 0,
+                      platform: "",
+                      track: "",
+                      stopType: "Terminus",
+                    },
+                    {
+                      stationId: trip.arrivalStationId,
+                      stationCode: trip.arrivalStationCode,
+                      stationName: trip.arrivalStationName,
+                      stopOrder: trip.arrivalStopOrder,
+                      arrivalTime: trip.arrivalTime,
+                      departureTime: null,
+                      arrivalOffsetMinutes: null,
+                      departureOffsetMinutes: null,
+                      dwellMinutes: 0,
+                      platform: "",
+                      track: "",
+                      stopType: "Terminus",
+                    },
+                  ]).map((stop, index) => (
+                <div className="route-stop" key={`${stop.stationId}-${stop.stopOrder}`}>
+                  <strong>{formatStopTime(stop)}</strong>
+                  <span className="timeline-dot" />
+                  <div>
+                    <b>{stop.stationName}</b>
+                    <small>
+                      {index === 0
+                        ? trip.trainName
+                        : stop.dwellMinutes > 0
+                          ? `${stop.dwellMinutes} min stop`
+                          : stop.stopType}
+                    </small>
+                  </div>
+                  <span>{formatPlatform(stop)}</span>
                 </div>
-                <span>Plat. 2 track 2</span>
-              </div>
-
-              <div className="route-stop">
-                <strong>{formatTime(trip.arrivalTime)}</strong>
-                <span className="timeline-dot" />
-                <div>
-                  <b>{trip.arrivalStationName}</b>
-                </div>
-                <span>Plat. 3 track 1</span>
-              </div>
+              ))}
             </div>
           </div>
 

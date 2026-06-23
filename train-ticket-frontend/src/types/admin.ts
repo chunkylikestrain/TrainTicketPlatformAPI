@@ -72,6 +72,11 @@ export type AdminRouteStop = {
   stationCode: string;
   stationName: string;
   stopOrder: number;
+  arrivalOffsetMinutes: number | null;
+  departureOffsetMinutes: number | null;
+  platform: string;
+  track: string;
+  stopType: string;
 };
 
 export type AdminSchedule = {
@@ -86,6 +91,14 @@ export type AdminSchedule = {
   platform: string;
   track: string;
   status: string;
+  delayMinutes: number;
+  cancellationReason: string;
+  originalPlatform: string;
+  originalTrack: string;
+  disruptionMessage: string;
+  disruptionSeverity: string;
+  hasPlatformChange: boolean;
+  hasDisruption: boolean;
   class1Price: number;
   class2Price: number;
 };

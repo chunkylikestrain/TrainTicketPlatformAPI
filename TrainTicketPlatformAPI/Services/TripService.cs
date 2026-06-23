@@ -185,6 +185,7 @@ namespace TrainTicketPlatformAPI.Services
         {
             var lowestFare = trip.Fares.OrderBy(f => f.Price).FirstOrDefault();
             var routeStops = TripSegmentResolver.BuildOrderedRouteStations(trip.TrainRoute);
+            var callingPattern = TripTimetablePlanner.Build(trip);
 
             return new TripSearchResultDto
             {
@@ -201,15 +202,27 @@ namespace TrainTicketPlatformAPI.Services
                 ArrivalStopOrder = routeStops.Count - 1,
                 DepartureTime = trip.DepartureTime,
                 ArrivalTime = trip.ArrivalTime,
+                Platform = trip.Platform,
+                Track = trip.Track,
                 Status = trip.Status,
+                DelayMinutes = trip.DelayMinutes,
+                CancellationReason = trip.CancellationReason,
+                OriginalPlatform = trip.OriginalPlatform,
+                OriginalTrack = trip.OriginalTrack,
+                DisruptionMessage = GetDisruptionMessage(trip),
+                DisruptionSeverity = GetDisruptionSeverity(trip),
+                HasPlatformChange = HasPlatformChange(trip),
+                HasDisruption = HasDisruption(trip),
                 LowestFare = lowestFare?.Price,
-                Currency = lowestFare?.Currency ?? string.Empty
+                Currency = lowestFare?.Currency ?? string.Empty,
+                CallingPattern = TripTimetablePlanner.ToDto(callingPattern)
             };
         }
 
         private static TripSearchResultDto? TryBuildSearchResult(Trip trip, string departure, string arrival)
         {
             var routeStations = TripSegmentResolver.BuildOrderedRouteStations(trip.TrainRoute);
+            var callingPattern = TripTimetablePlanner.Build(trip);
             var departureStop = routeStations.FirstOrDefault(stop => TripSegmentResolver.StationMatches(stop.Station, departure));
             var arrivalStop = routeStations.FirstOrDefault(stop => TripSegmentResolver.StationMatches(stop.Station, arrival));
 
@@ -225,14 +238,21 @@ namespace TrainTicketPlatformAPI.Services
             result.ArrivalStationName = arrivalStop.Station.Name;
             result.DepartureStopOrder = departureStop.Order;
             result.ArrivalStopOrder = arrivalStop.Order;
-            result.DepartureTime = TripSegmentResolver.EstimateStopTime(trip, departureStop.Order, routeStations.Count);
-            result.ArrivalTime = TripSegmentResolver.EstimateStopTime(trip, arrivalStop.Order, routeStations.Count);
+            var plannedDeparture = callingPattern.Single(stop => stop.StopOrder == departureStop.Order);
+            var plannedArrival = callingPattern.Single(stop => stop.StopOrder == arrivalStop.Order);
+            result.DepartureTime = plannedDeparture.DepartureTime ?? plannedDeparture.ArrivalTime ?? trip.DepartureTime;
+            result.ArrivalTime = plannedArrival.ArrivalTime ?? plannedArrival.DepartureTime ?? trip.ArrivalTime;
+            result.CallingPattern = TripTimetablePlanner.ToDto(
+                callingPattern,
+                departureStop.Order,
+                arrivalStop.Order);
             return result;
         }
 
         private static TripDetailsDto ToDetails(Trip trip)
         {
             var routeStops = TripSegmentResolver.BuildOrderedRouteStations(trip.TrainRoute);
+            var callingPattern = TripTimetablePlanner.Build(trip);
 
             return new TripDetailsDto
             {
@@ -250,7 +270,17 @@ namespace TrainTicketPlatformAPI.Services
                 DistanceKm = trip.TrainRoute.DistanceKm,
                 DepartureTime = trip.DepartureTime,
                 ArrivalTime = trip.ArrivalTime,
+                Platform = trip.Platform,
+                Track = trip.Track,
                 Status = trip.Status,
+                DelayMinutes = trip.DelayMinutes,
+                CancellationReason = trip.CancellationReason,
+                OriginalPlatform = trip.OriginalPlatform,
+                OriginalTrack = trip.OriginalTrack,
+                DisruptionMessage = GetDisruptionMessage(trip),
+                DisruptionSeverity = GetDisruptionSeverity(trip),
+                HasPlatformChange = HasPlatformChange(trip),
+                HasDisruption = HasDisruption(trip),
                 Fares = trip.Fares
                     .OrderBy(f => f.Price)
                     .Select(f => new FareDto
@@ -259,8 +289,70 @@ namespace TrainTicketPlatformAPI.Services
                         Price = f.Price,
                         Currency = f.Currency
                     })
-                    .ToList()
+                    .ToList(),
+                CallingPattern = TripTimetablePlanner.ToDto(callingPattern)
             };
+        }
+
+        private static bool HasPlatformChange(Trip trip)
+        {
+            var originalPlatform = string.IsNullOrWhiteSpace(trip.OriginalPlatform)
+                ? trip.Platform
+                : trip.OriginalPlatform;
+            var originalTrack = string.IsNullOrWhiteSpace(trip.OriginalTrack)
+                ? trip.Track
+                : trip.OriginalTrack;
+
+            return !string.Equals(originalPlatform, trip.Platform, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(originalTrack, trip.Track, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool HasDisruption(Trip trip)
+        {
+            return trip.DelayMinutes > 0 ||
+                HasPlatformChange(trip) ||
+                !string.Equals(trip.Status, "Scheduled", StringComparison.OrdinalIgnoreCase) ||
+                !string.IsNullOrWhiteSpace(trip.CancellationReason) ||
+                !string.IsNullOrWhiteSpace(trip.DisruptionMessage);
+        }
+
+        private static string GetDisruptionSeverity(Trip trip)
+        {
+            if (!string.IsNullOrWhiteSpace(trip.DisruptionSeverity))
+                return trip.DisruptionSeverity;
+
+            if (string.Equals(trip.Status, "Cancelled", StringComparison.OrdinalIgnoreCase))
+                return "Critical";
+
+            if (trip.DelayMinutes >= 30)
+                return "Major";
+
+            return HasDisruption(trip) ? "Notice" : string.Empty;
+        }
+
+        private static string GetDisruptionMessage(Trip trip)
+        {
+            if (!string.IsNullOrWhiteSpace(trip.DisruptionMessage))
+                return trip.DisruptionMessage;
+
+            if (string.Equals(trip.Status, "Cancelled", StringComparison.OrdinalIgnoreCase))
+            {
+                return string.IsNullOrWhiteSpace(trip.CancellationReason)
+                    ? "This train has been cancelled."
+                    : $"This train has been cancelled: {trip.CancellationReason}";
+            }
+
+            if (trip.DelayMinutes > 0)
+                return $"This train is delayed by {trip.DelayMinutes} minutes.";
+
+            if (HasPlatformChange(trip))
+            {
+                var platform = string.IsNullOrWhiteSpace(trip.Platform) ? "-" : trip.Platform;
+                var track = string.IsNullOrWhiteSpace(trip.Track) ? "-" : trip.Track;
+                return $"Platform changed. Please use platform {platform}, track {track}.";
+            }
+
+            return string.Empty;
         }
     }
 }

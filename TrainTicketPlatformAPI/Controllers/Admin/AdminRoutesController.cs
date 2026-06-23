@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TrainTicketPlatformAPI.Contracts.Admin;
 using TrainTicketPlatformAPI.Data;
 using TrainTicketPlatformAPI.Models;
+using TrainTicketPlatformAPI.Services;
 
 namespace TrainTicketPlatformAPI.Controllers.Admin
 {
@@ -57,7 +58,7 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             if (await _db.TrainRoutes.AnyAsync(r => r.Code == route.Code))
                 return Conflict($"Route code '{route.Code}' already exists.");
 
-            AddRouteStops(route, request.IntermediateStopStationIds);
+            AddRouteStops(route, request, stations);
             _db.TrainRoutes.Add(route);
             await _db.SaveChangesAsync();
 
@@ -102,7 +103,7 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
 
             await _db.SaveChangesAsync();
 
-            AddRouteStops(route, request.IntermediateStopStationIds);
+            AddRouteStops(route, request, stations);
 
             await _db.SaveChangesAsync();
             return Ok(ToDto(await LoadRouteAsync(route.Id)));
@@ -184,7 +185,12 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
                     StationId = s.StationId,
                     StationCode = s.Station.Code,
                     StationName = s.Station.Name,
-                    StopOrder = s.StopOrder
+                    StopOrder = s.StopOrder,
+                    ArrivalOffsetMinutes = s.ArrivalOffsetMinutes,
+                    DepartureOffsetMinutes = s.DepartureOffsetMinutes,
+                    Platform = s.Platform,
+                    Track = s.Track,
+                    StopType = s.StopType
                 })
                 .ToList(),
             IsActive = route.IsActive
@@ -218,14 +224,31 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             return request.IntermediateStops.Trim();
         }
 
-        private static void AddRouteStops(TrainRoute route, IReadOnlyList<int> intermediateStopStationIds)
+        private static void AddRouteStops(
+            TrainRoute route,
+            AdminRouteDto request,
+            IReadOnlyDictionary<int, Station> stations)
         {
+            var intermediateStopStationIds = request.IntermediateStopStationIds;
             for (var i = 0; i < intermediateStopStationIds.Count; i++)
             {
+                var station = stations[intermediateStopStationIds[i]];
+                var stopOrder = i + 1;
+                var totalSegments = Math.Max(1, intermediateStopStationIds.Count + 1);
+                var evenOffset = (int)Math.Round(request.EstimatedDurationMinutes * stopOrder / (double)totalSegments);
+                var stopType = TripTimetablePlanner.GetStopType(station, isTerminus: false);
+                var dwellMinutes = TripTimetablePlanner.GetDwellMinutes(stopType);
+                var arrivalOffset = Math.Max(0, evenOffset - dwellMinutes / 2);
+
                 route.RouteStops.Add(new TrainRouteStop
                 {
-                    StationId = intermediateStopStationIds[i],
-                    StopOrder = i + 1
+                    StationId = station.Id,
+                    StopOrder = stopOrder,
+                    ArrivalOffsetMinutes = arrivalOffset,
+                    DepartureOffsetMinutes = arrivalOffset + dwellMinutes,
+                    Platform = ((station.Id + stopOrder) % 4 + 1).ToString(),
+                    Track = ((station.Id + stopOrder + 1) % 6 + 1).ToString(),
+                    StopType = stopType
                 });
             }
         }

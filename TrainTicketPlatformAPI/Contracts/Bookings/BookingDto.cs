@@ -32,6 +32,16 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         public string SeatLabel { get; set; } = string.Empty;
         public DateTime? DepartureTime { get; set; }
         public DateTime? ArrivalTime { get; set; }
+        public string Platform { get; set; } = string.Empty;
+        public string Track { get; set; } = string.Empty;
+        public int DelayMinutes { get; set; }
+        public string TripCancellationReason { get; set; } = string.Empty;
+        public string OriginalPlatform { get; set; } = string.Empty;
+        public string OriginalTrack { get; set; } = string.Empty;
+        public string DisruptionMessage { get; set; } = string.Empty;
+        public string DisruptionSeverity { get; set; } = string.Empty;
+        public bool HasPlatformChange { get; set; }
+        public bool HasDisruption { get; set; }
         public decimal Amount { get; set; }
         public DateTime? TicketIssuedAtUtc { get; set; }
         public bool HasTicketArtifact { get; set; }

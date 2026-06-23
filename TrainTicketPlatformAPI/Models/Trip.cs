@@ -10,6 +10,12 @@ namespace TrainTicketPlatformAPI.Models
         public string Platform { get; set; } = string.Empty;
         public string Track { get; set; } = string.Empty;
         public string Status { get; set; } = "Scheduled";
+        public int DelayMinutes { get; set; }
+        public string CancellationReason { get; set; } = string.Empty;
+        public string OriginalPlatform { get; set; } = string.Empty;
+        public string OriginalTrack { get; set; } = string.Empty;
+        public string DisruptionMessage { get; set; } = string.Empty;
+        public string DisruptionSeverity { get; set; } = string.Empty;
 
         public Train Train { get; set; } = null!;
         public TrainRoute TrainRoute { get; set; } = null!;

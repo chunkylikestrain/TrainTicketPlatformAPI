@@ -28,13 +28,17 @@ namespace TrainTicketPlatformAPI.Services
             if (departureStop.Order >= arrivalStop.Order)
                 throw new InvalidOperationException("Selected segment arrival must be after departure");
 
+            var plannedStops = TripTimetablePlanner.Build(trip);
+            var plannedDeparture = plannedStops.Single(stop => stop.StopOrder == departureStop.Order);
+            var plannedArrival = plannedStops.Single(stop => stop.StopOrder == arrivalStop.Order);
+
             return new TripSegmentInfo(
                 departureStop.StationId,
                 arrivalStop.StationId,
                 departureStop.Order,
                 arrivalStop.Order,
-                EstimateStopTime(trip, departureStop.Order, routeStations.Count),
-                EstimateStopTime(trip, arrivalStop.Order, routeStations.Count),
+                plannedDeparture.DepartureTime ?? plannedDeparture.ArrivalTime ?? trip.DepartureTime,
+                plannedArrival.ArrivalTime ?? plannedArrival.DepartureTime ?? trip.ArrivalTime,
                 departureStop.Station.Name,
                 arrivalStop.Station.Name);
         }
@@ -48,7 +52,7 @@ namespace TrainTicketPlatformAPI.Services
 
             stops.AddRange(route.RouteStops
                 .OrderBy(stop => stop.StopOrder)
-                .Select((stop, index) => new RouteSearchStop(index + 1, stop.StationId, stop.Station)));
+                .Select((stop, index) => new RouteSearchStop(index + 1, stop.StationId, stop.Station, stop)));
 
             stops.Add(new RouteSearchStop(stops.Count, route.ArrivalStationId, route.ArrivalStation));
             return stops;
@@ -100,7 +104,11 @@ namespace TrainTicketPlatformAPI.Services
             return builder.ToString().Normalize(NormalizationForm.FormC);
         }
 
-        public sealed record RouteSearchStop(int Order, int StationId, Station Station);
+        public sealed record RouteSearchStop(
+            int Order,
+            int StationId,
+            Station Station,
+            TrainRouteStop? RouteStop = null);
     }
 
     internal sealed record TripSegmentInfo(

@@ -16,8 +16,14 @@ function AdminCreateSchedulePage() {
   const [arrival, setArrival] = useState("2026-06-20T07:27");
   const [platform, setPlatform] = useState("2");
   const [track, setTrack] = useState("1");
+  const [originalPlatform, setOriginalPlatform] = useState("");
+  const [originalTrack, setOriginalTrack] = useState("");
   const [basePrice, setBasePrice] = useState("134.00");
-  const [status, setStatus] = useState("On time");
+  const [status, setStatus] = useState("Scheduled");
+  const [delayMinutes, setDelayMinutes] = useState("0");
+  const [cancellationReason, setCancellationReason] = useState("");
+  const [disruptionMessage, setDisruptionMessage] = useState("");
+  const [disruptionSeverity, setDisruptionSeverity] = useState("");
   const [saved, setSaved] = useState(false);
 
   useEffect(() => {
@@ -43,6 +49,14 @@ function AdminCreateSchedulePage() {
       platform,
       track,
       status,
+      delayMinutes: Math.max(0, Number(delayMinutes) || 0),
+      cancellationReason,
+      originalPlatform,
+      originalTrack,
+      disruptionMessage,
+      disruptionSeverity,
+      hasPlatformChange: Boolean(originalPlatform || originalTrack),
+      hasDisruption: Boolean(disruptionMessage || cancellationReason || Number(delayMinutes) > 0 || status !== "Scheduled"),
       class1Price: Number(basePrice),
       class2Price: Math.round(Number(basePrice) * 0.67 * 100) / 100,
     });
@@ -77,6 +91,7 @@ function AdminCreateSchedulePage() {
               {routes.map((option) => <option key={option.id} value={option.id}>{option.code} - {option.departureStationName} to {option.arrivalStationName}</option>)}
             </select></label>
             <label>Status<select value={status} onChange={(event) => setStatus(event.target.value)}>
+              <option>Scheduled</option>
               <option>On time</option>
               <option>Delayed</option>
               <option>Cancelled</option>
@@ -89,6 +104,21 @@ function AdminCreateSchedulePage() {
             <label>Arrival<input value={arrival} onChange={(event) => setArrival(event.target.value)} type="datetime-local" required /></label>
             <label>Platform<input value={platform} onChange={(event) => setPlatform(event.target.value)} required /></label>
             <label>Track<input value={track} onChange={(event) => setTrack(event.target.value)} required /></label>
+          </fieldset>
+
+          <fieldset>
+            <legend>Disruption tools</legend>
+            <label>Delay minutes<input value={delayMinutes} onChange={(event) => setDelayMinutes(event.target.value)} min="0" step="1" type="number" /></label>
+            <label>Original platform<input value={originalPlatform} onChange={(event) => setOriginalPlatform(event.target.value)} placeholder={platform} /></label>
+            <label>Original track<input value={originalTrack} onChange={(event) => setOriginalTrack(event.target.value)} placeholder={track} /></label>
+            <label>Cancellation reason<textarea value={cancellationReason} onChange={(event) => setCancellationReason(event.target.value)} rows={3} /></label>
+            <label>Passenger banner<textarea value={disruptionMessage} onChange={(event) => setDisruptionMessage(event.target.value)} rows={3} /></label>
+            <label>Severity<select value={disruptionSeverity} onChange={(event) => setDisruptionSeverity(event.target.value)}>
+              <option value="">Auto</option>
+              <option value="Notice">Notice</option>
+              <option value="Major">Major</option>
+              <option value="Critical">Critical</option>
+            </select></label>
           </fieldset>
 
           <fieldset>
@@ -121,6 +151,7 @@ function AdminCreateSchedulePage() {
             <div><dt>Departure</dt><dd>{departure.replace("T", " ")}</dd></div>
             <div><dt>Arrival</dt><dd>{arrival.replace("T", " ")}</dd></div>
             <div><dt>Platform</dt><dd>{platform}, track {track}</dd></div>
+            <div><dt>Status</dt><dd>{status}{Number(delayMinutes) > 0 ? `, +${delayMinutes} min` : ""}</dd></div>
             <div><dt>Class 1</dt><dd>{basePrice} PLN</dd></div>
           </dl>
         </aside>

@@ -160,6 +160,59 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
+        public async Task SearchTripsAsync_ReturnsCallingPatternWithGeneratedStopTimes()
+        {
+            var db = NewDb("Trips_SearchCallingPattern");
+            await SeedTripGraphAsync(db);
+            var svc = new TripService(db);
+
+            var result = (await svc.SearchTripsAsync(
+                "WAW",
+                "Krakow",
+                new DateTime(2026, 7, 1))).Single();
+            var stops = result.CallingPattern.ToList();
+
+            Assert.That(stops.Count, Is.EqualTo(3));
+            Assert.That(stops[0].StationCode, Is.EqualTo("WAW"));
+            Assert.That(stops[0].DepartureTime, Is.EqualTo(new DateTime(2026, 7, 1, 8, 0, 0)));
+            Assert.That(stops[1].StationCode, Is.EqualTo("KAT"));
+            Assert.That(stops[1].StopType, Is.EqualTo("Major"));
+            Assert.That(stops[1].DwellMinutes, Is.EqualTo(8));
+            Assert.That(stops[1].ArrivalTime, Is.EqualTo(new DateTime(2026, 7, 1, 9, 26, 0)));
+            Assert.That(stops[1].DepartureTime, Is.EqualTo(new DateTime(2026, 7, 1, 9, 34, 0)));
+            Assert.That(stops[2].StationCode, Is.EqualTo("KRK"));
+            Assert.That(stops[2].ArrivalTime, Is.EqualTo(new DateTime(2026, 7, 1, 11, 0, 0)));
+        }
+
+        [Test]
+        public async Task SearchTripsAsync_ReturnsDisruptionBannerFields()
+        {
+            var db = NewDb("Trips_SearchDisruptionFields");
+            await SeedTripGraphAsync(db);
+            var trip = await db.Trips.FindAsync(1);
+            trip!.DelayMinutes = 35;
+            trip.Platform = "5";
+            trip.Track = "8";
+            trip.OriginalPlatform = "2";
+            trip.OriginalTrack = "4";
+            await db.SaveChangesAsync();
+            var svc = new TripService(db);
+
+            var result = (await svc.SearchTripsAsync(
+                "WAW",
+                "Krakow",
+                new DateTime(2026, 7, 1))).Single();
+
+            Assert.That(result.HasDisruption, Is.True);
+            Assert.That(result.HasPlatformChange, Is.True);
+            Assert.That(result.DelayMinutes, Is.EqualTo(35));
+            Assert.That(result.Platform, Is.EqualTo("5"));
+            Assert.That(result.OriginalPlatform, Is.EqualTo("2"));
+            Assert.That(result.DisruptionSeverity, Is.EqualTo("Major"));
+            Assert.That(result.DisruptionMessage, Is.EqualTo("This train is delayed by 35 minutes."));
+        }
+
+        [Test]
         public async Task SearchTripsAsync_Matches_ByLocalityName()
         {
             var db = NewDb("Trips_SearchByLocality");

@@ -34,6 +34,16 @@ export type Booking = {
   seatLabel: string;
   departureTime: string | null;
   arrivalTime: string | null;
+  platform: string;
+  track: string;
+  delayMinutes: number;
+  tripCancellationReason: string;
+  originalPlatform: string;
+  originalTrack: string;
+  disruptionMessage: string;
+  disruptionSeverity: string;
+  hasPlatformChange: boolean;
+  hasDisruption: boolean;
   amount: number;
 };
 

@@ -541,6 +541,16 @@ namespace TrainTicketPlatformAPI.Controllers
             SeatLabel = booking.Seat == null ? string.Empty : $"Coach {booking.Seat.Coach}, seat {booking.Seat.Number}",
             DepartureTime = booking.SegmentDepartureTime ?? booking.Trip?.DepartureTime ?? booking.Train?.DepartureTime,
             ArrivalTime = booking.SegmentArrivalTime ?? booking.Trip?.ArrivalTime ?? booking.Train?.ArrivalTime,
+            Platform = booking.Trip?.Platform ?? string.Empty,
+            Track = booking.Trip?.Track ?? string.Empty,
+            DelayMinutes = booking.Trip?.DelayMinutes ?? 0,
+            TripCancellationReason = booking.Trip?.CancellationReason ?? string.Empty,
+            OriginalPlatform = booking.Trip?.OriginalPlatform ?? string.Empty,
+            OriginalTrack = booking.Trip?.OriginalTrack ?? string.Empty,
+            DisruptionMessage = GetDisruptionMessage(booking.Trip),
+            DisruptionSeverity = GetDisruptionSeverity(booking.Trip),
+            HasPlatformChange = HasPlatformChange(booking.Trip),
+            HasDisruption = HasDisruption(booking.Trip),
             Amount = booking.Trip?.Fares
                 .OrderByDescending(f => booking.Seat != null && f.ClassType == booking.Seat.ClassType)
                 .ThenBy(f => f.Price)
@@ -555,6 +565,77 @@ namespace TrainTicketPlatformAPI.Controllers
             return booking.Trip?.TrainRoute == null || booking.Train == null
                 ? booking.Train == null ? string.Empty : $"{booking.Train.DepartureStation} -> {booking.Train.ArrivalStation}"
                 : $"{booking.Trip.TrainRoute.DepartureStation.Name} -> {booking.Trip.TrainRoute.ArrivalStation.Name}";
+        }
+
+        private static bool HasPlatformChange(Trip? trip)
+        {
+            if (trip == null)
+                return false;
+
+            var originalPlatform = string.IsNullOrWhiteSpace(trip.OriginalPlatform)
+                ? trip.Platform
+                : trip.OriginalPlatform;
+            var originalTrack = string.IsNullOrWhiteSpace(trip.OriginalTrack)
+                ? trip.Track
+                : trip.OriginalTrack;
+
+            return !string.Equals(originalPlatform, trip.Platform, StringComparison.OrdinalIgnoreCase) ||
+                !string.Equals(originalTrack, trip.Track, StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool HasDisruption(Trip? trip)
+        {
+            return trip != null &&
+                (trip.DelayMinutes > 0 ||
+                 HasPlatformChange(trip) ||
+                 !string.Equals(trip.Status, "Scheduled", StringComparison.OrdinalIgnoreCase) ||
+                 !string.IsNullOrWhiteSpace(trip.CancellationReason) ||
+                 !string.IsNullOrWhiteSpace(trip.DisruptionMessage));
+        }
+
+        private static string GetDisruptionSeverity(Trip? trip)
+        {
+            if (trip == null)
+                return string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(trip.DisruptionSeverity))
+                return trip.DisruptionSeverity;
+
+            if (string.Equals(trip.Status, "Cancelled", StringComparison.OrdinalIgnoreCase))
+                return "Critical";
+
+            if (trip.DelayMinutes >= 30)
+                return "Major";
+
+            return HasDisruption(trip) ? "Notice" : string.Empty;
+        }
+
+        private static string GetDisruptionMessage(Trip? trip)
+        {
+            if (trip == null)
+                return string.Empty;
+
+            if (!string.IsNullOrWhiteSpace(trip.DisruptionMessage))
+                return trip.DisruptionMessage;
+
+            if (string.Equals(trip.Status, "Cancelled", StringComparison.OrdinalIgnoreCase))
+            {
+                return string.IsNullOrWhiteSpace(trip.CancellationReason)
+                    ? "This train has been cancelled."
+                    : $"This train has been cancelled: {trip.CancellationReason}";
+            }
+
+            if (trip.DelayMinutes > 0)
+                return $"This train is delayed by {trip.DelayMinutes} minutes.";
+
+            if (HasPlatformChange(trip))
+            {
+                var platform = string.IsNullOrWhiteSpace(trip.Platform) ? "-" : trip.Platform;
+                var track = string.IsNullOrWhiteSpace(trip.Track) ? "-" : trip.Track;
+                return $"Platform changed. Please use platform {platform}, track {track}.";
+            }
+
+            return string.Empty;
         }
     }
 }

@@ -18,9 +18,35 @@ export type TripSearchResult = {
   arrivalStopOrder: number;
   departureTime: string;
   arrivalTime: string;
+  platform: string;
+  track: string;
   status: string;
+  delayMinutes: number;
+  cancellationReason: string;
+  originalPlatform: string;
+  originalTrack: string;
+  disruptionMessage: string;
+  disruptionSeverity: string;
+  hasPlatformChange: boolean;
+  hasDisruption: boolean;
   lowestFare: number | null;
   currency: string;
+  callingPattern: TripCallingPatternStop[];
+};
+
+export type TripCallingPatternStop = {
+  stationId: number;
+  stationCode: string;
+  stationName: string;
+  stopOrder: number;
+  arrivalTime: string | null;
+  departureTime: string | null;
+  arrivalOffsetMinutes: number | null;
+  departureOffsetMinutes: number | null;
+  dwellMinutes: number;
+  platform: string;
+  track: string;
+  stopType: string;
 };
 
 export type Fare = {

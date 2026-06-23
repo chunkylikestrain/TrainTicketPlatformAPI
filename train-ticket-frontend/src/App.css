@@ -897,7 +897,7 @@
   color: var(--navy);
 }
 
-.route-stop:first-child::after {
+.route-stop:not(:last-child)::after {
   content: "";
   position: absolute;
   left: 95px;
@@ -931,6 +931,59 @@
 .route-stop > span:last-child {
   color: #39445b;
   font-size: 18px;
+}
+
+.disruption-banner,
+.ticket-disruption-banner,
+.admin-disruption-note {
+  border-left: 4px solid #1296d4;
+  background: #eaf6ff;
+  color: var(--navy);
+}
+
+.disruption-banner,
+.ticket-disruption-banner {
+  display: grid;
+  gap: 4px;
+  margin-top: 18px;
+  padding: 14px 18px;
+  font-size: 18px;
+}
+
+.disruption-banner strong,
+.ticket-disruption-banner strong {
+  color: #0b78aa;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.disruption-major {
+  border-left-color: #ff642d;
+  background: #fff2eb;
+}
+
+.disruption-major strong {
+  color: #d94b16;
+}
+
+.disruption-critical {
+  border-left-color: #c62828;
+  background: #fff0f0;
+}
+
+.disruption-critical strong {
+  color: #a51616;
+}
+
+.ticket-disruption-banner {
+  margin: 22px 0;
+}
+
+.admin-disruption-note {
+  margin-top: 8px;
+  padding: 8px 10px;
+  font-size: 13px;
+  font-weight: 700;
 }
 
 .timeline-dot {
@@ -5651,7 +5704,7 @@
     grid-column: 3;
   }
 
-  .route-stop:first-child::after {
+  .route-stop:not(:last-child)::after {
     left: 84px;
   }
 

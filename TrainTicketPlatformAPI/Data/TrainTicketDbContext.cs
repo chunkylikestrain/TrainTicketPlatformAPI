@@ -356,6 +356,18 @@ namespace TrainTicketPlatformAPI.Data
                 .HasIndex(s => new { s.TrainRouteId, s.StationId })
                 .IsUnique();
 
+            modelBuilder.Entity<TrainRouteStop>()
+                .Property(s => s.Platform)
+                .HasMaxLength(20);
+
+            modelBuilder.Entity<TrainRouteStop>()
+                .Property(s => s.Track)
+                .HasMaxLength(20);
+
+            modelBuilder.Entity<TrainRouteStop>()
+                .Property(s => s.StopType)
+                .HasMaxLength(30);
+
             modelBuilder.Entity<Trip>()
                 .HasOne(t => t.Train)
                 .WithMany(t => t.Trips)
@@ -404,6 +416,31 @@ namespace TrainTicketPlatformAPI.Data
             modelBuilder.Entity<Trip>()
                 .Property(t => t.Track)
                 .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Trip>()
+                .Property(t => t.CancellationReason)
+                .HasMaxLength(500)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Trip>()
+                .Property(t => t.OriginalPlatform)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Trip>()
+                .Property(t => t.OriginalTrack)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Trip>()
+                .Property(t => t.DisruptionMessage)
+                .HasMaxLength(500)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Trip>()
+                .Property(t => t.DisruptionSeverity)
+                .HasMaxLength(30)
                 .HasDefaultValue("");
 
             modelBuilder.Entity<Fare>()
