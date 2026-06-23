@@ -28,3 +28,18 @@ export type TicketEmailDelivery = {
   providerMessageId: string;
   errorMessage: string;
 };
+
+export type BookingOrderTickets = {
+  bookingOrderId: number;
+  orderReference: string;
+  ticketCount: number;
+  tickets: TicketArtifact[];
+};
+
+export type BookingOrderEmailDelivery = {
+  bookingOrderId: number;
+  orderReference: string;
+  requestedCount: number;
+  sentCount: number;
+  deliveries: TicketEmailDelivery[];
+};

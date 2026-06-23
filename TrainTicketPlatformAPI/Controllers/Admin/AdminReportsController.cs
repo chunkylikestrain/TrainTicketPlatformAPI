@@ -48,17 +48,33 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
 
             var payments = await _db.Payments
                 .Include(p => p.Booking)
-                    .ThenInclude(b => b.Trip)
+                    .ThenInclude(b => b!.Trip)
                         .ThenInclude(t => t!.TrainRoute)
                             .ThenInclude(r => r.DepartureStation)
                 .Include(p => p.Booking)
-                    .ThenInclude(b => b.Trip)
+                    .ThenInclude(b => b!.Trip)
                         .ThenInclude(t => t!.TrainRoute)
                             .ThenInclude(r => r.ArrivalStation)
                 .Include(p => p.Booking)
-                    .ThenInclude(b => b.User)
+                    .ThenInclude(b => b!.User)
                 .Include(p => p.Booking)
-                    .ThenInclude(b => b.Train)
+                    .ThenInclude(b => b!.Train)
+                .Include(p => p.BookingOrder)
+                    .ThenInclude(o => o!.Bookings)
+                        .ThenInclude(b => b.Trip)
+                            .ThenInclude(t => t!.TrainRoute)
+                                .ThenInclude(r => r.DepartureStation)
+                .Include(p => p.BookingOrder)
+                    .ThenInclude(o => o!.Bookings)
+                        .ThenInclude(b => b.Trip)
+                            .ThenInclude(t => t!.TrainRoute)
+                                .ThenInclude(r => r.ArrivalStation)
+                .Include(p => p.BookingOrder)
+                    .ThenInclude(o => o!.Bookings)
+                        .ThenInclude(b => b.User)
+                .Include(p => p.BookingOrder)
+                    .ThenInclude(o => o!.Bookings)
+                        .ThenInclude(b => b.Train)
                 .Where(p => p.PaymentDate >= fromDate && p.PaymentDate <= toDate)
                 .OrderByDescending(p => p.PaymentDate)
                 .ToListAsync();
@@ -73,7 +89,7 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
 
             var grossRevenue = successfulPayments.Sum(p => p.Amount);
             var refunds = refundedPayments.Sum(p => p.Amount);
-            var paidBookings = successfulPayments.Select(p => p.BookingId).Distinct().Count();
+            var paidBookings = successfulPayments.SelectMany(GetPaymentBookings).Select(b => b.Id).Distinct().Count();
 
             var dailyRevenue = Enumerable.Range(0, (toDate.Date - fromDate).Days + 1)
                 .Select(offset =>
@@ -92,37 +108,41 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
                         Date = date,
                         Revenue = daySuccessful.Sum(p => p.Amount),
                         Refunds = dayRefunded.Sum(p => p.Amount),
-                        Bookings = daySuccessful.Select(p => p.BookingId).Distinct().Count()
+                        Bookings = daySuccessful.SelectMany(GetPaymentBookings).Select(b => b.Id).Distinct().Count()
                     };
                 })
                 .ToList();
 
             var routeBreakdown = successfulPayments
-                .GroupBy(p => GetRouteLabel(p.Booking))
+                .SelectMany(p => GetPaymentBookings(p).Select(booking => new { Payment = p, Booking = booking }))
+                .GroupBy(item => GetRouteLabel(item.Booking))
                 .Select(group => new AdminRevenueRouteDto
                 {
                     Route = group.Key,
-                    Revenue = group.Sum(p => p.Amount),
-                    PaidBookings = group.Select(p => p.BookingId).Distinct().Count()
+                    Revenue = group.Sum(item => item.Payment.BookingOrderId.HasValue
+                        ? GetBookingShare(item.Payment)
+                        : item.Payment.Amount),
+                    PaidBookings = group.Select(item => item.Booking.Id).Distinct().Count()
                 })
                 .OrderByDescending(r => r.Revenue)
                 .Take(6)
                 .ToList();
 
             var recentActivity = payments
+                .SelectMany(p => GetPaymentBookings(p).Select(booking => new { Payment = p, Booking = booking }))
                 .Take(8)
-                .Select(p => new AdminRevenueActivityDto
+                .Select(item => new AdminRevenueActivityDto
                 {
-                    BookingReference = p.Booking.BookingReference,
-                    TicketNumber = p.Booking.TicketNumber,
-                    PassengerName = p.Booking.PassengerName
-                        ?? p.Booking.User?.Email
-                        ?? p.Booking.GuestEmail
+                    BookingReference = item.Booking.BookingReference,
+                    TicketNumber = item.Booking.TicketNumber,
+                    PassengerName = item.Booking.PassengerName
+                        ?? item.Booking.User?.Email
+                        ?? item.Booking.GuestEmail
                         ?? "Passenger",
-                    Route = GetRouteLabel(p.Booking),
-                    Date = p.PaymentDate,
-                    Amount = p.Amount,
-                    Status = p.Status
+                    Route = GetRouteLabel(item.Booking),
+                    Date = item.Payment.PaymentDate,
+                    Amount = item.Payment.BookingOrderId.HasValue ? GetBookingShare(item.Payment) : item.Payment.Amount,
+                    Status = item.Payment.Status
                 })
                 .ToList();
 
@@ -135,7 +155,7 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
                 NetRevenue = grossRevenue - refunds,
                 TotalBookings = bookingReport.TotalBookings,
                 PaidBookings = paidBookings,
-                RefundedBookings = refundedPayments.Select(p => p.BookingId).Distinct().Count(),
+                RefundedBookings = refundedPayments.SelectMany(GetPaymentBookings).Select(b => b.Id).Distinct().Count(),
                 AverageOrderValue = paidBookings == 0 ? 0m : grossRevenue / paidBookings,
                 DailyRevenue = dailyRevenue,
                 RouteBreakdown = routeBreakdown,
@@ -151,6 +171,20 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             }
 
             return $"{booking.Train.DepartureStation} -> {booking.Train.ArrivalStation}";
+        }
+
+        private static IEnumerable<Booking> GetPaymentBookings(Payment payment)
+        {
+            if (payment.Booking != null)
+                return [payment.Booking];
+
+            return payment.BookingOrder?.Bookings ?? Enumerable.Empty<Booking>();
+        }
+
+        private static decimal GetBookingShare(Payment payment)
+        {
+            var bookingCount = GetPaymentBookings(payment).Count();
+            return bookingCount == 0 ? 0m : payment.Amount / bookingCount;
         }
     }
 }

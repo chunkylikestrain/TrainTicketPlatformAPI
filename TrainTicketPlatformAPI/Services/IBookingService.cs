@@ -5,9 +5,11 @@ namespace TrainTicketPlatformAPI.Services
     public interface IBookingService
     {
         Task<Booking> GetBookingByIdAsync(int bookingId);
+        Task<BookingOrder> GetBookingOrderByIdAsync(int bookingOrderId);
         Task<IEnumerable<Booking>> GetAllBookingsAsync();
 
         Task<Booking> CreateBookingAsync(Booking booking);
+        Task<BookingOrder> CreateBookingOrderAsync(BookingOrder order, IEnumerable<Booking> bookings);
         Task<Booking> UpdateGuestBookingDataAsync(
             int bookingId,
             string guestEmail,

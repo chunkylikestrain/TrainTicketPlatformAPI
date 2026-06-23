@@ -47,6 +47,22 @@ export type Booking = {
   amount: number;
 };
 
+export type BookingOrder = {
+  id: number;
+  userId: number | null;
+  orderReference: string;
+  guestEmail: string | null;
+  createdAtUtc: string;
+  expiresAtUtc: string | null;
+  bookingStatus: string;
+  paymentStatus: string;
+  confirmedAtUtc: string | null;
+  amount: number;
+  ticketCount: number;
+  hasTicketArtifacts: boolean;
+  bookings: Booking[];
+};
+
 export type CreateBookingRequest = {
   trainId: number;
   tripId: number;
@@ -56,6 +72,19 @@ export type CreateBookingRequest = {
   travelDate: string;
   guestEmail?: string;
   passengerName?: string;
+};
+
+export type CreateBookingOrderRequest = {
+  trainId: number;
+  tripId?: number;
+  segmentDepartureStationId?: number;
+  segmentArrivalStationId?: number;
+  travelDate: string;
+  guestEmail?: string;
+  passengers: Array<{
+    seatId: number;
+    passengerName?: string;
+  }>;
 };
 
 export type UpdateGuestBookingDataRequest = {

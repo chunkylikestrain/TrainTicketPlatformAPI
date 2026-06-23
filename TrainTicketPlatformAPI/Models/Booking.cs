@@ -6,6 +6,7 @@
         public int? UserId { get; set; }
         public int TrainId { get; set; }
         public int? TripId { get; set; }
+        public int? BookingOrderId { get; set; }
         public int SeatId { get; set; }
         public int? SegmentDepartureStationId { get; set; }
         public int? SegmentArrivalStationId { get; set; }
@@ -34,6 +35,7 @@
         public string TicketEmailRecipient { get; set; } = string.Empty;
 
         public User? User { get; set; }
+        public BookingOrder? BookingOrder { get; set; }
         public Train Train { get; set; } = null!;
         public Trip? Trip { get; set; }
         public Seat Seat { get; set; } = null!;

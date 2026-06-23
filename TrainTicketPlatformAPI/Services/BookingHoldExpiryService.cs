@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TrainTicketPlatformAPI.Data;
+using TrainTicketPlatformAPI.Models;
 
 namespace TrainTicketPlatformAPI.Services
 {
@@ -27,8 +28,24 @@ namespace TrainTicketPlatformAPI.Services
             foreach (var booking in staleBookings)
                 booking.BookingStatus = "Expired";
 
+            var staleOrderIds = staleBookings
+                .Where(booking => booking.BookingOrderId.HasValue)
+                .Select(booking => booking.BookingOrderId!.Value)
+                .Distinct()
+                .ToList();
+            var staleOrders = staleOrderIds.Count == 0
+                ? new List<BookingOrder>()
+                : await _db.BookingOrders
+                    .Where(order =>
+                        staleOrderIds.Contains(order.Id) &&
+                        order.BookingStatus == "PendingPayment")
+                    .ToListAsync(cancellationToken);
+
+            foreach (var order in staleOrders)
+                order.BookingStatus = "Expired";
+
             await _db.SaveChangesAsync(cancellationToken);
-            return staleBookings.Count;
+            return staleBookings.Count + staleOrders.Count;
         }
     }
 }

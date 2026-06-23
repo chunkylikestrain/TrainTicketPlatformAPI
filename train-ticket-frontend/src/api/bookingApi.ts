@@ -1,8 +1,24 @@
 import apiClient from "./apiClient";
-import type { Booking, CreateBookingRequest, UpdateGuestBookingDataRequest } from "../types/booking";
+import type {
+  Booking,
+  BookingOrder,
+  CreateBookingOrderRequest,
+  CreateBookingRequest,
+  UpdateGuestBookingDataRequest,
+} from "../types/booking";
 
 export async function createBookingHold(request: CreateBookingRequest) {
   const response = await apiClient.post<Booking>("/Bookings", request);
+  return response.data;
+}
+
+export async function createBookingOrderHold(request: CreateBookingOrderRequest) {
+  const response = await apiClient.post<BookingOrder>("/Bookings/orders", request);
+  return response.data;
+}
+
+export async function getBookingOrder(orderId: number | string) {
+  const response = await apiClient.get<BookingOrder>(`/Bookings/orders/${orderId}`);
   return response.data;
 }
 

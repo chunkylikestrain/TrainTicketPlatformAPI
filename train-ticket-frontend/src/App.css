@@ -2232,7 +2232,7 @@
 
 .seat-location-card {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 22px;
   align-items: center;
   min-height: 120px;
@@ -2244,6 +2244,31 @@
 
 .seat-location-card span {
   grid-column: 1 / -1;
+}
+
+.seat-location-card > button {
+  display: grid;
+  gap: 8px;
+  min-height: 86px;
+  border: 1px solid #cfd8e3;
+  border-radius: 4px;
+  padding: 14px 16px;
+  background: #ffffff;
+  color: var(--navy);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.seat-location-card > button span {
+  grid-column: auto;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.seat-location-card > button.seat-passenger-active {
+  border-color: var(--orange);
+  box-shadow: inset 4px 0 0 var(--orange);
 }
 
 .seat-map-notice {
@@ -3043,6 +3068,18 @@
   font-size: 21px;
   font-weight: 800;
   box-shadow: 0 8px 16px rgba(15, 23, 42, 0.08);
+}
+
+.payment-traveler-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+  width: min(100%, 980px);
+}
+
+.payment-traveler-grid .payment-text-field {
+  width: 100%;
+  margin-bottom: 0;
 }
 
 .payment-help {

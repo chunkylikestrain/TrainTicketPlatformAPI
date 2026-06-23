@@ -5,7 +5,8 @@ namespace TrainTicketPlatformAPI.Models
     public class Payment
     {
         public int Id { get; set; }
-        public int BookingId { get; set; }
+        public int? BookingId { get; set; }
+        public int? BookingOrderId { get; set; }
         public string PaymentIntentId { get; set; } = string.Empty;
         public string PaymentMethodToken { get; set; } = string.Empty;
         public DateTime PaymentDate { get; set; }
@@ -13,6 +14,7 @@ namespace TrainTicketPlatformAPI.Models
         [Precision(18, 2)]
         public decimal Amount { get; set; }
 
-        public Booking Booking { get; set; } = null!;
+        public Booking? Booking { get; set; }
+        public BookingOrder? BookingOrder { get; set; }
     }
 }

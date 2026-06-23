@@ -6,6 +6,7 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         public int? UserId { get; set; }
         public int TrainId { get; set; }
         public int? TripId { get; set; }
+        public int? BookingOrderId { get; set; }
         public int SeatId { get; set; }
         public int? SegmentDepartureStationId { get; set; }
         public int? SegmentArrivalStationId { get; set; }

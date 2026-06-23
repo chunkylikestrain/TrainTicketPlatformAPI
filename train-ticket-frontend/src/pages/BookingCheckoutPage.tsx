@@ -3,9 +3,16 @@ import type { FormEvent } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import BookingExpiredModal from "../components/BookingExpiredModal";
 import { getUserEmail, hasAuthToken } from "../api/authSession";
-import { getGuestTickets, updateGuestBookingData } from "../api/bookingApi";
-import { confirmPayment, createPaymentIntent } from "../api/paymentApi";
-import { downloadTicketPdf, getTicketArtifact, getTicketQrSvgBlob, sendTicketEmail } from "../api/ticketApi";
+import { getBookingOrder, getGuestTickets, updateGuestBookingData } from "../api/bookingApi";
+import { confirmPayment, createOrderPaymentIntent, createPaymentIntent } from "../api/paymentApi";
+import {
+  downloadTicketPdf,
+  getOrderTickets,
+  getTicketArtifact,
+  getTicketQrSvgBlob,
+  sendOrderTicketsEmail,
+  sendTicketEmail,
+} from "../api/ticketApi";
 import { getTripById } from "../api/tripApi";
 import type { TicketArtifact } from "../types/ticket";
 import type { TripDetails } from "../types/trip";
@@ -32,8 +39,14 @@ function BookingCheckoutPage() {
   const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
   const email = searchParams.get("email") ?? "";
   const bookingId = searchParams.get("bookingId") ?? "";
+  const orderId = searchParams.get("orderId") ?? "";
+  const bookingIds = searchParams.get("bookingIds") ?? "";
   const selectedSeat = searchParams.get("seat") ?? "46";
   const selectedCar = searchParams.get("car") ?? "1";
+  const selectedSeatList = (searchParams.get("seats") ?? "")
+    .split(",")
+    .map((seat) => seat.trim())
+    .filter(Boolean);
   const segmentDepartureName = searchParams.get("fromStation");
   const segmentArrivalName = searchParams.get("toStation");
   const passengerCounts = getPassengerCounts(searchParams);
@@ -42,7 +55,10 @@ function BookingCheckoutPage() {
   const [tripError, setTripError] = useState("");
   const price = getTripPriceLabel(trip, selectedClass);
   const vat = getTripVatLabel(trip, selectedClass);
-  const [travelerName, setTravelerName] = useState("Trong Nguyen");
+  const passengerTotal = passengerCounts.adults + passengerCounts.children;
+  const [travelerNames, setTravelerNames] = useState<string[]>(() =>
+    Array.from({ length: passengerTotal }, (_, index) => (index === 0 ? "Trong Nguyen" : `Passenger ${index + 1}`)),
+  );
   const [needsInvoice, setNeedsInvoice] = useState(false);
   const [acceptedRules, setAcceptedRules] = useState(true);
   const [paymentMethod, setPaymentMethod] = useState("Google Pay");
@@ -52,7 +68,7 @@ function BookingCheckoutPage() {
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("form");
   const [error, setError] = useState("");
   const [ticketNumbers, setTicketNumbers] = useState<string[]>([]);
-  const [ticketArtifact, setTicketArtifact] = useState<TicketArtifact | null>(null);
+  const [ticketArtifacts, setTicketArtifacts] = useState<TicketArtifact[]>([]);
   const [ticketQrUrl, setTicketQrUrl] = useState("");
   const [ticketDownloadError, setTicketDownloadError] = useState("");
   const sessionEmail = getUserEmail();
@@ -64,12 +80,21 @@ function BookingCheckoutPage() {
   const flowParams = new URLSearchParams(searchParams);
   flowParams.set("class", selectedClass);
   flowParams.set("email", email);
-  const currentCheckoutUrl = `/checkout/${tripId}?${flowParams.toString()}`;
-  const discountSelectionUrl = buildDiscountSelectionUrl(currentCheckoutUrl, flowParams);
 
   if (bookingId) {
     flowParams.set("bookingId", bookingId);
   }
+
+  if (orderId) {
+    flowParams.set("orderId", orderId);
+  }
+
+  if (bookingIds) {
+    flowParams.set("bookingIds", bookingIds);
+  }
+
+  const currentCheckoutUrl = `/checkout/${tripId}?${flowParams.toString()}`;
+  const discountSelectionUrl = buildDiscountSelectionUrl(currentCheckoutUrl, flowParams);
 
   if (selectedSeat) {
     flowParams.set("seat", selectedSeat);
@@ -103,6 +128,16 @@ function BookingCheckoutPage() {
   }, [secondsLeft]);
 
   useEffect(() => {
+    setTravelerNames((current) => {
+      const next = current.slice(0, passengerTotal);
+      while (next.length < passengerTotal) {
+        next.push(`Passenger ${next.length + 1}`);
+      }
+      return next;
+    });
+  }, [passengerTotal]);
+
+  useEffect(() => {
     return () => {
       if (ticketQrUrl) {
         window.URL.revokeObjectURL(ticketQrUrl);
@@ -124,8 +159,9 @@ function BookingCheckoutPage() {
       return;
     }
 
-    if (!travelerName.trim() || !acceptedRules || !paymentMethod || !bookingId || !effectiveEmail) {
-      setError("Enter traveler name, accept the rules, choose a payment method, and make sure guest data is saved.");
+    const hasMissingTravelerName = travelerNames.some((name) => !name.trim());
+    if (hasMissingTravelerName || !acceptedRules || !paymentMethod || (!bookingId && !orderId) || !effectiveEmail) {
+      setError("Enter traveler names, accept the rules, choose a payment method, and make sure guest data is saved.");
       return;
     }
 
@@ -133,56 +169,87 @@ function BookingCheckoutPage() {
     setPaymentStatus("processing");
 
     try {
-      await updateGuestBookingData(bookingId, {
-        guestEmail: effectiveEmail,
-        passengerName: travelerName,
-        acceptedTerms: acceptedRules,
-        acceptedMarketing: false,
-      });
+      let artifacts: TicketArtifact[] = [];
+      let firstBookingId = bookingId;
 
-      const intent = await createPaymentIntent(bookingId);
-      await confirmPayment(intent.paymentIntentId, "tok_success");
-      const artifact = await getTicketArtifact(bookingId, effectiveEmail);
-      const qrBlob = await getTicketQrSvgBlob(bookingId, effectiveEmail);
+      if (orderId) {
+        const order = await getBookingOrder(orderId);
+        await Promise.all(
+          order.bookings.map((booking, index) =>
+            updateGuestBookingData(booking.id, {
+              guestEmail: effectiveEmail,
+              passengerName: travelerNames[index]?.trim() || `Passenger ${index + 1}`,
+              acceptedTerms: acceptedRules,
+              acceptedMarketing: false,
+            }),
+          ),
+        );
+
+        const intent = await createOrderPaymentIntent(orderId);
+        await confirmPayment(intent.paymentIntentId, "tok_success");
+        const orderTickets = await getOrderTickets(orderId, effectiveEmail);
+        artifacts = orderTickets.tickets;
+        firstBookingId = artifacts[0]?.bookingId ? String(artifacts[0].bookingId) : order.bookings[0]?.id.toString() ?? "";
+      } else {
+        await updateGuestBookingData(bookingId, {
+          guestEmail: effectiveEmail,
+          passengerName: travelerNames[0],
+          acceptedTerms: acceptedRules,
+          acceptedMarketing: false,
+        });
+
+        const intent = await createPaymentIntent(bookingId);
+        await confirmPayment(intent.paymentIntentId, "tok_success");
+        const artifact = await getTicketArtifact(bookingId, effectiveEmail);
+        artifacts = [artifact];
+      }
+
+      const qrBlob = await getTicketQrSvgBlob(firstBookingId, effectiveEmail);
       const nextQrUrl = window.URL.createObjectURL(qrBlob);
       const guestTickets = await getGuestTickets(effectiveEmail);
-      const paidTicket = guestTickets.find((ticket) => ticket.id === Number(bookingId));
-      const paidTicketNumbers = artifact.ticketNumber
-        ? [artifact.ticketNumber]
-        : paidTicket?.ticketNumber
-          ? [paidTicket.ticketNumber]
-          : [];
+      const paidTicketNumbers = artifacts
+        .map((artifact) => artifact.ticketNumber)
+        .filter(Boolean);
 
       if (ticketQrUrl) {
         window.URL.revokeObjectURL(ticketQrUrl);
       }
 
-      setTicketArtifact(artifact);
+      setTicketArtifacts(artifacts);
       setTicketQrUrl(nextQrUrl);
-      setTicketNumbers(paidTicketNumbers.length > 0 ? paidTicketNumbers : ["Ticket pending"]);
+      const fallbackTicketNumbers = guestTickets
+        .filter((ticket) =>
+          orderId
+            ? artifacts.some((artifact) => artifact.bookingId === ticket.id)
+            : ticket.id === Number(bookingId),
+        )
+        .map((ticket) => ticket.ticketNumber)
+        .filter(Boolean);
+      setTicketNumbers(
+        paidTicketNumbers.length > 0
+          ? paidTicketNumbers
+          : fallbackTicketNumbers.length > 0
+            ? fallbackTicketNumbers
+            : ["Ticket pending"],
+      );
       setPaymentStatus("paid");
 
-      sendTicketEmail(bookingId, effectiveEmail)
+      const emailDelivery = orderId
+        ? sendOrderTicketsEmail(orderId, effectiveEmail)
+        : sendTicketEmail(bookingId, effectiveEmail);
+
+      emailDelivery
         .then((delivery) => {
-          setTicketArtifact((current) =>
-            current
-              ? {
-                  ...current,
-                  emailDeliveryStatus: delivery.status,
-                  emailSentAtUtc: delivery.sentAtUtc,
-                }
-              : current
+          setTicketArtifacts((current) =>
+            current.map((artifact) => ({
+              ...artifact,
+              emailDeliveryStatus: "deliveries" in delivery ? `${delivery.sentCount}/${delivery.requestedCount} sent` : delivery.status,
+              emailSentAtUtc: "deliveries" in delivery ? delivery.deliveries[0]?.sentAtUtc ?? null : delivery.sentAtUtc,
+            })),
           );
         })
         .catch(() => {
-          setTicketArtifact((current) =>
-            current
-              ? {
-                  ...current,
-                  emailDeliveryStatus: "Not sent",
-                }
-              : current
-          );
+          setTicketArtifacts((current) => current.map((artifact) => ({ ...artifact, emailDeliveryStatus: "Not sent" })));
         });
     } catch {
       setPaymentStatus("form");
@@ -191,18 +258,27 @@ function BookingCheckoutPage() {
   }
 
   async function handleDownloadTicketPdf() {
-    if (!bookingId) {
+    if (!bookingId && ticketArtifacts.length === 0) {
       return;
     }
 
     setTicketDownloadError("");
 
     try {
-      await downloadTicketPdf(bookingId, effectiveEmail, ticketArtifact?.ticketNumber || ticketNumbers[0]);
+      if (orderId && ticketArtifacts.length > 0) {
+        for (const artifact of ticketArtifacts) {
+          await downloadTicketPdf(artifact.bookingId, effectiveEmail, artifact.ticketNumber);
+        }
+        return;
+      }
+
+      await downloadTicketPdf(bookingId, effectiveEmail, ticketArtifacts[0]?.ticketNumber || ticketNumbers[0]);
     } catch {
       setTicketDownloadError("Ticket PDF could not be downloaded. Try opening My tickets and downloading it again.");
     }
   }
+
+  const firstTicketArtifact = ticketArtifacts[0] ?? null;
 
   if (paymentStatus === "processing") {
     return (
@@ -247,7 +323,7 @@ function BookingCheckoutPage() {
             <div>
               <p>payment status <strong>PAID</strong></p>
               <h2>
-                {ticketArtifact?.route ??
+                {firstTicketArtifact?.route ??
                   `${segmentDepartureName ?? trip?.departureStationName ?? "Departure"} > ${segmentArrivalName ?? trip?.arrivalStationName ?? "Arrival"}`}
               </h2>
               <p>
@@ -261,8 +337,8 @@ function BookingCheckoutPage() {
               <button className="ticket-pdf-button" type="button" onClick={handleDownloadTicketPdf}>
                 Download PDF
               </button>
-              {ticketArtifact?.emailDeliveryStatus && (
-                <p>ticket email <strong>{ticketArtifact.emailDeliveryStatus}</strong></p>
+              {firstTicketArtifact?.emailDeliveryStatus && (
+                <p>ticket email <strong>{firstTicketArtifact.emailDeliveryStatus}</strong></p>
               )}
               {ticketDownloadError && <p className="data-error">{ticketDownloadError}</p>}
             </div>
@@ -354,7 +430,11 @@ function BookingCheckoutPage() {
 
             <div className="final-train-details">
               <p><strong>{trip?.trainName ?? "Selected train"}</strong></p>
-              <p>Car {selectedCar}, seat {selectedSeat}, by the window</p>
+              <p>
+                {selectedSeatList.length > 1
+                  ? selectedSeatList.map(formatSeatToken).join(", ")
+                  : `Car ${selectedCar}, seat ${selectedSeat}, by the window`}
+              </p>
               <span>A place at the table</span>
             </div>
 
@@ -383,15 +463,26 @@ function BookingCheckoutPage() {
 
         <form className="payment-form-card" onSubmit={handleSubmit}>
           <section>
-            <h2>Traveler's first and last name</h2>
-            <label className="payment-text-field">
-              <span>First and last name</span>
-              <input value={travelerName} onChange={(event) => setTravelerName(event.target.value)} />
-            </label>
+            <h2>{passengerTotal > 1 ? "Travelers' first and last names" : "Traveler's first and last name"}</h2>
+            <div className="payment-traveler-grid">
+              {travelerNames.map((travelerName, index) => (
+                <label className="payment-text-field" key={`traveler-${index}`}>
+                  <span>Passenger {index + 1}</span>
+                  <input
+                    value={travelerName}
+                    onChange={(event) =>
+                      setTravelerNames((current) =>
+                        current.map((name, itemIndex) => (itemIndex === index ? event.target.value : name)),
+                      )
+                    }
+                  />
+                </label>
+              ))}
+            </div>
             <p className="payment-help">
               Enter your actual data. On the train, the conductor may ask you for proof of identity.
             </p>
-            <p className="payment-help">Do not enter several last names for multiple travelers on one ticket.</p>
+            <p className="payment-help">Each traveler receives their own ticket in this order.</p>
           </section>
 
           <section>
@@ -492,6 +583,11 @@ function BookingCheckoutPage() {
       <BookingExpiredModal isOpen={isExpiredModalOpen} />
     </main>
   );
+}
+
+function formatSeatToken(token: string) {
+  const [car, seat] = token.split("-");
+  return car && seat ? `Car ${car}, seat ${seat}` : token;
 }
 
 export default BookingCheckoutPage;

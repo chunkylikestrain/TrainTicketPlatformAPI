@@ -23,6 +23,7 @@ namespace TrainTicketPlatformAPI.Data
         public DbSet<Fare> Fares { get; set; }
         public DbSet<Seat> Seats { get; set; }
         public DbSet<Booking> Bookings { get; set; }
+        public DbSet<BookingOrder> BookingOrders { get; set; }
         public DbSet<BookingReport> bookingReports { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<DiscountRule> DiscountRules { get; set; }
@@ -60,6 +61,18 @@ namespace TrainTicketPlatformAPI.Data
                 .HasForeignKey(b => b.TripId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<BookingOrder>()
+                .HasOne(o => o.User)
+                .WithMany()
+                .HasForeignKey(o => o.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.BookingOrder)
+                .WithMany(o => o.Bookings)
+                .HasForeignKey(b => b.BookingOrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Booking>()
                 .HasOne(b => b.SegmentDepartureStation)
                 .WithMany()
@@ -95,6 +108,9 @@ namespace TrainTicketPlatformAPI.Data
 
             modelBuilder.Entity<Booking>()
                 .HasIndex(b => b.UserId);
+
+            modelBuilder.Entity<Booking>()
+                .HasIndex(b => b.BookingOrderId);
 
             modelBuilder.Entity<Booking>()
                 .HasIndex(b => new { b.TripId, b.TravelDate });
@@ -173,7 +189,16 @@ namespace TrainTicketPlatformAPI.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Payment>()
+                .HasOne(p => p.BookingOrder)
+                .WithMany()
+                .HasForeignKey(p => p.BookingOrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Payment>()
                 .HasIndex(p => p.BookingId);
+
+            modelBuilder.Entity<Payment>()
+                .HasIndex(p => p.BookingOrderId);
 
             modelBuilder.Entity<Payment>()
                 .HasIndex(p => p.PaymentIntentId)
@@ -197,6 +222,45 @@ namespace TrainTicketPlatformAPI.Data
                     t.HasCheckConstraint(
                         "CK_Payments_Status",
                         "[Status] IN ('Successful', 'Failed', 'Refunded')");
+                    t.HasCheckConstraint(
+                        "CK_Payments_Target",
+                        "([BookingId] IS NOT NULL AND [BookingOrderId] IS NULL) OR ([BookingId] IS NULL AND [BookingOrderId] IS NOT NULL)");
+                });
+
+            modelBuilder.Entity<BookingOrder>()
+                .HasIndex(o => o.OrderReference)
+                .IsUnique();
+
+            modelBuilder.Entity<BookingOrder>()
+                .HasIndex(o => o.GuestEmail);
+
+            modelBuilder.Entity<BookingOrder>()
+                .Property(o => o.OrderReference)
+                .HasMaxLength(40);
+
+            modelBuilder.Entity<BookingOrder>()
+                .Property(o => o.GuestEmail)
+                .HasMaxLength(256);
+
+            modelBuilder.Entity<BookingOrder>()
+                .Property(o => o.BookingStatus)
+                .HasMaxLength(32)
+                .HasDefaultValue("PendingPayment");
+
+            modelBuilder.Entity<BookingOrder>()
+                .Property(o => o.PaymentStatus)
+                .HasMaxLength(32)
+                .HasDefaultValue("Pending");
+
+            modelBuilder.Entity<BookingOrder>()
+                .ToTable(t =>
+                {
+                    t.HasCheckConstraint(
+                        "CK_BookingOrders_BookingStatus",
+                        "[BookingStatus] IN ('PendingPayment', 'Confirmed', 'Cancelled', 'Expired', 'Refunded')");
+                    t.HasCheckConstraint(
+                        "CK_BookingOrders_PaymentStatus",
+                        "[PaymentStatus] IN ('Pending', 'Successful', 'Failed', 'Refunded')");
                 });
 
             modelBuilder.Entity<TicketEmailDelivery>()

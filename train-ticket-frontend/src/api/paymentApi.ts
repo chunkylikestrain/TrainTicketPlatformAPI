@@ -9,6 +9,14 @@ export async function createPaymentIntent(bookingId: number | string) {
   return response.data;
 }
 
+export async function createOrderPaymentIntent(orderId: number | string) {
+  const response = await apiClient.post<PaymentIntent>("/Payments/intent", {
+    bookingOrderId: Number(orderId),
+  });
+
+  return response.data;
+}
+
 export async function confirmPayment(paymentIntentId: string, paymentMethodToken = "tok_success") {
   const response = await apiClient.post<Payment>("/Payments/confirm", {
     paymentIntentId,

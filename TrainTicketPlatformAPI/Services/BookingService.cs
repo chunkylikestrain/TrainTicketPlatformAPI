@@ -119,6 +119,144 @@ namespace TrainTicketPlatformAPI.Services
             return booking;
         }
 
+        public async Task<BookingOrder> CreateBookingOrderAsync(BookingOrder order, IEnumerable<Booking> bookings)
+        {
+            var bookingList = bookings.ToList();
+            if (bookingList.Count == 0)
+                throw new InvalidOperationException("At least one passenger is required");
+
+            await using var transaction = await BeginTransactionIfRelationalAsync();
+            await ExpireStalePendingBookingsAsync();
+
+            var first = bookingList[0];
+            if (bookingList.Any(b =>
+                    b.TrainId != first.TrainId ||
+                    b.TripId != first.TripId ||
+                    b.SegmentDepartureStationId != first.SegmentDepartureStationId ||
+                    b.SegmentArrivalStationId != first.SegmentArrivalStationId))
+            {
+                throw new InvalidOperationException("All passengers in an order must share the same trip and route segment");
+            }
+
+            if (bookingList.Select(b => b.SeatId).Distinct().Count() != bookingList.Count)
+                throw new InvalidOperationException("Each passenger must have a different seat");
+
+            var train = await _db.Trains.FindAsync(first.TrainId);
+            if (train == null)
+                throw new KeyNotFoundException("Train not found");
+
+            TripSegmentInfo? segment = null;
+            DateTime travelDate = first.TravelDate;
+
+            if (first.TripId.HasValue)
+            {
+                var trip = await _db.Trips
+                    .Include(t => t.TrainRoute)
+                        .ThenInclude(r => r.DepartureStation)
+                    .Include(t => t.TrainRoute)
+                        .ThenInclude(r => r.ArrivalStation)
+                    .Include(t => t.TrainRoute)
+                        .ThenInclude(r => r.RouteStops)
+                            .ThenInclude(s => s.Station)
+                    .FirstOrDefaultAsync(t => t.Id == first.TripId.Value)
+                           ?? throw new KeyNotFoundException("Trip not found");
+
+                if (trip.TrainId != first.TrainId)
+                    throw new InvalidOperationException("Trip does not belong to the selected train");
+
+                segment = TripSegmentResolver.Resolve(
+                    trip,
+                    first.SegmentDepartureStationId,
+                    first.SegmentArrivalStationId);
+                travelDate = trip.DepartureTime.Date;
+            }
+            else if (travelDate == default)
+            {
+                throw new InvalidOperationException("Travel date is required");
+            }
+
+            foreach (var booking in bookingList)
+            {
+                var seat = await _db.Seats.FindAsync(booking.SeatId);
+                if (seat == null || !seat.IsAvailable)
+                    throw new InvalidOperationException("Seat not available");
+
+                if (seat.TrainId != booking.TrainId)
+                    throw new InvalidOperationException("Seat does not belong to the selected train");
+
+                if (await HasActiveSeatBookingAsync(
+                        booking.TrainId,
+                        booking.TripId,
+                        booking.SeatId,
+                        travelDate,
+                        segment?.DepartureOrder,
+                        segment?.ArrivalOrder,
+                        ignoredBookingId: null))
+                {
+                    throw new InvalidOperationException("Seat already booked for this travel date");
+                }
+            }
+
+            if (order.UserId.HasValue)
+            {
+                var userExists = await _db.Users.AnyAsync(u => u.Id == order.UserId.Value);
+                if (!userExists)
+                    throw new KeyNotFoundException("User not found");
+            }
+
+            var now = DateTime.UtcNow;
+            order.GuestEmail = NormalizeOptionalEmail(order.GuestEmail);
+            order.CreatedAtUtc = now;
+            order.ExpiresAtUtc = now.Add(BookingHoldDuration);
+            order.OrderReference = string.IsNullOrWhiteSpace(order.OrderReference)
+                ? GenerateOrderReference()
+                : order.OrderReference;
+            order.BookingStatus = string.IsNullOrWhiteSpace(order.BookingStatus) ? "PendingPayment" : order.BookingStatus;
+            order.PaymentStatus = string.IsNullOrWhiteSpace(order.PaymentStatus) ? "Pending" : order.PaymentStatus;
+
+            foreach (var booking in bookingList)
+            {
+                booking.UserId = order.UserId;
+                booking.GuestEmail = order.GuestEmail;
+                booking.PassengerName = NormalizeOptionalText(booking.PassengerName);
+                booking.TravelDate = travelDate;
+                booking.BookingDate = now;
+                booking.ExpiresAtUtc = order.ExpiresAtUtc;
+                booking.BookingReference = string.IsNullOrWhiteSpace(booking.BookingReference)
+                    ? GenerateBookingReference()
+                    : booking.BookingReference;
+                booking.BookingStatus = "PendingPayment";
+                booking.PaymentStatus = "Pending";
+
+                if (segment != null)
+                {
+                    booking.SegmentDepartureStationId = segment.DepartureStationId;
+                    booking.SegmentArrivalStationId = segment.ArrivalStationId;
+                    booking.SegmentDepartureOrder = segment.DepartureOrder;
+                    booking.SegmentArrivalOrder = segment.ArrivalOrder;
+                    booking.SegmentDepartureTime = segment.DepartureTime;
+                    booking.SegmentArrivalTime = segment.ArrivalTime;
+                }
+
+                order.Bookings.Add(booking);
+            }
+
+            _db.BookingOrders.Add(order);
+
+            try
+            {
+                await _db.SaveChangesAsync();
+                if (transaction != null)
+                    await transaction.CommitAsync();
+            }
+            catch (DbUpdateException ex) when (IsDuplicateBookingException(ex))
+            {
+                throw new InvalidOperationException("Seat already booked for this trip or travel date", ex);
+            }
+
+            return await GetBookingOrderByIdAsync(order.Id);
+        }
+
         public async Task<Booking> UpdateGuestBookingDataAsync(
             int bookingId,
             string guestEmail,
@@ -128,7 +266,9 @@ namespace TrainTicketPlatformAPI.Services
             if (!acceptedTerms)
                 throw new InvalidOperationException("Terms must be accepted before continuing");
 
-            var booking = await _db.Bookings.FindAsync(bookingId)
+            var booking = await _db.Bookings
+                              .Include(b => b.BookingOrder)
+                              .FirstOrDefaultAsync(b => b.Id == bookingId)
                           ?? throw new KeyNotFoundException("Booking not found");
 
             if (ExpireIfPendingHoldElapsed(booking))
@@ -145,6 +285,9 @@ namespace TrainTicketPlatformAPI.Services
 
             booking.GuestEmail = normalizedEmail;
             booking.PassengerName = normalizedPassengerName;
+
+            if (booking.BookingOrder != null)
+                booking.BookingOrder.GuestEmail = normalizedEmail;
 
             await _db.SaveChangesAsync();
             return booking;
@@ -224,6 +367,37 @@ namespace TrainTicketPlatformAPI.Services
                 throw new KeyNotFoundException("Booking not found");
 
             return booking;
+        }
+
+        public async Task<BookingOrder> GetBookingOrderByIdAsync(int bookingOrderId)
+        {
+            var order = await _db.BookingOrders
+                .Include(o => o.User)
+                .Include(o => o.Bookings)
+                    .ThenInclude(b => b.Train)
+                .Include(o => o.Bookings)
+                    .ThenInclude(b => b.Seat)
+                .Include(o => o.Bookings)
+                    .ThenInclude(b => b.SegmentDepartureStation)
+                .Include(o => o.Bookings)
+                    .ThenInclude(b => b.SegmentArrivalStation)
+                .Include(o => o.Bookings)
+                    .ThenInclude(b => b.Trip)
+                        .ThenInclude(t => t!.TrainRoute)
+                            .ThenInclude(r => r.DepartureStation)
+                .Include(o => o.Bookings)
+                    .ThenInclude(b => b.Trip)
+                        .ThenInclude(t => t!.TrainRoute)
+                            .ThenInclude(r => r.ArrivalStation)
+                .Include(o => o.Bookings)
+                    .ThenInclude(b => b.Trip)
+                        .ThenInclude(t => t!.Fares)
+                .FirstOrDefaultAsync(o => o.Id == bookingOrderId);
+
+            if (order == null)
+                throw new KeyNotFoundException("Booking order not found");
+
+            return order;
         }
 
         public async Task<IEnumerable<Booking>> GetAllBookingsAsync()
@@ -540,6 +714,9 @@ namespace TrainTicketPlatformAPI.Services
         private static string GenerateBookingReference()
             => $"BKG-{DateTime.UtcNow:yyyyMMddHHmmssfff}-{Guid.NewGuid():N}"[..28];
 
+        private static string GenerateOrderReference()
+            => $"ORD-{DateTime.UtcNow:yyyyMMddHHmmssfff}-{Guid.NewGuid():N}"[..28];
+
         private static string GenerateTicketNumber()
             => $"WH{DateTime.UtcNow:yyMMdd}{Random.Shared.Next(1000, 9999)}";
 
@@ -616,6 +793,23 @@ namespace TrainTicketPlatformAPI.Services
 
             foreach (var booking in staleBookings)
                 booking.BookingStatus = "Expired";
+
+            var staleOrderIds = staleBookings
+                .Where(booking => booking.BookingOrderId.HasValue)
+                .Select(booking => booking.BookingOrderId!.Value)
+                .Distinct()
+                .ToList();
+            if (staleOrderIds.Count > 0)
+            {
+                var staleOrders = await _db.BookingOrders
+                    .Where(order =>
+                        staleOrderIds.Contains(order.Id) &&
+                        order.BookingStatus == "PendingPayment")
+                    .ToListAsync();
+
+                foreach (var order in staleOrders)
+                    order.BookingStatus = "Expired";
+            }
 
             await _db.SaveChangesAsync();
         }

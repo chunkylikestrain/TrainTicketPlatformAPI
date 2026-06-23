@@ -192,6 +192,141 @@ namespace TrainTicketPlatformAPI.Controllers
             }
         }
 
+        // POST: api/Bookings/orders
+        [AllowAnonymous]
+        [HttpPost("orders")]
+        public async Task<ActionResult<BookingOrderDto>> CreateOrder([FromBody] CreateBookingOrderRequest request)
+        {
+            try
+            {
+                var currentUserId = GetCurrentUserId();
+                var order = new BookingOrder
+                {
+                    UserId = currentUserId,
+                    GuestEmail = request.GuestEmail,
+                    BookingStatus = "PendingPayment",
+                    PaymentStatus = "Pending"
+                };
+
+                var bookings = request.Passengers.Select(passenger => new Booking
+                {
+                    UserId = currentUserId,
+                    TrainId = request.TrainId,
+                    TripId = request.TripId,
+                    SeatId = passenger.SeatId,
+                    SegmentDepartureStationId = request.SegmentDepartureStationId,
+                    SegmentArrivalStationId = request.SegmentArrivalStationId,
+                    TravelDate = request.TravelDate,
+                    GuestEmail = request.GuestEmail,
+                    PassengerName = passenger.PassengerName,
+                    BookingStatus = "PendingPayment",
+                    PaymentStatus = "Pending"
+                });
+
+                var created = await _bookingService.CreateBookingOrderAsync(order, bookings);
+                return CreatedAtAction(nameof(GetOrderById),
+                    new { id = created.Id },
+                    ToOrderDto(created));
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // GET: api/Bookings/orders/5
+        [HttpGet("orders/{id}")]
+        public async Task<ActionResult<BookingOrderDto>> GetOrderById(int id)
+        {
+            try
+            {
+                var order = await _bookingService.GetBookingOrderByIdAsync(id);
+                if (!CanAccessOrder(order))
+                    return Forbid();
+
+                return Ok(ToOrderDto(order));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+        }
+
+        // GET: api/Bookings/orders/5/tickets?email=guest@example.com
+        [AllowAnonymous]
+        [HttpGet("orders/{id}/tickets")]
+        public async Task<ActionResult<BookingOrderTicketsDto>> GetOrderTickets(
+            int id,
+            [FromQuery] string? email = null)
+        {
+            try
+            {
+                var order = await _bookingService.GetBookingOrderByIdAsync(id);
+                if (!CanAccessOrderTickets(order, email))
+                    return Forbid();
+
+                var tickets = new List<TicketArtifactDto>();
+                foreach (var booking in order.Bookings.OrderBy(booking => booking.Id))
+                    tickets.Add(await _ticketArtifactService.GetTicketAsync(booking.Id));
+
+                return Ok(new BookingOrderTicketsDto
+                {
+                    BookingOrderId = order.Id,
+                    OrderReference = order.OrderReference,
+                    TicketCount = tickets.Count,
+                    Tickets = tickets
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // POST: api/Bookings/orders/5/tickets/email
+        [AllowAnonymous]
+        [HttpPost("orders/{id}/tickets/email")]
+        public async Task<ActionResult<BookingOrderEmailDeliveryDto>> SendOrderTicketsEmail(
+            int id,
+            [FromBody] SendTicketEmailRequest request)
+        {
+            try
+            {
+                var order = await _bookingService.GetBookingOrderByIdAsync(id);
+                if (!CanAccessOrderTickets(order, request.Email))
+                    return Forbid();
+
+                var deliveries = new List<TicketEmailDeliveryDto>();
+                foreach (var booking in order.Bookings.OrderBy(booking => booking.Id))
+                    deliveries.Add(await _ticketArtifactService.SendTicketEmailAsync(booking.Id, request.Email));
+
+                return Ok(new BookingOrderEmailDeliveryDto
+                {
+                    BookingOrderId = order.Id,
+                    OrderReference = order.OrderReference,
+                    RequestedCount = order.Bookings.Count,
+                    SentCount = deliveries.Count(delivery => delivery.Status == "Sent"),
+                    Deliveries = deliveries
+                });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         // POST: api/Bookings/5/refund
         [HttpPost("{id}/refund")]
         public async Task<ActionResult<BookingDto>> RefundMyTicket(
@@ -508,6 +643,7 @@ namespace TrainTicketPlatformAPI.Controllers
             UserId = booking.UserId,
             TrainId = booking.TrainId,
             TripId = booking.TripId,
+            BookingOrderId = booking.BookingOrderId,
             SeatId = booking.SeatId,
             SegmentDepartureStationId = booking.SegmentDepartureStationId,
             SegmentArrivalStationId = booking.SegmentArrivalStationId,
@@ -565,6 +701,57 @@ namespace TrainTicketPlatformAPI.Controllers
             return booking.Trip?.TrainRoute == null || booking.Train == null
                 ? booking.Train == null ? string.Empty : $"{booking.Train.DepartureStation} -> {booking.Train.ArrivalStation}"
                 : $"{booking.Trip.TrainRoute.DepartureStation.Name} -> {booking.Trip.TrainRoute.ArrivalStation.Name}";
+        }
+
+        private static BookingOrderDto ToOrderDto(BookingOrder order) => new()
+        {
+            Id = order.Id,
+            UserId = order.UserId,
+            OrderReference = order.OrderReference,
+            GuestEmail = order.GuestEmail,
+            CreatedAtUtc = order.CreatedAtUtc,
+            ExpiresAtUtc = order.ExpiresAtUtc,
+            BookingStatus = order.BookingStatus,
+            PaymentStatus = order.PaymentStatus,
+            ConfirmedAtUtc = order.ConfirmedAtUtc,
+            TicketCount = order.Bookings.Count,
+            HasTicketArtifacts = order.Bookings.Count > 0 &&
+                order.Bookings.All(booking => !string.IsNullOrWhiteSpace(booking.TicketQrPayload)),
+            Bookings = order.Bookings
+                .OrderBy(booking => booking.Id)
+                .Select(ToDto)
+                .ToList(),
+            Amount = order.Bookings.Sum(booking => booking.Trip?.Fares
+                .OrderByDescending(f => booking.Seat != null && f.ClassType == booking.Seat.ClassType)
+                .ThenBy(f => f.Price)
+                .FirstOrDefault()?.Price ?? 0m)
+        };
+
+        private bool CanAccessOrder(BookingOrder order)
+        {
+            if (User.IsInRole("Admin"))
+                return true;
+
+            if (order.UserId.HasValue)
+                return CanAccessUserResource(order.UserId);
+
+            return true;
+        }
+
+        private bool CanAccessOrderTickets(BookingOrder order, string? email)
+        {
+            if (User.IsInRole("Admin"))
+                return true;
+
+            if (order.UserId.HasValue)
+                return CanAccessUserResource(order.UserId);
+
+            return !string.IsNullOrWhiteSpace(email) &&
+                !string.IsNullOrWhiteSpace(order.GuestEmail) &&
+                string.Equals(
+                    order.GuestEmail.Trim(),
+                    email.Trim(),
+                    StringComparison.OrdinalIgnoreCase);
         }
 
         private static bool HasPlatformChange(Trip? trip)

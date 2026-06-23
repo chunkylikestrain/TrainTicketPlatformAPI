@@ -1,10 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import { createBookingHold } from "../api/bookingApi";
+import { createBookingHold, createBookingOrderHold } from "../api/bookingApi";
 import { getTripById, getTripSeats } from "../api/tripApi";
 import CarriageSeatMap, { type CarriageTemplate } from "../components/CarriageSeatMap";
 import type { TripDetails, TripSeatAvailability } from "../types/trip";
+import { getPassengerCounts, getPassengerTotal } from "../utils/purchasePreferences";
 
 function formatDate(value?: string) {
   if (!value) {
@@ -38,13 +39,23 @@ function SeatMapPage() {
   const toStationId = searchParams.get("toStationId");
   const segmentDepartureName = searchParams.get("fromStation");
   const segmentArrivalName = searchParams.get("toStation");
+  const passengerCounts = getPassengerCounts(searchParams);
+  const passengerTotal = getPassengerTotal(passengerCounts);
   const [trip, setTrip] = useState<TripDetails | null>(null);
   const [seats, setSeats] = useState<TripSeatAvailability[]>([]);
   const [activeCoach, setActiveCoach] = useState("");
-  const [selectedSeat, setSelectedSeat] = useState<TripSeatAvailability | null>(null);
+  const [activePassengerIndex, setActivePassengerIndex] = useState(0);
+  const [selectedSeats, setSelectedSeats] = useState<Array<TripSeatAvailability | null>>(() =>
+    Array.from({ length: passengerTotal }, () => null),
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [isCreatingHold, setIsCreatingHold] = useState(false);
   const [error, setError] = useState("");
+  const selectedSeat = selectedSeats[activePassengerIndex] ?? null;
+  const allPassengersHaveSeats = selectedSeats.every(Boolean);
+  const usedSeatIds = selectedSeats
+    .map((seat, index) => (index === activePassengerIndex ? null : seat?.seatId))
+    .filter((seatId): seatId is number => Boolean(seatId));
 
   useEffect(() => {
     if (!tripId) {
@@ -96,8 +107,28 @@ function SeatMapPage() {
   const flowParams = new URLSearchParams(searchParams);
   flowParams.set("class", selectedClass);
 
+  useEffect(() => {
+    setSelectedSeats((current) => {
+      const next = current.slice(0, passengerTotal);
+      while (next.length < passengerTotal) {
+        next.push(null);
+      }
+      return next;
+    });
+    setActivePassengerIndex((current) => Math.min(current, passengerTotal - 1));
+  }, [passengerTotal]);
+
+  function handleSelectSeat(seat: TripSeatAvailability) {
+    setSelectedSeats((current) => current.map((item, index) => (index === activePassengerIndex ? seat : item)));
+
+    const nextMissingIndex = selectedSeats.findIndex((item, index) => index !== activePassengerIndex && !item);
+    if (nextMissingIndex >= 0) {
+      setActivePassengerIndex(nextMissingIndex);
+    }
+  }
+
   async function handleConfirmSeat() {
-    if (!trip || !selectedSeat) {
+    if (!trip || !allPassengersHaveSeats) {
       return;
     }
 
@@ -105,19 +136,56 @@ function SeatMapPage() {
     setError("");
 
     try {
+      if (passengerTotal > 1) {
+        const order = await createBookingOrderHold({
+          trainId: trip.trainId,
+          tripId: trip.tripId,
+          travelDate: trip.departureTime,
+          segmentDepartureStationId: fromStationId ? Number(fromStationId) : undefined,
+          segmentArrivalStationId: toStationId ? Number(toStationId) : undefined,
+          passengers: selectedSeats.map((seat, index) => ({
+            seatId: seat?.seatId ?? 0,
+            passengerName: `Passenger ${index + 1}`,
+          })),
+        });
+
+        const params = new URLSearchParams(flowParams);
+        params.set("orderId", String(order.id));
+        params.set("seats", selectedSeats.map((seat) => `${seat?.coach}-${seat?.number}`).join(","));
+        params.set("bookingIds", order.bookings.map((booking) => String(booking.id)).join(","));
+        params.delete("bookingId");
+
+        const firstSeat = selectedSeats[0];
+        if (firstSeat) {
+          params.set("car", firstSeat.coach);
+          params.set("seat", firstSeat.number);
+        }
+
+        navigate(`/summary/${tripId}?${params.toString()}`);
+        return;
+      }
+
+      const firstSeat = selectedSeats[0];
+      if (!firstSeat) {
+        return;
+      }
+
       const booking = await createBookingHold({
         trainId: trip.trainId,
         tripId: trip.tripId,
-        seatId: selectedSeat.seatId,
+        seatId: firstSeat.seatId,
         travelDate: trip.departureTime,
         segmentDepartureStationId: fromStationId ? Number(fromStationId) : undefined,
         segmentArrivalStationId: toStationId ? Number(toStationId) : undefined,
       });
 
       const params = new URLSearchParams(flowParams);
-      params.set("car", selectedSeat.coach);
-      params.set("seat", selectedSeat.number);
+      params.set("car", firstSeat.coach);
+      params.set("seat", firstSeat.number);
       params.set("bookingId", String(booking.id));
+      params.delete("orderId");
+      params.delete("bookingIds");
+      params.delete("seats");
 
       navigate(`/summary/${tripId}?${params.toString()}`);
     } catch (reserveError) {
@@ -125,7 +193,7 @@ function SeatMapPage() {
       setError(message);
 
       if (message.toLowerCase().includes("seat")) {
-        setSelectedSeat(null);
+        setSelectedSeats((current) => current.map((seat, index) => (index === activePassengerIndex ? null : seat)));
         getTripSeats(tripId, { fromStationId, toStationId }).then(setSeats).catch(() => undefined);
       }
     } finally {
@@ -211,8 +279,10 @@ function SeatMapPage() {
               selectedSeat={selectedSeat}
               seats={activeCoachSeats}
               template={activeTemplate}
-              isSeatSelectable={(seat) => matchesSelectedClass(seat.classType, selectedClass)}
-              onSelectSeat={setSelectedSeat}
+              isSeatSelectable={(seat) =>
+                matchesSelectedClass(seat.classType, selectedClass) && !usedSeatIds.includes(seat.seatId)
+              }
+              onSelectSeat={handleSelectSeat}
             />
             <button type="button" className="seat-nav" aria-label="Next car" onClick={() => moveCoach(1)}>
               &gt;
@@ -233,26 +303,27 @@ function SeatMapPage() {
 
         <section className="seat-location-card">
           <span>Location</span>
-          <strong>Passenger 1</strong>
-          {selectedSeat ? (
-            <>
-              <strong>Class {selectedClass}</strong>
-              <strong>Seat {selectedSeat.number}</strong>
-              <strong>Car {selectedSeat.coach}</strong>
-            </>
-          ) : (
-            <strong>Not selected</strong>
-          )}
+          {selectedSeats.map((seat, index) => (
+            <button
+              className={index === activePassengerIndex ? "seat-passenger-active" : ""}
+              type="button"
+              onClick={() => setActivePassengerIndex(index)}
+              key={`passenger-${index}`}
+            >
+              <strong>Passenger {index + 1}</strong>
+              <span>{seat ? `Class ${selectedClass}, car ${seat.coach}, seat ${seat.number}` : "Choose seat"}</span>
+            </button>
+          ))}
         </section>
 
         <div className="seat-map-notice">
-          Choose 1 seat to activate the confirm your choice button
+          Choose {passengerTotal} {passengerTotal === 1 ? "seat" : "seats"} to activate the confirm your choice button
         </div>
 
         <button
-          className={`seat-confirm ${selectedSeat ? "seat-confirm-active" : ""}`}
+          className={`seat-confirm ${allPassengersHaveSeats ? "seat-confirm-active" : ""}`}
           type="button"
-          disabled={!selectedSeat || isCreatingHold}
+          disabled={!allPassengersHaveSeats || isCreatingHold}
           onClick={handleConfirmSeat}
         >
           {isCreatingHold ? "Reserving..." : "I confirm my choice"}

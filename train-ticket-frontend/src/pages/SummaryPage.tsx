@@ -23,6 +23,12 @@ function SummaryPage() {
   const selectedSeat = searchParams.get("seat");
   const selectedCar = searchParams.get("car") ?? "1";
   const bookingId = searchParams.get("bookingId") ?? "";
+  const orderId = searchParams.get("orderId") ?? "";
+  const bookingIds = searchParams.get("bookingIds") ?? "";
+  const selectedSeatList = (searchParams.get("seats") ?? "")
+    .split(",")
+    .map((seat) => seat.trim())
+    .filter(Boolean);
   const segmentDepartureName = searchParams.get("fromStation");
   const segmentArrivalName = searchParams.get("toStation");
   const passengerCounts = getPassengerCounts(searchParams);
@@ -32,6 +38,14 @@ function SummaryPage() {
 
   if (bookingId) {
     summaryParams.set("bookingId", bookingId);
+  }
+
+  if (orderId) {
+    summaryParams.set("orderId", orderId);
+  }
+
+  if (bookingIds) {
+    summaryParams.set("bookingIds", bookingIds);
   }
 
   if (selectedSeat) {
@@ -140,10 +154,14 @@ function SummaryPage() {
               <button type="button" aria-label="Bicycle space" />
               <button type="button" aria-label="Quiet coach" />
             </div>
-            <div className={`summary-outline-button ${selectedSeat ? "summary-seat-selected" : "summary-seat-empty"}`}>
-              {selectedSeat ? (
+            <div className={`summary-outline-button ${selectedSeat || selectedSeatList.length > 0 ? "summary-seat-selected" : "summary-seat-empty"}`}>
+              {selectedSeat || selectedSeatList.length > 0 ? (
                 <>
-                  <span>Car {selectedCar}, seat {selectedSeat}</span>
+                  <span>
+                    {selectedSeatList.length > 1
+                      ? selectedSeatList.map(formatSeatToken).join(", ")
+                      : `Car ${selectedCar}, seat ${selectedSeat}`}
+                  </span>
                   <Link className="summary-seat-change" to={`/seat-map/${tripId}?${summaryParams.toString()}`}>
                     Change
                   </Link>
@@ -257,6 +275,11 @@ function SummaryPage() {
       )}
     </main>
   );
+}
+
+function formatSeatToken(token: string) {
+  const [car, seat] = token.split("-");
+  return car && seat ? `Car ${car}, seat ${seat}` : token;
 }
 
 export default SummaryPage;

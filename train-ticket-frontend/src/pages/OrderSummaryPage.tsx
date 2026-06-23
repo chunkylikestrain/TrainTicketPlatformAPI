@@ -24,8 +24,14 @@ function OrderSummaryPage() {
   const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
   const email = searchParams.get("email") ?? "";
   const bookingId = searchParams.get("bookingId") ?? "";
+  const orderId = searchParams.get("orderId") ?? "";
+  const bookingIds = searchParams.get("bookingIds") ?? "";
   const selectedSeat = searchParams.get("seat") ?? "46";
   const selectedCar = searchParams.get("car") ?? "1";
+  const selectedSeatList = (searchParams.get("seats") ?? "")
+    .split(",")
+    .map((seat) => seat.trim())
+    .filter(Boolean);
   const segmentDepartureName = searchParams.get("fromStation");
   const segmentArrivalName = searchParams.get("toStation");
   const passengerCounts = getPassengerCounts(searchParams);
@@ -43,6 +49,16 @@ function OrderSummaryPage() {
   if (bookingId) {
     checkoutParams.set("bookingId", bookingId);
     dataParams.set("bookingId", bookingId);
+  }
+
+  if (orderId) {
+    checkoutParams.set("orderId", orderId);
+    dataParams.set("orderId", orderId);
+  }
+
+  if (bookingIds) {
+    checkoutParams.set("bookingIds", bookingIds);
+    dataParams.set("bookingIds", bookingIds);
   }
 
   if (selectedSeat) {
@@ -102,7 +118,11 @@ function OrderSummaryPage() {
 
             <div className="final-train-details">
               <p><strong>{trip?.trainName ?? "Selected train"}</strong></p>
-              <p>Car {selectedCar}, seat {selectedSeat}, by the window</p>
+              <p>
+                {selectedSeatList.length > 1
+                  ? selectedSeatList.map(formatSeatToken).join(", ")
+                  : `Car ${selectedCar}, seat ${selectedSeat}`}
+              </p>
               <span>A place at the table</span>
             </div>
 
@@ -170,6 +190,11 @@ function OrderSummaryPage() {
       </section>
     </main>
   );
+}
+
+function formatSeatToken(token: string) {
+  const [car, seat] = token.split("-");
+  return car && seat ? `Car ${car}, seat ${seat}` : token;
 }
 
 export default OrderSummaryPage;

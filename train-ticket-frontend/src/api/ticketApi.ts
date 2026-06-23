@@ -1,5 +1,5 @@
 import apiClient from "./apiClient";
-import type { TicketArtifact, TicketEmailDelivery } from "../types/ticket";
+import type { BookingOrderEmailDelivery, BookingOrderTickets, TicketArtifact, TicketEmailDelivery } from "../types/ticket";
 
 function guestParams(email?: string) {
   return email ? { email } : undefined;
@@ -33,6 +33,22 @@ export async function getTicketPdfBlob(bookingId: number | string, email?: strin
 
 export async function sendTicketEmail(bookingId: number | string, email?: string) {
   const response = await apiClient.post<TicketEmailDelivery>(`/Bookings/${bookingId}/ticket/email`, {
+    email,
+  });
+
+  return response.data;
+}
+
+export async function getOrderTickets(orderId: number | string, email?: string) {
+  const response = await apiClient.get<BookingOrderTickets>(`/Bookings/orders/${orderId}/tickets`, {
+    params: guestParams(email),
+  });
+
+  return response.data;
+}
+
+export async function sendOrderTicketsEmail(orderId: number | string, email?: string) {
+  const response = await apiClient.post<BookingOrderEmailDelivery>(`/Bookings/orders/${orderId}/tickets/email`, {
     email,
   });
 

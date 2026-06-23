@@ -1,6 +1,8 @@
 export type PaymentIntent = {
   paymentIntentId: string;
-  bookingId: number;
+  bookingId: number | null;
+  bookingOrderId: number | null;
+  bookingIds: number[];
   amount: number;
   currency: string;
   status: string;
@@ -10,7 +12,9 @@ export type PaymentIntent = {
 
 export type Payment = {
   id: number;
-  bookingId: number;
+  bookingId: number | null;
+  bookingOrderId: number | null;
+  bookingIds: number[];
   paymentIntentId: string;
   paymentDate: string;
   status: string;

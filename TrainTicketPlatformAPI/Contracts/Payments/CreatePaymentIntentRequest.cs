@@ -4,7 +4,8 @@ namespace TrainTicketPlatformAPI.Contracts.Payments
 {
     public class CreatePaymentIntentRequest
     {
-        [Required]
-        public int BookingId { get; set; }
+        public int? BookingId { get; set; }
+
+        public int? BookingOrderId { get; set; }
     }
 }

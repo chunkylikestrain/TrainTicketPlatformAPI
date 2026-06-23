@@ -7,6 +7,8 @@ namespace TrainTicketPlatformAPI.Services
     {
         Task<PaymentIntentDto> CreatePaymentIntentAsync(int bookingId);
 
+        Task<PaymentIntentDto> CreatePaymentIntentForOrderAsync(int bookingOrderId);
+
         Task<Payment> ConfirmPaymentAsync(string paymentIntentId, string paymentMethodToken);
 
         Task<Payment> ProcessPaymentAsync(int bookingId, decimal amount, string paymentMethodToken);

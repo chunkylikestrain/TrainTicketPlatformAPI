@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { updateGuestBookingData } from "../api/bookingApi";
+import { getBookingOrder, updateGuestBookingData } from "../api/bookingApi";
 
 function DataRequestPage() {
   const { tripId } = useParams();
@@ -17,6 +17,8 @@ function DataRequestPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [apiError, setApiError] = useState("");
   const bookingId = searchParams.get("bookingId") ?? "";
+  const orderId = searchParams.get("orderId") ?? "";
+  const bookingIds = searchParams.get("bookingIds") ?? "";
   const selectedSeat = searchParams.get("seat") ?? "";
   const selectedCar = searchParams.get("car") ?? "";
   const backParams = new URLSearchParams(searchParams);
@@ -24,6 +26,14 @@ function DataRequestPage() {
 
   if (bookingId) {
     backParams.set("bookingId", bookingId);
+  }
+
+  if (orderId) {
+    backParams.set("orderId", orderId);
+  }
+
+  if (bookingIds) {
+    backParams.set("bookingIds", bookingIds);
   }
 
   if (selectedSeat) {
@@ -45,7 +55,7 @@ function DataRequestPage() {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
 
-    if (!canSave || !bookingId) {
+    if (!canSave || (!bookingId && !orderId)) {
       setShowError(true);
       return;
     }
@@ -54,17 +64,39 @@ function DataRequestPage() {
     setApiError("");
 
     try {
-      await updateGuestBookingData(bookingId, {
-        guestEmail: email,
-        passengerName: "Guest passenger",
-        acceptedTerms,
-        acceptedMarketing: marketingConsent,
-      });
+      if (orderId) {
+        const order = await getBookingOrder(orderId);
+        await Promise.all(
+          order.bookings.map((booking, index) =>
+            updateGuestBookingData(booking.id, {
+              guestEmail: email,
+              passengerName: booking.passengerName || `Guest passenger ${index + 1}`,
+              acceptedTerms,
+              acceptedMarketing: marketingConsent,
+            }),
+          ),
+        );
+      } else {
+        await updateGuestBookingData(bookingId, {
+          guestEmail: email,
+          passengerName: "Guest passenger",
+          acceptedTerms,
+          acceptedMarketing: marketingConsent,
+        });
+      }
 
       const params = new URLSearchParams(searchParams);
       params.set("class", selectedClass);
       params.set("email", email);
-      params.set("bookingId", bookingId);
+      if (bookingId) {
+        params.set("bookingId", bookingId);
+      }
+      if (orderId) {
+        params.set("orderId", orderId);
+      }
+      if (bookingIds) {
+        params.set("bookingIds", bookingIds);
+      }
 
       if (selectedSeat) {
         params.set("seat", selectedSeat);

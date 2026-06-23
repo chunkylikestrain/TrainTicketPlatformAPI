@@ -453,6 +453,91 @@ namespace TrainTicketPlatformAPI.Tests
                 }));
         }
 
+        [Test]
+        public async Task CreateBookingOrderAsync_CreatesChildHolds_ForMultiplePassengers()
+        {
+            var db = NewDb("BookingOrderCreatesChildHolds");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            SeedSeat(db, 2, true);
+            SeedTripRoute(db);
+            var departure = DateTime.UtcNow.Date.AddDays(3).AddHours(8);
+            db.Trips.Add(new Trip
+            {
+                Id = 10,
+                TrainId = 1,
+                TrainRouteId = 1,
+                DepartureTime = departure,
+                ArrivalTime = departure.AddHours(2),
+                Status = "Scheduled"
+            });
+            await db.SaveChangesAsync();
+
+            var svc = new BookingService(db);
+            var order = await svc.CreateBookingOrderAsync(
+                new BookingOrder
+                {
+                    UserId = 42,
+                    GuestEmail = "family@example.test"
+                },
+                new[]
+                {
+                    new Booking
+                    {
+                        TrainId = 1,
+                        TripId = 10,
+                        SeatId = 1,
+                        PassengerName = "Passenger One"
+                    },
+                    new Booking
+                    {
+                        TrainId = 1,
+                        TripId = 10,
+                        SeatId = 2,
+                        PassengerName = "Passenger Two"
+                    }
+                });
+
+            Assert.That(order.Id, Is.GreaterThan(0));
+            Assert.That(order.OrderReference, Does.StartWith("ORD-"));
+            Assert.That(order.Bookings.Count, Is.EqualTo(2));
+            Assert.That(order.BookingStatus, Is.EqualTo("PendingPayment"));
+            Assert.That(order.Bookings.Select(booking => booking.BookingOrderId), Is.All.EqualTo(order.Id));
+            Assert.That(order.Bookings.Select(booking => booking.BookingStatus), Is.All.EqualTo("PendingPayment"));
+            Assert.That(order.Bookings.Select(booking => booking.ExpiresAtUtc), Is.All.Not.Null);
+        }
+
+        [Test]
+        public void CreateBookingOrderAsync_Throws_WhenSeatRepeatedInsideOrder()
+        {
+            var db = NewDb("BookingOrderBlocksDuplicateSeat");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            SeedTripRoute(db);
+            var departure = DateTime.UtcNow.Date.AddDays(3).AddHours(8);
+            db.Trips.Add(new Trip
+            {
+                Id = 10,
+                TrainId = 1,
+                TrainRouteId = 1,
+                DepartureTime = departure,
+                ArrivalTime = departure.AddHours(2),
+                Status = "Scheduled"
+            });
+            db.SaveChanges();
+
+            var svc = new BookingService(db);
+
+            Assert.ThrowsAsync<InvalidOperationException>(() =>
+                svc.CreateBookingOrderAsync(
+                    new BookingOrder { UserId = 42 },
+                    new[]
+                    {
+                        new Booking { TrainId = 1, TripId = 10, SeatId = 1, PassengerName = "One" },
+                        new Booking { TrainId = 1, TripId = 10, SeatId = 1, PassengerName = "Two" }
+                    }));
+        }
+
         // 2) Cancellation Tests
 
         [Test]
