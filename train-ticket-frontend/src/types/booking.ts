@@ -15,8 +15,20 @@ export type Booking = {
   paymentStatus: string;
   isCancelled: boolean;
   cancellationDate: string | null;
+  cancellationReason: string | null;
   confirmedAtUtc: string | null;
   refundedAtUtc: string | null;
+  ticketIssuedAtUtc: string | null;
+  hasTicketArtifact: boolean;
+  ticketEmailStatus: string;
+  ticketEmailSentAtUtc: string | null;
+  ticketEmailRecipient: string;
+  trainName: string;
+  route: string;
+  seatLabel: string;
+  departureTime: string | null;
+  arrivalTime: string | null;
+  amount: number;
 };
 
 export type CreateBookingRequest = {

@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { getCurrentUser } from "../api/authApi";
+import { getMyTickets, refundMyTicket } from "../api/bookingApi";
 import { clearAuthSession, getProfileDisplayName, saveCurrentUser } from "../api/authSession";
+import { downloadTicketPdf } from "../api/ticketApi";
 import type { CurrentUser } from "../types/auth";
+import type { Booking } from "../types/booking";
 
 const accountMenuItems = [
   "My tickets",
@@ -14,6 +17,15 @@ const accountMenuItems = [
   "Settings",
   "Useful links",
 ];
+
+const ticketSections = [
+  { key: "tickets", label: "Tickets", empty: "You currently have no active tickets. Proceed to purchase tickets." },
+  { key: "season", label: "Season tickets", empty: "You currently have no season tickets." },
+  { key: "history", label: "Travel history", empty: "Your completed trips will appear here after arrival." },
+  { key: "returned", label: "Returned", empty: "Your returned tickets will appear here." },
+] as const;
+
+type TicketSectionKey = typeof ticketSections[number]["key"];
 
 function LegalFooter() {
   return (
@@ -48,6 +60,12 @@ function MyProfilePage() {
   const [searchParams] = useSearchParams();
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [displayName, setDisplayName] = useState("");
+  const [tickets, setTickets] = useState<Booking[]>([]);
+  const [ticketError, setTicketError] = useState("");
+  const [activeTicketSection, setActiveTicketSection] = useState<TicketSectionKey>("tickets");
+  const [isTicketsLoading, setIsTicketsLoading] = useState(false);
+  const [isDownloadingTicketId, setIsDownloadingTicketId] = useState<number | null>(null);
+  const [isReturningTicketId, setIsReturningTicketId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(Boolean(localStorage.getItem("authToken")));
   const [notice, setNotice] = useState(
     searchParams.get("loggedIn") === "true" ? "You are logged in." : ""
@@ -68,23 +86,100 @@ function MyProfilePage() {
         saveCurrentUser(user);
       })
       .catch((profileError) => {
-        setCurrentUser(null);
         if (axios.isAxiosError(profileError) && !profileError.response) {
           setNotice("The API is unavailable right now. Your browser still has your login token.");
           return;
         }
-
+        setCurrentUser(null);
         clearAuthSession();
         setNotice("Your session expired. Please log in again.");
       })
-      .finally(() => setIsLoading(false));
+      .finally(() => {
+        setIsLoading(false);
+      });
   }, []);
+
+  useEffect(() => {
+    if (!currentUser) {
+      setTickets([]);
+      return;
+    }
+
+    if (activeTicketSection === "season") {
+      setTickets([]);
+      setTicketError("");
+      setIsTicketsLoading(false);
+      return;
+    }
+
+    setIsTicketsLoading(true);
+    setTicketError("");
+
+    getMyTickets(activeTicketSection)
+      .then(setTickets)
+      .catch(() => setTicketError("Could not load your tickets. Try refreshing after the API is running."))
+      .finally(() => setIsTicketsLoading(false));
+  }, [activeTicketSection, currentUser]);
 
   function handleLogout() {
     clearAuthSession();
     setCurrentUser(null);
     setDisplayName("");
     setNotice("You have been logged out.");
+  }
+
+  async function handleDownloadPdf(ticket: Booking) {
+    setTicketError("");
+    setIsDownloadingTicketId(ticket.id);
+
+    try {
+      await downloadTicketPdf(ticket.id, undefined, ticket.ticketNumber || ticket.bookingReference);
+    } catch {
+      setTicketError("Could not download this ticket PDF.");
+    } finally {
+      setIsDownloadingTicketId(null);
+    }
+  }
+
+  async function handleReturnTicket(ticket: Booking) {
+    setTicketError("");
+    setIsReturningTicketId(ticket.id);
+
+    try {
+      await refundMyTicket(ticket.id);
+      setActiveTicketSection("returned");
+    } catch (returnError) {
+      if (axios.isAxiosError(returnError) && typeof returnError.response?.data === "string") {
+        setTicketError(returnError.response.data);
+      } else {
+        setTicketError("Could not return this ticket.");
+      }
+    } finally {
+      setIsReturningTicketId(null);
+    }
+  }
+
+  function formatTicketDate(value?: string) {
+    if (!value) {
+      return "Selected date";
+    }
+
+    return new Intl.DateTimeFormat("en-GB").format(new Date(value));
+  }
+
+  function formatTicketTime(value?: string | null) {
+    if (!value) {
+      return "--:--";
+    }
+
+    return new Intl.DateTimeFormat("en", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(value));
+  }
+
+  function formatMoney(value: number) {
+    return `${value.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} PLN`;
   }
 
   return (
@@ -135,13 +230,14 @@ function MyProfilePage() {
             <section className="ticket-dashboard profile-dashboard">
               <h2>My tickets</h2>
               <div className="ticket-tabs" role="tablist" aria-label="Ticket sections">
-                {["Tickets", "Season tickets", "Travel history", "Returned"].map((tab, index) => (
+                {ticketSections.map((section) => (
                   <button
-                    className={index === 0 ? "ticket-tab ticket-tab-active" : "ticket-tab"}
-                    key={tab}
+                    className={activeTicketSection === section.key ? "ticket-tab ticket-tab-active" : "ticket-tab"}
+                    key={section.key}
+                    onClick={() => setActiveTicketSection(section.key)}
                     type="button"
                   >
-                    {tab}
+                    {section.label}
                   </button>
                 ))}
               </div>
@@ -152,11 +248,92 @@ function MyProfilePage() {
                 <b aria-hidden="true">Search</b>
               </label>
 
-              <section className="profile-empty-tickets">
-                <div className="profile-empty-icon" aria-hidden="true" />
-                <p>You currently have no tickets. Proceed to purchase tickets.</p>
-                <Link to="/">Buy a ticket</Link>
-              </section>
+              {isTicketsLoading && <div className="status-message">Loading your tickets...</div>}
+              {ticketError && <div className="status-message">{ticketError}</div>}
+
+              {!isTicketsLoading && tickets.length === 0 ? (
+                <section className="profile-empty-tickets">
+                  <div className="profile-empty-icon" aria-hidden="true" />
+                  <p>{ticketSections.find((section) => section.key === activeTicketSection)?.empty}</p>
+                  {activeTicketSection === "tickets" && <Link to="/">Buy a ticket</Link>}
+                </section>
+              ) : (
+                tickets.map((ticket) => (
+                  <article className="guest-ticket-card" key={ticket.id}>
+                    <div className="ticket-card-header">
+                      <p className="ticket-number-line">
+                        <span>Ticket number</span> <strong>{ticket.ticketNumber || ticket.bookingReference}</strong>
+                        <small>Booking: <b>{ticket.bookingReference}</b></small>
+                      </p>
+                    </div>
+
+                    <div className="ticket-card-body">
+                      <div className="ticket-trip-details">
+                        <div className="ticket-meta-grid">
+                          <div>
+                            <span>Date</span>
+                            <strong>{formatTicketDate(ticket.travelDate)}</strong>
+                          </div>
+                          <div>
+                            <span>Travel time</span>
+                            <strong>{formatTicketTime(ticket.departureTime)} <b>&gt;</b> {formatTicketTime(ticket.arrivalTime)}</strong>
+                          </div>
+                          <div>
+                            <span>Seat</span>
+                            <strong>{ticket.seatLabel || `Seat ${ticket.seatId}`}</strong>
+                          </div>
+                          <div>
+                            <span>Status</span>
+                            <strong>{ticket.bookingStatus}</strong>
+                          </div>
+                        </div>
+
+                        <div className="ticket-route-row">
+                          <span>Route</span>
+                          <strong>{ticket.route || "Selected route"}</strong>
+                          <em>{ticket.trainName || "Train"}</em>
+                        </div>
+
+                        <div className="ticket-price-row">
+                          <span>
+                            <b>Ticket</b>
+                            {ticket.passengerName || currentUser.email}
+                          </span>
+                          <span>
+                            <b>Price</b>
+                            {formatMoney(ticket.amount)}
+                          </span>
+                        </div>
+                      </div>
+
+                      <aside className="ticket-feature-column">
+                        <button
+                          type="button"
+                          onClick={() => handleDownloadPdf(ticket)}
+                          disabled={isDownloadingTicketId === ticket.id || !ticket.hasTicketArtifact}
+                        >
+                          {isDownloadingTicketId === ticket.id ? "Downloading..." : "Download PDF"}
+                        </button>
+                        <strong>Other features for this ticket</strong>
+                        <button type="button" disabled>Purchase return ticket</button>
+                        <button
+                          type="button"
+                          onClick={() => handleReturnTicket(ticket)}
+                          disabled={
+                            activeTicketSection !== "tickets" ||
+                            isReturningTicketId === ticket.id ||
+                            ticket.bookingStatus !== "Confirmed"
+                          }
+                        >
+                          {isReturningTicketId === ticket.id ? "Returning..." : "Refund"}
+                        </button>
+                        <button type="button" disabled>Exchange</button>
+                        <button type="button" disabled>Change data</button>
+                      </aside>
+                    </div>
+                  </article>
+                ))
+              )}
             </section>
           ) : isLoading ? (
             <section className="profile-signin-panel profile-loading-panel" aria-live="polite">

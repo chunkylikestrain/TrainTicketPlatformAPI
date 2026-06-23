@@ -5,7 +5,9 @@ import BookingExpiredModal from "../components/BookingExpiredModal";
 import { getUserEmail, hasAuthToken } from "../api/authSession";
 import { getGuestTickets, updateGuestBookingData } from "../api/bookingApi";
 import { confirmPayment, createPaymentIntent } from "../api/paymentApi";
+import { downloadTicketPdf, getTicketArtifact, getTicketQrSvgBlob, sendTicketEmail } from "../api/ticketApi";
 import { getTripById } from "../api/tripApi";
+import type { TicketArtifact } from "../types/ticket";
 import type { TripDetails } from "../types/trip";
 import {
   formatTripDate,
@@ -39,9 +41,15 @@ function BookingCheckoutPage() {
   const [paymentStatus, setPaymentStatus] = useState<PaymentStatus>("form");
   const [error, setError] = useState("");
   const [ticketNumbers, setTicketNumbers] = useState<string[]>([]);
+  const [ticketArtifact, setTicketArtifact] = useState<TicketArtifact | null>(null);
+  const [ticketQrUrl, setTicketQrUrl] = useState("");
+  const [ticketDownloadError, setTicketDownloadError] = useState("");
   const sessionEmail = getUserEmail();
   const effectiveEmail = email || sessionEmail || "";
   const isLoggedInPurchase = hasAuthToken() && Boolean(sessionEmail);
+  const myTicketsUrl = isLoggedInPurchase
+    ? "/profile"
+    : `/bookings?email=${encodeURIComponent(effectiveEmail || "nguyentrongminhkhoa@gmail.com")}`;
   const flowParams = new URLSearchParams({ class: selectedClass, email });
 
   if (bookingId) {
@@ -79,6 +87,14 @@ function BookingCheckoutPage() {
     return () => window.clearTimeout(timerId);
   }, [secondsLeft]);
 
+  useEffect(() => {
+    return () => {
+      if (ticketQrUrl) {
+        window.URL.revokeObjectURL(ticketQrUrl);
+      }
+    };
+  }, [ticketQrUrl]);
+
   function formatTimer(totalSeconds: number) {
     const minutes = Math.floor(totalSeconds / 60);
     const seconds = totalSeconds % 60;
@@ -111,15 +127,65 @@ function BookingCheckoutPage() {
 
       const intent = await createPaymentIntent(bookingId);
       await confirmPayment(intent.paymentIntentId, "tok_success");
+      const artifact = await getTicketArtifact(bookingId, effectiveEmail);
+      const qrBlob = await getTicketQrSvgBlob(bookingId, effectiveEmail);
+      const nextQrUrl = window.URL.createObjectURL(qrBlob);
       const guestTickets = await getGuestTickets(effectiveEmail);
       const paidTicket = guestTickets.find((ticket) => ticket.id === Number(bookingId));
-      const paidTicketNumbers = paidTicket?.ticketNumber ? [paidTicket.ticketNumber] : [];
+      const paidTicketNumbers = artifact.ticketNumber
+        ? [artifact.ticketNumber]
+        : paidTicket?.ticketNumber
+          ? [paidTicket.ticketNumber]
+          : [];
 
+      if (ticketQrUrl) {
+        window.URL.revokeObjectURL(ticketQrUrl);
+      }
+
+      setTicketArtifact(artifact);
+      setTicketQrUrl(nextQrUrl);
       setTicketNumbers(paidTicketNumbers.length > 0 ? paidTicketNumbers : ["Ticket pending"]);
       setPaymentStatus("paid");
+
+      sendTicketEmail(bookingId, effectiveEmail)
+        .then((delivery) => {
+          setTicketArtifact((current) =>
+            current
+              ? {
+                  ...current,
+                  emailDeliveryStatus: delivery.status,
+                  emailSentAtUtc: delivery.sentAtUtc,
+                }
+              : current
+          );
+        })
+        .catch(() => {
+          setTicketArtifact((current) =>
+            current
+              ? {
+                  ...current,
+                  emailDeliveryStatus: "Not sent",
+                }
+              : current
+          );
+        });
     } catch {
       setPaymentStatus("form");
       setError("Payment could not be completed. The booking hold may have expired or the API is unavailable.");
+    }
+  }
+
+  async function handleDownloadTicketPdf() {
+    if (!bookingId) {
+      return;
+    }
+
+    setTicketDownloadError("");
+
+    try {
+      await downloadTicketPdf(bookingId, effectiveEmail, ticketArtifact?.ticketNumber || ticketNumbers[0]);
+    } catch {
+      setTicketDownloadError("Ticket PDF could not be downloaded. Try opening My tickets and downloading it again.");
     }
   }
 
@@ -153,15 +219,19 @@ function BookingCheckoutPage() {
           <h1>Thank you for purchasing all tickets</h1>
 
           <section className="ticket-success-card">
-            <div className="qr-placeholder" aria-hidden="true">
-              <span />
-              <span />
-              <span />
-              <span />
-            </div>
+            {ticketQrUrl ? (
+              <img className="ticket-qr-image" src={ticketQrUrl} alt="Ticket QR code" />
+            ) : (
+              <div className="qr-placeholder" aria-hidden="true">
+                <span />
+                <span />
+                <span />
+                <span />
+              </div>
+            )}
             <div>
               <p>payment status <strong>PAID</strong></p>
-              <h2>{trip?.departureStationName ?? "Departure"} &gt; {trip?.arrivalStationName ?? "Arrival"}</h2>
+              <h2>{ticketArtifact?.route ?? `${trip?.departureStationName ?? "Departure"} > ${trip?.arrivalStationName ?? "Arrival"}`}</h2>
               <p>
                 {ticketNumbers.length === 1 ? "ticket number: " : "ticket numbers: "}
                 {ticketNumbers.map((ticketNumber) => (
@@ -170,11 +240,18 @@ function BookingCheckoutPage() {
                   </span>
                 ))}
               </p>
+              <button className="ticket-pdf-button" type="button" onClick={handleDownloadTicketPdf}>
+                Download PDF
+              </button>
+              {ticketArtifact?.emailDeliveryStatus && (
+                <p>ticket email <strong>{ticketArtifact.emailDeliveryStatus}</strong></p>
+              )}
+              {ticketDownloadError && <p className="data-error">{ticketDownloadError}</p>}
             </div>
           </section>
 
           <Link
-            to={`/bookings?email=${encodeURIComponent(effectiveEmail || "nguyentrongminhkhoa@gmail.com")}`}
+            to={myTicketsUrl}
             className="show-tickets-button"
           >
             Show tickets
@@ -197,13 +274,7 @@ function BookingCheckoutPage() {
             )}
           </section>
 
-          {isLoggedInPurchase ? (
-            <section className="post-purchase-panel account-saved-panel">
-              <h2>Your ticket is saved in your account</h2>
-              <p>You can open it from My tickets whenever you need the QR code, refund options, or passenger data.</p>
-              <Link to={`/bookings?email=${encodeURIComponent(effectiveEmail)}`}>Open My tickets</Link>
-            </section>
-          ) : (
+          {!isLoggedInPurchase && (
             <section className="post-purchase-panel">
               <h2>Create an account and enjoy the benefits</h2>
               <ul>

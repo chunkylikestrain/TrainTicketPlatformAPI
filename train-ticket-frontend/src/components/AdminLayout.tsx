@@ -56,8 +56,8 @@ function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <main className="admin-shell">
       <aside className="admin-sidebar">
-        <NavLink to="/admin" className="admin-brand" aria-label="RailWay admin dashboard">
-          <span>RailWay</span>
+        <NavLink to="/admin" className="admin-brand" aria-label="RailBook admin dashboard">
+          <span>RailBook</span>
           <strong>Admin</strong>
         </NavLink>
 

@@ -19,9 +19,24 @@ export async function getGuestTickets(email: string) {
   return response.data;
 }
 
+export async function getMyTickets(section = "tickets") {
+  const response = await apiClient.get<Booking[]>("/Bookings/me", {
+    params: { section },
+  });
+  return response.data;
+}
+
 export async function refundGuestTicket(ticketNumber: string, email: string) {
   const response = await apiClient.post<Booking>(`/Bookings/tickets/${ticketNumber}/refund`, {
     email,
+  });
+
+  return response.data;
+}
+
+export async function refundMyTicket(bookingId: number | string, reason = "Passenger requested return") {
+  const response = await apiClient.post<Booking>(`/Bookings/${bookingId}/refund`, {
+    reason,
   });
 
   return response.data;

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import axios from "axios";
 import { createBookingHold } from "../api/bookingApi";
 import { getTripById, getTripSeats } from "../api/tripApi";
 import CarriageSeatMap, { type CarriageTemplate } from "../components/CarriageSeatMap";
@@ -113,8 +114,14 @@ function SeatMapPage() {
       });
 
       navigate(`/summary/${tripId}?${params.toString()}`);
-    } catch {
-      setError("Could not reserve this seat. It may have just been booked by someone else.");
+    } catch (reserveError) {
+      const message = getReservationErrorMessage(reserveError);
+      setError(message);
+
+      if (message.toLowerCase().includes("seat")) {
+        setSelectedSeat(null);
+        getTripSeats(tripId).then(setSeats).catch(() => undefined);
+      }
     } finally {
       setIsCreatingHold(false);
     }
@@ -250,6 +257,26 @@ function SeatMapPage() {
 
 function matchesSelectedClass(classType: string, selectedClass: string) {
   return classType.toLowerCase().includes(selectedClass);
+}
+
+function getReservationErrorMessage(error: unknown) {
+  if (axios.isAxiosError(error)) {
+    if (!error.response) {
+      return "Could not reserve this seat because the API is unavailable.";
+    }
+
+    if (typeof error.response.data === "string" && error.response.data.trim()) {
+      return error.response.data;
+    }
+
+    if (error.response.status >= 500) {
+      return "Could not reserve this seat because the API returned a server error. The database may need the latest migration.";
+    }
+
+    return `Could not reserve this seat. API returned ${error.response.status}.`;
+  }
+
+  return "Could not reserve this seat. Please try again.";
 }
 
 function getCoachPosition(seats: TripSeatAvailability[], coach: string) {

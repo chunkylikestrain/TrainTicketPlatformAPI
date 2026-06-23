@@ -125,6 +125,11 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             CancellationReason = booking.CancellationReason,
             ConfirmedAtUtc = booking.ConfirmedAtUtc,
             RefundedAtUtc = booking.RefundedAtUtc,
+            TicketIssuedAtUtc = booking.TicketIssuedAtUtc,
+            HasTicketArtifact = !string.IsNullOrWhiteSpace(booking.TicketQrPayload),
+            TicketEmailStatus = booking.TicketEmailStatus,
+            TicketEmailSentAtUtc = booking.TicketEmailSentAtUtc,
+            TicketEmailRecipient = booking.TicketEmailRecipient,
             TrainName = string.IsNullOrWhiteSpace(booking.Train.Code) ? booking.Train.Name : booking.Train.Code,
             Route = booking.Trip?.TrainRoute == null
                 ? $"{booking.Train.DepartureStation} -> {booking.Train.ArrivalStation}"

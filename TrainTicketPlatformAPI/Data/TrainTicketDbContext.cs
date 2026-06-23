@@ -26,6 +26,7 @@ namespace TrainTicketPlatformAPI.Data
         public DbSet<BookingReport> bookingReports { get; set; }
         public DbSet<Payment> Payments { get; set; }
         public DbSet<DiscountRule> DiscountRules { get; set; }
+        public DbSet<TicketEmailDelivery> TicketEmailDeliveries { get; set; }
 
         // Optional: Fluent API configuration
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -123,6 +124,21 @@ namespace TrainTicketPlatformAPI.Data
                 .HasMaxLength(300);
 
             modelBuilder.Entity<Booking>()
+                .Property(b => b.TicketQrPayload)
+                .HasMaxLength(1200)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.TicketEmailStatus)
+                .HasMaxLength(32)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.TicketEmailRecipient)
+                .HasMaxLength(256)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Booking>()
                 .Property(b => b.ExpiresAtUtc);
 
             modelBuilder.Entity<Booking>()
@@ -168,6 +184,31 @@ namespace TrainTicketPlatformAPI.Data
                         "CK_Payments_Status",
                         "[Status] IN ('Successful', 'Failed', 'Refunded')");
                 });
+
+            modelBuilder.Entity<TicketEmailDelivery>()
+                .HasOne(d => d.Booking)
+                .WithMany(b => b.TicketEmailDeliveries)
+                .HasForeignKey(d => d.BookingId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TicketEmailDelivery>()
+                .HasIndex(d => d.BookingId);
+
+            modelBuilder.Entity<TicketEmailDelivery>()
+                .Property(d => d.RecipientEmail)
+                .HasMaxLength(256);
+
+            modelBuilder.Entity<TicketEmailDelivery>()
+                .Property(d => d.Status)
+                .HasMaxLength(32);
+
+            modelBuilder.Entity<TicketEmailDelivery>()
+                .Property(d => d.ProviderMessageId)
+                .HasMaxLength(80);
+
+            modelBuilder.Entity<TicketEmailDelivery>()
+                .Property(d => d.ErrorMessage)
+                .HasMaxLength(500);
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.NormalizedEmail)

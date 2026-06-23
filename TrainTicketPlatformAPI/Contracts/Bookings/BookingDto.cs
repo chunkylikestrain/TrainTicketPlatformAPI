@@ -24,6 +24,13 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         public string TrainName { get; set; } = string.Empty;
         public string Route { get; set; } = string.Empty;
         public string SeatLabel { get; set; } = string.Empty;
+        public DateTime? DepartureTime { get; set; }
+        public DateTime? ArrivalTime { get; set; }
         public decimal Amount { get; set; }
+        public DateTime? TicketIssuedAtUtc { get; set; }
+        public bool HasTicketArtifact { get; set; }
+        public string TicketEmailStatus { get; set; } = string.Empty;
+        public DateTime? TicketEmailSentAtUtc { get; set; }
+        public string TicketEmailRecipient { get; set; } = string.Empty;
     }
 }

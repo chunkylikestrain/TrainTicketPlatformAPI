@@ -9,9 +9,13 @@ namespace TrainTicketPlatformAPI.Services
     {
         private static readonly TimeSpan BookingHoldDuration = TimeSpan.FromMinutes(15);
         private readonly TrainTicketDbContext _db;
+        private readonly IBookingHoldExpiryService? _holdExpiryService;
 
-        public BookingService(TrainTicketDbContext db)
-            => _db = db;
+        public BookingService(TrainTicketDbContext db, IBookingHoldExpiryService? holdExpiryService = null)
+        {
+            _db = db;
+            _holdExpiryService = holdExpiryService;
+        }
 
         public async Task<Booking> CreateBookingAsync(Booking booking)
         {
@@ -283,8 +287,7 @@ namespace TrainTicketPlatformAPI.Services
             booking.PaymentStatus = "Successful";
             booking.BookingStatus = "Confirmed";
             booking.ConfirmedAtUtc ??= DateTime.UtcNow;
-            if (string.IsNullOrWhiteSpace(booking.TicketNumber))
-                booking.TicketNumber = GenerateTicketNumber();
+            EnsureTicketMetadata(booking);
 
             await _db.SaveChangesAsync();
             return booking;
@@ -293,7 +296,18 @@ namespace TrainTicketPlatformAPI.Services
         public async Task<IEnumerable<Booking>> GetBookingsByUserAsync(int userId)
         {
             return await _db.Bookings
+                .Include(b => b.Train)
+                .Include(b => b.Seat)
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t!.TrainRoute)
+                        .ThenInclude(r => r.DepartureStation)
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t!.TrainRoute)
+                        .ThenInclude(r => r.ArrivalStation)
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t!.Fares)
                 .Where(b => b.UserId == userId)
+                .OrderByDescending(b => b.BookingDate)
                 .ToListAsync();
         }
 
@@ -340,6 +354,39 @@ namespace TrainTicketPlatformAPI.Services
             booking.CancellationDate = DateTime.UtcNow;
             booking.CancellationReason = "Passenger requested refund";
             booking.RefundedAtUtc = DateTime.UtcNow;
+
+            await _db.SaveChangesAsync();
+            return booking;
+        }
+
+        public async Task<Booking> RefundUserBookingAsync(int bookingId, int userId, string? reason)
+        {
+            var booking = await _db.Bookings
+                .FirstOrDefaultAsync(b => b.Id == bookingId && b.UserId == userId)
+                ?? throw new KeyNotFoundException("Ticket not found");
+
+            if (booking.BookingStatus != "Confirmed" || booking.PaymentStatus != "Successful")
+                throw new InvalidOperationException("Only paid confirmed tickets can be returned");
+
+            var cutoff = booking.TravelDate.AddHours(-1);
+            if (DateTime.UtcNow > cutoff)
+                throw new InvalidOperationException("Cannot return ticket within 1 hour of travel date");
+
+            booking.BookingStatus = "Refunded";
+            booking.PaymentStatus = "Refunded";
+            booking.IsCancelled = true;
+            booking.CancellationDate = DateTime.UtcNow;
+            booking.CancellationReason = string.IsNullOrWhiteSpace(reason)
+                ? "Passenger requested return"
+                : reason.Trim();
+            booking.RefundedAtUtc = DateTime.UtcNow;
+
+            var successfulPayments = await _db.Payments
+                .Where(p => p.BookingId == bookingId && p.Status == "Successful")
+                .ToListAsync();
+
+            foreach (var payment in successfulPayments)
+                payment.Status = "Refunded";
 
             await _db.SaveChangesAsync();
             return booking;
@@ -440,6 +487,26 @@ namespace TrainTicketPlatformAPI.Services
         private static string GenerateTicketNumber()
             => $"WH{DateTime.UtcNow:yyMMdd}{Random.Shared.Next(1000, 9999)}";
 
+        private static void EnsureTicketMetadata(Booking booking)
+        {
+            if (string.IsNullOrWhiteSpace(booking.TicketNumber))
+                booking.TicketNumber = GenerateTicketNumber();
+
+            booking.TicketIssuedAtUtc ??= DateTime.UtcNow;
+
+            if (string.IsNullOrWhiteSpace(booking.TicketQrPayload))
+            {
+                booking.TicketQrPayload = string.Join("|",
+                    "railway-ticket-v1",
+                    $"ticket={booking.TicketNumber}",
+                    $"booking={booking.BookingReference}",
+                    $"trip={booking.TripId?.ToString() ?? "legacy"}",
+                    $"seat={booking.SeatId}",
+                    $"date={booking.TravelDate:yyyy-MM-dd}",
+                    $"issued={booking.TicketIssuedAtUtc:O}");
+            }
+        }
+
         private static string? NormalizeOptionalEmail(string? email)
         {
             return string.IsNullOrWhiteSpace(email)
@@ -472,6 +539,12 @@ namespace TrainTicketPlatformAPI.Services
 
         private async Task ExpireStalePendingBookingsAsync()
         {
+            if (_holdExpiryService != null)
+            {
+                await _holdExpiryService.ExpireStaleHoldsAsync();
+                return;
+            }
+
             var now = DateTime.UtcNow;
             var staleBookings = await _db.Bookings
                 .Where(b =>

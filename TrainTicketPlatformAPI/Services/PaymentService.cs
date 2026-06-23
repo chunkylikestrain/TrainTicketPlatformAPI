@@ -88,8 +88,7 @@ namespace TrainTicketPlatformAPI.Services
             {
                 booking.BookingStatus = "Confirmed";
                 booking.ConfirmedAtUtc ??= DateTime.UtcNow;
-                if (string.IsNullOrWhiteSpace(booking.TicketNumber))
-                    booking.TicketNumber = GenerateTicketNumber();
+                EnsureTicketMetadata(booking);
             }
 
             await _db.SaveChangesAsync();
@@ -163,6 +162,26 @@ namespace TrainTicketPlatformAPI.Services
 
         private static string GenerateTicketNumber()
             => $"WH{DateTime.UtcNow:yyMMdd}{Random.Shared.Next(1000, 9999)}";
+
+        private static void EnsureTicketMetadata(Booking booking)
+        {
+            if (string.IsNullOrWhiteSpace(booking.TicketNumber))
+                booking.TicketNumber = GenerateTicketNumber();
+
+            booking.TicketIssuedAtUtc ??= DateTime.UtcNow;
+
+            if (string.IsNullOrWhiteSpace(booking.TicketQrPayload))
+            {
+                booking.TicketQrPayload = string.Join("|",
+                    "railway-ticket-v1",
+                    $"ticket={booking.TicketNumber}",
+                    $"booking={booking.BookingReference}",
+                    $"trip={booking.TripId?.ToString() ?? "legacy"}",
+                    $"seat={booking.SeatId}",
+                    $"date={booking.TravelDate:yyyy-MM-dd}",
+                    $"issued={booking.TicketIssuedAtUtc:O}");
+            }
+        }
 
         private async Task<Fare> GetFareForBookingAsync(Booking booking)
         {

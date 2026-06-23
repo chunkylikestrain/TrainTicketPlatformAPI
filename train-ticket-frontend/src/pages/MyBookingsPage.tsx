@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getGuestTickets, refundGuestTicket } from "../api/bookingApi";
+import { downloadTicketPdf } from "../api/ticketApi";
 import type { Booking } from "../types/booking";
 
 function MyBookingsPage() {
@@ -11,6 +12,8 @@ function MyBookingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [refundMessage, setRefundMessage] = useState("");
+  const [downloadMessage, setDownloadMessage] = useState("");
+  const [isDownloading, setIsDownloading] = useState(false);
   const ticket = tickets[0];
   const activeTab = isRefunded ? "Returned" : "Tickets";
 
@@ -48,6 +51,24 @@ function MyBookingsPage() {
       setRefundMessage("Your refund request is saved for this guest ticket. The ticket now appears under Returned.");
     } catch {
       setError("Could not refund this ticket. It may be too close to departure or already refunded.");
+    }
+  }
+
+  async function handleDownloadPdf() {
+    if (!ticket) {
+      return;
+    }
+
+    setDownloadMessage("");
+    setError("");
+    setIsDownloading(true);
+
+    try {
+      await downloadTicketPdf(ticket.id, email, ticket.ticketNumber || ticket.bookingReference);
+    } catch {
+      setDownloadMessage("Could not download the ticket PDF. The ticket may not be confirmed yet.");
+    } finally {
+      setIsDownloading(false);
     }
   }
 
@@ -177,7 +198,9 @@ function MyBookingsPage() {
                 </div>
 
                 <aside className="ticket-feature-column">
-                  <button type="button">Download PDF</button>
+                  <button type="button" onClick={handleDownloadPdf} disabled={isDownloading || isRefunded}>
+                    {isDownloading ? "Downloading..." : "Download PDF"}
+                  </button>
                   <strong>Other features for this ticket</strong>
                   <button type="button">Purchase return ticket</button>
                     <button
@@ -197,6 +220,11 @@ function MyBookingsPage() {
               {(isRefunded || refundMessage) && (
                 <div className="refund-status" role="status">
                   {refundMessage || "This ticket is marked as returned."}
+                </div>
+              )}
+              {downloadMessage && (
+                <div className="refund-status" role="status">
+                  {downloadMessage}
                 </div>
               )}
             </article>

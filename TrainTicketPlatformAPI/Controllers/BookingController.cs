@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TrainTicketPlatformAPI.Contracts.Bookings;
+using TrainTicketPlatformAPI.Contracts.Tickets;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
 
@@ -14,9 +15,15 @@ namespace TrainTicketPlatformAPI.Controllers
     public class BookingsController : ControllerBase
     {
         private readonly IBookingService _bookingService;
+        private readonly ITicketArtifactService _ticketArtifactService;
 
-        public BookingsController(IBookingService bookingService)
-            => _bookingService = bookingService;
+        public BookingsController(
+            IBookingService bookingService,
+            ITicketArtifactService ticketArtifactService)
+        {
+            _bookingService = bookingService;
+            _ticketArtifactService = ticketArtifactService;
+        }
 
         // GET: api/Bookings
         [Authorize(Roles = "Admin")]
@@ -29,14 +36,14 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Bookings/me
         [HttpGet("me")]
-        public async Task<ActionResult<IEnumerable<BookingDto>>> GetMine()
+        public async Task<ActionResult<IEnumerable<BookingDto>>> GetMine([FromQuery] string section = "tickets")
         {
             var currentUserId = GetCurrentUserId();
             if (!currentUserId.HasValue)
                 return Forbid();
 
             var bookings = await _bookingService.GetBookingsByUserAsync(currentUserId.Value);
-            return Ok(bookings.Select(ToDto));
+            return Ok(FilterTicketSection(bookings, section).Select(ToDto));
         }
 
         // GET: api/Bookings/5
@@ -183,6 +190,35 @@ namespace TrainTicketPlatformAPI.Controllers
             }
         }
 
+        // POST: api/Bookings/5/refund
+        [HttpPost("{id}/refund")]
+        public async Task<ActionResult<BookingDto>> RefundMyTicket(
+            int id,
+            [FromBody] ReturnTicketRequest? request = null)
+        {
+            try
+            {
+                var currentUserId = GetCurrentUserId();
+                if (!currentUserId.HasValue)
+                    return Forbid();
+
+                var booking = await _bookingService.RefundUserBookingAsync(
+                    id,
+                    currentUserId.Value,
+                    request?.Reason);
+
+                return Ok(ToDto(booking));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         // POST: api/Bookings/5/cancel
         [HttpPost("{id}/cancel")]
         public async Task<IActionResult> CancelBooking(int id)
@@ -202,6 +238,111 @@ namespace TrainTicketPlatformAPI.Controllers
 
                 var confirmed = await _bookingService.ConfirmBookingAsync(id);
                 return Ok(ToDto(confirmed));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // GET: api/Bookings/5/ticket?email=guest@example.com
+        [AllowAnonymous]
+        [HttpGet("{id}/ticket")]
+        public async Task<ActionResult<TicketArtifactDto>> GetTicket(
+            int id,
+            [FromQuery] string? email = null)
+        {
+            try
+            {
+                var booking = await _bookingService.GetBookingByIdAsync(id);
+                if (!CanAccessTicket(booking, email))
+                    return Forbid();
+
+                return Ok(await _ticketArtifactService.GetTicketAsync(id));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // GET: api/Bookings/5/ticket/qr?email=guest@example.com
+        [AllowAnonymous]
+        [HttpGet("{id}/ticket/qr")]
+        public async Task<IActionResult> GetTicketQr(
+            int id,
+            [FromQuery] string? email = null)
+        {
+            try
+            {
+                var booking = await _bookingService.GetBookingByIdAsync(id);
+                if (!CanAccessTicket(booking, email))
+                    return Forbid();
+
+                var svg = await _ticketArtifactService.GetQrSvgAsync(id);
+                return Content(svg, "image/svg+xml", System.Text.Encoding.UTF8);
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // GET: api/Bookings/5/ticket/pdf?email=guest@example.com
+        [AllowAnonymous]
+        [HttpGet("{id}/ticket/pdf")]
+        public async Task<IActionResult> GetTicketPdf(
+            int id,
+            [FromQuery] string? email = null)
+        {
+            try
+            {
+                var booking = await _bookingService.GetBookingByIdAsync(id);
+                if (!CanAccessTicket(booking, email))
+                    return Forbid();
+
+                var pdf = await _ticketArtifactService.GetTicketPdfAsync(id);
+                var ticketNumber = string.IsNullOrWhiteSpace(booking.TicketNumber)
+                    ? id.ToString()
+                    : booking.TicketNumber;
+                return File(pdf, "application/pdf", $"ticket-{ticketNumber}.pdf");
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // POST: api/Bookings/5/ticket/email
+        [AllowAnonymous]
+        [HttpPost("{id}/ticket/email")]
+        public async Task<ActionResult<TicketEmailDeliveryDto>> SendTicketEmail(
+            int id,
+            [FromBody] SendTicketEmailRequest request)
+        {
+            try
+            {
+                var booking = await _bookingService.GetBookingByIdAsync(id);
+                if (!CanAccessTicket(booking, request.Email))
+                    return Forbid();
+
+                return Ok(await _ticketArtifactService.SendTicketEmailAsync(id, request.Email));
             }
             catch (KeyNotFoundException)
             {
@@ -295,6 +436,19 @@ namespace TrainTicketPlatformAPI.Controllers
             return booking.UserId.HasValue && CanAccessUserResource(booking.UserId);
         }
 
+        private bool CanAccessTicket(Booking booking, string? guestEmail)
+        {
+            if (CanAccessBooking(booking))
+                return true;
+
+            return !string.IsNullOrWhiteSpace(booking.GuestEmail) &&
+                !string.IsNullOrWhiteSpace(guestEmail) &&
+                string.Equals(
+                    booking.GuestEmail.Trim(),
+                    guestEmail.Trim(),
+                    StringComparison.OrdinalIgnoreCase);
+        }
+
         private int? GetCurrentUserId()
         {
             var subject = User.FindFirstValue(JwtRegisteredClaimNames.Sub)
@@ -303,6 +457,46 @@ namespace TrainTicketPlatformAPI.Controllers
                 ? currentUserId
                 : null;
         }
+
+        private static IEnumerable<Booking> FilterTicketSection(IEnumerable<Booking> bookings, string section)
+        {
+            var normalizedSection = section.Trim().ToLowerInvariant();
+            var now = DateTime.UtcNow;
+
+            return normalizedSection switch
+            {
+                "history" or "travel-history" => bookings.Where(booking =>
+                    IsPaidConfirmed(booking) &&
+                    !IsReturned(booking) &&
+                    GetEffectiveArrivalTime(booking) < now),
+
+                "returned" => bookings.Where(IsReturned),
+
+                "season" or "season-tickets" => Enumerable.Empty<Booking>(),
+
+                _ => bookings.Where(booking =>
+                    IsPaidConfirmed(booking) &&
+                    !IsReturned(booking) &&
+                    GetEffectiveArrivalTime(booking) >= now)
+                    .OrderBy(GetEffectiveDepartureTime)
+                    .ThenBy(GetEffectiveArrivalTime)
+                    .ThenBy(booking => booking.BookingDate)
+            };
+        }
+
+        private static bool IsPaidConfirmed(Booking booking)
+            => booking.BookingStatus == "Confirmed" && booking.PaymentStatus == "Successful";
+
+        private static bool IsReturned(Booking booking)
+            => booking.BookingStatus == "Refunded" || booking.PaymentStatus == "Refunded";
+
+        private static DateTime GetEffectiveArrivalTime(Booking booking)
+            => booking.Trip?.ArrivalTime
+               ?? booking.Train.ArrivalTime;
+
+        private static DateTime GetEffectiveDepartureTime(Booking booking)
+            => booking.Trip?.DepartureTime
+               ?? booking.Train.DepartureTime;
 
         private static BookingDto ToDto(Booking booking) => new()
         {
@@ -322,8 +516,27 @@ namespace TrainTicketPlatformAPI.Controllers
             PaymentStatus = booking.PaymentStatus,
             IsCancelled = booking.IsCancelled,
             CancellationDate = booking.CancellationDate,
+            CancellationReason = booking.CancellationReason,
             ConfirmedAtUtc = booking.ConfirmedAtUtc,
-            RefundedAtUtc = booking.RefundedAtUtc
+            RefundedAtUtc = booking.RefundedAtUtc,
+            TicketIssuedAtUtc = booking.TicketIssuedAtUtc,
+            HasTicketArtifact = !string.IsNullOrWhiteSpace(booking.TicketQrPayload),
+            TicketEmailStatus = booking.TicketEmailStatus,
+            TicketEmailSentAtUtc = booking.TicketEmailSentAtUtc,
+            TicketEmailRecipient = booking.TicketEmailRecipient,
+            TrainName = booking.Train == null
+                ? string.Empty
+                : string.IsNullOrWhiteSpace(booking.Train.Code) ? booking.Train.Name : booking.Train.Code,
+            Route = booking.Trip?.TrainRoute == null || booking.Train == null
+                ? booking.Train == null ? string.Empty : $"{booking.Train.DepartureStation} -> {booking.Train.ArrivalStation}"
+                : $"{booking.Trip.TrainRoute.DepartureStation.Name} -> {booking.Trip.TrainRoute.ArrivalStation.Name}",
+            SeatLabel = booking.Seat == null ? string.Empty : $"Coach {booking.Seat.Coach}, seat {booking.Seat.Number}",
+            DepartureTime = booking.Trip?.DepartureTime ?? booking.Train?.DepartureTime,
+            ArrivalTime = booking.Trip?.ArrivalTime ?? booking.Train?.ArrivalTime,
+            Amount = booking.Trip?.Fares
+                .OrderByDescending(f => booking.Seat != null && f.ClassType == booking.Seat.ClassType)
+                .ThenBy(f => f.Price)
+                .FirstOrDefault()?.Price ?? 0m
         };
     }
 }

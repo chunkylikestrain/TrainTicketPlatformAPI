@@ -19,9 +19,9 @@ function Navbar() {
 
   return (
     <header className="site-header">
-      <Link to="/" className="brand" aria-label="RailWay home">
-        <span className="brand-mark">RW</span>
-        <span className="brand-text">RailWay</span>
+      <Link to="/" className="brand" aria-label="RailBook home">
+        <span className="brand-mark">RB</span>
+        <span className="brand-text">RailBook</span>
       </Link>
 
       <nav className="main-nav" aria-label="Primary navigation">

@@ -2829,6 +2829,15 @@
   background: #ffffff;
 }
 
+.ticket-qr-image {
+  width: 150px;
+  height: 150px;
+  padding: 10px;
+  border: 1px solid #d5dce6;
+  background: #ffffff;
+  object-fit: contain;
+}
+
 .ticket-success-card p,
 .ticket-success-card h2 {
   margin: 0 0 14px;
@@ -2841,6 +2850,17 @@
 
 .ticket-success-card strong {
   color: #1399d6;
+}
+
+.ticket-pdf-button {
+  min-height: 46px;
+  padding: 0 20px;
+  border: 0;
+  border-radius: 4px;
+  background: var(--navy);
+  color: var(--white);
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .show-tickets-button,

@@ -110,12 +110,15 @@ builder.Services.AddDbContext<TrainTicketDbContext>(opts =>
 
 
 builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IBookingHoldExpiryService, BookingHoldExpiryService>();
+builder.Services.AddHostedService<BookingHoldExpiryHostedService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<ISeatService, SeatService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ITrainService, TrainService>();
 builder.Services.AddScoped<IStationService, StationService>();
 builder.Services.AddScoped<ITripService, TripService>();
+builder.Services.AddScoped<ITicketArtifactService, TicketArtifactService>();
 
 
 // JWT Authentication

@@ -21,10 +21,16 @@
         public string? CancellationReason { get; set; }
         public DateTime? ConfirmedAtUtc { get; set; }
         public DateTime? RefundedAtUtc { get; set; }
+        public DateTime? TicketIssuedAtUtc { get; set; }
+        public string TicketQrPayload { get; set; } = string.Empty;
+        public string TicketEmailStatus { get; set; } = string.Empty;
+        public DateTime? TicketEmailSentAtUtc { get; set; }
+        public string TicketEmailRecipient { get; set; } = string.Empty;
 
         public User? User { get; set; }
         public Train Train { get; set; } = null!;
         public Trip? Trip { get; set; }
         public Seat Seat { get; set; } = null!;
+        public ICollection<TicketEmailDelivery> TicketEmailDeliveries { get; set; } = new List<TicketEmailDelivery>();
     }
 }
