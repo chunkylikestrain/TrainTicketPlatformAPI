@@ -18,7 +18,15 @@ export async function getTripById(tripId: number | string) {
   return response.data;
 }
 
-export async function getTripSeats(tripId: number | string) {
-  const response = await apiClient.get<TripSeatAvailability[]>(`/Trips/${tripId}/seats`);
+export async function getTripSeats(
+  tripId: number | string,
+  segment?: { fromStationId?: number | string | null; toStationId?: number | string | null },
+) {
+  const response = await apiClient.get<TripSeatAvailability[]>(`/Trips/${tripId}/seats`, {
+    params: {
+      fromStationId: segment?.fromStationId || undefined,
+      toStationId: segment?.toStationId || undefined,
+    },
+  });
   return response.data;
 }

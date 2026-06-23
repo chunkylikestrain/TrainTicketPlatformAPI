@@ -4,6 +4,12 @@ export type Booking = {
   trainId: number;
   tripId: number | null;
   seatId: number;
+  segmentDepartureStationId: number | null;
+  segmentArrivalStationId: number | null;
+  segmentDepartureOrder: number | null;
+  segmentArrivalOrder: number | null;
+  segmentDepartureTime: string | null;
+  segmentArrivalTime: string | null;
   bookingReference: string;
   ticketNumber: string;
   guestEmail: string | null;
@@ -35,6 +41,8 @@ export type CreateBookingRequest = {
   trainId: number;
   tripId: number;
   seatId: number;
+  segmentDepartureStationId?: number;
+  segmentArrivalStationId?: number;
   travelDate: string;
   guestEmail?: string;
   passengerName?: string;

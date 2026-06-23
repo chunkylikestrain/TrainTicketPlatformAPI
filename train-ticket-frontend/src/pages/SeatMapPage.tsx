@@ -34,6 +34,10 @@ function SeatMapPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
+  const fromStationId = searchParams.get("fromStationId");
+  const toStationId = searchParams.get("toStationId");
+  const segmentDepartureName = searchParams.get("fromStation");
+  const segmentArrivalName = searchParams.get("toStation");
   const [trip, setTrip] = useState<TripDetails | null>(null);
   const [seats, setSeats] = useState<TripSeatAvailability[]>([]);
   const [activeCoach, setActiveCoach] = useState("");
@@ -50,7 +54,7 @@ function SeatMapPage() {
     setIsLoading(true);
     setError("");
 
-    Promise.all([getTripById(tripId), getTripSeats(tripId)])
+    Promise.all([getTripById(tripId), getTripSeats(tripId, { fromStationId, toStationId })])
       .then(([tripDetails, seatList]) => {
         setTrip(tripDetails);
         setSeats(seatList);
@@ -59,7 +63,7 @@ function SeatMapPage() {
         setError("Could not load live seat availability. Check that the API is running and the trip exists.");
       })
       .finally(() => setIsLoading(false));
-  }, [tripId]);
+  }, [fromStationId, toStationId, tripId]);
 
   const coachOptions = useMemo(() => {
     return [...new Set(seats.map((seat) => seat.coach))].sort((first, second) => {
@@ -89,6 +93,8 @@ function SeatMapPage() {
     return seats.filter((seat) => seat.coach === activeCoach);
   }, [activeCoach, seats]);
   const activeTemplate = getTemplateForCoach(activeCoachSeats, selectedClass, activeCoachIndex, coachOptions.length);
+  const flowParams = new URLSearchParams(searchParams);
+  flowParams.set("class", selectedClass);
 
   async function handleConfirmSeat() {
     if (!trip || !selectedSeat) {
@@ -104,14 +110,14 @@ function SeatMapPage() {
         tripId: trip.tripId,
         seatId: selectedSeat.seatId,
         travelDate: trip.departureTime,
+        segmentDepartureStationId: fromStationId ? Number(fromStationId) : undefined,
+        segmentArrivalStationId: toStationId ? Number(toStationId) : undefined,
       });
 
-      const params = new URLSearchParams({
-        class: selectedClass,
-        car: selectedSeat.coach,
-        seat: selectedSeat.number,
-        bookingId: String(booking.id),
-      });
+      const params = new URLSearchParams(flowParams);
+      params.set("car", selectedSeat.coach);
+      params.set("seat", selectedSeat.number);
+      params.set("bookingId", String(booking.id));
 
       navigate(`/summary/${tripId}?${params.toString()}`);
     } catch (reserveError) {
@@ -120,7 +126,7 @@ function SeatMapPage() {
 
       if (message.toLowerCase().includes("seat")) {
         setSelectedSeat(null);
-        getTripSeats(tripId).then(setSeats).catch(() => undefined);
+        getTripSeats(tripId, { fromStationId, toStationId }).then(setSeats).catch(() => undefined);
       }
     } finally {
       setIsCreatingHold(false);
@@ -141,7 +147,7 @@ function SeatMapPage() {
       <section className="seat-map-panel">
         <div className="seat-map-header">
           <h1>Choose your seat on the plan</h1>
-          <Link to={`/summary/${tripId}?class=${selectedClass}`} aria-label="Close seat map">
+          <Link to={`/summary/${tripId}?${flowParams.toString()}`} aria-label="Close seat map">
             x
           </Link>
         </div>
@@ -156,7 +162,8 @@ function SeatMapPage() {
           <span>{formatDate(trip?.departureTime)}</span>
           <span>{formatTime(trip?.departureTime)} &gt; {formatTime(trip?.arrivalTime)}</span>
           <span>
-            {trip?.departureStationName ?? "Departure"} &gt; {trip?.arrivalStationName ?? "Arrival"}
+            {segmentDepartureName ?? trip?.departureStationName ?? "Departure"} &gt;{" "}
+            {segmentArrivalName ?? trip?.arrivalStationName ?? "Arrival"}
           </span>
         </section>
 

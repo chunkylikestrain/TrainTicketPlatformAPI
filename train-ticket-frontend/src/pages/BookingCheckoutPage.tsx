@@ -15,6 +15,13 @@ import {
   getTripPriceLabel,
   getTripVatLabel,
 } from "../utils/tripDisplay";
+import {
+  buildDiscountSelectionUrl,
+  formatDiscountSummary,
+  formatPassengerSummary,
+  getDiscountCodes,
+  getPassengerCounts,
+} from "../utils/purchasePreferences";
 
 const paymentMethods = ["BLIK", "Payment by PayU transfer", "Payment card", "Google Pay"];
 type PaymentStatus = "form" | "processing" | "paid";
@@ -27,6 +34,10 @@ function BookingCheckoutPage() {
   const bookingId = searchParams.get("bookingId") ?? "";
   const selectedSeat = searchParams.get("seat") ?? "46";
   const selectedCar = searchParams.get("car") ?? "1";
+  const segmentDepartureName = searchParams.get("fromStation");
+  const segmentArrivalName = searchParams.get("toStation");
+  const passengerCounts = getPassengerCounts(searchParams);
+  const discountCodes = getDiscountCodes(searchParams, passengerCounts);
   const [trip, setTrip] = useState<TripDetails | null>(null);
   const [tripError, setTripError] = useState("");
   const price = getTripPriceLabel(trip, selectedClass);
@@ -50,7 +61,11 @@ function BookingCheckoutPage() {
   const myTicketsUrl = isLoggedInPurchase
     ? "/profile"
     : `/bookings?email=${encodeURIComponent(effectiveEmail || "nguyentrongminhkhoa@gmail.com")}`;
-  const flowParams = new URLSearchParams({ class: selectedClass, email });
+  const flowParams = new URLSearchParams(searchParams);
+  flowParams.set("class", selectedClass);
+  flowParams.set("email", email);
+  const currentCheckoutUrl = `/checkout/${tripId}?${flowParams.toString()}`;
+  const discountSelectionUrl = buildDiscountSelectionUrl(currentCheckoutUrl, flowParams);
 
   if (bookingId) {
     flowParams.set("bookingId", bookingId);
@@ -231,7 +246,10 @@ function BookingCheckoutPage() {
             )}
             <div>
               <p>payment status <strong>PAID</strong></p>
-              <h2>{ticketArtifact?.route ?? `${trip?.departureStationName ?? "Departure"} > ${trip?.arrivalStationName ?? "Arrival"}`}</h2>
+              <h2>
+                {ticketArtifact?.route ??
+                  `${segmentDepartureName ?? trip?.departureStationName ?? "Departure"} > ${segmentArrivalName ?? trip?.arrivalStationName ?? "Arrival"}`}
+              </h2>
               <p>
                 {ticketNumbers.length === 1 ? "ticket number: " : "ticket numbers: "}
                 {ticketNumbers.map((ticketNumber) => (
@@ -293,13 +311,13 @@ function BookingCheckoutPage() {
             <div className="weather-grid">
               <article>
                 <span>{formatTripDate(trip?.departureTime)}</span>
-                <strong>{trip?.departureStationName ?? "Departure"}</strong>
+                <strong>{segmentDepartureName ?? trip?.departureStationName ?? "Departure"}</strong>
                 <p>light rain</p>
                 <b>19 C</b>
               </article>
               <article>
                 <span>{formatTripDate(trip?.arrivalTime)}</span>
-                <strong>{trip?.arrivalStationName ?? "Arrival"}</strong>
+                <strong>{segmentArrivalName ?? trip?.arrivalStationName ?? "Arrival"}</strong>
                 <p>light rain</p>
                 <b>22 C</b>
               </article>
@@ -329,8 +347,8 @@ function BookingCheckoutPage() {
               <h1>{formatTripDate(trip?.departureTime)}</h1>
               <div>
                 <span className="final-line" aria-hidden="true" />
-                <p><strong>{formatTripTime(trip?.departureTime)}</strong> {trip?.departureStationName ?? "Departure"}</p>
-                <p><strong>{formatTripTime(trip?.arrivalTime)}</strong> {trip?.arrivalStationName ?? "Arrival"}</p>
+                <p><strong>{formatTripTime(trip?.departureTime)}</strong> {segmentDepartureName ?? trip?.departureStationName ?? "Departure"}</p>
+                <p><strong>{formatTripTime(trip?.arrivalTime)}</strong> {segmentArrivalName ?? trip?.arrivalStationName ?? "Arrival"}</p>
               </div>
             </div>
 
@@ -342,10 +360,10 @@ function BookingCheckoutPage() {
 
             <div className="final-passenger-details">
               <span>Time to buy: <strong>{formatTimer(secondsLeft)}</strong></span>
-              <p>1 passenger</p>
-              <p>1x Normal Ticket</p>
+              <p>{formatPassengerSummary(passengerCounts)}</p>
+              <p>{formatDiscountSummary(discountCodes)}</p>
               <p>{selectedClass} class</p>
-              <a href="#offer">Check the offer details</a>
+              <Link to={discountSelectionUrl}>Change discounts</Link>
             </div>
           </div>
 

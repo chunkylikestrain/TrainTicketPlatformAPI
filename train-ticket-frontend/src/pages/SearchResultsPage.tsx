@@ -3,6 +3,15 @@ import { Link, useSearchParams } from "react-router-dom";
 import TripCard from "../components/TripCard";
 import { searchTrips } from "../api/tripApi";
 import type { TripSearchResult } from "../types/trip";
+import {
+  buildFilterSelectionUrl,
+  copyPurchasePreferenceParams,
+  formatDiscountSummary,
+  formatPassengerSummary,
+  getDiscountCodes,
+  getFilterCodes,
+  getPassengerCounts,
+} from "../utils/purchasePreferences";
 
 function formatLongDate(value: string) {
   if (!value) {
@@ -34,6 +43,12 @@ function SearchResultsPage() {
   const departureStation = searchParams.get("departureStation") ?? "";
   const arrivalStation = searchParams.get("arrivalStation") ?? "";
   const date = searchParams.get("date") ?? "";
+  const passengerCounts = getPassengerCounts(searchParams);
+  const discountCodes = getDiscountCodes(searchParams, passengerCounts);
+  const filterCodes = getFilterCodes(searchParams);
+  const purchaseQuery = copyPurchasePreferenceParams(searchParams).toString();
+  const currentSearchUrl = `/search?${searchParams.toString()}`;
+  const filterSelectionUrl = buildFilterSelectionUrl(currentSearchUrl, searchParams);
 
   useEffect(() => {
     if (!departureStation || !arrivalStation || !date) {
@@ -77,8 +92,9 @@ function SearchResultsPage() {
             <strong>{arrivalStation || "Krakow Gl."}</strong>
           </div>
           <div>
-            <span>1x Passenger</span>
-            <span>1x Normal Ticket</span>
+            <span>{formatPassengerSummary(passengerCounts)}</span>
+            <span>{formatDiscountSummary(discountCodes)}</span>
+            {filterCodes.length > 0 && <span>{filterCodes.length} filters</span>}
             <Link to="/">Change</Link>
           </div>
         </div>
@@ -86,7 +102,7 @@ function SearchResultsPage() {
         <div className="date-toolbar">
           <button type="button">&lt; Thu, 18 June</button>
           <h1>{formatLongDate(date)}</h1>
-          <button type="button">Filters</button>
+          <Link to={filterSelectionUrl}>Filters</Link>
           <button type="button">Sat, 20 June &gt;</button>
         </div>
 
@@ -115,6 +131,7 @@ function SearchResultsPage() {
               key={trip.tripId}
               rank={index}
               isExpanded={expandedTripId === trip.tripId}
+              purchaseQuery={purchaseQuery}
               onSelect={() => setExpandedTripId(expandedTripId === trip.tripId ? null : trip.tripId)}
             />
           ))}

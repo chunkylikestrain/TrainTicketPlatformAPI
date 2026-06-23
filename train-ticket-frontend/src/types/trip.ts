@@ -8,10 +8,14 @@ export type TripSearchResult = {
   tripId: number;
   trainId: number;
   trainName: string;
+  departureStationId: number;
   departureStationCode: string;
   departureStationName: string;
+  arrivalStationId: number;
   arrivalStationCode: string;
   arrivalStationName: string;
+  departureStopOrder: number;
+  arrivalStopOrder: number;
   departureTime: string;
   arrivalTime: string;
   status: string;

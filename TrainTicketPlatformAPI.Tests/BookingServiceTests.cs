@@ -59,6 +59,89 @@ namespace TrainTicketPlatformAPI.Tests
             });
         }
 
+        private static void SeedTripRoute(TrainTicketDbContext db)
+        {
+            var departure = new Station
+            {
+                Id = 1,
+                Code = "STA",
+                Name = "Station A",
+                City = "Station A"
+            };
+            var arrival = new Station
+            {
+                Id = 2,
+                Code = "STB",
+                Name = "Station B",
+                City = "Station B"
+            };
+
+            db.Stations.AddRange(departure, arrival);
+            db.TrainRoutes.Add(new TrainRoute
+            {
+                Id = 1,
+                Code = "STA-STB",
+                Name = "Station A - Station B",
+                DepartureStationId = departure.Id,
+                ArrivalStationId = arrival.Id,
+                DepartureStation = departure,
+                ArrivalStation = arrival,
+                DistanceKm = 100m,
+                EstimatedDurationMinutes = 120,
+                IsActive = true
+            });
+        }
+
+        private static void SeedSegmentTripRoute(TrainTicketDbContext db)
+        {
+            var departure = new Station
+            {
+                Id = 1,
+                Code = "STA",
+                Name = "Station A",
+                City = "Station A"
+            };
+            var middle = new Station
+            {
+                Id = 2,
+                Code = "STM",
+                Name = "Station Middle",
+                City = "Station Middle"
+            };
+            var arrival = new Station
+            {
+                Id = 3,
+                Code = "STB",
+                Name = "Station B",
+                City = "Station B"
+            };
+
+            db.Stations.AddRange(departure, middle, arrival);
+            db.TrainRoutes.Add(new TrainRoute
+            {
+                Id = 1,
+                Code = "STA-STB",
+                Name = "Station A - Station B",
+                DepartureStationId = departure.Id,
+                ArrivalStationId = arrival.Id,
+                DepartureStation = departure,
+                ArrivalStation = arrival,
+                DistanceKm = 100m,
+                EstimatedDurationMinutes = 120,
+                IsActive = true,
+                RouteStops =
+                [
+                    new TrainRouteStop
+                    {
+                        Id = 1,
+                        StationId = middle.Id,
+                        Station = middle,
+                        StopOrder = 1
+                    }
+                ]
+            });
+        }
+
         // 1) Creation Tests
 
         [Test]
@@ -158,6 +241,7 @@ namespace TrainTicketPlatformAPI.Tests
             var db = NewDb("BookingTripDifferentTrain");
             SeedTrain(db);
             SeedSeat(db, 1, true);
+            SeedTripRoute(db);
             db.Trips.Add(new Trip
             {
                 Id = 10,
@@ -190,6 +274,7 @@ namespace TrainTicketPlatformAPI.Tests
             var db = NewDb("BookingUsesTripDate");
             SeedTrain(db);
             SeedSeat(db, 1, true);
+            SeedTripRoute(db);
             var departure = DateTime.UtcNow.Date.AddDays(3).AddHours(8);
             db.Trips.Add(new Trip
             {
@@ -223,6 +308,7 @@ namespace TrainTicketPlatformAPI.Tests
             var db = NewDb("BookingDuplicateTripSeat");
             SeedTrain(db);
             SeedSeat(db, 1, true);
+            SeedTripRoute(db);
             var departure = DateTime.UtcNow.Date.AddDays(3).AddHours(8);
             db.Trips.Add(new Trip
             {
@@ -256,6 +342,113 @@ namespace TrainTicketPlatformAPI.Tests
                     TripId = 10,
                     SeatId = 1,
                     TravelDate = departure.Date,
+                    PaymentStatus = "Pending"
+                }));
+        }
+
+        [Test]
+        public async Task CreateBookingAsync_AllowsSameSeatOnNonOverlappingTripSegment()
+        {
+            var db = NewDb("BookingAllowsNonOverlappingSegment");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            SeedSegmentTripRoute(db);
+            var departure = DateTime.UtcNow.Date.AddDays(3).AddHours(8);
+            db.Trips.Add(new Trip
+            {
+                Id = 10,
+                TrainId = 1,
+                TrainRouteId = 1,
+                DepartureTime = departure,
+                ArrivalTime = departure.AddHours(2),
+                Status = "Scheduled"
+            });
+            db.Bookings.Add(new Booking
+            {
+                Id = 1,
+                UserId = 42,
+                TrainId = 1,
+                TripId = 10,
+                SeatId = 1,
+                BookingDate = DateTime.UtcNow,
+                TravelDate = departure.Date,
+                PaymentStatus = "Successful",
+                BookingStatus = "Confirmed",
+                SegmentDepartureStationId = 1,
+                SegmentArrivalStationId = 2,
+                SegmentDepartureOrder = 0,
+                SegmentArrivalOrder = 1,
+                SegmentDepartureTime = departure,
+                SegmentArrivalTime = departure.AddHours(1)
+            });
+            await db.SaveChangesAsync();
+
+            var svc = new BookingService(db);
+
+            var created = await svc.CreateBookingAsync(new Booking
+            {
+                UserId = 43,
+                TrainId = 1,
+                TripId = 10,
+                SeatId = 1,
+                SegmentDepartureStationId = 2,
+                SegmentArrivalStationId = 3,
+                PaymentStatus = "Pending"
+            });
+
+            Assert.That(created.SegmentDepartureOrder, Is.EqualTo(1));
+            Assert.That(created.SegmentArrivalOrder, Is.EqualTo(2));
+            Assert.That(created.TravelDate, Is.EqualTo(departure.Date));
+        }
+
+        [Test]
+        public void CreateBookingAsync_BlocksSameSeatOnOverlappingTripSegment()
+        {
+            var db = NewDb("BookingBlocksOverlappingSegment");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            SeedSegmentTripRoute(db);
+            var departure = DateTime.UtcNow.Date.AddDays(3).AddHours(8);
+            db.Trips.Add(new Trip
+            {
+                Id = 10,
+                TrainId = 1,
+                TrainRouteId = 1,
+                DepartureTime = departure,
+                ArrivalTime = departure.AddHours(2),
+                Status = "Scheduled"
+            });
+            db.Bookings.Add(new Booking
+            {
+                Id = 1,
+                UserId = 42,
+                TrainId = 1,
+                TripId = 10,
+                SeatId = 1,
+                BookingDate = DateTime.UtcNow,
+                TravelDate = departure.Date,
+                PaymentStatus = "Successful",
+                BookingStatus = "Confirmed",
+                SegmentDepartureStationId = 1,
+                SegmentArrivalStationId = 2,
+                SegmentDepartureOrder = 0,
+                SegmentArrivalOrder = 1,
+                SegmentDepartureTime = departure,
+                SegmentArrivalTime = departure.AddHours(1)
+            });
+            db.SaveChanges();
+
+            var svc = new BookingService(db);
+
+            Assert.ThrowsAsync<InvalidOperationException>(() =>
+                svc.CreateBookingAsync(new Booking
+                {
+                    UserId = 43,
+                    TrainId = 1,
+                    TripId = 10,
+                    SeatId = 1,
+                    SegmentDepartureStationId = 1,
+                    SegmentArrivalStationId = 3,
                     PaymentStatus = "Pending"
                 }));
         }

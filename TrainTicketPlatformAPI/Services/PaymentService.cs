@@ -178,7 +178,8 @@ namespace TrainTicketPlatformAPI.Services
                     $"booking={booking.BookingReference}",
                     $"trip={booking.TripId?.ToString() ?? "legacy"}",
                     $"seat={booking.SeatId}",
-                    $"date={booking.TravelDate:yyyy-MM-dd}",
+                    $"segment={booking.SegmentDepartureOrder?.ToString() ?? "origin"}-{booking.SegmentArrivalOrder?.ToString() ?? "destination"}",
+                    $"date={(booking.SegmentDepartureTime ?? booking.TravelDate):yyyy-MM-dd}",
                     $"issued={booking.TicketIssuedAtUtc:O}");
             }
         }

@@ -54,16 +54,23 @@ namespace TrainTicketPlatformAPI.Controllers
         // GET: api/Trips/5/seats
         [AllowAnonymous]
         [HttpGet("{id}/seats")]
-        public async Task<ActionResult<IEnumerable<TripSeatAvailabilityDto>>> GetSeats(int id)
+        public async Task<ActionResult<IEnumerable<TripSeatAvailabilityDto>>> GetSeats(
+            int id,
+            [FromQuery] int? fromStationId,
+            [FromQuery] int? toStationId)
         {
             try
             {
-                var seats = await _tripService.GetSeatAvailabilityAsync(id);
+                var seats = await _tripService.GetSeatAvailabilityAsync(id, fromStationId, toStationId);
                 return Ok(seats);
             }
             catch (KeyNotFoundException)
             {
                 return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

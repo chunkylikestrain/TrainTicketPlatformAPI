@@ -12,6 +12,10 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         [Required]
         public int SeatId { get; set; }
 
+        public int? SegmentDepartureStationId { get; set; }
+
+        public int? SegmentArrivalStationId { get; set; }
+
         [Required]
         public DateTime TravelDate { get; set; }
 

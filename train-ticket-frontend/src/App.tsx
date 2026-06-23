@@ -15,6 +15,8 @@ import AdminTrainsPage from "./pages/admin/AdminTrainsPage";
 import AdminUsersPage from "./pages/admin/AdminUsersPage";
 import BookingCheckoutPage from "./pages/BookingCheckoutPage";
 import DataRequestPage from "./pages/DataRequestPage";
+import DiscountSelectionPage from "./pages/DiscountSelectionPage";
+import FilterSelectionPage from "./pages/FilterSelectionPage";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import MyBookingsPage from "./pages/MyBookingsPage";
@@ -53,6 +55,8 @@ function App() {
         <Route path="/profile" element={<MyProfilePage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/discounts" element={<DiscountSelectionPage />} />
+        <Route path="/filters" element={<FilterSelectionPage />} />
         <Route path="/bookings" element={<MyBookingsPage />} />
         <Route path="/seat-map/:tripId" element={<SeatMapPage />} />
         <Route path="/summary/:tripId" element={<SummaryPage />} />

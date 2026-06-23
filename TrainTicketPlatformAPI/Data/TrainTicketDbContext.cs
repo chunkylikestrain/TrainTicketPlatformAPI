@@ -61,8 +61,19 @@ namespace TrainTicketPlatformAPI.Data
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Booking>()
+                .HasOne(b => b.SegmentDepartureStation)
+                .WithMany()
+                .HasForeignKey(b => b.SegmentDepartureStationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Booking>()
+                .HasOne(b => b.SegmentArrivalStation)
+                .WithMany()
+                .HasForeignKey(b => b.SegmentArrivalStationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Booking>()
                 .HasIndex(b => new { b.TripId, b.SeatId })
-                .IsUnique()
                 .HasFilter("[IsCancelled] = 0 AND [TripId] IS NOT NULL AND [BookingStatus] IN ('PendingPayment', 'Confirmed')");
 
             modelBuilder.Entity<Booking>()
@@ -90,6 +101,9 @@ namespace TrainTicketPlatformAPI.Data
 
             modelBuilder.Entity<Booking>()
                 .HasIndex(b => new { b.SeatId, b.TravelDate });
+
+            modelBuilder.Entity<Booking>()
+                .HasIndex(b => new { b.TripId, b.SeatId, b.SegmentDepartureOrder, b.SegmentArrivalOrder });
 
             modelBuilder.Entity<Booking>()
                 .Property(b => b.BookingReference)

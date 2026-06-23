@@ -19,7 +19,8 @@ function DataRequestPage() {
   const bookingId = searchParams.get("bookingId") ?? "";
   const selectedSeat = searchParams.get("seat") ?? "";
   const selectedCar = searchParams.get("car") ?? "";
-  const backParams = new URLSearchParams({ class: selectedClass });
+  const backParams = new URLSearchParams(searchParams);
+  backParams.set("class", selectedClass);
 
   if (bookingId) {
     backParams.set("bookingId", bookingId);
@@ -60,11 +61,10 @@ function DataRequestPage() {
         acceptedMarketing: marketingConsent,
       });
 
-      const params = new URLSearchParams({
-        class: selectedClass,
-        email,
-        bookingId,
-      });
+      const params = new URLSearchParams(searchParams);
+      params.set("class", selectedClass);
+      params.set("email", email);
+      params.set("bookingId", bookingId);
 
       if (selectedSeat) {
         params.set("seat", selectedSeat);

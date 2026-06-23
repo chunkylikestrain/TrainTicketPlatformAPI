@@ -116,6 +116,8 @@ namespace TrainTicketPlatformAPI.Services
                 .Include(b => b.User)
                 .Include(b => b.Train)
                 .Include(b => b.Seat)
+                .Include(b => b.SegmentDepartureStation)
+                .Include(b => b.SegmentArrivalStation)
                 .Include(b => b.Trip)
                     .ThenInclude(t => t!.TrainRoute)
                         .ThenInclude(r => r.DepartureStation)
@@ -143,7 +145,8 @@ namespace TrainTicketPlatformAPI.Services
                 $"booking={booking.BookingReference}",
                 $"trip={booking.TripId?.ToString(CultureInfo.InvariantCulture) ?? "legacy"}",
                 $"seat={booking.Seat.Coach}-{booking.Seat.Number}",
-                $"date={booking.TravelDate:yyyy-MM-dd}",
+                $"segment={booking.SegmentDepartureOrder?.ToString(CultureInfo.InvariantCulture) ?? "origin"}-{booking.SegmentArrivalOrder?.ToString(CultureInfo.InvariantCulture) ?? "destination"}",
+                $"date={(booking.SegmentDepartureTime ?? booking.TravelDate):yyyy-MM-dd}",
                 $"issued={issuedAt:O}");
 
             return $"{basePayload}|sig={BuildSignature(basePayload)}";
@@ -173,8 +176,8 @@ namespace TrainTicketPlatformAPI.Services
                 Route = GetRouteLabel(booking),
                 SeatLabel = $"Coach {booking.Seat.Coach}, seat {booking.Seat.Number}",
                 TravelDate = booking.TravelDate,
-                DepartureTime = booking.Trip?.DepartureTime ?? booking.Train.DepartureTime,
-                ArrivalTime = booking.Trip?.ArrivalTime ?? booking.Train.ArrivalTime,
+                DepartureTime = booking.SegmentDepartureTime ?? booking.Trip?.DepartureTime ?? booking.Train.DepartureTime,
+                ArrivalTime = booking.SegmentArrivalTime ?? booking.Trip?.ArrivalTime ?? booking.Train.ArrivalTime,
                 IssuedAtUtc = booking.TicketIssuedAtUtc ?? DateTime.UtcNow,
                 QrPayload = booking.TicketQrPayload,
                 QrSvgUrl = $"/api/Bookings/{booking.Id}/ticket/qr",
@@ -188,7 +191,9 @@ namespace TrainTicketPlatformAPI.Services
         {
             if (booking.Trip?.TrainRoute != null)
             {
-                return $"{booking.Trip.TrainRoute.DepartureStation.Name} -> {booking.Trip.TrainRoute.ArrivalStation.Name}";
+                var departure = booking.SegmentDepartureStation?.Name ?? booking.Trip.TrainRoute.DepartureStation.Name;
+                var arrival = booking.SegmentArrivalStation?.Name ?? booking.Trip.TrainRoute.ArrivalStation.Name;
+                return $"{departure} -> {arrival}";
             }
 
             return $"{booking.Train.DepartureStation} -> {booking.Train.ArrivalStation}";

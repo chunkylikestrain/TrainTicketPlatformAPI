@@ -4,6 +4,13 @@ import { getUserEmail, hasAuthToken } from "../api/authSession";
 import { getTripById } from "../api/tripApi";
 import type { TripDetails } from "../types/trip";
 import { formatTripDate, formatTripTime } from "../utils/tripDisplay";
+import {
+  buildDiscountSelectionUrl,
+  formatDiscountSummary,
+  formatPassengerSummary,
+  getDiscountCodes,
+  getPassengerCounts,
+} from "../utils/purchasePreferences";
 
 function SummaryPage() {
   const { tripId } = useParams();
@@ -16,7 +23,12 @@ function SummaryPage() {
   const selectedSeat = searchParams.get("seat");
   const selectedCar = searchParams.get("car") ?? "1";
   const bookingId = searchParams.get("bookingId") ?? "";
-  const summaryParams = new URLSearchParams({ class: selectedClass });
+  const segmentDepartureName = searchParams.get("fromStation");
+  const segmentArrivalName = searchParams.get("toStation");
+  const passengerCounts = getPassengerCounts(searchParams);
+  const discountCodes = getDiscountCodes(searchParams, passengerCounts);
+  const summaryParams = new URLSearchParams(searchParams);
+  summaryParams.set("class", selectedClass);
 
   if (bookingId) {
     summaryParams.set("bookingId", bookingId);
@@ -28,6 +40,8 @@ function SummaryPage() {
   }
 
   const dataRequestUrl = `/data/${tripId}?${summaryParams.toString()}`;
+  const currentSummaryUrl = `/summary/${tripId}?${summaryParams.toString()}`;
+  const discountSelectionUrl = buildDiscountSelectionUrl(currentSummaryUrl, summaryParams);
 
   useEffect(() => {
     if (!tripId) {
@@ -78,18 +92,21 @@ function SummaryPage() {
         <section className="summary-trip-panel">
           <div>
             <span>From</span>
-            <strong>{trip?.departureStationName ?? "Loading..."}</strong>
+            <strong>{segmentDepartureName ?? trip?.departureStationName ?? "Loading..."}</strong>
           </div>
           <div>
             <span>To</span>
-            <strong>{trip?.arrivalStationName ?? "Loading..."}</strong>
+            <strong>{segmentArrivalName ?? trip?.arrivalStationName ?? "Loading..."}</strong>
           </div>
           <div>
             <h1>
               {formatTripDate(trip?.departureTime)} {formatTripTime(trip?.departureTime)} &gt;{" "}
               {formatTripTime(trip?.arrivalTime)}
             </h1>
-            <p>{trip?.departureStationName ?? "Departure"} &gt; {trip?.arrivalStationName ?? "Arrival"}</p>
+            <p>
+              {segmentDepartureName ?? trip?.departureStationName ?? "Departure"} &gt;{" "}
+              {segmentArrivalName ?? trip?.arrivalStationName ?? "Arrival"}
+            </p>
             <b>{trip?.trainName ?? "Selected train"}</b>
           </div>
         </section>
@@ -103,13 +120,13 @@ function SummaryPage() {
           </div>
           <div>
             <span className="summary-passenger-icon" aria-hidden="true" />
-            <strong>1 Passenger</strong>
+            <strong>{formatPassengerSummary(passengerCounts)}</strong>
           </div>
           <div>
             <span className="summary-ticket-icon" aria-hidden="true" />
-            <strong>1x Normal Ticket</strong>
+            <strong>{formatDiscountSummary(discountCodes)}</strong>
           </div>
-          <Link to="/search">Change</Link>
+          <Link to={discountSelectionUrl}>Change</Link>
         </section>
 
         <section className="summary-options-grid">
@@ -127,12 +144,12 @@ function SummaryPage() {
               {selectedSeat ? (
                 <>
                   <span>Car {selectedCar}, seat {selectedSeat}</span>
-                  <Link className="summary-seat-change" to={`/seat-map/${tripId}?class=${selectedClass}`}>
+                  <Link className="summary-seat-change" to={`/seat-map/${tripId}?${summaryParams.toString()}`}>
                     Change
                   </Link>
                 </>
               ) : (
-                <Link className="summary-seat-action" to={`/seat-map/${tripId}?class=${selectedClass}`}>
+                <Link className="summary-seat-action" to={`/seat-map/${tripId}?${summaryParams.toString()}`}>
                   Choose a place
                 </Link>
               )}

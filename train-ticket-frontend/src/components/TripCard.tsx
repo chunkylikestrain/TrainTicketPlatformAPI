@@ -5,6 +5,7 @@ type TripCardProps = {
   trip: TripSearchResult;
   rank?: number;
   isExpanded?: boolean;
+  purchaseQuery?: string;
   onSelect?: () => void;
 };
 
@@ -31,10 +32,20 @@ function formatPrice(value: number | null, classOffset: number, currency: string
   return `${(value + classOffset).toFixed(2).replace(".", ",")} ${currency || "PLN"}`;
 }
 
-function TripCard({ trip, rank = 0, isExpanded = false, onSelect }: TripCardProps) {
+function TripCard({ trip, rank = 0, isExpanded = false, purchaseQuery = "", onSelect }: TripCardProps) {
   const isFast = rank < 2;
   const classOnePrice = formatPrice(trip.lowestFare, 44, trip.currency);
   const classTwoPrice = formatPrice(trip.lowestFare, 0, trip.currency);
+
+  function classUrl(selectedClass: "1" | "2") {
+    const params = new URLSearchParams(purchaseQuery);
+    params.set("class", selectedClass);
+    params.set("fromStationId", String(trip.departureStationId));
+    params.set("toStationId", String(trip.arrivalStationId));
+    params.set("fromStation", trip.departureStationName);
+    params.set("toStation", trip.arrivalStationName);
+    return `/seat-map/${trip.tripId}?${params.toString()}`;
+  }
 
   return (
     <article className={`trip-card ${isExpanded ? "trip-card-expanded" : ""}`}>
@@ -104,14 +115,14 @@ function TripCard({ trip, rank = 0, isExpanded = false, onSelect }: TripCardProp
               <span>Class 1</span>
               <div className="seat-glyph" aria-hidden="true" />
               <strong>{classOnePrice}</strong>
-              <Link to={`/seat-map/${trip.tripId}?class=1`}>Choose class 1</Link>
+              <Link to={classUrl("1")}>Choose class 1</Link>
             </div>
 
             <div className="class-choice-card">
               <span>Class 2</span>
               <div className="seat-glyph" aria-hidden="true" />
               <strong>{classTwoPrice}</strong>
-              <Link to={`/seat-map/${trip.tripId}?class=2`}>Choose class 2</Link>
+              <Link to={classUrl("2")}>Choose class 2</Link>
             </div>
 
             <a className="station-trains-link" href="#station-trains">

@@ -33,14 +33,34 @@ namespace TrainTicketPlatformAPI.Services
             if (seat.TrainId != booking.TrainId)
                 throw new InvalidOperationException("Seat does not belong to the selected train");
 
+            TripSegmentInfo? segment = null;
+
             if (booking.TripId.HasValue)
             {
-                var trip = await _db.Trips.FindAsync(booking.TripId.Value)
+                var trip = await _db.Trips
+                    .Include(t => t.TrainRoute)
+                        .ThenInclude(r => r.DepartureStation)
+                    .Include(t => t.TrainRoute)
+                        .ThenInclude(r => r.ArrivalStation)
+                    .Include(t => t.TrainRoute)
+                        .ThenInclude(r => r.RouteStops)
+                            .ThenInclude(s => s.Station)
+                    .FirstOrDefaultAsync(t => t.Id == booking.TripId.Value)
                            ?? throw new KeyNotFoundException("Trip not found");
 
                 if (trip.TrainId != booking.TrainId)
                     throw new InvalidOperationException("Trip does not belong to the selected train");
 
+                segment = TripSegmentResolver.Resolve(
+                    trip,
+                    booking.SegmentDepartureStationId,
+                    booking.SegmentArrivalStationId);
+                booking.SegmentDepartureStationId = segment.DepartureStationId;
+                booking.SegmentArrivalStationId = segment.ArrivalStationId;
+                booking.SegmentDepartureOrder = segment.DepartureOrder;
+                booking.SegmentArrivalOrder = segment.ArrivalOrder;
+                booking.SegmentDepartureTime = segment.DepartureTime;
+                booking.SegmentArrivalTime = segment.ArrivalTime;
                 booking.TravelDate = trip.DepartureTime.Date;
             }
             else if (booking.TravelDate == default)
@@ -53,6 +73,8 @@ namespace TrainTicketPlatformAPI.Services
                     booking.TripId,
                     booking.SeatId,
                     booking.TravelDate,
+                    segment?.DepartureOrder,
+                    segment?.ArrivalOrder,
                     ignoredBookingId: null))
             {
                 throw new InvalidOperationException("Seat already booked for this travel date");
@@ -184,7 +206,20 @@ namespace TrainTicketPlatformAPI.Services
 
         public async Task<Booking> GetBookingByIdAsync(int bookingId)
         {
-            var booking = await _db.Bookings.FindAsync(bookingId);
+            var booking = await _db.Bookings
+                .Include(b => b.Train)
+                .Include(b => b.Seat)
+                .Include(b => b.SegmentDepartureStation)
+                .Include(b => b.SegmentArrivalStation)
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t!.TrainRoute)
+                        .ThenInclude(r => r.DepartureStation)
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t!.TrainRoute)
+                        .ThenInclude(r => r.ArrivalStation)
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t!.Fares)
+                .FirstOrDefaultAsync(b => b.Id == bookingId);
             if (booking == null)
                 throw new KeyNotFoundException("Booking not found");
 
@@ -195,6 +230,8 @@ namespace TrainTicketPlatformAPI.Services
             => await _db.Bookings
                 .Include(b => b.Train)
                 .Include(b => b.Seat)
+                .Include(b => b.SegmentDepartureStation)
+                .Include(b => b.SegmentArrivalStation)
                 .Include(b => b.Trip)
                     .ThenInclude(t => t!.TrainRoute)
                         .ThenInclude(r => r.DepartureStation)
@@ -251,6 +288,8 @@ namespace TrainTicketPlatformAPI.Services
                     requestedTripId,
                     requestedSeatId,
                     requestedTravelDate,
+                    existing.SegmentDepartureOrder,
+                    existing.SegmentArrivalOrder,
                     existing.Id))
             {
                 throw new InvalidOperationException("Seat already booked for this travel date");
@@ -298,6 +337,8 @@ namespace TrainTicketPlatformAPI.Services
             return await _db.Bookings
                 .Include(b => b.Train)
                 .Include(b => b.Seat)
+                .Include(b => b.SegmentDepartureStation)
+                .Include(b => b.SegmentArrivalStation)
                 .Include(b => b.Trip)
                     .ThenInclude(t => t!.TrainRoute)
                         .ThenInclude(r => r.DepartureStation)
@@ -318,6 +359,8 @@ namespace TrainTicketPlatformAPI.Services
             return await _db.Bookings
                 .Include(b => b.Seat)
                 .Include(b => b.Train)
+                .Include(b => b.SegmentDepartureStation)
+                .Include(b => b.SegmentArrivalStation)
                 .Include(b => b.Trip)
                 .Where(b => b.GuestEmail != null &&
                             b.GuestEmail.ToLower() == normalizedEmail.ToLower() &&
@@ -449,6 +492,8 @@ namespace TrainTicketPlatformAPI.Services
             int? tripId,
             int seatId,
             DateTime travelDate,
+            int? segmentDepartureOrder,
+            int? segmentArrivalOrder,
             int? ignoredBookingId)
         {
             var now = DateTime.UtcNow;
@@ -462,9 +507,20 @@ namespace TrainTicketPlatformAPI.Services
                    b.ExpiresAtUtc.Value > now))) &&
                 (!ignoredBookingId.HasValue || b.Id != ignoredBookingId.Value));
 
-            query = tripId.HasValue
-                ? query.Where(b => b.TripId == tripId.Value)
-                : query.Where(b => b.TripId == null && b.TravelDate.Date == travelDate.Date);
+            if (tripId.HasValue)
+            {
+                var requestedDepartureOrder = segmentDepartureOrder ?? 0;
+                var requestedArrivalOrder = segmentArrivalOrder ?? int.MaxValue;
+
+                query = query.Where(b =>
+                    b.TripId == tripId.Value &&
+                    (b.SegmentDepartureOrder ?? 0) < requestedArrivalOrder &&
+                    requestedDepartureOrder < (b.SegmentArrivalOrder ?? int.MaxValue));
+            }
+            else
+            {
+                query = query.Where(b => b.TripId == null && b.TravelDate.Date == travelDate.Date);
+            }
 
             return query.AnyAsync();
         }
@@ -502,7 +558,8 @@ namespace TrainTicketPlatformAPI.Services
                     $"booking={booking.BookingReference}",
                     $"trip={booking.TripId?.ToString() ?? "legacy"}",
                     $"seat={booking.SeatId}",
-                    $"date={booking.TravelDate:yyyy-MM-dd}",
+                    $"segment={booking.SegmentDepartureOrder?.ToString() ?? "origin"}-{booking.SegmentArrivalOrder?.ToString() ?? "destination"}",
+                    $"date={(booking.SegmentDepartureTime ?? booking.TravelDate):yyyy-MM-dd}",
                     $"issued={booking.TicketIssuedAtUtc:O}");
             }
         }

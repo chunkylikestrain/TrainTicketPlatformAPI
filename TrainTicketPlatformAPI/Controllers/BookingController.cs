@@ -103,6 +103,8 @@ namespace TrainTicketPlatformAPI.Controllers
                     TrainId = request.TrainId,
                     TripId = request.TripId,
                     SeatId = request.SeatId,
+                    SegmentDepartureStationId = request.SegmentDepartureStationId,
+                    SegmentArrivalStationId = request.SegmentArrivalStationId,
                     TravelDate = request.TravelDate,
                     GuestEmail = request.GuestEmail,
                     PassengerName = request.PassengerName,
@@ -491,11 +493,13 @@ namespace TrainTicketPlatformAPI.Controllers
             => booking.BookingStatus == "Refunded" || booking.PaymentStatus == "Refunded";
 
         private static DateTime GetEffectiveArrivalTime(Booking booking)
-            => booking.Trip?.ArrivalTime
+            => booking.SegmentArrivalTime
+               ?? booking.Trip?.ArrivalTime
                ?? booking.Train.ArrivalTime;
 
         private static DateTime GetEffectiveDepartureTime(Booking booking)
-            => booking.Trip?.DepartureTime
+            => booking.SegmentDepartureTime
+               ?? booking.Trip?.DepartureTime
                ?? booking.Train.DepartureTime;
 
         private static BookingDto ToDto(Booking booking) => new()
@@ -505,6 +509,12 @@ namespace TrainTicketPlatformAPI.Controllers
             TrainId = booking.TrainId,
             TripId = booking.TripId,
             SeatId = booking.SeatId,
+            SegmentDepartureStationId = booking.SegmentDepartureStationId,
+            SegmentArrivalStationId = booking.SegmentArrivalStationId,
+            SegmentDepartureOrder = booking.SegmentDepartureOrder,
+            SegmentArrivalOrder = booking.SegmentArrivalOrder,
+            SegmentDepartureTime = booking.SegmentDepartureTime,
+            SegmentArrivalTime = booking.SegmentArrivalTime,
             BookingReference = booking.BookingReference,
             TicketNumber = booking.TicketNumber,
             GuestEmail = booking.GuestEmail,
@@ -527,16 +537,24 @@ namespace TrainTicketPlatformAPI.Controllers
             TrainName = booking.Train == null
                 ? string.Empty
                 : string.IsNullOrWhiteSpace(booking.Train.Code) ? booking.Train.Name : booking.Train.Code,
-            Route = booking.Trip?.TrainRoute == null || booking.Train == null
-                ? booking.Train == null ? string.Empty : $"{booking.Train.DepartureStation} -> {booking.Train.ArrivalStation}"
-                : $"{booking.Trip.TrainRoute.DepartureStation.Name} -> {booking.Trip.TrainRoute.ArrivalStation.Name}",
+            Route = GetRouteLabel(booking),
             SeatLabel = booking.Seat == null ? string.Empty : $"Coach {booking.Seat.Coach}, seat {booking.Seat.Number}",
-            DepartureTime = booking.Trip?.DepartureTime ?? booking.Train?.DepartureTime,
-            ArrivalTime = booking.Trip?.ArrivalTime ?? booking.Train?.ArrivalTime,
+            DepartureTime = booking.SegmentDepartureTime ?? booking.Trip?.DepartureTime ?? booking.Train?.DepartureTime,
+            ArrivalTime = booking.SegmentArrivalTime ?? booking.Trip?.ArrivalTime ?? booking.Train?.ArrivalTime,
             Amount = booking.Trip?.Fares
                 .OrderByDescending(f => booking.Seat != null && f.ClassType == booking.Seat.ClassType)
                 .ThenBy(f => f.Price)
                 .FirstOrDefault()?.Price ?? 0m
         };
+
+        private static string GetRouteLabel(Booking booking)
+        {
+            if (booking.SegmentDepartureStation != null && booking.SegmentArrivalStation != null)
+                return $"{booking.SegmentDepartureStation.Name} -> {booking.SegmentArrivalStation.Name}";
+
+            return booking.Trip?.TrainRoute == null || booking.Train == null
+                ? booking.Train == null ? string.Empty : $"{booking.Train.DepartureStation} -> {booking.Train.ArrivalStation}"
+                : $"{booking.Trip.TrainRoute.DepartureStation.Name} -> {booking.Trip.TrainRoute.ArrivalStation.Name}";
+        }
     }
 }

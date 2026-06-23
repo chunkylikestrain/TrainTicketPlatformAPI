@@ -26,6 +26,13 @@ namespace TrainTicketPlatformAPI.Tests
                 Name = "Krakow Glowny",
                 City = "Krakow"
             };
+            var intermediate = new Station
+            {
+                Id = 3,
+                Code = "KAT",
+                Name = "Katowice",
+                City = "Katowice"
+            };
 
             var train = new Train
             {
@@ -45,7 +52,17 @@ namespace TrainTicketPlatformAPI.Tests
                 DepartureStation = departure,
                 ArrivalStation = arrival,
                 DistanceKm = 290m,
-                IsActive = true
+                IsActive = true,
+                RouteStops =
+                [
+                    new TrainRouteStop
+                    {
+                        Id = 1,
+                        StationId = intermediate.Id,
+                        Station = intermediate,
+                        StopOrder = 1
+                    }
+                ]
             };
 
             var trip = new Trip
@@ -60,7 +77,7 @@ namespace TrainTicketPlatformAPI.Tests
                 Status = "Scheduled"
             };
 
-            db.Stations.AddRange(departure, arrival);
+            db.Stations.AddRange(departure, arrival, intermediate);
             db.Trains.Add(train);
             db.TrainRoutes.Add(route);
             db.Trips.Add(trip);
@@ -236,6 +253,27 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.That(seats.Count, Is.EqualTo(2));
             Assert.That(seats.Single(s => s.SeatId == 1).IsAvailable, Is.False);
             Assert.That(seats.Single(s => s.SeatId == 2).IsAvailable, Is.True);
+        }
+
+        [Test]
+        public async Task GetSeatAvailabilityAsync_AllowsSameSeatOnNonOverlappingSegment()
+        {
+            var db = NewDb("Trips_SeatAvailabilityBySegment");
+            await SeedTripGraphAsync(db);
+            var existingBooking = await db.Bookings.FindAsync(1);
+            existingBooking!.SegmentDepartureStationId = 1;
+            existingBooking.SegmentArrivalStationId = 3;
+            existingBooking.SegmentDepartureOrder = 0;
+            existingBooking.SegmentArrivalOrder = 1;
+            existingBooking.BookingStatus = "Confirmed";
+            await db.SaveChangesAsync();
+            var svc = new TripService(db);
+
+            var firstLegSeats = (await svc.GetSeatAvailabilityAsync(1, 1, 3)).ToList();
+            var secondLegSeats = (await svc.GetSeatAvailabilityAsync(1, 3, 2)).ToList();
+
+            Assert.That(firstLegSeats.Single(s => s.SeatId == 1).IsAvailable, Is.False);
+            Assert.That(secondLegSeats.Single(s => s.SeatId == 1).IsAvailable, Is.True);
         }
 
         [Test]

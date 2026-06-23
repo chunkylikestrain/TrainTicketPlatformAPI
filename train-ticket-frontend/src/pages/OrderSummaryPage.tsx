@@ -8,6 +8,13 @@ import {
   getTripPriceLabel,
   getTripVatLabel,
 } from "../utils/tripDisplay";
+import {
+  buildDiscountSelectionUrl,
+  formatDiscountSummary,
+  formatPassengerSummary,
+  getDiscountCodes,
+  getPassengerCounts,
+} from "../utils/purchasePreferences";
 
 function OrderSummaryPage() {
   const { tripId } = useParams();
@@ -19,10 +26,19 @@ function OrderSummaryPage() {
   const bookingId = searchParams.get("bookingId") ?? "";
   const selectedSeat = searchParams.get("seat") ?? "46";
   const selectedCar = searchParams.get("car") ?? "1";
+  const segmentDepartureName = searchParams.get("fromStation");
+  const segmentArrivalName = searchParams.get("toStation");
+  const passengerCounts = getPassengerCounts(searchParams);
+  const discountCodes = getDiscountCodes(searchParams, passengerCounts);
   const price = getTripPriceLabel(trip, selectedClass);
   const vat = getTripVatLabel(trip, selectedClass);
-  const checkoutParams = new URLSearchParams({ class: selectedClass, email });
-  const dataParams = new URLSearchParams({ class: selectedClass });
+  const checkoutParams = new URLSearchParams(searchParams);
+  checkoutParams.set("class", selectedClass);
+  checkoutParams.set("email", email);
+  const dataParams = new URLSearchParams(searchParams);
+  dataParams.set("class", selectedClass);
+  const currentSummaryUrl = `/order-summary/${tripId}?${checkoutParams.toString()}`;
+  const discountSelectionUrl = buildDiscountSelectionUrl(currentSummaryUrl, checkoutParams);
 
   if (bookingId) {
     checkoutParams.set("bookingId", bookingId);
@@ -67,7 +83,7 @@ function OrderSummaryPage() {
           <Link to="/">Home</Link>
           <Link to="/">Search engine</Link>
           <Link to="/search">List of connections</Link>
-          <Link to={`/summary/${tripId}?class=${selectedClass}`}>Your travel</Link>
+          <Link to={`/summary/${tripId}?${dataParams.toString()}`}>Your travel</Link>
           <strong>Summary</strong>
           <span>Payment</span>
           <span>Ticket</span>
@@ -79,8 +95,8 @@ function OrderSummaryPage() {
               <h1>{formatTripDate(trip?.departureTime)}</h1>
               <div>
                 <span className="final-line" aria-hidden="true" />
-                <p><strong>{formatTripTime(trip?.departureTime)}</strong> {trip?.departureStationName ?? "Departure"}</p>
-                <p><strong>{formatTripTime(trip?.arrivalTime)}</strong> {trip?.arrivalStationName ?? "Arrival"}</p>
+                <p><strong>{formatTripTime(trip?.departureTime)}</strong> {segmentDepartureName ?? trip?.departureStationName ?? "Departure"}</p>
+                <p><strong>{formatTripTime(trip?.arrivalTime)}</strong> {segmentArrivalName ?? trip?.arrivalStationName ?? "Arrival"}</p>
               </div>
             </div>
 
@@ -92,10 +108,10 @@ function OrderSummaryPage() {
 
             <div className="final-passenger-details">
               <span>Time to buy: <strong>9:59</strong></span>
-              <p>1 passenger</p>
-              <p>1x Normal Ticket</p>
+              <p>{formatPassengerSummary(passengerCounts)}</p>
+              <p>{formatDiscountSummary(discountCodes)}</p>
               <p>{selectedClass} class</p>
-              <a href="#offer">Check the offer details</a>
+              <Link to={discountSelectionUrl}>Change discounts</Link>
             </div>
           </div>
 
