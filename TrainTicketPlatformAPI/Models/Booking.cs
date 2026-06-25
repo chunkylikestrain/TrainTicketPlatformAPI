@@ -18,6 +18,13 @@
         public string TicketNumber { get; set; } = string.Empty;
         public string? GuestEmail { get; set; }
         public string? PassengerName { get; set; }
+        public string PassengerType { get; set; } = "Adult";
+        public string DiscountCode { get; set; } = "normal";
+        public string DiscountName { get; set; } = "Normal Ticket";
+        public decimal DiscountPercent { get; set; }
+        public decimal BaseAmount { get; set; }
+        public decimal Amount { get; set; }
+        public string Currency { get; set; } = "PLN";
         public DateTime BookingDate { get; set; }
         public DateTime TravelDate { get; set; }
         public DateTime? ExpiresAtUtc { get; set; }

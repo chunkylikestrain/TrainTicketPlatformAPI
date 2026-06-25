@@ -3,6 +3,7 @@ export type Booking = {
   userId: number | null;
   trainId: number;
   tripId: number | null;
+  bookingOrderId: number | null;
   seatId: number;
   segmentDepartureStationId: number | null;
   segmentArrivalStationId: number | null;
@@ -14,6 +15,11 @@ export type Booking = {
   ticketNumber: string;
   guestEmail: string | null;
   passengerName: string | null;
+  passengerType: string;
+  discountCode: string;
+  discountName: string;
+  discountPercent: number;
+  baseAmount: number;
   bookingDate: string;
   travelDate: string;
   expiresAtUtc: string | null;
@@ -45,6 +51,7 @@ export type Booking = {
   hasPlatformChange: boolean;
   hasDisruption: boolean;
   amount: number;
+  currency: string;
 };
 
 export type BookingOrder = {
@@ -72,6 +79,8 @@ export type CreateBookingRequest = {
   travelDate: string;
   guestEmail?: string;
   passengerName?: string;
+  passengerType?: string;
+  discountCode?: string;
 };
 
 export type CreateBookingOrderRequest = {
@@ -84,6 +93,8 @@ export type CreateBookingOrderRequest = {
   passengers: Array<{
     seatId: number;
     passengerName?: string;
+    passengerType?: string;
+    discountCode?: string;
   }>;
 };
 

@@ -146,6 +146,27 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
+        public async Task CreatePaymentIntentForOrderAsync_UsesStoredDiscountedTicketAmounts()
+        {
+            var db = NewDb("PayIntent_OrderDiscountedTotal");
+            await SeedBookingOrderAsync(db);
+            var bookings = db.Bookings.OrderBy(booking => booking.Id).ToList();
+            bookings[0].BaseAmount = 100m;
+            bookings[0].Amount = 100m;
+            bookings[0].Currency = "PLN";
+            bookings[1].BaseAmount = 100m;
+            bookings[1].Amount = 63m;
+            bookings[1].Currency = "PLN";
+            await db.SaveChangesAsync();
+            var svc = new PaymentService(db);
+
+            var intent = await svc.CreatePaymentIntentForOrderAsync(1);
+
+            Assert.That(intent.Amount, Is.EqualTo(163m));
+            Assert.That(intent.Currency, Is.EqualTo("PLN"));
+        }
+
+        [Test]
         public async Task ConfirmPaymentAsync_Succeeds_ForSuccessToken()
         {
             var db = NewDb("Pay_TokenSuccess");

@@ -140,6 +140,38 @@ namespace TrainTicketPlatformAPI.Data
                 .HasMaxLength(200);
 
             modelBuilder.Entity<Booking>()
+                .Property(b => b.PassengerType)
+                .HasMaxLength(40)
+                .HasDefaultValue("Adult");
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.DiscountCode)
+                .HasMaxLength(40)
+                .HasDefaultValue("normal");
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.DiscountName)
+                .HasMaxLength(120)
+                .HasDefaultValue("Normal Ticket");
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.DiscountPercent)
+                .HasPrecision(5, 2);
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.BaseAmount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.Amount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.Currency)
+                .HasMaxLength(8)
+                .HasDefaultValue("PLN");
+
+            modelBuilder.Entity<Booking>()
                 .Property(b => b.BookingStatus)
                 .HasMaxLength(32)
                 .HasDefaultValue("PendingPayment");

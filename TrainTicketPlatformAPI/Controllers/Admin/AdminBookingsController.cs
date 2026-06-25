@@ -135,7 +135,7 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
                 ? $"{booking.Train.DepartureStation} -> {booking.Train.ArrivalStation}"
                 : $"{booking.Trip.TrainRoute.DepartureStation.Name} -> {booking.Trip.TrainRoute.ArrivalStation.Name}",
             SeatLabel = $"Coach {booking.Seat.Coach}, seat {booking.Seat.Number}",
-            Amount = booking.Trip?.Fares
+            Amount = booking.Amount > 0m ? booking.Amount : booking.Trip?.Fares
                 .OrderByDescending(f => f.ClassType == booking.Seat.ClassType)
                 .ThenBy(f => f.Price)
                 .FirstOrDefault()?.Price ?? 0m

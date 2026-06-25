@@ -81,6 +81,29 @@ namespace TrainTicketPlatformAPI.Services
             return SimpleTicketPdfBuilder.Build(ToTicketDto(booking), qrData.ModuleMatrix);
         }
 
+        public async Task<byte[]> GetOrderTicketPdfAsync(int bookingOrderId)
+        {
+            var order = await _db.BookingOrders
+                .Include(o => o.Bookings)
+                .FirstOrDefaultAsync(o => o.Id == bookingOrderId)
+                ?? throw new KeyNotFoundException("Booking order not found");
+
+            if (order.Bookings.Count == 0)
+                throw new InvalidOperationException("Booking order has no tickets");
+
+            var pages = new List<(TicketArtifactDto Ticket, IReadOnlyList<System.Collections.BitArray> QrMatrix)>();
+            foreach (var booking in order.Bookings.OrderBy(booking => booking.Id))
+            {
+                var issued = await EnsureTicketIssuedAsync(booking.Id);
+                using var qrData = QRCodeGenerator.GenerateQrCode(
+                    issued.TicketQrPayload,
+                    QRCodeGenerator.ECCLevel.Q);
+                pages.Add((ToTicketDto(issued), qrData.ModuleMatrix));
+            }
+
+            return SimpleTicketPdfBuilder.Build(pages);
+        }
+
         public async Task<TicketEmailDeliveryDto> SendTicketEmailAsync(int bookingId, string? recipientEmail)
         {
             var booking = await EnsureTicketIssuedAsync(bookingId);

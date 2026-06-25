@@ -4,10 +4,11 @@ import axios from "axios";
 import { getCurrentUser } from "../api/authApi";
 import { getMyTickets, refundMyTicket } from "../api/bookingApi";
 import { clearAuthSession, getProfileDisplayName, saveCurrentUser } from "../api/authSession";
-import { downloadTicketPdf } from "../api/ticketApi";
+import { downloadOrderTicketPdf, downloadTicketPdf } from "../api/ticketApi";
 import type { CurrentUser } from "../types/auth";
 import type { Booking } from "../types/booking";
 import { getDisruptionMessage, getDisruptionSeverity, hasDisruption } from "../utils/disruptions";
+import { groupTicketsByOrder, type TicketGroup } from "../utils/ticketGrouping";
 
 const accountMenuItems = [
   "My tickets",
@@ -142,6 +143,28 @@ function MyProfilePage() {
     }
   }
 
+  async function handleDownloadGroupPdf(group: TicketGroup) {
+    const firstTicket = group.tickets[0];
+    if (!firstTicket) {
+      return;
+    }
+
+    setTicketError("");
+    setIsDownloadingTicketId(firstTicket.id);
+
+    try {
+      if (group.isOrder && group.orderId) {
+        await downloadOrderTicketPdf(group.orderId);
+      } else {
+        await downloadTicketPdf(firstTicket.id, undefined, firstTicket.ticketNumber || firstTicket.bookingReference);
+      }
+    } catch {
+      setTicketError("Could not download this ticket PDF.");
+    } finally {
+      setIsDownloadingTicketId(null);
+    }
+  }
+
   async function handleReturnTicket(ticket: Booking) {
     setTicketError("");
     setIsReturningTicketId(ticket.id);
@@ -182,6 +205,8 @@ function MyProfilePage() {
   function formatMoney(value: number) {
     return `${value.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} PLN`;
   }
+
+  const ticketGroups = groupTicketsByOrder(tickets);
 
   return (
     <main className="tickets-page profile-page">
@@ -252,19 +277,25 @@ function MyProfilePage() {
               {isTicketsLoading && <div className="status-message">Loading your tickets...</div>}
               {ticketError && <div className="status-message">{ticketError}</div>}
 
-              {!isTicketsLoading && tickets.length === 0 ? (
+              {!isTicketsLoading && ticketGroups.length === 0 ? (
                 <section className="profile-empty-tickets">
                   <div className="profile-empty-icon" aria-hidden="true" />
                   <p>{ticketSections.find((section) => section.key === activeTicketSection)?.empty}</p>
                   {activeTicketSection === "tickets" && <Link to="/">Buy a ticket</Link>}
                 </section>
               ) : (
-                tickets.map((ticket) => (
-                  <article className="guest-ticket-card" key={ticket.id}>
+                ticketGroups.map((group) => {
+                  const firstTicket = group.tickets[0];
+                  return (
+                  <article className="guest-ticket-card" key={group.key}>
                     <div className="ticket-card-header">
                       <p className="ticket-number-line">
-                        <span>Ticket number</span> <strong>{ticket.ticketNumber || ticket.bookingReference}</strong>
-                        <small>Booking: <b>{ticket.bookingReference}</b></small>
+                        <span>{group.isOrder ? "Order" : "Ticket number"}</span>{" "}
+                        <strong>{group.isOrder ? `Order #${group.orderId}` : firstTicket.ticketNumber || firstTicket.bookingReference}</strong>
+                        <small>
+                          {group.tickets.length} {group.tickets.length === 1 ? "ticket" : "tickets"}
+                          {!group.isOrder && <> · Booking: <b>{firstTicket.bookingReference}</b></>}
+                        </small>
                       </p>
                     </div>
 
@@ -273,57 +304,71 @@ function MyProfilePage() {
                         <div className="ticket-meta-grid">
                           <div>
                             <span>Date</span>
-                            <strong>{formatTicketDate(ticket.travelDate)}</strong>
+                            <strong>{formatTicketDate(firstTicket.travelDate)}</strong>
                           </div>
                           <div>
                             <span>Travel time</span>
-                            <strong>{formatTicketTime(ticket.departureTime)} <b>&gt;</b> {formatTicketTime(ticket.arrivalTime)}</strong>
+                            <strong>{formatTicketTime(firstTicket.departureTime)} <b>&gt;</b> {formatTicketTime(firstTicket.arrivalTime)}</strong>
                           </div>
                           <div>
-                            <span>Seat</span>
-                            <strong>{ticket.seatLabel || `Seat ${ticket.seatId}`}</strong>
+                            <span>{group.isOrder ? "Passengers" : "Seat"}</span>
+                            <strong>{group.isOrder ? group.tickets.length : firstTicket.seatLabel || `Seat ${firstTicket.seatId}`}</strong>
                           </div>
                           <div>
                             <span>Status</span>
-                            <strong>{ticket.bookingStatus}</strong>
+                            <strong>{firstTicket.bookingStatus}</strong>
                           </div>
                         </div>
 
-                        {activeTicketSection === "tickets" && hasDisruption(ticket) && (
-                          <div className={`ticket-disruption-banner disruption-${getDisruptionSeverity(ticket) || "notice"}`}>
+                        {activeTicketSection === "tickets" && hasDisruption(firstTicket) && (
+                          <div className={`ticket-disruption-banner disruption-${getDisruptionSeverity(firstTicket) || "notice"}`}>
                             <strong>Service update</strong>
-                            <span>{getDisruptionMessage(ticket)}</span>
+                            <span>{getDisruptionMessage(firstTicket)}</span>
                           </div>
                         )}
 
                         <div className="ticket-route-row">
                           <span>Route</span>
-                          <strong>{ticket.route || "Selected route"}</strong>
-                          <em>{ticket.trainName || "Train"}</em>
+                          <strong>{firstTicket.route || "Selected route"}</strong>
+                          <em>{firstTicket.trainName || "Train"}</em>
                         </div>
 
-                        <div className="ticket-price-row">
+                        <div className="ticket-passenger-list">
+                        {group.tickets.map((ticket) => (
+                        <div className="ticket-price-row" key={ticket.id}>
                           <span>
-                            <b>Ticket</b>
-                            {ticket.passengerName || currentUser.email}
+                            <b>{ticket.passengerName || currentUser.email}</b>
+                            {ticket.seatLabel || `Seat ${ticket.seatId}`} · {ticket.discountName || "Normal Ticket"}
                           </span>
                           <span>
                             <b>Price</b>
                             {formatMoney(ticket.amount)}
                           </span>
                         </div>
+                        ))}
+                        {group.isOrder && (
+                          <div className="ticket-order-total">
+                            <span>Order total</span>
+                            <strong>{formatMoney(group.totalAmount)}</strong>
+                          </div>
+                        )}
+                        </div>
                       </div>
 
                       <aside className="ticket-feature-column">
                         <button
                           type="button"
-                          onClick={() => handleDownloadPdf(ticket)}
-                          disabled={isDownloadingTicketId === ticket.id || !ticket.hasTicketArtifact}
+                          onClick={() => group.isOrder ? handleDownloadGroupPdf(group) : handleDownloadPdf(firstTicket)}
+                          disabled={
+                            isDownloadingTicketId === firstTicket.id ||
+                            group.tickets.some((ticket) => ticket.bookingStatus !== "Confirmed")
+                          }
                         >
-                          {isDownloadingTicketId === ticket.id ? "Downloading..." : "Download PDF"}
+                          {isDownloadingTicketId === firstTicket.id ? "Downloading..." : group.isOrder ? "Download order PDF" : "Download PDF"}
                         </button>
-                        <strong>Other features for this ticket</strong>
+                        <strong>{group.isOrder ? "Other features for this order" : "Other features for this ticket"}</strong>
                         <button type="button" disabled>Purchase return ticket</button>
+                        {group.tickets.map((ticket) => (
                         <button
                           type="button"
                           onClick={() => handleReturnTicket(ticket)}
@@ -332,15 +377,18 @@ function MyProfilePage() {
                             isReturningTicketId === ticket.id ||
                             ticket.bookingStatus !== "Confirmed"
                           }
+                          key={ticket.id}
                         >
-                          {isReturningTicketId === ticket.id ? "Returning..." : "Refund"}
+                          {isReturningTicketId === ticket.id ? "Returning..." : `Refund ${ticket.passengerName || ticket.ticketNumber || "ticket"}`}
                         </button>
+                        ))}
                         <button type="button" disabled>Exchange</button>
                         <button type="button" disabled>Change data</button>
                       </aside>
                     </div>
                   </article>
-                ))
+                  );
+                })
               )}
             </section>
           ) : isLoading ? (

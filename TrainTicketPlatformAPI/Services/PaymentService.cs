@@ -33,7 +33,7 @@ namespace TrainTicketPlatformAPI.Services
                 PaymentIntentId = BuildPaymentIntentId(booking.Id),
                 BookingId = booking.Id,
                 BookingIds = new[] { booking.Id },
-                Amount = fare.Price,
+                Amount = BookingPricingCalculator.GetPayableAmount(booking, fare),
                 Currency = fare.Currency,
                 Status = booking.PaymentStatus,
                 ExpiresAtUtc = booking.ExpiresAtUtc,
@@ -105,7 +105,7 @@ namespace TrainTicketPlatformAPI.Services
                 PaymentIntentId = paymentIntentId,
                 PaymentMethodToken = paymentMethodToken.Trim(),
                 PaymentDate = DateTime.UtcNow,
-                Amount = fare.Price,
+                Amount = BookingPricingCalculator.GetPayableAmount(booking, fare),
                 Status = status
             };
 
@@ -342,8 +342,10 @@ namespace TrainTicketPlatformAPI.Services
             foreach (var booking in order.Bookings)
             {
                 var fare = await GetFareForBookingAsync(booking);
-                amount += fare.Price;
-                currency = string.IsNullOrWhiteSpace(currency) ? fare.Currency : currency;
+                amount += BookingPricingCalculator.GetPayableAmount(booking, fare);
+                currency = string.IsNullOrWhiteSpace(currency)
+                    ? !string.IsNullOrWhiteSpace(booking.Currency) ? booking.Currency : fare.Currency
+                    : currency;
             }
 
             return (amount, currency);

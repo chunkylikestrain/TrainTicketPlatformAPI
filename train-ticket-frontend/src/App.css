@@ -3860,6 +3860,33 @@
   font-size: 21px;
 }
 
+.ticket-passenger-list {
+  display: grid;
+  gap: 12px;
+  border-top: 1px solid #d3d0cf;
+  padding-top: 18px;
+}
+
+.ticket-order-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0 0;
+  border-top: 1px solid #e3e7ed;
+  color: var(--navy);
+}
+
+.ticket-order-total span {
+  color: #1399d6;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.ticket-order-total strong {
+  font-size: 22px;
+}
+
 .extra-ticket-pill {
   display: inline-flex;
   align-items: center;

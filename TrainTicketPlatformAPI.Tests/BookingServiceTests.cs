@@ -508,6 +508,69 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
+        public async Task CreateBookingOrderAsync_AppliesPassengerDiscountPricing()
+        {
+            var db = NewDb("BookingOrderAppliesDiscountPricing");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            SeedSeat(db, 2, true);
+            SeedTripRoute(db);
+            var departure = DateTime.UtcNow.Date.AddDays(3).AddHours(8);
+            db.Trips.Add(new Trip
+            {
+                Id = 10,
+                TrainId = 1,
+                TrainRouteId = 1,
+                DepartureTime = departure,
+                ArrivalTime = departure.AddHours(2),
+                Status = "Scheduled"
+            });
+            db.Fares.Add(new Fare
+            {
+                Id = 10,
+                TripId = 10,
+                ClassType = "Economy",
+                Price = 100m,
+                Currency = "PLN"
+            });
+            await db.SaveChangesAsync();
+
+            var svc = new BookingService(db);
+            var order = await svc.CreateBookingOrderAsync(
+                new BookingOrder { UserId = 42 },
+                new[]
+                {
+                    new Booking
+                    {
+                        TrainId = 1,
+                        TripId = 10,
+                        SeatId = 1,
+                        PassengerName = "Adult Passenger",
+                        PassengerType = "Adult",
+                        DiscountCode = "normal"
+                    },
+                    new Booking
+                    {
+                        TrainId = 1,
+                        TripId = 10,
+                        SeatId = 2,
+                        PassengerName = "Child Passenger",
+                        PassengerType = "Child",
+                        DiscountCode = "child37"
+                    }
+                });
+
+            var bookings = order.Bookings.OrderBy(booking => booking.SeatId).ToList();
+            Assert.That(bookings[0].BaseAmount, Is.EqualTo(100m));
+            Assert.That(bookings[0].Amount, Is.EqualTo(100m));
+            Assert.That(bookings[0].DiscountPercent, Is.EqualTo(0m));
+            Assert.That(bookings[1].BaseAmount, Is.EqualTo(100m));
+            Assert.That(bookings[1].Amount, Is.EqualTo(63m));
+            Assert.That(bookings[1].DiscountName, Is.EqualTo("Child 37%"));
+            Assert.That(bookings[1].Currency, Is.EqualTo("PLN"));
+        }
+
+        [Test]
         public void CreateBookingOrderAsync_Throws_WhenSeatRepeatedInsideOrder()
         {
             var db = NewDb("BookingOrderBlocksDuplicateSeat");

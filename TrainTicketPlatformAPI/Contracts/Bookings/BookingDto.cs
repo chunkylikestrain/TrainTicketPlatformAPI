@@ -18,6 +18,11 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         public string TicketNumber { get; set; } = string.Empty;
         public string? GuestEmail { get; set; }
         public string? PassengerName { get; set; }
+        public string PassengerType { get; set; } = string.Empty;
+        public string DiscountCode { get; set; } = string.Empty;
+        public string DiscountName { get; set; } = string.Empty;
+        public decimal DiscountPercent { get; set; }
+        public decimal BaseAmount { get; set; }
         public DateTime BookingDate { get; set; }
         public DateTime TravelDate { get; set; }
         public DateTime? ExpiresAtUtc { get; set; }
@@ -44,6 +49,7 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         public bool HasPlatformChange { get; set; }
         public bool HasDisruption { get; set; }
         public decimal Amount { get; set; }
+        public string Currency { get; set; } = string.Empty;
         public DateTime? TicketIssuedAtUtc { get; set; }
         public bool HasTicketArtifact { get; set; }
         public string TicketEmailStatus { get; set; } = string.Empty;

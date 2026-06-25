@@ -9,6 +9,7 @@ namespace TrainTicketPlatformAPI.Services
         Task<TicketArtifactDto> GetTicketAsync(int bookingId);
         Task<string> GetQrSvgAsync(int bookingId);
         Task<byte[]> GetTicketPdfAsync(int bookingId);
+        Task<byte[]> GetOrderTicketPdfAsync(int bookingOrderId);
         Task<TicketEmailDeliveryDto> SendTicketEmailAsync(int bookingId, string? recipientEmail);
     }
 }

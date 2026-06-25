@@ -89,6 +89,7 @@ namespace TrainTicketPlatformAPI.Services
 
             booking.GuestEmail = NormalizeOptionalEmail(booking.GuestEmail);
             booking.PassengerName = NormalizeOptionalText(booking.PassengerName);
+            await ApplyPricingAsync(booking);
             booking.BookingDate = DateTime.UtcNow;
 
             if (string.IsNullOrWhiteSpace(booking.BookingReference))
@@ -220,6 +221,7 @@ namespace TrainTicketPlatformAPI.Services
                 booking.GuestEmail = order.GuestEmail;
                 booking.PassengerName = NormalizeOptionalText(booking.PassengerName);
                 booking.TravelDate = travelDate;
+                await ApplyPricingAsync(booking);
                 booking.BookingDate = now;
                 booking.ExpiresAtUtc = order.ExpiresAtUtc;
                 booking.BookingReference = string.IsNullOrWhiteSpace(booking.BookingReference)
@@ -719,6 +721,48 @@ namespace TrainTicketPlatformAPI.Services
 
         private static string GenerateTicketNumber()
             => $"WH{DateTime.UtcNow:yyMMdd}{Random.Shared.Next(1000, 9999)}";
+
+        private async Task ApplyPricingAsync(Booking booking)
+        {
+            var fare = await TryGetFareForBookingAsync(booking);
+            if (fare == null)
+            {
+                booking.PassengerType = BookingPricingCalculator.NormalizePassengerType(booking.PassengerType);
+                booking.DiscountCode = string.IsNullOrWhiteSpace(booking.DiscountCode) ? "normal" : booking.DiscountCode.Trim();
+                booking.DiscountName = string.IsNullOrWhiteSpace(booking.DiscountName) ? "Normal Ticket" : booking.DiscountName.Trim();
+                booking.Currency = string.IsNullOrWhiteSpace(booking.Currency) ? "PLN" : booking.Currency.Trim();
+                return;
+            }
+
+            var price = BookingPricingCalculator.Calculate(booking, fare);
+
+            booking.PassengerType = price.PassengerType;
+            booking.DiscountCode = price.DiscountCode;
+            booking.DiscountName = price.DiscountName;
+            booking.DiscountPercent = price.DiscountPercent;
+            booking.BaseAmount = price.BaseAmount;
+            booking.Amount = price.Amount;
+            booking.Currency = price.Currency;
+        }
+
+        private async Task<Fare?> TryGetFareForBookingAsync(Booking booking)
+        {
+            if (!booking.TripId.HasValue)
+                return null;
+
+            var seatClass = await _db.Seats
+                .Where(seat => seat.Id == booking.SeatId)
+                .Select(seat => seat.ClassType)
+                .FirstOrDefaultAsync();
+
+            var fare = await _db.Fares
+                .Where(f => f.TripId == booking.TripId.Value)
+                .OrderByDescending(f => seatClass != null && f.ClassType == seatClass)
+                .ThenBy(f => f.Price)
+                .FirstOrDefaultAsync();
+
+            return fare;
+        }
 
         private static void EnsureTicketMetadata(Booking booking)
         {

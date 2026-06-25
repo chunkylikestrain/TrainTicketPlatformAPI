@@ -7,6 +7,7 @@ import { getBookingOrder, getGuestTickets, updateGuestBookingData } from "../api
 import { confirmPayment, createOrderPaymentIntent, createPaymentIntent } from "../api/paymentApi";
 import {
   downloadTicketPdf,
+  downloadOrderTicketPdf,
   getOrderTickets,
   getTicketArtifact,
   getTicketQrSvgBlob,
@@ -18,6 +19,7 @@ import type { TicketArtifact } from "../types/ticket";
 import type { TripDetails } from "../types/trip";
 import {
   formatTripDate,
+  formatTripPrice,
   formatTripTime,
   getTripPriceLabel,
   getTripVatLabel,
@@ -53,8 +55,15 @@ function BookingCheckoutPage() {
   const discountCodes = getDiscountCodes(searchParams, passengerCounts);
   const [trip, setTrip] = useState<TripDetails | null>(null);
   const [tripError, setTripError] = useState("");
-  const price = getTripPriceLabel(trip, selectedClass);
-  const vat = getTripVatLabel(trip, selectedClass);
+  const committedAmount = Number(searchParams.get("amount"));
+  const committedCurrency = searchParams.get("currency") ?? "PLN";
+  const hasCommittedAmount = Number.isFinite(committedAmount) && committedAmount > 0;
+  const price = hasCommittedAmount
+    ? formatTripPrice(committedAmount, committedCurrency)
+    : getTripPriceLabel(trip, selectedClass);
+  const vat = hasCommittedAmount
+    ? formatTripPrice(committedAmount * 0.08, committedCurrency)
+    : getTripVatLabel(trip, selectedClass);
   const passengerTotal = passengerCounts.adults + passengerCounts.children;
   const [travelerNames, setTravelerNames] = useState<string[]>(() =>
     Array.from({ length: passengerTotal }, (_, index) => (index === 0 ? "Trong Nguyen" : `Passenger ${index + 1}`)),
@@ -69,6 +78,7 @@ function BookingCheckoutPage() {
   const [error, setError] = useState("");
   const [ticketNumbers, setTicketNumbers] = useState<string[]>([]);
   const [ticketArtifacts, setTicketArtifacts] = useState<TicketArtifact[]>([]);
+  const [ticketOrderReference, setTicketOrderReference] = useState("");
   const [ticketQrUrl, setTicketQrUrl] = useState("");
   const [ticketDownloadError, setTicketDownloadError] = useState("");
   const sessionEmail = getUserEmail();
@@ -189,6 +199,7 @@ function BookingCheckoutPage() {
         await confirmPayment(intent.paymentIntentId, "tok_success");
         const orderTickets = await getOrderTickets(orderId, effectiveEmail);
         artifacts = orderTickets.tickets;
+        setTicketOrderReference(orderTickets.orderReference);
         firstBookingId = artifacts[0]?.bookingId ? String(artifacts[0].bookingId) : order.bookings[0]?.id.toString() ?? "";
       } else {
         await updateGuestBookingData(bookingId, {
@@ -265,10 +276,8 @@ function BookingCheckoutPage() {
     setTicketDownloadError("");
 
     try {
-      if (orderId && ticketArtifacts.length > 0) {
-        for (const artifact of ticketArtifacts) {
-          await downloadTicketPdf(artifact.bookingId, effectiveEmail, artifact.ticketNumber);
-        }
+      if (orderId) {
+        await downloadOrderTicketPdf(orderId, effectiveEmail, ticketOrderReference);
         return;
       }
 

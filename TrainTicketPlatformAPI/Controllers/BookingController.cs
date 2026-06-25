@@ -108,6 +108,8 @@ namespace TrainTicketPlatformAPI.Controllers
                     TravelDate = request.TravelDate,
                     GuestEmail = request.GuestEmail,
                     PassengerName = request.PassengerName,
+                    PassengerType = request.PassengerType ?? "Adult",
+                    DiscountCode = request.DiscountCode ?? "normal",
                     BookingStatus = "PendingPayment",
                     PaymentStatus = "Pending"
                 };
@@ -219,6 +221,8 @@ namespace TrainTicketPlatformAPI.Controllers
                     TravelDate = request.TravelDate,
                     GuestEmail = request.GuestEmail,
                     PassengerName = passenger.PassengerName,
+                    PassengerType = passenger.PassengerType ?? "Adult",
+                    DiscountCode = passenger.DiscountCode ?? "normal",
                     BookingStatus = "PendingPayment",
                     PaymentStatus = "Pending"
                 });
@@ -316,6 +320,35 @@ namespace TrainTicketPlatformAPI.Controllers
                     SentCount = deliveries.Count(delivery => delivery.Status == "Sent"),
                     Deliveries = deliveries
                 });
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // GET: api/Bookings/orders/5/tickets/pdf?email=guest@example.com
+        [AllowAnonymous]
+        [HttpGet("orders/{id}/tickets/pdf")]
+        public async Task<IActionResult> GetOrderTicketsPdf(
+            int id,
+            [FromQuery] string? email = null)
+        {
+            try
+            {
+                var order = await _bookingService.GetBookingOrderByIdAsync(id);
+                if (!CanAccessOrderTickets(order, email))
+                    return Forbid();
+
+                var pdf = await _ticketArtifactService.GetOrderTicketPdfAsync(id);
+                var fileReference = string.IsNullOrWhiteSpace(order.OrderReference)
+                    ? id.ToString()
+                    : order.OrderReference;
+                return File(pdf, "application/pdf", $"tickets-{fileReference}.pdf");
             }
             catch (KeyNotFoundException)
             {
@@ -655,6 +688,11 @@ namespace TrainTicketPlatformAPI.Controllers
             TicketNumber = booking.TicketNumber,
             GuestEmail = booking.GuestEmail,
             PassengerName = booking.PassengerName,
+            PassengerType = booking.PassengerType,
+            DiscountCode = booking.DiscountCode,
+            DiscountName = booking.DiscountName,
+            DiscountPercent = booking.DiscountPercent,
+            BaseAmount = booking.BaseAmount,
             BookingDate = booking.BookingDate,
             TravelDate = booking.TravelDate,
             ExpiresAtUtc = booking.ExpiresAtUtc,
@@ -687,10 +725,13 @@ namespace TrainTicketPlatformAPI.Controllers
             DisruptionSeverity = GetDisruptionSeverity(booking.Trip),
             HasPlatformChange = HasPlatformChange(booking.Trip),
             HasDisruption = HasDisruption(booking.Trip),
-            Amount = booking.Trip?.Fares
+            Amount = booking.Amount > 0m ? booking.Amount : booking.Trip?.Fares
                 .OrderByDescending(f => booking.Seat != null && f.ClassType == booking.Seat.ClassType)
                 .ThenBy(f => f.Price)
-                .FirstOrDefault()?.Price ?? 0m
+                .FirstOrDefault()?.Price ?? 0m,
+            Currency = !string.IsNullOrWhiteSpace(booking.Currency)
+                ? booking.Currency
+                : booking.Trip?.Fares.FirstOrDefault()?.Currency ?? "PLN"
         };
 
         private static string GetRouteLabel(Booking booking)
@@ -721,7 +762,7 @@ namespace TrainTicketPlatformAPI.Controllers
                 .OrderBy(booking => booking.Id)
                 .Select(ToDto)
                 .ToList(),
-            Amount = order.Bookings.Sum(booking => booking.Trip?.Fares
+            Amount = order.Bookings.Sum(booking => booking.Amount > 0m ? booking.Amount : booking.Trip?.Fares
                 .OrderByDescending(f => booking.Seat != null && f.ClassType == booking.Seat.ClassType)
                 .ThenBy(f => f.Price)
                 .FirstOrDefault()?.Price ?? 0m)

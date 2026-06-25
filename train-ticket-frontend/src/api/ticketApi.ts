@@ -55,12 +55,33 @@ export async function sendOrderTicketsEmail(orderId: number | string, email?: st
   return response.data;
 }
 
+export async function getOrderTicketPdfBlob(orderId: number | string, email?: string) {
+  const response = await apiClient.get<Blob>(`/Bookings/orders/${orderId}/tickets/pdf`, {
+    params: guestParams(email),
+    responseType: "blob",
+  });
+
+  return response.data;
+}
+
 export async function downloadTicketPdf(bookingId: number | string, email?: string, ticketNumber?: string) {
   const pdf = await getTicketPdfBlob(bookingId, email);
   const url = window.URL.createObjectURL(pdf);
   const link = document.createElement("a");
   link.href = url;
   link.download = `ticket-${ticketNumber || bookingId}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  window.URL.revokeObjectURL(url);
+}
+
+export async function downloadOrderTicketPdf(orderId: number | string, email?: string, orderReference?: string) {
+  const pdf = await getOrderTicketPdfBlob(orderId, email);
+  const url = window.URL.createObjectURL(pdf);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `tickets-${orderReference || orderId}.pdf`;
   document.body.appendChild(link);
   link.click();
   link.remove();

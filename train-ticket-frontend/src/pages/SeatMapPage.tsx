@@ -5,7 +5,7 @@ import { createBookingHold, createBookingOrderHold } from "../api/bookingApi";
 import { getTripById, getTripSeats } from "../api/tripApi";
 import CarriageSeatMap, { type CarriageTemplate } from "../components/CarriageSeatMap";
 import type { TripDetails, TripSeatAvailability } from "../types/trip";
-import { getPassengerCounts, getPassengerTotal } from "../utils/purchasePreferences";
+import { getDiscountCodes, getPassengerCounts, getPassengerTotal } from "../utils/purchasePreferences";
 
 function formatDate(value?: string) {
   if (!value) {
@@ -41,6 +41,7 @@ function SeatMapPage() {
   const segmentArrivalName = searchParams.get("toStation");
   const passengerCounts = getPassengerCounts(searchParams);
   const passengerTotal = getPassengerTotal(passengerCounts);
+  const discountCodes = getDiscountCodes(searchParams, passengerCounts);
   const [trip, setTrip] = useState<TripDetails | null>(null);
   const [seats, setSeats] = useState<TripSeatAvailability[]>([]);
   const [activeCoach, setActiveCoach] = useState("");
@@ -146,6 +147,8 @@ function SeatMapPage() {
           passengers: selectedSeats.map((seat, index) => ({
             seatId: seat?.seatId ?? 0,
             passengerName: `Passenger ${index + 1}`,
+            passengerType: index < passengerCounts.adults ? "Adult" : "Child",
+            discountCode: discountCodes[index],
           })),
         });
 
@@ -153,6 +156,8 @@ function SeatMapPage() {
         params.set("orderId", String(order.id));
         params.set("seats", selectedSeats.map((seat) => `${seat?.coach}-${seat?.number}`).join(","));
         params.set("bookingIds", order.bookings.map((booking) => String(booking.id)).join(","));
+        params.set("amount", String(order.amount));
+        params.set("currency", order.bookings[0]?.currency || "PLN");
         params.delete("bookingId");
 
         const firstSeat = selectedSeats[0];
@@ -177,12 +182,16 @@ function SeatMapPage() {
         travelDate: trip.departureTime,
         segmentDepartureStationId: fromStationId ? Number(fromStationId) : undefined,
         segmentArrivalStationId: toStationId ? Number(toStationId) : undefined,
+        passengerType: passengerCounts.adults > 0 ? "Adult" : "Child",
+        discountCode: discountCodes[0],
       });
 
       const params = new URLSearchParams(flowParams);
       params.set("car", firstSeat.coach);
       params.set("seat", firstSeat.number);
       params.set("bookingId", String(booking.id));
+      params.set("amount", String(booking.amount));
+      params.set("currency", booking.currency || "PLN");
       params.delete("orderId");
       params.delete("bookingIds");
       params.delete("seats");

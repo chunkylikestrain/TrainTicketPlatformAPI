@@ -1,21 +1,34 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getGuestTickets, refundGuestTicket } from "../api/bookingApi";
-import { downloadTicketPdf } from "../api/ticketApi";
+import { downloadOrderTicketPdf, downloadTicketPdf } from "../api/ticketApi";
 import type { Booking } from "../types/booking";
+import { groupTicketsByOrder, isPastTicket, isReturnedTicket, type TicketGroup } from "../utils/ticketGrouping";
+
+type GuestTicketTab = "Tickets" | "Travel history" | "Returned";
 
 function MyBookingsPage() {
   const [searchParams] = useSearchParams();
   const email = searchParams.get("email") || "nguyentrongminhkhoa@gmail.com";
-  const [isRefunded, setIsRefunded] = useState(false);
   const [tickets, setTickets] = useState<Booking[]>([]);
+  const [activeTab, setActiveTab] = useState<GuestTicketTab>("Tickets");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
   const [refundMessage, setRefundMessage] = useState("");
   const [downloadMessage, setDownloadMessage] = useState("");
-  const [isDownloading, setIsDownloading] = useState(false);
-  const ticket = tickets[0];
-  const activeTab = isRefunded ? "Returned" : "Tickets";
+  const [isDownloadingKey, setIsDownloadingKey] = useState("");
+  const visibleTickets = tickets.filter((ticket) => {
+    if (activeTab === "Returned") {
+      return isReturnedTicket(ticket);
+    }
+
+    if (activeTab === "Travel history") {
+      return !isReturnedTicket(ticket) && isPastTicket(ticket);
+    }
+
+    return !isReturnedTicket(ticket) && !isPastTicket(ticket);
+  });
+  const ticketGroups = groupTicketsByOrder(visibleTickets);
 
   useEffect(() => {
     setIsLoading(true);
@@ -24,7 +37,6 @@ function MyBookingsPage() {
     getGuestTickets(email)
       .then((guestTickets) => {
         setTickets(guestTickets);
-        setIsRefunded(guestTickets.some((guestTicket) => guestTicket.bookingStatus === "Refunded"));
       })
       .catch(() => {
         setError("Could not load guest tickets. Check that the API is running and this email has a paid ticket.");
@@ -32,7 +44,7 @@ function MyBookingsPage() {
       .finally(() => setIsLoading(false));
   }, [email]);
 
-  async function handleRefund() {
+  async function handleRefund(ticket: Booking) {
     if (!ticket?.ticketNumber) {
       return;
     }
@@ -47,28 +59,33 @@ function MyBookingsPage() {
           currentTicket.id === refundedTicket.id ? refundedTicket : currentTicket
         )
       );
-      setIsRefunded(true);
+      setActiveTab("Returned");
       setRefundMessage("Your refund request is saved for this guest ticket. The ticket now appears under Returned.");
     } catch {
       setError("Could not refund this ticket. It may be too close to departure or already refunded.");
     }
   }
 
-  async function handleDownloadPdf() {
+  async function handleDownloadPdf(group: TicketGroup) {
+    const ticket = group.tickets[0];
     if (!ticket) {
       return;
     }
 
     setDownloadMessage("");
     setError("");
-    setIsDownloading(true);
+    setIsDownloadingKey(group.key);
 
     try {
-      await downloadTicketPdf(ticket.id, email, ticket.ticketNumber || ticket.bookingReference);
+      if (group.isOrder && group.orderId) {
+        await downloadOrderTicketPdf(group.orderId, email);
+      } else {
+        await downloadTicketPdf(ticket.id, email, ticket.ticketNumber || ticket.bookingReference);
+      }
     } catch {
       setDownloadMessage("Could not download the ticket PDF. The ticket may not be confirmed yet.");
     } finally {
-      setIsDownloading(false);
+      setIsDownloadingKey("");
     }
   }
 
@@ -78,6 +95,21 @@ function MyBookingsPage() {
     }
 
     return new Intl.DateTimeFormat("en-GB").format(new Date(value));
+  }
+
+  function formatTicketTime(value?: string | null) {
+    if (!value) {
+      return "--:--";
+    }
+
+    return new Intl.DateTimeFormat("en", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(value));
+  }
+
+  function formatMoney(value: number, currency = "PLN") {
+    return `${value.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
   }
 
   return (
@@ -118,6 +150,7 @@ function MyBookingsPage() {
                 <button
                   className={activeTab === tab ? "ticket-tab ticket-tab-active" : "ticket-tab"}
                   key={tab}
+                  onClick={() => setActiveTab(tab as GuestTicketTab)}
                   type="button"
                 >
                   {tab}
@@ -133,16 +166,20 @@ function MyBookingsPage() {
 
             {isLoading && <div className="status-message">Loading guest tickets...</div>}
             {error && <div className="status-message">{error}</div>}
-            {!isLoading && !error && !ticket && (
+            {!isLoading && !error && ticketGroups.length === 0 && (
               <div className="status-message">No tickets found for this guest email yet.</div>
             )}
 
-            {ticket && (
-            <article className={isRefunded ? "guest-ticket-card ticket-card-returned" : "guest-ticket-card"}>
+            {ticketGroups.map((group) => {
+              const firstTicket = group.tickets[0];
+              const isRefunded = group.tickets.every(isReturnedTicket);
+              return (
+            <article className={isRefunded ? "guest-ticket-card ticket-card-returned" : "guest-ticket-card"} key={group.key}>
               <div className="ticket-card-header">
                 <p className="ticket-number-line">
-                  <span>Ticket number</span> <strong>{ticket.ticketNumber || ticket.bookingReference}</strong>
-                  <small>Info Purchase: <b>EIC2</b></small>
+                  <span>{group.isOrder ? "Order" : "Ticket number"}</span>{" "}
+                  <strong>{group.isOrder ? `Order #${group.orderId}` : firstTicket.ticketNumber || firstTicket.bookingReference}</strong>
+                  <small>{group.tickets.length} {group.tickets.length === 1 ? "ticket" : "tickets"}</small>
                 </p>
                 <div className="ticket-tools" aria-label="Calendar and wallet options">
                   <button type="button">Cal</button>
@@ -155,62 +192,57 @@ function MyBookingsPage() {
                   <div className="ticket-meta-grid">
                     <div>
                       <span>Date</span>
-                      <strong>{formatTicketDate(ticket.travelDate)}</strong>
+                      <strong>{formatTicketDate(firstTicket.travelDate)}</strong>
                     </div>
                     <div>
-                      <span>Travel time: 1h 33min</span>
-                      <strong>06:54 <b>&gt;</b> 08:27</strong>
+                      <span>Travel time</span>
+                      <strong>{formatTicketTime(firstTicket.departureTime)} <b>&gt;</b> {formatTicketTime(firstTicket.arrivalTime)}</strong>
                     </div>
                     <div>
-                      <span>Class 2</span>
-                      <strong>23,03 PLN</strong>
+                      <span>Total</span>
+                      <strong>{formatMoney(group.totalAmount, group.currency)}</strong>
                     </div>
                   </div>
 
                   <div className="ticket-route-row">
                     <span>Route</span>
-                    <strong>Rzeszow Glowny</strong>
-                    <b>&gt;</b>
-                    <strong>Krakow Gl.</strong>
-                    <em>IC 3806</em>
+                    <strong>{firstTicket.route || "Selected route"}</strong>
+                    <em>{firstTicket.trainName || "Train"}</em>
                   </div>
 
-                  <div className="ticket-extra-section">
-                    <h3>Additional tickets</h3>
-                    <div className="extra-ticket-pill">
-                      <span aria-hidden="true">Bike</span>
-                      <strong>1x Bicycle</strong>
-                    </div>
-                    <p className="ticket-number-line secondary-ticket">
-                      <span>ticket number</span> <strong>WH57810600</strong>
-                    </p>
-                    <div className="ticket-price-row">
+                  <div className="ticket-passenger-list">
+                    {group.tickets.map((passengerTicket) => (
+                    <div className="ticket-price-row" key={passengerTicket.id}>
                       <span>
-                        <b>Ticket</b>
-                        Bicycle
+                        <b>{passengerTicket.passengerName || "Passenger"}</b>
+                        {passengerTicket.seatLabel || `Seat ${passengerTicket.seatId}`} · {passengerTicket.discountName || "Normal Ticket"}
                       </span>
                       <span>
                         <b>Price</b>
-                        9,10 PLN
+                        {formatMoney(passengerTicket.amount, passengerTicket.currency)}
                       </span>
                     </div>
+                    ))}
                   </div>
                 </div>
 
                 <aside className="ticket-feature-column">
-                  <button type="button" onClick={handleDownloadPdf} disabled={isDownloading || isRefunded}>
-                    {isDownloading ? "Downloading..." : "Download PDF"}
+                  <button type="button" onClick={() => handleDownloadPdf(group)} disabled={isDownloadingKey === group.key || isRefunded}>
+                    {isDownloadingKey === group.key ? "Downloading..." : group.isOrder ? "Download order PDF" : "Download PDF"}
                   </button>
-                  <strong>Other features for this ticket</strong>
+                  <strong>{group.isOrder ? "Other features for this order" : "Other features for this ticket"}</strong>
                   <button type="button">Purchase return ticket</button>
+                  {group.tickets.map((passengerTicket) => (
                     <button
                     className={isRefunded ? "refund-button refund-button-refunded" : "refund-button"}
                     type="button"
-                    onClick={handleRefund}
-                    disabled={isRefunded}
+                    onClick={() => handleRefund(passengerTicket)}
+                    disabled={isReturnedTicket(passengerTicket)}
+                    key={passengerTicket.id}
                   >
-                    {isRefunded ? "Refund requested" : "Refund"}
+                    {isReturnedTicket(passengerTicket) ? "Refund requested" : `Refund ${passengerTicket.passengerName || passengerTicket.ticketNumber || "ticket"}`}
                   </button>
+                  ))}
                   <button type="button">Exchange</button>
                   <button type="button">Change data</button>
                   <button type="button">VAT invoice</button>
@@ -228,7 +260,8 @@ function MyBookingsPage() {
                 </div>
               )}
             </article>
-            )}
+              );
+            })}
 
             <div className="ticket-pagination" aria-label="Ticket list pagination">
               <button type="button" aria-label="Previous page">&lt;</button>

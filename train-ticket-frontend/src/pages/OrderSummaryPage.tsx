@@ -4,6 +4,7 @@ import { getTripById } from "../api/tripApi";
 import type { TripDetails } from "../types/trip";
 import {
   formatTripDate,
+  formatTripPrice,
   formatTripTime,
   getTripPriceLabel,
   getTripVatLabel,
@@ -36,8 +37,15 @@ function OrderSummaryPage() {
   const segmentArrivalName = searchParams.get("toStation");
   const passengerCounts = getPassengerCounts(searchParams);
   const discountCodes = getDiscountCodes(searchParams, passengerCounts);
-  const price = getTripPriceLabel(trip, selectedClass);
-  const vat = getTripVatLabel(trip, selectedClass);
+  const committedAmount = Number(searchParams.get("amount"));
+  const committedCurrency = searchParams.get("currency") ?? "PLN";
+  const hasCommittedAmount = Number.isFinite(committedAmount) && committedAmount > 0;
+  const price = hasCommittedAmount
+    ? formatTripPrice(committedAmount, committedCurrency)
+    : getTripPriceLabel(trip, selectedClass);
+  const vat = hasCommittedAmount
+    ? formatTripPrice(committedAmount * 0.08, committedCurrency)
+    : getTripVatLabel(trip, selectedClass);
   const checkoutParams = new URLSearchParams(searchParams);
   checkoutParams.set("class", selectedClass);
   checkoutParams.set("email", email);

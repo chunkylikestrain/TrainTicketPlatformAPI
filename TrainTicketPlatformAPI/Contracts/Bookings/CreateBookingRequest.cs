@@ -24,5 +24,11 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
 
         [StringLength(200)]
         public string? PassengerName { get; set; }
+
+        [StringLength(40)]
+        public string? PassengerType { get; set; }
+
+        [StringLength(40)]
+        public string? DiscountCode { get; set; }
     }
 }

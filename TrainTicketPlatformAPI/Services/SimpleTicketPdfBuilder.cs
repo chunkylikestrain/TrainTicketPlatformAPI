@@ -8,17 +8,32 @@ namespace TrainTicketPlatformAPI.Services
     internal static class SimpleTicketPdfBuilder
     {
         public static byte[] Build(TicketArtifactDto ticket, IReadOnlyList<BitArray> qrMatrix)
+            => Build(new[] { (ticket, qrMatrix) });
+
+        public static byte[] Build(IReadOnlyList<(TicketArtifactDto Ticket, IReadOnlyList<BitArray> QrMatrix)> tickets)
         {
-            var pageStream = BuildPageStream(ticket, qrMatrix);
+            if (tickets.Count == 0)
+                throw new InvalidOperationException("At least one ticket is required to build a PDF");
+
             var objects = new List<string>
             {
                 "<< /Type /Catalog /Pages 2 0 R >>",
-                "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-                "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>",
                 "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
-                "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>",
-                $"<< /Length {Encoding.ASCII.GetByteCount(pageStream)} >>\nstream\n{pageStream}\nendstream"
+                "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>"
             };
+
+            var pageObjectNumbers = new List<int>();
+            foreach (var (ticket, qrMatrix) in tickets)
+            {
+                var pageStream = BuildPageStream(ticket, qrMatrix);
+                var pageObjectNumber = objects.Count + 1;
+                var contentObjectNumber = objects.Count + 2;
+                pageObjectNumbers.Add(pageObjectNumber);
+                objects.Add($"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents {contentObjectNumber} 0 R >>");
+                objects.Add($"<< /Length {Encoding.ASCII.GetByteCount(pageStream)} >>\nstream\n{pageStream}\nendstream");
+            }
+
+            objects[1] = $"<< /Type /Pages /Kids [{string.Join(" ", pageObjectNumbers.Select(number => $"{number} 0 R"))}] /Count {tickets.Count} >>";
 
             return BuildPdf(objects);
         }

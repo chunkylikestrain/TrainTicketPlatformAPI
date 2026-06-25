@@ -98,6 +98,66 @@ namespace TrainTicketPlatformAPI.Tests
             await db.SaveChangesAsync();
         }
 
+        private static async Task SeedConfirmedOrderAsync(TrainTicketDbContext db)
+        {
+            await SeedConfirmedBookingAsync(db);
+
+            var train = await db.Trains.FindAsync(1)
+                ?? throw new InvalidOperationException("Seed train missing");
+            var trip = await db.Trips.FindAsync(1)
+                ?? throw new InvalidOperationException("Seed trip missing");
+            var seat = new Seat
+            {
+                Id = 2,
+                TrainId = train.Id,
+                Train = train,
+                Coach = "5",
+                Number = "43",
+                ClassType = "Class 2",
+                IsAvailable = true
+            };
+            var order = new BookingOrder
+            {
+                Id = 1,
+                OrderReference = "ORD-TEST-123",
+                GuestEmail = "guest@example.com",
+                CreatedAtUtc = DateTime.UtcNow,
+                BookingStatus = "Confirmed",
+                PaymentStatus = "Successful",
+                ConfirmedAtUtc = DateTime.UtcNow
+            };
+
+            var first = await db.Bookings.FindAsync(1)
+                ?? throw new InvalidOperationException("Seed booking missing");
+            first.BookingOrder = order;
+            first.BookingOrderId = order.Id;
+
+            db.Seats.Add(seat);
+            db.BookingOrders.Add(order);
+            db.Bookings.Add(new Booking
+            {
+                Id = 2,
+                TrainId = train.Id,
+                Train = train,
+                TripId = trip.Id,
+                Trip = trip,
+                SeatId = seat.Id,
+                Seat = seat,
+                BookingOrder = order,
+                BookingOrderId = order.Id,
+                BookingReference = "BKG-TEST-456",
+                TicketNumber = "WH2601015678",
+                GuestEmail = "guest@example.com",
+                PassengerName = "Second Passenger",
+                BookingDate = DateTime.UtcNow,
+                TravelDate = trip.DepartureTime.Date,
+                BookingStatus = "Confirmed",
+                PaymentStatus = "Successful",
+                ConfirmedAtUtc = DateTime.UtcNow
+            });
+            await db.SaveChangesAsync();
+        }
+
         [Test]
         public async Task GetTicketAsync_IssuesQrPayload_ForConfirmedBooking()
         {
@@ -125,6 +185,22 @@ namespace TrainTicketPlatformAPI.Tests
 
             Assert.That(svg, Does.Contain("<svg"));
             Assert.That(System.Text.Encoding.ASCII.GetString(pdf, 0, 8), Is.EqualTo("%PDF-1.4"));
+        }
+
+        [Test]
+        public async Task GetOrderTicketPdfAsync_ReturnsCombinedMultiPagePdf()
+        {
+            var db = NewDb("TicketArtifactOrderPdf");
+            await SeedConfirmedOrderAsync(db);
+            var service = new TicketArtifactService(db, NewConfiguration());
+
+            var pdf = await service.GetOrderTicketPdfAsync(1);
+            var text = System.Text.Encoding.ASCII.GetString(pdf);
+
+            Assert.That(text[..8], Is.EqualTo("%PDF-1.4"));
+            Assert.That(text, Does.Contain("/Count 2"));
+            Assert.That(text, Does.Contain("WH2601011234"));
+            Assert.That(text, Does.Contain("WH2601015678"));
         }
 
         [Test]
