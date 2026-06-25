@@ -160,6 +160,159 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
+        public async Task SearchItinerariesAsync_ReturnsDirectItineraryShape()
+        {
+            var db = NewDb("Trips_ItineraryDirect");
+            await SeedTripGraphAsync(db);
+            var svc = new TripService(db);
+
+            var results = (await svc.SearchItinerariesAsync(
+                "WAW",
+                "Krakow",
+                new DateTime(2026, 7, 1))).ToList();
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            Assert.That(results[0].TransferCount, Is.EqualTo(0));
+            Assert.That(results[0].LowestFare, Is.EqualTo(49.99m));
+            Assert.That(results[0].Segments.Count(), Is.EqualTo(1));
+            Assert.That(results[0].Segments.First().TripId, Is.EqualTo(1));
+            Assert.That(results[0].Segments.First().DepartureStationCode, Is.EqualTo("WAW"));
+            Assert.That(results[0].Segments.First().ArrivalStationCode, Is.EqualTo("KRK"));
+        }
+
+        [Test]
+        public async Task SearchItinerariesAsync_ReturnsOneTransferItinerary()
+        {
+            var db = NewDb("Trips_ItineraryTransfer");
+            await SeedTripGraphAsync(db);
+            var destination = new Station
+            {
+                Id = 4,
+                Code = "GDN",
+                Name = "Gdansk Glowny",
+                City = "Gdansk"
+            };
+            var transfer = await db.Stations.FindAsync(2)
+                ?? throw new InvalidOperationException("Transfer station missing");
+            var train = new Train
+            {
+                Id = 2,
+                Name = "IC 202",
+                DepartureStation = transfer.Name,
+                ArrivalStation = destination.Name,
+                DepartureTime = new DateTime(2026, 7, 1, 11, 30, 0),
+                ArrivalTime = new DateTime(2026, 7, 1, 15, 0, 0)
+            };
+            var route = new TrainRoute
+            {
+                Id = 2,
+                DepartureStationId = transfer.Id,
+                DepartureStation = transfer,
+                ArrivalStationId = destination.Id,
+                ArrivalStation = destination,
+                DistanceKm = 520m,
+                IsActive = true
+            };
+            var trip = new Trip
+            {
+                Id = 2,
+                TrainId = train.Id,
+                Train = train,
+                TrainRouteId = route.Id,
+                TrainRoute = route,
+                DepartureTime = train.DepartureTime,
+                ArrivalTime = train.ArrivalTime,
+                Status = "Scheduled"
+            };
+            db.Stations.Add(destination);
+            db.Trains.Add(train);
+            db.TrainRoutes.Add(route);
+            db.Trips.Add(trip);
+            db.Fares.Add(new Fare
+            {
+                Id = 3,
+                TripId = trip.Id,
+                Trip = trip,
+                ClassType = "Economy",
+                Price = 60m,
+                Currency = "USD"
+            });
+            await db.SaveChangesAsync();
+            var svc = new TripService(db);
+
+            var result = (await svc.SearchItinerariesAsync(
+                "WAW",
+                "Gdansk",
+                new DateTime(2026, 7, 1))).Single();
+
+            Assert.That(result.TransferCount, Is.EqualTo(1));
+            Assert.That(result.Segments.Count(), Is.EqualTo(2));
+            Assert.That(result.Segments.First().ArrivalStationCode, Is.EqualTo("KRK"));
+            Assert.That(result.Segments.Last().DepartureStationCode, Is.EqualTo("KRK"));
+            Assert.That(result.TotalTransferMinutes, Is.EqualTo(30));
+            Assert.That(result.LowestFare, Is.EqualTo(109.99m));
+        }
+
+        [Test]
+        public async Task SearchItinerariesAsync_ExcludesTooTightTransfers()
+        {
+            var db = NewDb("Trips_ItineraryTightTransfer");
+            await SeedTripGraphAsync(db);
+            var destination = new Station
+            {
+                Id = 4,
+                Code = "GDN",
+                Name = "Gdansk Glowny",
+                City = "Gdansk"
+            };
+            var transfer = await db.Stations.FindAsync(2)
+                ?? throw new InvalidOperationException("Transfer station missing");
+            var train = new Train
+            {
+                Id = 2,
+                Name = "IC 202",
+                DepartureStation = transfer.Name,
+                ArrivalStation = destination.Name,
+                DepartureTime = new DateTime(2026, 7, 1, 11, 5, 0),
+                ArrivalTime = new DateTime(2026, 7, 1, 15, 0, 0)
+            };
+            var route = new TrainRoute
+            {
+                Id = 2,
+                DepartureStationId = transfer.Id,
+                DepartureStation = transfer,
+                ArrivalStationId = destination.Id,
+                ArrivalStation = destination,
+                DistanceKm = 520m,
+                IsActive = true
+            };
+            var trip = new Trip
+            {
+                Id = 2,
+                TrainId = train.Id,
+                Train = train,
+                TrainRouteId = route.Id,
+                TrainRoute = route,
+                DepartureTime = train.DepartureTime,
+                ArrivalTime = train.ArrivalTime,
+                Status = "Scheduled"
+            };
+            db.Stations.Add(destination);
+            db.Trains.Add(train);
+            db.TrainRoutes.Add(route);
+            db.Trips.Add(trip);
+            await db.SaveChangesAsync();
+            var svc = new TripService(db);
+
+            var results = (await svc.SearchItinerariesAsync(
+                "WAW",
+                "Gdansk",
+                new DateTime(2026, 7, 1))).ToList();
+
+            Assert.That(results, Is.Empty);
+        }
+
+        [Test]
         public async Task SearchTripsAsync_ReturnsCallingPatternWithGeneratedStopTimes()
         {
             var db = NewDb("Trips_SearchCallingPattern");

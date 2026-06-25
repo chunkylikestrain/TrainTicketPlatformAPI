@@ -4,7 +4,7 @@ import axios from "axios";
 import { createBookingHold, createBookingOrderHold } from "../api/bookingApi";
 import { getTripById, getTripSeats } from "../api/tripApi";
 import CarriageSeatMap, { type CarriageTemplate } from "../components/CarriageSeatMap";
-import type { TripDetails, TripSeatAvailability } from "../types/trip";
+import type { TripDetails, TripItinerarySegment, TripSeatAvailability } from "../types/trip";
 import { getDiscountCodes, getPassengerCounts, getPassengerTotal } from "../utils/purchasePreferences";
 
 function formatDate(value?: string) {
@@ -30,6 +30,20 @@ function formatTime(value?: string) {
   }).format(new Date(value));
 }
 
+function decodeItinerarySegments(value: string | null): TripItinerarySegment[] {
+  if (!value) {
+    return [];
+  }
+
+  try {
+    const decoded = decodeURIComponent(window.atob(value));
+    const parsed = JSON.parse(decoded);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
 function SeatMapPage() {
   const { tripId = "" } = useParams();
   const navigate = useNavigate();
@@ -42,31 +56,51 @@ function SeatMapPage() {
   const passengerCounts = getPassengerCounts(searchParams);
   const passengerTotal = getPassengerTotal(passengerCounts);
   const discountCodes = getDiscountCodes(searchParams, passengerCounts);
+  const itinerarySegments = useMemo(
+    () => decodeItinerarySegments(searchParams.get("itinerarySegments")),
+    [searchParams],
+  );
+  const isItineraryMode = itinerarySegments.length > 1;
+  const segmentCount = isItineraryMode ? itinerarySegments.length : 1;
+  const [activeSegmentIndex, setActiveSegmentIndex] = useState(0);
+  const activeItinerarySegment = isItineraryMode ? itinerarySegments[activeSegmentIndex] : null;
+  const activeTripId = activeItinerarySegment ? String(activeItinerarySegment.tripId) : tripId;
+  const activeFromStationId = activeItinerarySegment ? String(activeItinerarySegment.departureStationId) : fromStationId;
+  const activeToStationId = activeItinerarySegment ? String(activeItinerarySegment.arrivalStationId) : toStationId;
+  const activeDepartureName = activeItinerarySegment?.departureStationName ?? segmentDepartureName;
+  const activeArrivalName = activeItinerarySegment?.arrivalStationName ?? segmentArrivalName;
+  const segmentSignature = isItineraryMode
+    ? itinerarySegments.map((segment) => `${segment.tripId}:${segment.departureStationId}:${segment.arrivalStationId}`).join("|")
+    : "direct";
   const [trip, setTrip] = useState<TripDetails | null>(null);
   const [seats, setSeats] = useState<TripSeatAvailability[]>([]);
   const [activeCoach, setActiveCoach] = useState("");
   const [activePassengerIndex, setActivePassengerIndex] = useState(0);
-  const [selectedSeats, setSelectedSeats] = useState<Array<TripSeatAvailability | null>>(() =>
-    Array.from({ length: passengerTotal }, () => null),
+  const [selectedSeatsBySegment, setSelectedSeatsBySegment] = useState<Array<Array<TripSeatAvailability | null>>>(() =>
+    [Array.from({ length: passengerTotal }, () => null)],
   );
+  const [itineraryCompletionMessage, setItineraryCompletionMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isCreatingHold, setIsCreatingHold] = useState(false);
   const [error, setError] = useState("");
+  const selectedSeats = selectedSeatsBySegment[activeSegmentIndex] ?? [];
   const selectedSeat = selectedSeats[activePassengerIndex] ?? null;
-  const allPassengersHaveSeats = selectedSeats.every(Boolean);
+  const allPassengersHaveSeats = selectedSeats.length === passengerTotal && selectedSeats.every(Boolean);
+  const allItinerarySeatsHaveSeats = selectedSeatsBySegment.length === segmentCount
+    && selectedSeatsBySegment.every((segmentSeats) => segmentSeats.length === passengerTotal && segmentSeats.every(Boolean));
   const usedSeatIds = selectedSeats
     .map((seat, index) => (index === activePassengerIndex ? null : seat?.seatId))
     .filter((seatId): seatId is number => Boolean(seatId));
 
   useEffect(() => {
-    if (!tripId) {
+    if (!activeTripId) {
       return;
     }
 
     setIsLoading(true);
     setError("");
 
-    Promise.all([getTripById(tripId), getTripSeats(tripId, { fromStationId, toStationId })])
+    Promise.all([getTripById(activeTripId), getTripSeats(activeTripId, { fromStationId: activeFromStationId, toStationId: activeToStationId })])
       .then(([tripDetails, seatList]) => {
         setTrip(tripDetails);
         setSeats(seatList);
@@ -75,7 +109,7 @@ function SeatMapPage() {
         setError("Could not load live seat availability. Check that the API is running and the trip exists.");
       })
       .finally(() => setIsLoading(false));
-  }, [fromStationId, toStationId, tripId]);
+  }, [activeFromStationId, activeToStationId, activeTripId]);
 
   const coachOptions = useMemo(() => {
     return [...new Set(seats.map((seat) => seat.coach))].sort((first, second) => {
@@ -109,20 +143,33 @@ function SeatMapPage() {
   flowParams.set("class", selectedClass);
 
   useEffect(() => {
-    setSelectedSeats((current) => {
-      const next = current.slice(0, passengerTotal);
-      while (next.length < passengerTotal) {
-        next.push(null);
-      }
-      return next;
+    setSelectedSeatsBySegment((current) => {
+      return Array.from({ length: segmentCount }, (_, segmentIndex) => {
+        const row = (current[segmentIndex] ?? []).slice(0, passengerTotal);
+        while (row.length < passengerTotal) {
+          row.push(null);
+        }
+        return row;
+      });
     });
+    setActiveSegmentIndex((current) => Math.min(current, segmentCount - 1));
     setActivePassengerIndex((current) => Math.min(current, passengerTotal - 1));
-  }, [passengerTotal]);
+    setItineraryCompletionMessage("");
+  }, [passengerTotal, segmentCount, segmentSignature]);
 
   function handleSelectSeat(seat: TripSeatAvailability) {
-    setSelectedSeats((current) => current.map((item, index) => (index === activePassengerIndex ? seat : item)));
+    setItineraryCompletionMessage("");
+    let nextMissingIndex = -1;
 
-    const nextMissingIndex = selectedSeats.findIndex((item, index) => index !== activePassengerIndex && !item);
+    setSelectedSeatsBySegment((current) => {
+      const next = current.map((segmentSeats) => segmentSeats.slice());
+      const row = next[activeSegmentIndex] ?? Array.from({ length: passengerTotal }, () => null);
+      row[activePassengerIndex] = seat;
+      next[activeSegmentIndex] = row;
+      nextMissingIndex = row.findIndex((item, index) => index !== activePassengerIndex && !item);
+      return next;
+    });
+
     if (nextMissingIndex >= 0) {
       setActivePassengerIndex(nextMissingIndex);
     }
@@ -130,6 +177,88 @@ function SeatMapPage() {
 
   async function handleConfirmSeat() {
     if (!trip || !allPassengersHaveSeats) {
+      return;
+    }
+
+    if (isItineraryMode) {
+      if (activeSegmentIndex < segmentCount - 1) {
+        setActiveSegmentIndex((current) => current + 1);
+        setActivePassengerIndex(0);
+        setItineraryCompletionMessage("");
+        return;
+      }
+
+      const firstIncompleteSegmentIndex = selectedSeatsBySegment.findIndex((segmentSeats) =>
+        segmentSeats.length !== passengerTotal || segmentSeats.some((seat) => !seat),
+      );
+
+      if (firstIncompleteSegmentIndex >= 0) {
+        setActiveSegmentIndex(firstIncompleteSegmentIndex);
+        setActivePassengerIndex(0);
+        setItineraryCompletionMessage(`Complete segment ${firstIncompleteSegmentIndex + 1} before finishing the itinerary.`);
+        return;
+      }
+
+      if (allItinerarySeatsHaveSeats) {
+        setIsCreatingHold(true);
+        setError("");
+
+        try {
+          const order = await createBookingOrderHold({
+            trainId: itinerarySegments[0].trainId,
+            tripId: itinerarySegments[0].tripId,
+            travelDate: itinerarySegments[0].departureTime,
+            itineraryId: searchParams.get("itineraryId") ?? undefined,
+            passengers: [],
+            segments: itinerarySegments.map((segment, segmentIndex) => ({
+              segmentIndex,
+              trainId: segment.trainId,
+              tripId: segment.tripId,
+              segmentDepartureStationId: segment.departureStationId,
+              segmentArrivalStationId: segment.arrivalStationId,
+              travelDate: segment.departureTime,
+              passengers: (selectedSeatsBySegment[segmentIndex] ?? []).map((seat, passengerIndex) => ({
+                seatId: seat?.seatId ?? 0,
+                passengerName: `Passenger ${passengerIndex + 1}`,
+                passengerType: passengerIndex < passengerCounts.adults ? "Adult" : "Child",
+                discountCode: discountCodes[passengerIndex],
+              })),
+            })),
+          });
+
+          const params = new URLSearchParams(flowParams);
+          const allSelectedSeats = selectedSeatsBySegment.flat();
+          params.set("orderId", String(order.id));
+          params.set("bookingIds", order.bookings.map((booking) => String(booking.id)).join(","));
+          params.set("seats", allSelectedSeats.map((seat) => `${seat?.coach}-${seat?.number}`).join(","));
+          params.set("amount", String(order.amount));
+          params.set("currency", order.bookings[0]?.currency || "PLN");
+          params.set("fromStationId", String(itinerarySegments[0].departureStationId));
+          params.set("toStationId", String(itinerarySegments[itinerarySegments.length - 1].arrivalStationId));
+          params.set("fromStation", itinerarySegments[0].departureStationName);
+          params.set("toStation", itinerarySegments[itinerarySegments.length - 1].arrivalStationName);
+          params.delete("bookingId");
+
+          const firstSeat = allSelectedSeats[0];
+          if (firstSeat) {
+            params.set("car", firstSeat.coach);
+            params.set("seat", firstSeat.number);
+          }
+
+          navigate(`/summary/${itinerarySegments[0].tripId}?${params.toString()}`);
+        } catch (reserveError) {
+          const message = getReservationErrorMessage(reserveError);
+          setError(message);
+
+          if (message.toLowerCase().includes("seat")) {
+            getTripSeats(activeTripId, { fromStationId: activeFromStationId, toStationId: activeToStationId })
+              .then(setSeats)
+              .catch(() => undefined);
+          }
+        } finally {
+          setIsCreatingHold(false);
+        }
+      }
       return;
     }
 
@@ -202,8 +331,14 @@ function SeatMapPage() {
       setError(message);
 
       if (message.toLowerCase().includes("seat")) {
-        setSelectedSeats((current) => current.map((seat, index) => (index === activePassengerIndex ? null : seat)));
-        getTripSeats(tripId, { fromStationId, toStationId }).then(setSeats).catch(() => undefined);
+        setSelectedSeatsBySegment((current) =>
+          current.map((segmentSeats, segmentIndex) =>
+            segmentIndex === activeSegmentIndex
+              ? segmentSeats.map((seat, index) => (index === activePassengerIndex ? null : seat))
+              : segmentSeats,
+          ),
+        );
+        getTripSeats(activeTripId, { fromStationId: activeFromStationId, toStationId: activeToStationId }).then(setSeats).catch(() => undefined);
       }
     } finally {
       setIsCreatingHold(false);
@@ -235,14 +370,43 @@ function SeatMapPage() {
         </div>
 
         <section className="seat-trip-meta">
-          <strong>{trip?.trainName ?? "Train"}</strong>
-          <span>{formatDate(trip?.departureTime)}</span>
-          <span>{formatTime(trip?.departureTime)} &gt; {formatTime(trip?.arrivalTime)}</span>
+          <strong>{activeItinerarySegment?.trainName ?? trip?.trainName ?? "Train"}</strong>
+          <span>{formatDate(activeItinerarySegment?.departureTime ?? trip?.departureTime)}</span>
+          <span>{formatTime(activeItinerarySegment?.departureTime ?? trip?.departureTime)} &gt; {formatTime(activeItinerarySegment?.arrivalTime ?? trip?.arrivalTime)}</span>
           <span>
-            {segmentDepartureName ?? trip?.departureStationName ?? "Departure"} &gt;{" "}
-            {segmentArrivalName ?? trip?.arrivalStationName ?? "Arrival"}
+            {activeDepartureName ?? trip?.departureStationName ?? "Departure"} &gt;{" "}
+            {activeArrivalName ?? trip?.arrivalStationName ?? "Arrival"}
           </span>
         </section>
+
+        {isItineraryMode && (
+          <section className="itinerary-segment-strip" aria-label="Itinerary segments">
+            {itinerarySegments.map((segment, index) => {
+              const segmentSeats = selectedSeatsBySegment[index] ?? [];
+              const isComplete = segmentSeats.length === passengerTotal && segmentSeats.every(Boolean);
+              return (
+                <button
+                  type="button"
+                  className={[
+                    "itinerary-segment-tab",
+                    index === activeSegmentIndex ? "itinerary-segment-tab-active" : "",
+                    isComplete ? "itinerary-segment-tab-complete" : "",
+                  ].join(" ")}
+                  onClick={() => {
+                    setActiveSegmentIndex(index);
+                    setActivePassengerIndex(0);
+                    setItineraryCompletionMessage("");
+                  }}
+                  key={`${segment.tripId}-${segment.departureStationId}-${segment.arrivalStationId}`}
+                >
+                  <strong>Segment {index + 1}</strong>
+                  <span>{segment.departureStationName} -&gt; {segment.arrivalStationName}</span>
+                  <small>{formatTime(segment.departureTime)} - {formatTime(segment.arrivalTime)}</small>
+                </button>
+              );
+            })}
+          </section>
+        )}
 
         <section className="car-strip" aria-label="Train cars">
           <div className="train-direction">
@@ -319,15 +483,19 @@ function SeatMapPage() {
               onClick={() => setActivePassengerIndex(index)}
               key={`passenger-${index}`}
             >
-              <strong>Passenger {index + 1}</strong>
+              <strong>{isItineraryMode ? `Segment ${activeSegmentIndex + 1}, passenger ${index + 1}` : `Passenger ${index + 1}`}</strong>
               <span>{seat ? `Class ${selectedClass}, car ${seat.coach}, seat ${seat.number}` : "Choose seat"}</span>
             </button>
           ))}
         </section>
 
         <div className="seat-map-notice">
-          Choose {passengerTotal} {passengerTotal === 1 ? "seat" : "seats"} to activate the confirm your choice button
+          {isItineraryMode
+            ? `Choose ${passengerTotal} ${passengerTotal === 1 ? "seat" : "seats"} for segment ${activeSegmentIndex + 1} of ${segmentCount}.`
+            : `Choose ${passengerTotal} ${passengerTotal === 1 ? "seat" : "seats"} to activate the confirm your choice button`}
         </div>
+
+        {itineraryCompletionMessage && <div className="seat-map-notice seat-map-success">{itineraryCompletionMessage}</div>}
 
         <button
           className={`seat-confirm ${allPassengersHaveSeats ? "seat-confirm-active" : ""}`}
@@ -335,7 +503,13 @@ function SeatMapPage() {
           disabled={!allPassengersHaveSeats || isCreatingHold}
           onClick={handleConfirmSeat}
         >
-          {isCreatingHold ? "Reserving..." : "I confirm my choice"}
+          {isCreatingHold
+            ? "Reserving..."
+            : isItineraryMode && activeSegmentIndex < segmentCount - 1
+              ? `Confirm segment ${activeSegmentIndex + 1}`
+              : isItineraryMode
+                ? "Confirm all segment seats"
+                : "I confirm my choice"}
         </button>
       </section>
     </main>

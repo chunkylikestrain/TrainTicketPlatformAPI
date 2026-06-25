@@ -35,6 +35,25 @@ namespace TrainTicketPlatformAPI.Controllers
             }
         }
 
+        // GET: api/Trips/itineraries?from=WAW&to=GDN&date=2026-07-01
+        [AllowAnonymous]
+        [HttpGet("itineraries")]
+        public async Task<ActionResult<IEnumerable<TripItinerarySearchResultDto>>> SearchItineraries(
+            [FromQuery] string from,
+            [FromQuery] string to,
+            [FromQuery] DateTime date)
+        {
+            try
+            {
+                var itineraries = await _tripService.SearchItinerariesAsync(from, to, date);
+                return Ok(itineraries);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         // GET: api/Trips/5
         [AllowAnonymous]
         [HttpGet("{id}")]

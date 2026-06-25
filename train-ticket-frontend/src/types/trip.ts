@@ -34,6 +34,45 @@ export type TripSearchResult = {
   callingPattern: TripCallingPatternStop[];
 };
 
+export type TripItinerarySearchResult = {
+  itineraryId: string;
+  transferCount: number;
+  departureTime: string;
+  arrivalTime: string;
+  totalDurationMinutes: number;
+  totalTransferMinutes: number;
+  lowestFare: number | null;
+  currency: string;
+  segments: TripItinerarySegment[];
+};
+
+export type TripItinerarySegment = {
+  segmentIndex: number;
+  tripId: number;
+  trainId: number;
+  trainName: string;
+  departureStationId: number;
+  departureStationCode: string;
+  departureStationName: string;
+  arrivalStationId: number;
+  arrivalStationCode: string;
+  arrivalStationName: string;
+  departureStopOrder: number;
+  arrivalStopOrder: number;
+  departureTime: string;
+  arrivalTime: string;
+  durationMinutes: number;
+  transferAfterMinutes: number;
+  platform: string;
+  track: string;
+  status: string;
+  delayMinutes: number;
+  hasDisruption: boolean;
+  lowestFare: number | null;
+  currency: string;
+  callingPattern: TripCallingPatternStop[];
+};
+
 export type TripCallingPatternStop = {
   stationId: number;
   stationCode: string;

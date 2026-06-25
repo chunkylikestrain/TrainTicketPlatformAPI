@@ -7,6 +7,11 @@ namespace TrainTicketPlatformAPI.Services
 {
     public class TripService : ITripService
     {
+        private static readonly TimeSpan MinimumTransferTime = TimeSpan.FromMinutes(10);
+        private static readonly TimeSpan MaximumTransferTime = TimeSpan.FromHours(3);
+        private const int MaximumItinerarySegments = 3;
+        private const int MaximumItineraryResults = 60;
+
         private readonly TrainTicketDbContext _db;
 
         public TripService(TrainTicketDbContext db)
@@ -51,6 +56,63 @@ namespace TrainTicketPlatformAPI.Services
                 .Where(result => result != null)
                 .Select(result => result!)
                 .OrderBy(result => result.DepartureTime);
+        }
+
+        public async Task<IEnumerable<TripItinerarySearchResultDto>> SearchItinerariesAsync(
+            string from,
+            string to,
+            DateTime date)
+        {
+            if (string.IsNullOrWhiteSpace(from) || string.IsNullOrWhiteSpace(to))
+                throw new InvalidOperationException("Both departure and arrival stations are required");
+
+            var departure = TripSegmentResolver.NormalizeSearchText(from);
+            var arrival = TripSegmentResolver.NormalizeSearchText(to);
+            var travelDate = date.Date;
+
+            var trips = await _db.Trips
+                .AsNoTracking()
+                .Include(t => t.Train)
+                .Include(t => t.TrainRoute)
+                    .ThenInclude(r => r.DepartureStation)
+                        .ThenInclude(s => s.Locality)
+                .Include(t => t.TrainRoute)
+                    .ThenInclude(r => r.ArrivalStation)
+                        .ThenInclude(s => s.Locality)
+                .Include(t => t.TrainRoute)
+                    .ThenInclude(r => r.RouteStops)
+                        .ThenInclude(s => s.Station)
+                            .ThenInclude(s => s.Locality)
+                .Include(t => t.Fares)
+                .Where(t =>
+                    t.TrainRoute.IsActive &&
+                    t.DepartureTime.Date == travelDate)
+                .OrderBy(t => t.DepartureTime)
+                .ToListAsync();
+
+            var candidates = trips
+                .SelectMany(BuildSegmentCandidates)
+                .OrderBy(segment => segment.DepartureTime)
+                .ThenBy(segment => segment.ArrivalTime)
+                .ToList();
+
+            var startSegments = candidates
+                .Where(segment => TripSegmentResolver.StationMatches(segment.DepartureStation, departure))
+                .ToList();
+            var itineraries = new List<List<ItinerarySegmentCandidate>>();
+
+            foreach (var start in startSegments)
+                BuildItineraryPaths(start, candidates, arrival, [start], itineraries);
+
+            return itineraries
+                .Select(ToItineraryDto)
+                .GroupBy(itinerary => itinerary.ItineraryId)
+                .Select(group => group.First())
+                .OrderBy(itinerary => itinerary.DepartureTime)
+                .ThenBy(itinerary => itinerary.ArrivalTime)
+                .ThenBy(itinerary => itinerary.TransferCount)
+                .Take(MaximumItineraryResults)
+                .ToList();
         }
 
         public async Task<TripDetailsDto> GetTripByIdAsync(int tripId)
@@ -249,6 +311,130 @@ namespace TrainTicketPlatformAPI.Services
             return result;
         }
 
+        private static IEnumerable<ItinerarySegmentCandidate> BuildSegmentCandidates(Trip trip)
+        {
+            var routeStations = TripSegmentResolver.BuildOrderedRouteStations(trip.TrainRoute);
+            var callingPattern = TripTimetablePlanner.Build(trip);
+
+            for (var departureIndex = 0; departureIndex < routeStations.Count - 1; departureIndex++)
+            {
+                var departureStop = routeStations[departureIndex];
+                var plannedDeparture = callingPattern.Single(stop => stop.StopOrder == departureStop.Order);
+                var departureTime = plannedDeparture.DepartureTime ?? plannedDeparture.ArrivalTime ?? trip.DepartureTime;
+
+                for (var arrivalIndex = departureIndex + 1; arrivalIndex < routeStations.Count; arrivalIndex++)
+                {
+                    var arrivalStop = routeStations[arrivalIndex];
+                    var plannedArrival = callingPattern.Single(stop => stop.StopOrder == arrivalStop.Order);
+                    var arrivalTime = plannedArrival.ArrivalTime ?? plannedArrival.DepartureTime ?? trip.ArrivalTime;
+                    if (arrivalTime <= departureTime)
+                        continue;
+
+                    yield return new ItinerarySegmentCandidate(
+                        trip,
+                        departureStop.Station,
+                        arrivalStop.Station,
+                        departureStop.Order,
+                        arrivalStop.Order,
+                        departureTime,
+                        arrivalTime,
+                        TripTimetablePlanner.ToDto(callingPattern, departureStop.Order, arrivalStop.Order).ToList());
+                }
+            }
+        }
+
+        private static void BuildItineraryPaths(
+            ItinerarySegmentCandidate current,
+            IReadOnlyList<ItinerarySegmentCandidate> candidates,
+            string destination,
+            List<ItinerarySegmentCandidate> path,
+            List<List<ItinerarySegmentCandidate>> results)
+        {
+            if (TripSegmentResolver.StationMatches(current.ArrivalStation, destination))
+            {
+                results.Add([.. path]);
+                return;
+            }
+
+            if (path.Count >= MaximumItinerarySegments)
+                return;
+
+            var nextSegments = candidates.Where(next =>
+                next.DepartureStation.Id == current.ArrivalStation.Id &&
+                !path.Any(segment => segment.Trip.Id == next.Trip.Id) &&
+                !path.Any(segment => segment.DepartureStation.Id == next.ArrivalStation.Id) &&
+                next.DepartureTime - current.ArrivalTime >= MinimumTransferTime &&
+                next.DepartureTime - current.ArrivalTime <= MaximumTransferTime);
+
+            foreach (var next in nextSegments)
+            {
+                path.Add(next);
+                BuildItineraryPaths(next, candidates, destination, path, results);
+                path.RemoveAt(path.Count - 1);
+            }
+        }
+
+        private static TripItinerarySearchResultDto ToItineraryDto(IReadOnlyList<ItinerarySegmentCandidate> path)
+        {
+            var first = path.First();
+            var last = path.Last();
+            var fare = path
+                .Select(segment => segment.LowestFare)
+                .Where(value => value != null)
+                .Sum(value => value!.Price);
+            var currency = path.Select(segment => segment.LowestFare?.Currency)
+                .FirstOrDefault(value => !string.IsNullOrWhiteSpace(value)) ?? string.Empty;
+
+            var segments = path.Select((segment, index) =>
+            {
+                var transferAfterMinutes = index < path.Count - 1
+                    ? (int)Math.Round((path[index + 1].DepartureTime - segment.ArrivalTime).TotalMinutes)
+                    : 0;
+
+                return new TripItinerarySegmentDto
+                {
+                    SegmentIndex = index,
+                    TripId = segment.Trip.Id,
+                    TrainId = segment.Trip.TrainId,
+                    TrainName = segment.Trip.Train.Name,
+                    DepartureStationId = segment.DepartureStation.Id,
+                    DepartureStationCode = segment.DepartureStation.Code,
+                    DepartureStationName = segment.DepartureStation.Name,
+                    ArrivalStationId = segment.ArrivalStation.Id,
+                    ArrivalStationCode = segment.ArrivalStation.Code,
+                    ArrivalStationName = segment.ArrivalStation.Name,
+                    DepartureStopOrder = segment.DepartureStopOrder,
+                    ArrivalStopOrder = segment.ArrivalStopOrder,
+                    DepartureTime = segment.DepartureTime,
+                    ArrivalTime = segment.ArrivalTime,
+                    DurationMinutes = (int)Math.Round((segment.ArrivalTime - segment.DepartureTime).TotalMinutes),
+                    TransferAfterMinutes = transferAfterMinutes,
+                    Platform = segment.Trip.Platform,
+                    Track = segment.Trip.Track,
+                    Status = segment.Trip.Status,
+                    DelayMinutes = segment.Trip.DelayMinutes,
+                    HasDisruption = HasDisruption(segment.Trip),
+                    LowestFare = segment.LowestFare?.Price,
+                    Currency = segment.LowestFare?.Currency ?? string.Empty,
+                    CallingPattern = segment.CallingPattern
+                };
+            }).ToList();
+
+            return new TripItinerarySearchResultDto
+            {
+                ItineraryId = string.Join("_", path.Select(segment =>
+                    $"{segment.Trip.Id}-{segment.DepartureStation.Id}-{segment.ArrivalStation.Id}")),
+                TransferCount = path.Count - 1,
+                DepartureTime = first.DepartureTime,
+                ArrivalTime = last.ArrivalTime,
+                TotalDurationMinutes = (int)Math.Round((last.ArrivalTime - first.DepartureTime).TotalMinutes),
+                TotalTransferMinutes = segments.Sum(segment => segment.TransferAfterMinutes),
+                LowestFare = path.All(segment => segment.LowestFare != null) ? fare : null,
+                Currency = currency,
+                Segments = segments
+            };
+        }
+
         private static TripDetailsDto ToDetails(Trip trip)
         {
             var routeStops = TripSegmentResolver.BuildOrderedRouteStations(trip.TrainRoute);
@@ -353,6 +539,19 @@ namespace TrainTicketPlatformAPI.Services
             }
 
             return string.Empty;
+        }
+
+        private sealed record ItinerarySegmentCandidate(
+            Trip Trip,
+            Station DepartureStation,
+            Station ArrivalStation,
+            int DepartureStopOrder,
+            int ArrivalStopOrder,
+            DateTime DepartureTime,
+            DateTime ArrivalTime,
+            IReadOnlyList<TripCallingPatternStopDto> CallingPattern)
+        {
+            public Fare? LowestFare => Trip.Fares.OrderBy(fare => fare.Price).FirstOrDefault();
         }
     }
 }

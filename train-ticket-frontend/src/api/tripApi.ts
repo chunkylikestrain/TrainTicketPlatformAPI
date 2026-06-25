@@ -1,8 +1,26 @@
 import apiClient from "./apiClient";
-import type { TripDetails, TripSearchParams, TripSearchResult, TripSeatAvailability } from "../types/trip";
+import type {
+  TripDetails,
+  TripItinerarySearchResult,
+  TripSearchParams,
+  TripSearchResult,
+  TripSeatAvailability,
+} from "../types/trip";
 
 export async function searchTrips(params: TripSearchParams) {
   const response = await apiClient.get<TripSearchResult[]>("/Trips/search", {
+    params: {
+      from: params.departureStation,
+      to: params.arrivalStation,
+      date: params.date,
+    },
+  });
+
+  return response.data;
+}
+
+export async function searchItineraries(params: TripSearchParams) {
+  const response = await apiClient.get<TripItinerarySearchResult[]>("/Trips/itineraries", {
     params: {
       from: params.departureStation,
       to: params.arrivalStation,

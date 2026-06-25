@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import TripCard from "../components/TripCard";
-import { searchTrips } from "../api/tripApi";
-import type { TripSearchResult } from "../types/trip";
+import ItineraryCard from "../components/ItineraryCard";
+import { searchItineraries } from "../api/tripApi";
+import type { TripItinerarySearchResult } from "../types/trip";
 import {
   buildFilterSelectionUrl,
   copyPurchasePreferenceParams,
@@ -35,10 +35,10 @@ function formatNoticeDate(value: string) {
 
 function SearchResultsPage() {
   const [searchParams] = useSearchParams();
-  const [trips, setTrips] = useState<TripSearchResult[]>([]);
+  const [itineraries, setItineraries] = useState<TripItinerarySearchResult[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [expandedTripId, setExpandedTripId] = useState<number | null>(null);
+  const [expandedItineraryId, setExpandedItineraryId] = useState<string | null>(null);
 
   const departureStation = searchParams.get("departureStation") ?? "";
   const arrivalStation = searchParams.get("arrivalStation") ?? "";
@@ -58,10 +58,10 @@ function SearchResultsPage() {
     setIsLoading(true);
     setError("");
 
-    searchTrips({ departureStation, arrivalStation, date })
-      .then(setTrips)
+    searchItineraries({ departureStation, arrivalStation, date })
+      .then(setItineraries)
       .catch(() => {
-        setTrips([]);
+        setItineraries([]);
         setError("Connections could not be loaded from the API. Check that the backend is running and your search date has schedules.");
       })
       .finally(() => setIsLoading(false));
@@ -106,7 +106,7 @@ function SearchResultsPage() {
           <button type="button">Sat, 20 June &gt;</button>
         </div>
 
-        {(isLoading || error || trips.length === 0) && (
+        {(isLoading || error || itineraries.length === 0) && (
           <div className={`connection-notice ${error ? "connection-notice-warning" : ""}`} aria-live="polite">
             <strong>
               {isLoading
@@ -125,14 +125,16 @@ function SearchResultsPage() {
         </button>
 
         <section className="connection-list" aria-label="Available connections">
-          {trips.map((trip, index) => (
-            <TripCard
-              trip={trip}
-              key={trip.tripId}
+          {itineraries.map((itinerary, index) => (
+            <ItineraryCard
+              itinerary={itinerary}
+              key={itinerary.itineraryId}
               rank={index}
-              isExpanded={expandedTripId === trip.tripId}
+              isExpanded={expandedItineraryId === itinerary.itineraryId}
               purchaseQuery={purchaseQuery}
-              onSelect={() => setExpandedTripId(expandedTripId === trip.tripId ? null : trip.tripId)}
+              onSelect={() => setExpandedItineraryId(
+                expandedItineraryId === itinerary.itineraryId ? null : itinerary.itineraryId,
+              )}
             />
           ))}
         </section>

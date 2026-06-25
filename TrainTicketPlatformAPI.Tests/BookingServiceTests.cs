@@ -571,6 +571,109 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
+        public async Task CreateBookingOrderAsync_CreatesItineraryOrderAcrossTrips()
+        {
+            var db = NewDb("BookingOrderCreatesItineraryAcrossTrips");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            SeedSeat(db, 2, true);
+            SeedTripRoute(db);
+            var departure = DateTime.UtcNow.Date.AddDays(3).AddHours(8);
+            db.Trips.AddRange(
+                new Trip
+                {
+                    Id = 10,
+                    TrainId = 1,
+                    TrainRouteId = 1,
+                    DepartureTime = departure,
+                    ArrivalTime = departure.AddHours(2),
+                    Status = "Scheduled"
+                },
+                new Trip
+                {
+                    Id = 11,
+                    TrainId = 1,
+                    TrainRouteId = 1,
+                    DepartureTime = departure.AddHours(3),
+                    ArrivalTime = departure.AddHours(5),
+                    Status = "Scheduled"
+                });
+            await db.SaveChangesAsync();
+
+            var svc = new BookingService(db);
+            var order = await svc.CreateBookingOrderAsync(
+                new BookingOrder
+                {
+                    UserId = 42,
+                    ItineraryId = "iti-test",
+                    IsItinerary = true,
+                    SegmentCount = 2
+                },
+                new[]
+                {
+                    new Booking { TrainId = 1, TripId = 10, SeatId = 1, PassengerName = "Passenger One" },
+                    new Booking { TrainId = 1, TripId = 11, SeatId = 2, PassengerName = "Passenger One" }
+                });
+
+            Assert.That(order.IsItinerary, Is.True);
+            Assert.That(order.ItineraryId, Is.EqualTo("iti-test"));
+            Assert.That(order.SegmentCount, Is.EqualTo(2));
+            Assert.That(order.Bookings.Select(booking => booking.TripId), Is.EquivalentTo(new[] { 10, 11 }));
+            Assert.That(order.JourneyDepartureTime, Is.EqualTo(departure));
+            Assert.That(order.JourneyArrivalTime, Is.EqualTo(departure.AddHours(5)));
+        }
+
+        [Test]
+        public async Task CreateBookingOrderAsync_AllowsSameSeatOnNonOverlappingSegments()
+        {
+            var db = NewDb("BookingOrderAllowsSameSeatOnNonOverlappingSegments");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            SeedSegmentTripRoute(db);
+            var departure = DateTime.UtcNow.Date.AddDays(3).AddHours(8);
+            db.Trips.Add(new Trip
+            {
+                Id = 10,
+                TrainId = 1,
+                TrainRouteId = 1,
+                DepartureTime = departure,
+                ArrivalTime = departure.AddHours(2),
+                Status = "Scheduled"
+            });
+            await db.SaveChangesAsync();
+
+            var svc = new BookingService(db);
+            var order = await svc.CreateBookingOrderAsync(
+                new BookingOrder { UserId = 42, SegmentCount = 2 },
+                new[]
+                {
+                    new Booking
+                    {
+                        TrainId = 1,
+                        TripId = 10,
+                        SeatId = 1,
+                        SegmentDepartureStationId = 1,
+                        SegmentArrivalStationId = 2,
+                        PassengerName = "First Segment Passenger"
+                    },
+                    new Booking
+                    {
+                        TrainId = 1,
+                        TripId = 10,
+                        SeatId = 1,
+                        SegmentDepartureStationId = 2,
+                        SegmentArrivalStationId = 3,
+                        PassengerName = "Second Segment Passenger"
+                    }
+                });
+
+            Assert.That(order.Bookings.Count, Is.EqualTo(2));
+            Assert.That(order.Bookings.Select(booking => booking.SeatId), Is.All.EqualTo(1));
+            Assert.That(order.Bookings.Select(booking => booking.SegmentDepartureOrder), Is.EquivalentTo(new[] { 0, 1 }));
+            Assert.That(order.Bookings.Select(booking => booking.SegmentArrivalOrder), Is.EquivalentTo(new[] { 1, 2 }));
+        }
+
+        [Test]
         public void CreateBookingOrderAsync_Throws_WhenSeatRepeatedInsideOrder()
         {
             var db = NewDb("BookingOrderBlocksDuplicateSeat");

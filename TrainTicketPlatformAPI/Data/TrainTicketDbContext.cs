@@ -267,8 +267,15 @@ namespace TrainTicketPlatformAPI.Data
                 .HasIndex(o => o.GuestEmail);
 
             modelBuilder.Entity<BookingOrder>()
+                .HasIndex(o => o.ItineraryId);
+
+            modelBuilder.Entity<BookingOrder>()
                 .Property(o => o.OrderReference)
                 .HasMaxLength(40);
+
+            modelBuilder.Entity<BookingOrder>()
+                .Property(o => o.ItineraryId)
+                .HasMaxLength(120);
 
             modelBuilder.Entity<BookingOrder>()
                 .Property(o => o.GuestEmail)
@@ -283,6 +290,10 @@ namespace TrainTicketPlatformAPI.Data
                 .Property(o => o.PaymentStatus)
                 .HasMaxLength(32)
                 .HasDefaultValue("Pending");
+
+            modelBuilder.Entity<BookingOrder>()
+                .Property(o => o.SegmentCount)
+                .HasDefaultValue(1);
 
             modelBuilder.Entity<BookingOrder>()
                 .ToTable(t =>

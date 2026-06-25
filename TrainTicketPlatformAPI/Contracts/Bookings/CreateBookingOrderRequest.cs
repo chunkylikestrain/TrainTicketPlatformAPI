@@ -19,6 +19,30 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         [EmailAddress]
         public string? GuestEmail { get; set; }
 
+        [StringLength(120)]
+        public string? ItineraryId { get; set; }
+
+        public List<CreateBookingOrderSegmentRequest> Segments { get; set; } = [];
+
+        public List<CreateBookingOrderPassengerRequest> Passengers { get; set; } = [];
+    }
+
+    public class CreateBookingOrderSegmentRequest
+    {
+        public int SegmentIndex { get; set; }
+
+        [Required]
+        public int TrainId { get; set; }
+
+        [Required]
+        public int TripId { get; set; }
+
+        public int? SegmentDepartureStationId { get; set; }
+
+        public int? SegmentArrivalStationId { get; set; }
+
+        public DateTime? TravelDate { get; set; }
+
         [MinLength(1)]
         public List<CreateBookingOrderPassengerRequest> Passengers { get; set; } = [];
     }

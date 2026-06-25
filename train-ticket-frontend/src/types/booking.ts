@@ -58,6 +58,13 @@ export type BookingOrder = {
   id: number;
   userId: number | null;
   orderReference: string;
+  itineraryId: string | null;
+  isItinerary: boolean;
+  segmentCount: number;
+  journeyDepartureStationId: number | null;
+  journeyArrivalStationId: number | null;
+  journeyDepartureTime: string | null;
+  journeyArrivalTime: string | null;
   guestEmail: string | null;
   createdAtUtc: string;
   expiresAtUtc: string | null;
@@ -67,7 +74,21 @@ export type BookingOrder = {
   amount: number;
   ticketCount: number;
   hasTicketArtifacts: boolean;
+  segments: BookingOrderSegment[];
   bookings: Booking[];
+};
+
+export type BookingOrderSegment = {
+  segmentIndex: number;
+  tripId: number | null;
+  trainId: number;
+  trainName: string;
+  departureStationId: number | null;
+  arrivalStationId: number | null;
+  route: string;
+  departureTime: string | null;
+  arrivalTime: string | null;
+  tickets: Booking[];
 };
 
 export type CreateBookingRequest = {
@@ -90,6 +111,23 @@ export type CreateBookingOrderRequest = {
   segmentArrivalStationId?: number;
   travelDate: string;
   guestEmail?: string;
+  itineraryId?: string;
+  segments?: CreateBookingOrderSegmentRequest[];
+  passengers: Array<{
+    seatId: number;
+    passengerName?: string;
+    passengerType?: string;
+    discountCode?: string;
+  }>;
+};
+
+export type CreateBookingOrderSegmentRequest = {
+  segmentIndex: number;
+  trainId: number;
+  tripId: number;
+  segmentDepartureStationId?: number;
+  segmentArrivalStationId?: number;
+  travelDate?: string;
   passengers: Array<{
     seatId: number;
     passengerName?: string;

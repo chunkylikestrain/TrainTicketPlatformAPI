@@ -129,74 +129,14 @@ namespace TrainTicketPlatformAPI.Services
             await using var transaction = await BeginTransactionIfRelationalAsync();
             await ExpireStalePendingBookingsAsync();
 
-            var first = bookingList[0];
-            if (bookingList.Any(b =>
-                    b.TrainId != first.TrainId ||
-                    b.TripId != first.TripId ||
-                    b.SegmentDepartureStationId != first.SegmentDepartureStationId ||
-                    b.SegmentArrivalStationId != first.SegmentArrivalStationId))
-            {
-                throw new InvalidOperationException("All passengers in an order must share the same trip and route segment");
-            }
-
-            if (bookingList.Select(b => b.SeatId).Distinct().Count() != bookingList.Count)
-                throw new InvalidOperationException("Each passenger must have a different seat");
-
-            var train = await _db.Trains.FindAsync(first.TrainId);
-            if (train == null)
-                throw new KeyNotFoundException("Train not found");
-
-            TripSegmentInfo? segment = null;
-            DateTime travelDate = first.TravelDate;
-
-            if (first.TripId.HasValue)
-            {
-                var trip = await _db.Trips
-                    .Include(t => t.TrainRoute)
-                        .ThenInclude(r => r.DepartureStation)
-                    .Include(t => t.TrainRoute)
-                        .ThenInclude(r => r.ArrivalStation)
-                    .Include(t => t.TrainRoute)
-                        .ThenInclude(r => r.RouteStops)
-                            .ThenInclude(s => s.Station)
-                    .FirstOrDefaultAsync(t => t.Id == first.TripId.Value)
-                           ?? throw new KeyNotFoundException("Trip not found");
-
-                if (trip.TrainId != first.TrainId)
-                    throw new InvalidOperationException("Trip does not belong to the selected train");
-
-                segment = TripSegmentResolver.Resolve(
-                    trip,
-                    first.SegmentDepartureStationId,
-                    first.SegmentArrivalStationId);
-                travelDate = trip.DepartureTime.Date;
-            }
-            else if (travelDate == default)
-            {
-                throw new InvalidOperationException("Travel date is required");
-            }
-
+            var preparedBookings = new List<PreparedOrderBooking>();
             foreach (var booking in bookingList)
             {
-                var seat = await _db.Seats.FindAsync(booking.SeatId);
-                if (seat == null || !seat.IsAvailable)
-                    throw new InvalidOperationException("Seat not available");
-
-                if (seat.TrainId != booking.TrainId)
-                    throw new InvalidOperationException("Seat does not belong to the selected train");
-
-                if (await HasActiveSeatBookingAsync(
-                        booking.TrainId,
-                        booking.TripId,
-                        booking.SeatId,
-                        travelDate,
-                        segment?.DepartureOrder,
-                        segment?.ArrivalOrder,
-                        ignoredBookingId: null))
-                {
-                    throw new InvalidOperationException("Seat already booked for this travel date");
-                }
+                preparedBookings.Add(await PrepareOrderBookingAsync(booking));
             }
+
+            if (HasOverlappingSeatInsideOrder(preparedBookings))
+                throw new InvalidOperationException("Each passenger must have a different seat on overlapping trip segments");
 
             if (order.UserId.HasValue)
             {
@@ -212,15 +152,20 @@ namespace TrainTicketPlatformAPI.Services
             order.OrderReference = string.IsNullOrWhiteSpace(order.OrderReference)
                 ? GenerateOrderReference()
                 : order.OrderReference;
+            order.ItineraryId = NormalizeOptionalText(order.ItineraryId);
+            order.SegmentCount = Math.Max(1, order.SegmentCount);
+            order.IsItinerary = order.IsItinerary || preparedBookings.Select(p => p.Booking.TripId).Distinct().Count() > 1;
             order.BookingStatus = string.IsNullOrWhiteSpace(order.BookingStatus) ? "PendingPayment" : order.BookingStatus;
             order.PaymentStatus = string.IsNullOrWhiteSpace(order.PaymentStatus) ? "Pending" : order.PaymentStatus;
+            ApplyOrderJourneyMetadata(order, preparedBookings);
 
-            foreach (var booking in bookingList)
+            foreach (var prepared in preparedBookings)
             {
+                var booking = prepared.Booking;
                 booking.UserId = order.UserId;
                 booking.GuestEmail = order.GuestEmail;
                 booking.PassengerName = NormalizeOptionalText(booking.PassengerName);
-                booking.TravelDate = travelDate;
+                booking.TravelDate = prepared.TravelDate;
                 await ApplyPricingAsync(booking);
                 booking.BookingDate = now;
                 booking.ExpiresAtUtc = order.ExpiresAtUtc;
@@ -230,14 +175,14 @@ namespace TrainTicketPlatformAPI.Services
                 booking.BookingStatus = "PendingPayment";
                 booking.PaymentStatus = "Pending";
 
-                if (segment != null)
+                if (prepared.Segment != null)
                 {
-                    booking.SegmentDepartureStationId = segment.DepartureStationId;
-                    booking.SegmentArrivalStationId = segment.ArrivalStationId;
-                    booking.SegmentDepartureOrder = segment.DepartureOrder;
-                    booking.SegmentArrivalOrder = segment.ArrivalOrder;
-                    booking.SegmentDepartureTime = segment.DepartureTime;
-                    booking.SegmentArrivalTime = segment.ArrivalTime;
+                    booking.SegmentDepartureStationId = prepared.Segment.DepartureStationId;
+                    booking.SegmentArrivalStationId = prepared.Segment.ArrivalStationId;
+                    booking.SegmentDepartureOrder = prepared.Segment.DepartureOrder;
+                    booking.SegmentArrivalOrder = prepared.Segment.ArrivalOrder;
+                    booking.SegmentDepartureTime = prepared.Segment.DepartureTime;
+                    booking.SegmentArrivalTime = prepared.Segment.ArrivalTime;
                 }
 
                 order.Bookings.Add(booking);
@@ -701,6 +646,128 @@ namespace TrainTicketPlatformAPI.Services
             return query.AnyAsync();
         }
 
+        private async Task<PreparedOrderBooking> PrepareOrderBookingAsync(Booking booking)
+        {
+            var train = await _db.Trains.FindAsync(booking.TrainId);
+            if (train == null)
+                throw new KeyNotFoundException("Train not found");
+
+            TripSegmentInfo? segment = null;
+            var travelDate = booking.TravelDate;
+
+            if (booking.TripId.HasValue)
+            {
+                var trip = await _db.Trips
+                    .Include(t => t.TrainRoute)
+                        .ThenInclude(r => r.DepartureStation)
+                    .Include(t => t.TrainRoute)
+                        .ThenInclude(r => r.ArrivalStation)
+                    .Include(t => t.TrainRoute)
+                        .ThenInclude(r => r.RouteStops)
+                            .ThenInclude(s => s.Station)
+                    .FirstOrDefaultAsync(t => t.Id == booking.TripId.Value)
+                           ?? throw new KeyNotFoundException("Trip not found");
+
+                if (trip.TrainId != booking.TrainId)
+                    throw new InvalidOperationException("Trip does not belong to the selected train");
+
+                segment = TripSegmentResolver.Resolve(
+                    trip,
+                    booking.SegmentDepartureStationId,
+                    booking.SegmentArrivalStationId);
+                travelDate = trip.DepartureTime.Date;
+            }
+            else if (travelDate == default)
+            {
+                throw new InvalidOperationException("Travel date is required");
+            }
+
+            var seat = await _db.Seats.FindAsync(booking.SeatId);
+            if (seat == null || !seat.IsAvailable)
+                throw new InvalidOperationException("Seat not available");
+
+            if (seat.TrainId != booking.TrainId)
+                throw new InvalidOperationException("Seat does not belong to the selected train");
+
+            if (await HasActiveSeatBookingAsync(
+                    booking.TrainId,
+                    booking.TripId,
+                    booking.SeatId,
+                    travelDate,
+                    segment?.DepartureOrder,
+                    segment?.ArrivalOrder,
+                    ignoredBookingId: null))
+            {
+                throw new InvalidOperationException("Seat already booked for this travel date");
+            }
+
+            return new PreparedOrderBooking(booking, segment, travelDate);
+        }
+
+        private static bool HasOverlappingSeatInsideOrder(IEnumerable<PreparedOrderBooking> preparedBookings)
+        {
+            var prepared = preparedBookings.ToList();
+            for (var i = 0; i < prepared.Count; i++)
+            {
+                for (var j = i + 1; j < prepared.Count; j++)
+                {
+                    if (prepared[i].Booking.TrainId != prepared[j].Booking.TrainId ||
+                        prepared[i].Booking.SeatId != prepared[j].Booking.SeatId ||
+                        prepared[i].Booking.TripId != prepared[j].Booking.TripId)
+                    {
+                        continue;
+                    }
+
+                    if (prepared[i].Booking.TripId.HasValue)
+                    {
+                        if (SegmentsOverlap(prepared[i].Segment, prepared[j].Segment))
+                            return true;
+                    }
+                    else if (prepared[i].TravelDate.Date == prepared[j].TravelDate.Date)
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        private static bool SegmentsOverlap(TripSegmentInfo? first, TripSegmentInfo? second)
+        {
+            var firstDeparture = first?.DepartureOrder ?? 0;
+            var firstArrival = first?.ArrivalOrder ?? int.MaxValue;
+            var secondDeparture = second?.DepartureOrder ?? 0;
+            var secondArrival = second?.ArrivalOrder ?? int.MaxValue;
+
+            return firstDeparture < secondArrival && secondDeparture < firstArrival;
+        }
+
+        private static void ApplyOrderJourneyMetadata(BookingOrder order, IEnumerable<PreparedOrderBooking> preparedBookings)
+        {
+            var segments = preparedBookings
+                .Where(prepared => prepared.Segment != null)
+                .Select(prepared => prepared.Segment!)
+                .OrderBy(segment => segment.DepartureTime)
+                .ThenBy(segment => segment.ArrivalTime)
+                .ToList();
+
+            if (segments.Count == 0)
+                return;
+
+            var first = segments.First();
+            var last = segments.Last();
+            order.JourneyDepartureStationId = first.DepartureStationId;
+            order.JourneyArrivalStationId = last.ArrivalStationId;
+            order.JourneyDepartureTime = first.DepartureTime;
+            order.JourneyArrivalTime = last.ArrivalTime;
+            order.SegmentCount = Math.Max(order.SegmentCount, segments
+                .Select(segment => new { segment.DepartureStationId, segment.ArrivalStationId, segment.DepartureTime, segment.ArrivalTime })
+                .Distinct()
+                .Count());
+            order.IsItinerary = order.IsItinerary || order.SegmentCount > 1;
+        }
+
         private async Task<IDbContextTransaction?> BeginTransactionIfRelationalAsync()
         {
             return _db.Database.IsRelational()
@@ -871,5 +938,10 @@ namespace TrainTicketPlatformAPI.Services
             booking.BookingStatus = "Expired";
             return true;
         }
+
+        private sealed record PreparedOrderBooking(
+            Booking Booking,
+            TripSegmentInfo? Segment,
+            DateTime TravelDate);
     }
 }

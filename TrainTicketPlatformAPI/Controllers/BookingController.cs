@@ -201,31 +201,59 @@ namespace TrainTicketPlatformAPI.Controllers
         {
             try
             {
+                if (request.Segments.Count == 0 && request.Passengers.Count == 0)
+                    return BadRequest("At least one passenger is required");
+
+                if (request.Segments.Any(segment => segment.Passengers.Count == 0))
+                    return BadRequest("Each itinerary segment must include at least one passenger");
+
                 var currentUserId = GetCurrentUserId();
                 var order = new BookingOrder
                 {
                     UserId = currentUserId,
                     GuestEmail = request.GuestEmail,
+                    ItineraryId = request.ItineraryId,
+                    IsItinerary = request.Segments.Count > 1,
+                    SegmentCount = request.Segments.Count > 0 ? request.Segments.Count : 1,
                     BookingStatus = "PendingPayment",
                     PaymentStatus = "Pending"
                 };
 
-                var bookings = request.Passengers.Select(passenger => new Booking
-                {
-                    UserId = currentUserId,
-                    TrainId = request.TrainId,
-                    TripId = request.TripId,
-                    SeatId = passenger.SeatId,
-                    SegmentDepartureStationId = request.SegmentDepartureStationId,
-                    SegmentArrivalStationId = request.SegmentArrivalStationId,
-                    TravelDate = request.TravelDate,
-                    GuestEmail = request.GuestEmail,
-                    PassengerName = passenger.PassengerName,
-                    PassengerType = passenger.PassengerType ?? "Adult",
-                    DiscountCode = passenger.DiscountCode ?? "normal",
-                    BookingStatus = "PendingPayment",
-                    PaymentStatus = "Pending"
-                });
+                var bookings = request.Segments.Count > 0
+                    ? request.Segments
+                        .OrderBy(segment => segment.SegmentIndex)
+                        .SelectMany(segment => segment.Passengers.Select(passenger => new Booking
+                        {
+                            UserId = currentUserId,
+                            TrainId = segment.TrainId,
+                            TripId = segment.TripId,
+                            SeatId = passenger.SeatId,
+                            SegmentDepartureStationId = segment.SegmentDepartureStationId,
+                            SegmentArrivalStationId = segment.SegmentArrivalStationId,
+                            TravelDate = segment.TravelDate ?? request.TravelDate,
+                            GuestEmail = request.GuestEmail,
+                            PassengerName = passenger.PassengerName,
+                            PassengerType = passenger.PassengerType ?? "Adult",
+                            DiscountCode = passenger.DiscountCode ?? "normal",
+                            BookingStatus = "PendingPayment",
+                            PaymentStatus = "Pending"
+                        }))
+                    : request.Passengers.Select(passenger => new Booking
+                    {
+                        UserId = currentUserId,
+                        TrainId = request.TrainId,
+                        TripId = request.TripId,
+                        SeatId = passenger.SeatId,
+                        SegmentDepartureStationId = request.SegmentDepartureStationId,
+                        SegmentArrivalStationId = request.SegmentArrivalStationId,
+                        TravelDate = request.TravelDate,
+                        GuestEmail = request.GuestEmail,
+                        PassengerName = passenger.PassengerName,
+                        PassengerType = passenger.PassengerType ?? "Adult",
+                        DiscountCode = passenger.DiscountCode ?? "normal",
+                        BookingStatus = "PendingPayment",
+                        PaymentStatus = "Pending"
+                    });
 
                 var created = await _bookingService.CreateBookingOrderAsync(order, bookings);
                 return CreatedAtAction(nameof(GetOrderById),
@@ -749,6 +777,13 @@ namespace TrainTicketPlatformAPI.Controllers
             Id = order.Id,
             UserId = order.UserId,
             OrderReference = order.OrderReference,
+            ItineraryId = order.ItineraryId,
+            IsItinerary = order.IsItinerary,
+            SegmentCount = order.SegmentCount,
+            JourneyDepartureStationId = order.JourneyDepartureStationId,
+            JourneyArrivalStationId = order.JourneyArrivalStationId,
+            JourneyDepartureTime = order.JourneyDepartureTime,
+            JourneyArrivalTime = order.JourneyArrivalTime,
             GuestEmail = order.GuestEmail,
             CreatedAtUtc = order.CreatedAtUtc,
             ExpiresAtUtc = order.ExpiresAtUtc,
@@ -758,8 +793,12 @@ namespace TrainTicketPlatformAPI.Controllers
             TicketCount = order.Bookings.Count,
             HasTicketArtifacts = order.Bookings.Count > 0 &&
                 order.Bookings.All(booking => !string.IsNullOrWhiteSpace(booking.TicketQrPayload)),
+            Segments = BuildOrderSegments(order),
             Bookings = order.Bookings
-                .OrderBy(booking => booking.Id)
+                .OrderBy(booking => booking.SegmentDepartureTime ?? booking.Trip?.DepartureTime ?? booking.TravelDate)
+                .ThenBy(booking => booking.TrainId)
+                .ThenBy(booking => booking.PassengerName)
+                .ThenBy(booking => booking.Id)
                 .Select(ToDto)
                 .ToList(),
             Amount = order.Bookings.Sum(booking => booking.Amount > 0m ? booking.Amount : booking.Trip?.Fares
@@ -767,6 +806,44 @@ namespace TrainTicketPlatformAPI.Controllers
                 .ThenBy(f => f.Price)
                 .FirstOrDefault()?.Price ?? 0m)
         };
+
+        private static List<BookingOrderSegmentDto> BuildOrderSegments(BookingOrder order)
+            => order.Bookings
+                .GroupBy(booking => new
+                {
+                    booking.TripId,
+                    booking.TrainId,
+                    booking.SegmentDepartureStationId,
+                    booking.SegmentArrivalStationId,
+                    DepartureTime = booking.SegmentDepartureTime ?? booking.Trip?.DepartureTime,
+                    ArrivalTime = booking.SegmentArrivalTime ?? booking.Trip?.ArrivalTime
+                })
+                .OrderBy(group => group.Key.DepartureTime ?? DateTime.MaxValue)
+                .ThenBy(group => group.Key.ArrivalTime ?? DateTime.MaxValue)
+                .Select((group, index) =>
+                {
+                    var firstBooking = group.OrderBy(booking => booking.Id).First();
+                    return new BookingOrderSegmentDto
+                    {
+                        SegmentIndex = index,
+                        TripId = group.Key.TripId,
+                        TrainId = group.Key.TrainId,
+                        TrainName = firstBooking.Train == null
+                            ? string.Empty
+                            : string.IsNullOrWhiteSpace(firstBooking.Train.Code) ? firstBooking.Train.Name : firstBooking.Train.Code,
+                        DepartureStationId = group.Key.SegmentDepartureStationId,
+                        ArrivalStationId = group.Key.SegmentArrivalStationId,
+                        Route = GetRouteLabel(firstBooking),
+                        DepartureTime = group.Key.DepartureTime,
+                        ArrivalTime = group.Key.ArrivalTime,
+                        Tickets = group
+                            .OrderBy(booking => booking.PassengerName)
+                            .ThenBy(booking => booking.Id)
+                            .Select(ToDto)
+                            .ToList()
+                    };
+                })
+                .ToList();
 
         private bool CanAccessOrder(BookingOrder order)
         {

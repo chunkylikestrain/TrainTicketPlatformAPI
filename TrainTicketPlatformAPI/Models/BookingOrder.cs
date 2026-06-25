@@ -5,6 +5,13 @@ namespace TrainTicketPlatformAPI.Models
         public int Id { get; set; }
         public int? UserId { get; set; }
         public string OrderReference { get; set; } = string.Empty;
+        public string? ItineraryId { get; set; }
+        public bool IsItinerary { get; set; }
+        public int SegmentCount { get; set; } = 1;
+        public int? JourneyDepartureStationId { get; set; }
+        public int? JourneyArrivalStationId { get; set; }
+        public DateTime? JourneyDepartureTime { get; set; }
+        public DateTime? JourneyArrivalTime { get; set; }
         public string? GuestEmail { get; set; }
         public DateTime CreatedAtUtc { get; set; }
         public DateTime? ExpiresAtUtc { get; set; }
