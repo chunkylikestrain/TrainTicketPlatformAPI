@@ -22,6 +22,11 @@ export async function getBookingOrder(orderId: number | string) {
   return response.data;
 }
 
+export async function getBookingById(bookingId: number | string) {
+  const response = await apiClient.get<Booking>(`/Bookings/${bookingId}`);
+  return response.data;
+}
+
 export async function updateGuestBookingData(bookingId: number | string, request: UpdateGuestBookingDataRequest) {
   const response = await apiClient.put<Booking>(`/Bookings/${bookingId}/guest-data`, request);
   return response.data;

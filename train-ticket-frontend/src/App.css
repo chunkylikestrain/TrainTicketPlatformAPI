@@ -82,6 +82,23 @@
   text-decoration: none;
 }
 
+.login-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.navbar-account-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  color: var(--sky);
+  font-size: 14px;
+}
+
 .navbar-account-name {
   display: inline-block;
   max-width: 180px;
@@ -4380,6 +4397,27 @@
   cursor: pointer;
 }
 
+.ticket-trip-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 62px;
+  border: 1px solid var(--navy);
+  border-radius: 4px;
+  background: var(--navy);
+  color: var(--white);
+  font: inherit;
+  font-weight: 900;
+  text-align: center;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.ticket-trip-link:hover {
+  border-color: var(--orange);
+  background: var(--orange);
+}
+
 .ticket-feature-column .refund-button {
   border-color: var(--orange);
 }
@@ -4525,6 +4563,186 @@
   border-left-style: dashed;
   border-right-style: dashed;
   border-radius: 6px;
+}
+
+.profile-data-dashboard {
+  display: grid;
+  gap: 26px;
+  max-width: 760px;
+}
+
+.profile-data-dashboard h2 {
+  margin-bottom: 0;
+}
+
+.profile-data-list {
+  display: grid;
+  gap: 24px;
+}
+
+.profile-data-field {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  min-height: 88px;
+  padding: 20px;
+  border: 1px solid #d3d0cf;
+  border-radius: 6px;
+  background: var(--white);
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.08);
+}
+
+.profile-data-field span {
+  position: absolute;
+  top: -13px;
+  left: 18px;
+  padding: 0 10px;
+  background: var(--white);
+  color: #1597dc;
+  font-size: 16px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.profile-data-field strong {
+  overflow-wrap: anywhere;
+  color: var(--navy);
+  font-size: 20px;
+}
+
+.profile-data-field button,
+.profile-data-section-heading button,
+.profile-passenger-card button,
+.profile-close-account button {
+  border: 0;
+  background: transparent;
+  color: var(--orange);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 900;
+  text-decoration: underline;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.profile-data-section {
+  display: grid;
+  gap: 16px;
+}
+
+.profile-data-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.profile-data-section-heading h3,
+.profile-close-account h3 {
+  margin: 0;
+  color: var(--navy);
+  font-size: 20px;
+}
+
+.profile-passenger-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.profile-passenger-card {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border: 1px solid #d3d0cf;
+  border-radius: 6px;
+  background: var(--white);
+}
+
+.profile-passenger-card > span {
+  color: #1597dc;
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.profile-passenger-card > strong {
+  color: var(--navy);
+  font-size: 20px;
+}
+
+.profile-passenger-card dl {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.profile-passenger-card dl div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid #ece8e5;
+  padding-top: 10px;
+}
+
+.profile-passenger-card dt,
+.profile-passenger-card dd {
+  margin: 0;
+}
+
+.profile-passenger-card dt {
+  color: #6f7895;
+  font-weight: 800;
+}
+
+.profile-passenger-card dd {
+  color: var(--navy);
+  font-weight: 900;
+  text-align: right;
+}
+
+.profile-passenger-card button {
+  justify-self: start;
+  padding: 0;
+}
+
+.profile-data-link-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 74px;
+  padding: 0 20px;
+  border: 1px solid #d3d0cf;
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--navy);
+  font: inherit;
+  font-size: 20px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.profile-data-link-row b {
+  color: var(--orange);
+  font-size: 26px;
+}
+
+.profile-close-account {
+  display: grid;
+  gap: 10px;
+  color: var(--navy);
+}
+
+.profile-close-account p {
+  margin: 0;
+  font-weight: 800;
+}
+
+.profile-close-account button {
+  justify-self: start;
+  padding: 0;
 }
 
 .my-ic-dashboard {
@@ -4705,6 +4923,200 @@
 .my-ic-faq summary {
   cursor: pointer;
   font-weight: 900;
+}
+
+.current-trip-page {
+  min-height: calc(100vh - 96px);
+  padding: 42px 24px 80px;
+  background: linear-gradient(90deg, #eef8fd 0 8%, #fff 8% 92%, #eef8fd 92% 100%);
+}
+
+.current-trip-shell {
+  display: grid;
+  gap: 28px;
+  width: min(100%, 1120px);
+  margin: 0 auto;
+}
+
+.current-trip-back {
+  color: var(--navy);
+  font-weight: 900;
+}
+
+.current-trip-ticket,
+.current-trip-details,
+.current-trip-progress {
+  border: 1px solid #d8dde5;
+  border-radius: 8px;
+  background: var(--white);
+}
+
+.current-trip-ticket {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: 30px;
+  align-items: center;
+  padding: 34px;
+}
+
+.current-trip-ticket img,
+.current-trip-ticket .qr-placeholder {
+  width: 172px;
+  height: 172px;
+  border: 1px solid #d8dde5;
+  background: var(--white);
+}
+
+.current-trip-ticket span,
+.current-trip-details span,
+.current-trip-progress p,
+.current-stop-row small,
+.current-stop-row time {
+  color: var(--muted);
+}
+
+.current-trip-ticket h1 {
+  margin: 8px 0 10px;
+  color: var(--navy);
+  font-size: clamp(32px, 4vw, 52px);
+  line-height: 1.05;
+}
+
+.current-trip-ticket p {
+  margin: 0;
+  color: var(--navy);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.current-trip-details {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  overflow: hidden;
+  background: #d8dde5;
+}
+
+.current-trip-details div {
+  display: grid;
+  gap: 8px;
+  min-height: 112px;
+  padding: 24px;
+  background: var(--white);
+}
+
+.current-trip-details strong {
+  color: var(--navy);
+  font-size: 22px;
+}
+
+.current-trip-alert {
+  display: grid;
+  gap: 6px;
+  padding: 18px 22px;
+  border-left: 5px solid var(--orange);
+  background: #fff7ed;
+  color: var(--navy);
+}
+
+.current-trip-progress {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 30px;
+  padding: 34px;
+}
+
+.current-trip-progress h2 {
+  margin: 0 0 12px;
+  color: var(--navy);
+  font-size: 31px;
+}
+
+.current-trip-progress p {
+  margin: 0;
+  font-size: 18px;
+  line-height: 1.45;
+}
+
+.current-stop-list {
+  position: relative;
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.current-stop-list::before {
+  content: "";
+  position: absolute;
+  top: 20px;
+  bottom: 20px;
+  left: 14px;
+  width: 4px;
+  background: #d8dde5;
+}
+
+.current-stop-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) auto;
+  gap: 18px;
+  align-items: center;
+  min-height: 88px;
+  padding: 14px 0;
+}
+
+.current-stop-dot {
+  z-index: 1;
+  width: 30px;
+  height: 30px;
+  border: 4px solid var(--navy);
+  border-radius: 50%;
+  background: var(--white);
+}
+
+.current-stop-row strong {
+  display: block;
+  color: var(--navy);
+  font-size: 22px;
+}
+
+.current-stop-row time {
+  display: grid;
+  gap: 6px;
+  min-width: 150px;
+  text-align: right;
+  font-weight: 800;
+}
+
+.current-stop-row time span {
+  display: block;
+}
+
+.current-stop-row time b {
+  color: var(--orange);
+  font-weight: 900;
+}
+
+.current-stop-current .current-stop-dot {
+  border-color: var(--orange);
+  background: var(--orange);
+  box-shadow: 0 0 0 8px #fff0e8;
+}
+
+.current-stop-current strong,
+.current-stop-current small {
+  color: var(--orange);
+}
+
+.current-stop-next .current-stop-dot {
+  border-color: #1399d6;
+}
+
+.current-stop-destination .current-stop-dot {
+  border-color: #0aa85f;
+  background: #0aa85f;
 }
 
 .profile-legal {
@@ -6384,6 +6796,32 @@
     gap: 24px;
   }
 
+  .profile-data-field,
+  .profile-passenger-grid,
+  .profile-passenger-card dl div {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-data-field {
+    align-items: start;
+  }
+
+  .profile-data-field button {
+    justify-self: start;
+  }
+
+  .profile-passenger-grid {
+    display: grid;
+  }
+
+  .profile-passenger-card dl div {
+    display: grid;
+  }
+
+  .profile-passenger-card dd {
+    text-align: left;
+  }
+
   .route-stop {
     grid-template-columns: 72px 24px 1fr;
   }
@@ -6589,6 +7027,36 @@
 
   .payment-processing-card {
     padding: 42px 24px;
+  }
+
+  .current-trip-page {
+    padding: 24px 14px 56px;
+  }
+
+  .current-trip-ticket,
+  .current-trip-progress {
+    grid-template-columns: 1fr;
+    padding: 22px;
+  }
+
+  .current-trip-ticket img,
+  .current-trip-ticket .qr-placeholder {
+    width: 150px;
+    height: 150px;
+  }
+
+  .current-trip-details {
+    grid-template-columns: 1fr;
+  }
+
+  .current-stop-row {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+
+  .current-stop-row time {
+    grid-column: 2;
+    min-width: 0;
+    text-align: left;
   }
 
   .processing-train-art {

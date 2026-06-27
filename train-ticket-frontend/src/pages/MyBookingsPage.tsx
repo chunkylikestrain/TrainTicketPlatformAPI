@@ -136,8 +136,6 @@ function MyBookingsPage() {
             <button className="account-menu-button">My invoices</button>
             <button className="account-menu-button account-menu-button-muted">My data</button>
             <button className="account-menu-button account-menu-button-muted">"Moje IC" Program</button>
-            <button className="account-menu-button account-menu-button-muted">My shopping profiles</button>
-            <button className="account-menu-button account-menu-button-muted">Settings</button>
             <button className="account-menu-button">Manage your ticket - Guest account</button>
             <button className="account-menu-button">Useful links</button>
           </aside>

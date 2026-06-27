@@ -17,6 +17,7 @@ const AdminSchedulesPage = lazy(() => import("./pages/admin/AdminSchedulesPage")
 const AdminTrainsPage = lazy(() => import("./pages/admin/AdminTrainsPage"));
 const AdminUsersPage = lazy(() => import("./pages/admin/AdminUsersPage"));
 const BookingCheckoutPage = lazy(() => import("./pages/BookingCheckoutPage"));
+const CurrentTripPage = lazy(() => import("./pages/CurrentTripPage"));
 const DataRequestPage = lazy(() => import("./pages/DataRequestPage"));
 const DiscountSelectionPage = lazy(() => import("./pages/DiscountSelectionPage"));
 const FilterSelectionPage = lazy(() => import("./pages/FilterSelectionPage"));
@@ -66,6 +67,7 @@ function App() {
           <Route path="/data/:tripId" element={<DataRequestPage />} />
           <Route path="/order-summary/:tripId" element={<OrderSummaryPage />} />
           <Route path="/checkout/:tripId" element={<BookingCheckoutPage />} />
+          <Route path="/trip/:bookingId" element={<CurrentTripPage />} />
         </Routes>
       </Suspense>
     </div>

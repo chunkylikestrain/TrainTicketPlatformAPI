@@ -17,8 +17,6 @@ const accountMenuItems = [
   { key: "invoices", label: "My invoices" },
   { key: "data", label: "My data" },
   { key: "myic", label: "\"My IC\" Program" },
-  { key: "shopping", label: "My shopping profiles" },
-  { key: "settings", label: "Settings" },
   { key: "links", label: "Useful links" },
 ] as const;
 
@@ -239,6 +237,7 @@ function MyProfilePage() {
   const savedValue = loyaltyAccount?.redeemableValuePln ?? 0;
   const earnRate = loyaltyAccount?.earnRatePointsPerPln ?? 5;
   const redeemRate = loyaltyAccount?.redeemRatePointsPerPln ?? 100;
+  const profileNameParts = getProfileNameParts(displayName, currentUser?.email);
 
   return (
     <main className="tickets-page profile-page">
@@ -403,6 +402,11 @@ function MyProfilePage() {
                           {isDownloadingTicketId === firstTicket.id ? "Downloading..." : group.isOrder ? "Download order PDF" : "Download PDF"}
                         </button>
                         <strong>{group.isOrder ? "Other features for this order" : "Other features for this ticket"}</strong>
+                        {activeTicketSection === "tickets" && (
+                          <Link className="ticket-trip-link" to={`/trip/${firstTicket.id}`}>
+                            Current trip
+                          </Link>
+                        )}
                         <button type="button" disabled>Purchase return ticket</button>
                         {group.tickets.map((ticket) => (
                         <button
@@ -496,6 +500,81 @@ function MyProfilePage() {
                 </p>
               </details>
             </section>
+          ) : currentUser && activeAccountSection === "data" ? (
+            <section className="ticket-dashboard profile-data-dashboard">
+              <h2>My data</h2>
+
+              <div className="profile-data-list">
+                <ProfileDataField label="E-mail" value={currentUser.email} />
+                <ProfileDataField label="First name" value={profileNameParts.firstName} />
+                <ProfileDataField label="Last name" value={profileNameParts.lastName} />
+                <ProfileDataField label="Password" value="************" />
+              </div>
+
+              <section className="profile-data-section">
+                <div className="profile-data-section-heading">
+                  <h3>Passenger data</h3>
+                  <button type="button">Add passenger</button>
+                </div>
+
+                <div className="profile-passenger-grid">
+                  <article className="profile-passenger-card">
+                    <span>Primary passenger</span>
+                    <strong>{displayName || currentUser.email}</strong>
+                    <dl>
+                      <div>
+                        <dt>Ticket type</dt>
+                        <dd>Normal Ticket</dd>
+                      </div>
+                      <div>
+                        <dt>Passenger type</dt>
+                        <dd>Adult</dd>
+                      </div>
+                      <div>
+                        <dt>Document</dt>
+                        <dd>Not saved</dd>
+                      </div>
+                    </dl>
+                    <button type="button">Change</button>
+                  </article>
+
+                  <article className="profile-passenger-card">
+                    <span>Checkout defaults</span>
+                    <strong>{currentUser.email}</strong>
+                    <dl>
+                      <div>
+                        <dt>Ticket email</dt>
+                        <dd>Account email</dd>
+                      </div>
+                      <div>
+                        <dt>Invoice data</dt>
+                        <dd>Not saved</dd>
+                      </div>
+                      <div>
+                        <dt>Contact phone</dt>
+                        <dd>{currentUser.phone || "Not saved"}</dd>
+                      </div>
+                    </dl>
+                    <button type="button">Change</button>
+                  </article>
+                </div>
+              </section>
+
+              <button
+                className="profile-data-link-row"
+                type="button"
+                onClick={() => setActiveAccountSection("myic")}
+              >
+                <span>"My IC" Program data</span>
+                <b aria-hidden="true">&gt;</b>
+              </button>
+
+              <section className="profile-close-account">
+                <h3>Close account</h3>
+                <p>We delete accounts in accordance with the RailBook terms and conditions.</p>
+                <button type="button">Delete your account</button>
+              </section>
+            </section>
           ) : currentUser ? (
             <section className="profile-signin-panel profile-loading-panel">
               <h2>{accountMenuItems.find((item) => item.key === activeAccountSection)?.label}</h2>
@@ -577,6 +656,26 @@ function formatLoyaltyType(type: string) {
 function formatSignedPoints(points: number) {
   const sign = points >= 0 ? "+" : "";
   return `${sign}${points.toLocaleString("en-GB")} points`;
+}
+
+function ProfileDataField({ label, value }: { label: string; value: string }) {
+  return (
+    <article className="profile-data-field">
+      <span>{label}</span>
+      <strong>{value}</strong>
+      <button type="button">Change</button>
+    </article>
+  );
+}
+
+function getProfileNameParts(displayName: string, email?: string) {
+  const fallback = email?.split("@")[0] || "Passenger";
+  const parts = (displayName || fallback).trim().split(/\s+/).filter(Boolean);
+
+  return {
+    firstName: parts[0] || fallback,
+    lastName: parts.length > 1 ? parts.slice(1).join(" ") : "-",
+  };
 }
 
 export default MyProfilePage;

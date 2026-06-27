@@ -1,3 +1,4 @@
+import { UserOutlined } from "@ant-design/icons";
 import { Link, NavLink } from "react-router-dom";
 import { getProfileDisplayName, getUserEmail, getUserRole, hasAuthToken } from "../api/authSession";
 
@@ -32,14 +33,9 @@ function Navbar() {
         <a href="#offers">Offers</a>
       </nav>
 
-      <div className="nav-tools" aria-label="Account and display tools">
-        <button type="button" className="icon-button" aria-label="Accessibility options">
-          A
-        </button>
-        <button type="button" className="icon-button" aria-label="Language English">
-          EN
-        </button>
+      <div className="nav-tools" aria-label="Account tools">
         <Link to="/profile" className="login-link">
+          <UserOutlined className="navbar-account-icon" aria-hidden="true" />
           {isLoggedIn ? <span className="navbar-account-name">{displayName}</span> : "Log in / Register"}
         </Link>
       </div>
