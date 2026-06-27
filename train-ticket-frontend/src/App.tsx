@@ -1,32 +1,34 @@
+import { lazy, Suspense } from "react";
 import { Route, Routes } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
-import AdminBookingsPage from "./pages/admin/AdminBookingsPage";
-import AdminCreateRoutePage from "./pages/admin/AdminCreateRoutePage";
-import AdminCreateSchedulePage from "./pages/admin/AdminCreateSchedulePage";
-import AdminCreateTrainPage from "./pages/admin/AdminCreateTrainPage";
-import AdminDashboardPage from "./pages/admin/AdminDashboardPage";
-import AdminDiscountsPage from "./pages/admin/AdminDiscountsPage";
-import AdminPricingPage from "./pages/admin/AdminPricingPage";
-import AdminRevenuePage from "./pages/admin/AdminRevenuePage";
-import AdminRoutesPage from "./pages/admin/AdminRoutesPage";
-import AdminSchedulesPage from "./pages/admin/AdminSchedulesPage";
-import AdminTrainsPage from "./pages/admin/AdminTrainsPage";
-import AdminUsersPage from "./pages/admin/AdminUsersPage";
-import BookingCheckoutPage from "./pages/BookingCheckoutPage";
-import DataRequestPage from "./pages/DataRequestPage";
-import DiscountSelectionPage from "./pages/DiscountSelectionPage";
-import FilterSelectionPage from "./pages/FilterSelectionPage";
-import HomePage from "./pages/HomePage";
-import LoginPage from "./pages/LoginPage";
-import MyBookingsPage from "./pages/MyBookingsPage";
-import MyProfilePage from "./pages/MyProfilePage";
-import OrderSummaryPage from "./pages/OrderSummaryPage";
-import RegisterPage from "./pages/RegisterPage";
-import SearchResultsPage from "./pages/SearchResultsPage";
-import SeatMapPage from "./pages/SeatMapPage";
-import SummaryPage from "./pages/SummaryPage";
 import "./App.css";
+
+const AdminBookingsPage = lazy(() => import("./pages/admin/AdminBookingsPage"));
+const AdminCreateRoutePage = lazy(() => import("./pages/admin/AdminCreateRoutePage"));
+const AdminCreateSchedulePage = lazy(() => import("./pages/admin/AdminCreateSchedulePage"));
+const AdminCreateTrainPage = lazy(() => import("./pages/admin/AdminCreateTrainPage"));
+const AdminDashboardPage = lazy(() => import("./pages/admin/AdminDashboardPage"));
+const AdminDiscountsPage = lazy(() => import("./pages/admin/AdminDiscountsPage"));
+const AdminPricingPage = lazy(() => import("./pages/admin/AdminPricingPage"));
+const AdminRevenuePage = lazy(() => import("./pages/admin/AdminRevenuePage"));
+const AdminRoutesPage = lazy(() => import("./pages/admin/AdminRoutesPage"));
+const AdminSchedulesPage = lazy(() => import("./pages/admin/AdminSchedulesPage"));
+const AdminTrainsPage = lazy(() => import("./pages/admin/AdminTrainsPage"));
+const AdminUsersPage = lazy(() => import("./pages/admin/AdminUsersPage"));
+const BookingCheckoutPage = lazy(() => import("./pages/BookingCheckoutPage"));
+const DataRequestPage = lazy(() => import("./pages/DataRequestPage"));
+const DiscountSelectionPage = lazy(() => import("./pages/DiscountSelectionPage"));
+const FilterSelectionPage = lazy(() => import("./pages/FilterSelectionPage"));
+const HomePage = lazy(() => import("./pages/HomePage"));
+const LoginPage = lazy(() => import("./pages/LoginPage"));
+const MyBookingsPage = lazy(() => import("./pages/MyBookingsPage"));
+const MyProfilePage = lazy(() => import("./pages/MyProfilePage"));
+const OrderSummaryPage = lazy(() => import("./pages/OrderSummaryPage"));
+const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+const SearchResultsPage = lazy(() => import("./pages/SearchResultsPage"));
+const SeatMapPage = lazy(() => import("./pages/SeatMapPage"));
+const SummaryPage = lazy(() => import("./pages/SummaryPage"));
 
 function App() {
   const location = useLocation();
@@ -35,35 +37,37 @@ function App() {
   return (
     <div className="app-shell">
       {!isAdminRoute && <Navbar />}
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/admin" element={<AdminDashboardPage />} />
-        <Route path="/admin/trains" element={<AdminTrainsPage />} />
-        <Route path="/admin/trains/new" element={<AdminCreateTrainPage />} />
-        <Route path="/admin/trains/:trainId/edit" element={<AdminCreateTrainPage />} />
-        <Route path="/admin/routes" element={<AdminRoutesPage />} />
-        <Route path="/admin/routes/new" element={<AdminCreateRoutePage />} />
-        <Route path="/admin/routes/:routeId/edit" element={<AdminCreateRoutePage />} />
-        <Route path="/admin/schedules" element={<AdminSchedulesPage />} />
-        <Route path="/admin/schedules/new" element={<AdminCreateSchedulePage />} />
-        <Route path="/admin/pricing" element={<AdminPricingPage />} />
-        <Route path="/admin/bookings" element={<AdminBookingsPage />} />
-        <Route path="/admin/users" element={<AdminUsersPage />} />
-        <Route path="/admin/discounts" element={<AdminDiscountsPage />} />
-        <Route path="/admin/revenue" element={<AdminRevenuePage />} />
-        <Route path="/search" element={<SearchResultsPage />} />
-        <Route path="/profile" element={<MyProfilePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/discounts" element={<DiscountSelectionPage />} />
-        <Route path="/filters" element={<FilterSelectionPage />} />
-        <Route path="/bookings" element={<MyBookingsPage />} />
-        <Route path="/seat-map/:tripId" element={<SeatMapPage />} />
-        <Route path="/summary/:tripId" element={<SummaryPage />} />
-        <Route path="/data/:tripId" element={<DataRequestPage />} />
-        <Route path="/order-summary/:tripId" element={<OrderSummaryPage />} />
-        <Route path="/checkout/:tripId" element={<BookingCheckoutPage />} />
-      </Routes>
+      <Suspense fallback={<main className="route-loading" aria-live="polite">Loading...</main>}>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/admin" element={<AdminDashboardPage />} />
+          <Route path="/admin/trains" element={<AdminTrainsPage />} />
+          <Route path="/admin/trains/new" element={<AdminCreateTrainPage />} />
+          <Route path="/admin/trains/:trainId/edit" element={<AdminCreateTrainPage />} />
+          <Route path="/admin/routes" element={<AdminRoutesPage />} />
+          <Route path="/admin/routes/new" element={<AdminCreateRoutePage />} />
+          <Route path="/admin/routes/:routeId/edit" element={<AdminCreateRoutePage />} />
+          <Route path="/admin/schedules" element={<AdminSchedulesPage />} />
+          <Route path="/admin/schedules/new" element={<AdminCreateSchedulePage />} />
+          <Route path="/admin/pricing" element={<AdminPricingPage />} />
+          <Route path="/admin/bookings" element={<AdminBookingsPage />} />
+          <Route path="/admin/users" element={<AdminUsersPage />} />
+          <Route path="/admin/discounts" element={<AdminDiscountsPage />} />
+          <Route path="/admin/revenue" element={<AdminRevenuePage />} />
+          <Route path="/search" element={<SearchResultsPage />} />
+          <Route path="/profile" element={<MyProfilePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/discounts" element={<DiscountSelectionPage />} />
+          <Route path="/filters" element={<FilterSelectionPage />} />
+          <Route path="/bookings" element={<MyBookingsPage />} />
+          <Route path="/seat-map/:tripId" element={<SeatMapPage />} />
+          <Route path="/summary/:tripId" element={<SummaryPage />} />
+          <Route path="/data/:tripId" element={<DataRequestPage />} />
+          <Route path="/order-summary/:tripId" element={<OrderSummaryPage />} />
+          <Route path="/checkout/:tripId" element={<BookingCheckoutPage />} />
+        </Routes>
+      </Suspense>
     </div>
   );
 }

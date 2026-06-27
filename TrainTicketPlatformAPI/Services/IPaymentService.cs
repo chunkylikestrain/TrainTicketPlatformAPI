@@ -5,9 +5,9 @@ namespace TrainTicketPlatformAPI.Services
 {
     public interface IPaymentService
     {
-        Task<PaymentIntentDto> CreatePaymentIntentAsync(int bookingId);
+        Task<PaymentIntentDto> CreatePaymentIntentAsync(int bookingId, int redeemLoyaltyPoints = 0);
 
-        Task<PaymentIntentDto> CreatePaymentIntentForOrderAsync(int bookingOrderId);
+        Task<PaymentIntentDto> CreatePaymentIntentForOrderAsync(int bookingOrderId, int redeemLoyaltyPoints = 0);
 
         Task<Payment> ConfirmPaymentAsync(string paymentIntentId, string paymentMethodToken);
 

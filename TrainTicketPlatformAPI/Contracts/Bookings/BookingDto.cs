@@ -14,6 +14,8 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         public int? SegmentArrivalOrder { get; set; }
         public DateTime? SegmentDepartureTime { get; set; }
         public DateTime? SegmentArrivalTime { get; set; }
+        public string JourneyDirection { get; set; } = string.Empty;
+        public int JourneySegmentIndex { get; set; }
         public string BookingReference { get; set; } = string.Empty;
         public string TicketNumber { get; set; } = string.Empty;
         public string? GuestEmail { get; set; }
@@ -49,6 +51,8 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         public bool HasPlatformChange { get; set; }
         public bool HasDisruption { get; set; }
         public decimal Amount { get; set; }
+        public int LoyaltyPointsRedeemed { get; set; }
+        public decimal LoyaltyDiscountAmount { get; set; }
         public string Currency { get; set; } = string.Empty;
         public DateTime? TicketIssuedAtUtc { get; set; }
         public bool HasTicketArtifact { get; set; }

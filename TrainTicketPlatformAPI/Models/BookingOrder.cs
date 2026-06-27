@@ -5,6 +5,7 @@ namespace TrainTicketPlatformAPI.Models
         public int Id { get; set; }
         public int? UserId { get; set; }
         public string OrderReference { get; set; } = string.Empty;
+        public string TripType { get; set; } = "OneWay";
         public string? ItineraryId { get; set; }
         public bool IsItinerary { get; set; }
         public int SegmentCount { get; set; } = 1;
@@ -17,6 +18,8 @@ namespace TrainTicketPlatformAPI.Models
         public DateTime? ExpiresAtUtc { get; set; }
         public string BookingStatus { get; set; } = "PendingPayment";
         public string PaymentStatus { get; set; } = "Pending";
+        public int LoyaltyPointsRedeemed { get; set; }
+        public decimal LoyaltyDiscountAmount { get; set; }
         public DateTime? ConfirmedAtUtc { get; set; }
 
         public User? User { get; set; }

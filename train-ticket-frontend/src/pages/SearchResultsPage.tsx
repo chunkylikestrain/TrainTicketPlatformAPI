@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import ItineraryCard from "../components/ItineraryCard";
 import { searchItineraries } from "../api/tripApi";
@@ -33,9 +33,31 @@ function formatNoticeDate(value: string) {
   return new Intl.DateTimeFormat("en-GB").format(new Date(`${value}T12:00:00`));
 }
 
+function formatTime(value: string) {
+  return new Intl.DateTimeFormat("en", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+function getStoredItinerary(key: string) {
+  try {
+    const raw = window.sessionStorage.getItem(key);
+    return raw ? JSON.parse(raw) as TripItinerarySearchResult : null;
+  } catch {
+    return null;
+  }
+}
+
 function SearchResultsPage() {
   const [searchParams] = useSearchParams();
   const [itineraries, setItineraries] = useState<TripItinerarySearchResult[]>([]);
+  const [selectedOutbound, setSelectedOutbound] = useState<TripItinerarySearchResult | null>(() =>
+    getStoredItinerary("railbook-round-trip-outbound"),
+  );
+  const [selectedReturn, setSelectedReturn] = useState<TripItinerarySearchResult | null>(() =>
+    getStoredItinerary("railbook-round-trip-return"),
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [expandedItineraryId, setExpandedItineraryId] = useState<string | null>(null);
@@ -43,29 +65,86 @@ function SearchResultsPage() {
   const departureStation = searchParams.get("departureStation") ?? "";
   const arrivalStation = searchParams.get("arrivalStation") ?? "";
   const date = searchParams.get("date") ?? "";
+  const time = searchParams.get("time") ?? "";
+  const tripType = searchParams.get("tripType") === "roundTrip" ? "roundTrip" : "oneWay";
+  const returnDate = searchParams.get("returnDate") ?? "";
+  const returnTime = searchParams.get("returnTime") ?? "";
+  const isRoundTrip = tripType === "roundTrip";
+  const isRoundTripComplete = isRoundTrip && selectedOutbound != null && selectedReturn != null;
+  const isChoosingReturn = isRoundTrip && selectedOutbound != null;
+  const activeDepartureStation = isChoosingReturn ? arrivalStation : departureStation;
+  const activeArrivalStation = isChoosingReturn ? departureStation : arrivalStation;
+  const activeDate = isChoosingReturn ? returnDate : date;
+  const activeTime = isChoosingReturn ? returnTime : time;
+  const activeDirectionLabel = isChoosingReturn ? "return" : "outbound";
   const passengerCounts = getPassengerCounts(searchParams);
   const discountCodes = getDiscountCodes(searchParams, passengerCounts);
   const filterCodes = getFilterCodes(searchParams);
   const purchaseQuery = copyPurchasePreferenceParams(searchParams).toString();
   const currentSearchUrl = `/search?${searchParams.toString()}`;
   const filterSelectionUrl = buildFilterSelectionUrl(currentSearchUrl, searchParams);
+  const searchSignature = [departureStation, arrivalStation, date, time, returnDate, returnTime, tripType].join("|");
+  const previousSearchSignature = useRef(searchSignature);
 
   useEffect(() => {
-    if (!departureStation || !arrivalStation || !date) {
+    if (previousSearchSignature.current === searchSignature) {
+      return;
+    }
+
+    previousSearchSignature.current = searchSignature;
+    setSelectedOutbound(null);
+    setSelectedReturn(null);
+    window.sessionStorage.removeItem("railbook-round-trip-outbound");
+    window.sessionStorage.removeItem("railbook-round-trip-return");
+  }, [searchSignature]);
+
+  useEffect(() => {
+    if (!activeDepartureStation || !activeArrivalStation || !activeDate) {
       return;
     }
 
     setIsLoading(true);
     setError("");
+    setExpandedItineraryId(null);
 
-    searchItineraries({ departureStation, arrivalStation, date })
+    searchItineraries({
+      departureStation: activeDepartureStation,
+      arrivalStation: activeArrivalStation,
+      date: activeDate,
+      time: activeTime,
+    })
       .then(setItineraries)
       .catch(() => {
         setItineraries([]);
         setError("Connections could not be loaded from the API. Check that the backend is running and your search date has schedules.");
       })
       .finally(() => setIsLoading(false));
-  }, [arrivalStation, date, departureStation]);
+  }, [activeArrivalStation, activeDate, activeDepartureStation, activeTime]);
+
+  function chooseItinerary(itinerary: TripItinerarySearchResult) {
+    if (!isRoundTrip) {
+      setExpandedItineraryId(expandedItineraryId === itinerary.itineraryId ? null : itinerary.itineraryId);
+      return;
+    }
+
+    if (!selectedOutbound) {
+      setSelectedOutbound(itinerary);
+      setSelectedReturn(null);
+      window.sessionStorage.setItem("railbook-round-trip-outbound", JSON.stringify(itinerary));
+      window.sessionStorage.removeItem("railbook-round-trip-return");
+      return;
+    }
+
+    setSelectedReturn(itinerary);
+    window.sessionStorage.setItem("railbook-round-trip-return", JSON.stringify(itinerary));
+  }
+
+  function resetRoundTripSelection() {
+    setSelectedOutbound(null);
+    setSelectedReturn(null);
+    window.sessionStorage.removeItem("railbook-round-trip-outbound");
+    window.sessionStorage.removeItem("railbook-round-trip-return");
+  }
 
   return (
     <main className="connection-page">
@@ -87,9 +166,9 @@ function SearchResultsPage() {
 
         <div className="connection-summary">
           <div>
-            <strong>{departureStation || "Rzeszow Glowny"}</strong>
+            <strong>{activeDepartureStation || "Rzeszow Glowny"}</strong>
             <span aria-hidden="true">-&gt;</span>
-            <strong>{arrivalStation || "Krakow Gl."}</strong>
+            <strong>{activeArrivalStation || "Krakow Gl."}</strong>
           </div>
           <div>
             <span>{formatPassengerSummary(passengerCounts)}</span>
@@ -101,17 +180,58 @@ function SearchResultsPage() {
 
         <div className="date-toolbar">
           <button type="button">&lt; Thu, 18 June</button>
-          <h1>{formatLongDate(date)}</h1>
+          <h1>{formatLongDate(activeDate)}</h1>
           <Link to={filterSelectionUrl}>Filters</Link>
           <button type="button">Sat, 20 June &gt;</button>
         </div>
+
+        {isRoundTrip && (
+          <section className="round-trip-progress" aria-label="Round trip selection progress">
+            <div className={selectedOutbound ? "round-trip-step-complete" : "round-trip-step-active"}>
+              <strong>1. Outbound</strong>
+              <span>
+                {selectedOutbound
+                  ? `${formatTime(selectedOutbound.departureTime)} ${departureStation} -> ${arrivalStation}`
+                  : `${departureStation} -> ${arrivalStation}`}
+              </span>
+            </div>
+            <div className={selectedReturn ? "round-trip-step-complete" : isChoosingReturn ? "round-trip-step-active" : ""}>
+              <strong>2. Return</strong>
+              <span>
+                {selectedReturn
+                  ? `${formatTime(selectedReturn.departureTime)} ${arrivalStation} -> ${departureStation}`
+                  : `${arrivalStation} -> ${departureStation}`}
+              </span>
+            </div>
+            <button type="button" onClick={resetRoundTripSelection}>
+              Start over
+            </button>
+          </section>
+        )}
+
+        {isRoundTrip && selectedOutbound && selectedReturn && (
+          <section className="round-trip-ready-card">
+            <strong>Round trip selected</strong>
+            <p>
+              Outbound and return connections are ready. Seat selection for both journeys comes next.
+            </p>
+            <div className="itinerary-seat-actions">
+              <Link to={`/seat-map/${selectedOutbound.segments[0].tripId}?${buildRoundTripSeatParams(searchParams, "1")}`}>
+                Choose class 1
+              </Link>
+              <Link to={`/seat-map/${selectedOutbound.segments[0].tripId}?${buildRoundTripSeatParams(searchParams, "2")}`}>
+                Choose class 2
+              </Link>
+            </div>
+          </section>
+        )}
 
         {(isLoading || error || itineraries.length === 0) && (
           <div className={`connection-notice ${error ? "connection-notice-warning" : ""}`} aria-live="polite">
             <strong>
               {isLoading
                 ? "Loading live connections..."
-                : `No live connections on ${formatNoticeDate(date)} before 06:06.`}
+                : `No live connections on ${formatNoticeDate(activeDate)} before ${activeTime || "the selected time"}.`}
             </strong>
             <p>
               {error ||
@@ -132,9 +252,18 @@ function SearchResultsPage() {
               rank={index}
               isExpanded={expandedItineraryId === itinerary.itineraryId}
               purchaseQuery={purchaseQuery}
-              onSelect={() => setExpandedItineraryId(
-                expandedItineraryId === itinerary.itineraryId ? null : itinerary.itineraryId,
-              )}
+              selectionActionLabel={isRoundTrip ? `${isRoundTripComplete ? "Change" : "Select"} ${activeDirectionLabel}` : undefined}
+              onChooseItinerary={() => chooseItinerary(itinerary)}
+              onSelect={() => {
+                if (isRoundTrip) {
+                  chooseItinerary(itinerary);
+                  return;
+                }
+
+                setExpandedItineraryId(
+                  expandedItineraryId === itinerary.itineraryId ? null : itinerary.itineraryId,
+                );
+              }}
             />
           ))}
         </section>
@@ -167,6 +296,13 @@ function SearchResultsPage() {
       </section>
     </main>
   );
+}
+
+function buildRoundTripSeatParams(searchParams: URLSearchParams, selectedClass: "1" | "2") {
+  const params = new URLSearchParams(searchParams);
+  params.set("class", selectedClass);
+  params.set("tripType", "roundTrip");
+  return params.toString();
 }
 
 export default SearchResultsPage;

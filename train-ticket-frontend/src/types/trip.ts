@@ -2,6 +2,7 @@ export type TripSearchParams = {
   departureStation: string;
   arrivalStation: string;
   date: string;
+  time?: string;
 };
 
 export type TripSearchResult = {

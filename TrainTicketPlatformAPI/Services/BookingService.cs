@@ -152,6 +152,7 @@ namespace TrainTicketPlatformAPI.Services
             order.OrderReference = string.IsNullOrWhiteSpace(order.OrderReference)
                 ? GenerateOrderReference()
                 : order.OrderReference;
+            order.TripType = NormalizeTripType(order.TripType, preparedBookings);
             order.ItineraryId = NormalizeOptionalText(order.ItineraryId);
             order.SegmentCount = Math.Max(1, order.SegmentCount);
             order.IsItinerary = order.IsItinerary || preparedBookings.Select(p => p.Booking.TripId).Distinct().Count() > 1;
@@ -165,6 +166,8 @@ namespace TrainTicketPlatformAPI.Services
                 booking.UserId = order.UserId;
                 booking.GuestEmail = order.GuestEmail;
                 booking.PassengerName = NormalizeOptionalText(booking.PassengerName);
+                booking.JourneyDirection = NormalizeJourneyDirection(booking.JourneyDirection);
+                booking.JourneySegmentIndex = Math.Max(0, booking.JourneySegmentIndex);
                 booking.TravelDate = prepared.TravelDate;
                 await ApplyPricingAsync(booking);
                 booking.BookingDate = now;
@@ -767,6 +770,25 @@ namespace TrainTicketPlatformAPI.Services
                 .Count());
             order.IsItinerary = order.IsItinerary || order.SegmentCount > 1;
         }
+
+        private static string NormalizeTripType(string? tripType, IEnumerable<PreparedOrderBooking> preparedBookings)
+        {
+            if (string.Equals(tripType, "RoundTrip", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(tripType, "roundTrip", StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(tripType, "round-trip", StringComparison.OrdinalIgnoreCase))
+            {
+                return "RoundTrip";
+            }
+
+            return preparedBookings.Any(prepared => string.Equals(prepared.Booking.JourneyDirection, "Return", StringComparison.OrdinalIgnoreCase))
+                ? "RoundTrip"
+                : "OneWay";
+        }
+
+        private static string NormalizeJourneyDirection(string? direction)
+            => string.Equals(direction, "Return", StringComparison.OrdinalIgnoreCase)
+                ? "Return"
+                : "Outbound";
 
         private async Task<IDbContextTransaction?> BeginTransactionIfRelationalAsync()
         {

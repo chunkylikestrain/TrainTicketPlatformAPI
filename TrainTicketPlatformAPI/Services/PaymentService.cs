@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using TrainTicketPlatformAPI.Contracts.Loyalty;
 using TrainTicketPlatformAPI.Contracts.Payments;
 using TrainTicketPlatformAPI.Data;
 using TrainTicketPlatformAPI.Models;
@@ -11,13 +12,15 @@ namespace TrainTicketPlatformAPI.Services
         public const string FailToken = "tok_fail";
 
         private readonly TrainTicketDbContext _db;
+        private readonly ILoyaltyService? _loyaltyService;
 
-        public PaymentService(TrainTicketDbContext db)
+        public PaymentService(TrainTicketDbContext db, ILoyaltyService? loyaltyService = null)
         {
             _db = db;
+            _loyaltyService = loyaltyService;
         }
 
-        public async Task<PaymentIntentDto> CreatePaymentIntentAsync(int bookingId)
+        public async Task<PaymentIntentDto> CreatePaymentIntentAsync(int bookingId, int redeemLoyaltyPoints = 0)
         {
             var booking = await _db.Bookings
                 .Include(b => b.Seat)
@@ -27,13 +30,21 @@ namespace TrainTicketPlatformAPI.Services
             EnsureBookingCanBePaid(booking);
 
             var fare = await GetFareForBookingAsync(booking);
+            var originalAmount = GetPayableAmountBeforeLoyalty(booking, fare);
+            var redemption = await CalculateRedemptionAsync(booking.UserId, originalAmount, redeemLoyaltyPoints);
+            booking.LoyaltyPointsRedeemed = redemption.Points;
+            booking.LoyaltyDiscountAmount = redemption.Amount;
+            await _db.SaveChangesAsync();
 
             return new PaymentIntentDto
             {
                 PaymentIntentId = BuildPaymentIntentId(booking.Id),
                 BookingId = booking.Id,
                 BookingIds = new[] { booking.Id },
-                Amount = BookingPricingCalculator.GetPayableAmount(booking, fare),
+                OriginalAmount = originalAmount,
+                Amount = originalAmount - redemption.Amount,
+                LoyaltyPointsRedeemed = redemption.Points,
+                LoyaltyDiscountAmount = redemption.Amount,
                 Currency = fare.Currency,
                 Status = booking.PaymentStatus,
                 ExpiresAtUtc = booking.ExpiresAtUtc,
@@ -41,7 +52,7 @@ namespace TrainTicketPlatformAPI.Services
             };
         }
 
-        public async Task<PaymentIntentDto> CreatePaymentIntentForOrderAsync(int bookingOrderId)
+        public async Task<PaymentIntentDto> CreatePaymentIntentForOrderAsync(int bookingOrderId, int redeemLoyaltyPoints = 0)
         {
             var order = await LoadOrderForPaymentAsync(bookingOrderId)
                 ?? throw new KeyNotFoundException("Booking order not found");
@@ -49,13 +60,21 @@ namespace TrainTicketPlatformAPI.Services
             EnsureOrderCanBePaid(order);
 
             var totals = await GetOrderFareTotalAsync(order);
+            var redemption = await CalculateRedemptionAsync(order.UserId, totals.Amount, redeemLoyaltyPoints);
+            order.LoyaltyPointsRedeemed = redemption.Points;
+            order.LoyaltyDiscountAmount = redemption.Amount;
+            await ApplyOrderRedemptionToBookingsAsync(order, redemption);
+            await _db.SaveChangesAsync();
 
             return new PaymentIntentDto
             {
                 PaymentIntentId = BuildOrderPaymentIntentId(order.Id),
                 BookingOrderId = order.Id,
                 BookingIds = order.Bookings.Select(b => b.Id).Order().ToList(),
-                Amount = totals.Amount,
+                OriginalAmount = totals.Amount,
+                Amount = totals.Amount - redemption.Amount,
+                LoyaltyPointsRedeemed = redemption.Points,
+                LoyaltyDiscountAmount = redemption.Amount,
                 Currency = totals.Currency,
                 Status = order.PaymentStatus,
                 ExpiresAtUtc = order.ExpiresAtUtc,
@@ -92,6 +111,10 @@ namespace TrainTicketPlatformAPI.Services
             }
 
             var fare = await GetFareForBookingAsync(booking);
+            var payableAmount = GetPayableAmountBeforeLoyalty(booking, fare);
+            var redemption = await ValidateStoredRedemptionAsync(booking.UserId, payableAmount, booking.LoyaltyPointsRedeemed, booking.LoyaltyDiscountAmount);
+            var finalAmount = payableAmount - redemption.Amount;
+            var paymentDate = DateTime.UtcNow;
             var status = paymentMethodToken.Trim() switch
             {
                 SuccessToken => "Successful",
@@ -104,8 +127,10 @@ namespace TrainTicketPlatformAPI.Services
                 BookingId = booking.Id,
                 PaymentIntentId = paymentIntentId,
                 PaymentMethodToken = paymentMethodToken.Trim(),
-                PaymentDate = DateTime.UtcNow,
-                Amount = BookingPricingCalculator.GetPayableAmount(booking, fare),
+                PaymentDate = paymentDate,
+                Amount = finalAmount,
+                LoyaltyPointsRedeemed = redemption.Points,
+                LoyaltyDiscountAmount = redemption.Amount,
                 Status = status
             };
 
@@ -113,9 +138,21 @@ namespace TrainTicketPlatformAPI.Services
             booking.PaymentStatus = status;
             if (status == "Successful")
             {
+                var hadStoredAmount = booking.Amount > 0m;
+                booking.Amount = finalAmount;
+                booking.Currency = hadStoredAmount && !string.IsNullOrWhiteSpace(booking.Currency)
+                    ? booking.Currency
+                    : fare.Currency;
+                booking.LoyaltyPointsRedeemed = redemption.Points;
+                booking.LoyaltyDiscountAmount = redemption.Amount;
                 booking.BookingStatus = "Confirmed";
-                booking.ConfirmedAtUtc ??= DateTime.UtcNow;
+                booking.ConfirmedAtUtc ??= paymentDate;
                 EnsureTicketMetadata(booking);
+                if (_loyaltyService != null)
+                {
+                    await _loyaltyService.RedeemForBookingPaymentAsync(booking, redemption.Points, redemption.Amount, paymentDate);
+                    await _loyaltyService.AwardTicketPurchaseAsync(booking, paymentDate);
+                }
             }
 
             await _db.SaveChangesAsync();
@@ -196,6 +233,10 @@ namespace TrainTicketPlatformAPI.Services
             }
 
             var totals = await GetOrderFareTotalAsync(order);
+            var redemption = await ValidateStoredRedemptionAsync(order.UserId, totals.Amount, order.LoyaltyPointsRedeemed, order.LoyaltyDiscountAmount);
+            var finalAmount = totals.Amount - redemption.Amount;
+            await ApplyOrderRedemptionToBookingsAsync(order, redemption);
+            var paymentDate = DateTime.UtcNow;
             var status = paymentMethodToken.Trim() switch
             {
                 SuccessToken => "Successful",
@@ -208,29 +249,39 @@ namespace TrainTicketPlatformAPI.Services
                 BookingOrderId = order.Id,
                 PaymentIntentId = paymentIntentId,
                 PaymentMethodToken = paymentMethodToken.Trim(),
-                PaymentDate = DateTime.UtcNow,
-                Amount = totals.Amount,
+                PaymentDate = paymentDate,
+                Amount = finalAmount,
+                LoyaltyPointsRedeemed = redemption.Points,
+                LoyaltyDiscountAmount = redemption.Amount,
                 Status = status
             };
 
             _db.Payments.Add(payment);
             order.PaymentStatus = status;
 
+            if (status == "Successful" && _loyaltyService != null)
+                await _loyaltyService.RedeemForOrderPaymentAsync(order, redemption.Points, redemption.Amount, paymentDate);
+
             foreach (var booking in order.Bookings)
             {
                 booking.PaymentStatus = status;
                 if (status == "Successful")
                 {
+                    await EnsureStoredAmountAsync(booking, forceRecalculate: booking.LoyaltyDiscountAmount > 0m);
                     booking.BookingStatus = "Confirmed";
-                    booking.ConfirmedAtUtc ??= DateTime.UtcNow;
+                    booking.ConfirmedAtUtc ??= paymentDate;
                     EnsureTicketMetadata(booking);
+                    if (_loyaltyService != null)
+                        await _loyaltyService.AwardTicketPurchaseAsync(booking, paymentDate);
                 }
             }
 
             if (status == "Successful")
             {
+                order.LoyaltyPointsRedeemed = redemption.Points;
+                order.LoyaltyDiscountAmount = redemption.Amount;
                 order.BookingStatus = "Confirmed";
-                order.ConfirmedAtUtc ??= DateTime.UtcNow;
+                order.ConfirmedAtUtc ??= paymentDate;
             }
 
             await _db.SaveChangesAsync();
@@ -342,13 +393,108 @@ namespace TrainTicketPlatformAPI.Services
             foreach (var booking in order.Bookings)
             {
                 var fare = await GetFareForBookingAsync(booking);
-                amount += BookingPricingCalculator.GetPayableAmount(booking, fare);
+                amount += GetPayableAmountBeforeLoyalty(booking, fare);
                 currency = string.IsNullOrWhiteSpace(currency)
                     ? !string.IsNullOrWhiteSpace(booking.Currency) ? booking.Currency : fare.Currency
                     : currency;
             }
 
             return (amount, currency);
+        }
+
+        private async Task EnsureStoredAmountAsync(Booking booking, bool forceRecalculate = false)
+        {
+            if (!forceRecalculate && booking.Amount > 0m && !string.IsNullOrWhiteSpace(booking.Currency))
+                return;
+
+            var fare = await GetFareForBookingAsync(booking);
+            var hadStoredAmount = booking.Amount > 0m;
+            var originalAmount = GetPayableAmountBeforeLoyalty(booking, fare);
+            booking.Amount = Math.Max(0m, originalAmount - booking.LoyaltyDiscountAmount);
+            booking.Currency = hadStoredAmount && !string.IsNullOrWhiteSpace(booking.Currency)
+                ? booking.Currency
+                : fare.Currency;
+        }
+
+        private async Task<LoyaltyRedemptionQuote> CalculateRedemptionAsync(
+            int? userId,
+            decimal payableAmount,
+            int requestedPoints)
+        {
+            if (_loyaltyService == null)
+            {
+                if (requestedPoints > 0)
+                    throw new InvalidOperationException("Loyalty redemption is unavailable");
+
+                return new LoyaltyRedemptionQuote();
+            }
+
+            return await _loyaltyService.CalculateRedemptionAsync(userId, payableAmount, requestedPoints);
+        }
+
+        private async Task<LoyaltyRedemptionQuote> ValidateStoredRedemptionAsync(
+            int? userId,
+            decimal payableAmount,
+            int storedPoints,
+            decimal storedAmount)
+        {
+            var quote = await CalculateRedemptionAsync(userId, payableAmount, storedPoints);
+            if (quote.Points != storedPoints || quote.Amount != storedAmount)
+                throw new InvalidOperationException("Loyalty redemption is no longer available. Create a new payment intent.");
+
+            return quote;
+        }
+
+        private static decimal GetPayableAmountBeforeLoyalty(Booking booking, Fare fare)
+        {
+            var amount = BookingPricingCalculator.GetPayableAmount(booking, fare);
+            return booking.Amount > 0m && booking.LoyaltyDiscountAmount > 0m
+                ? amount + booking.LoyaltyDiscountAmount
+                : amount;
+        }
+
+        private async Task ApplyOrderRedemptionToBookingsAsync(BookingOrder order, LoyaltyRedemptionQuote redemption)
+        {
+            var bookings = order.Bookings
+                .OrderBy(booking => booking.Id)
+                .ToList();
+
+            if (bookings.Count == 0)
+                return;
+
+            var originalAmounts = new Dictionary<int, decimal>();
+            foreach (var booking in bookings)
+            {
+                var fare = await GetFareForBookingAsync(booking);
+                originalAmounts[booking.Id] = GetPayableAmountBeforeLoyalty(booking, fare);
+            }
+
+            var total = originalAmounts.Values.Sum();
+            var remainingAmount = redemption.Amount;
+            var remainingPoints = redemption.Points;
+
+            for (var index = 0; index < bookings.Count; index++)
+            {
+                var booking = bookings[index];
+                var originalAmount = originalAmounts[booking.Id];
+                var isLast = index == bookings.Count - 1;
+                var discountAmount = isLast || total <= 0m
+                    ? remainingAmount
+                    : Math.Round(redemption.Amount * (originalAmount / total), 2, MidpointRounding.AwayFromZero);
+                var points = isLast || total <= 0m
+                    ? remainingPoints
+                    : (int)Math.Round(redemption.Points * (originalAmount / total), MidpointRounding.AwayFromZero);
+
+                discountAmount = Math.Min(discountAmount, originalAmount);
+                points = Math.Min(points, remainingPoints);
+
+                booking.LoyaltyDiscountAmount = discountAmount;
+                booking.LoyaltyPointsRedeemed = points;
+                booking.Amount = Math.Max(0m, originalAmount - discountAmount);
+
+                remainingAmount = Math.Max(0m, remainingAmount - discountAmount);
+                remainingPoints = Math.Max(0, remainingPoints - points);
+            }
         }
 
         private async Task<BookingOrder?> LoadOrderForPaymentAsync(int bookingOrderId)

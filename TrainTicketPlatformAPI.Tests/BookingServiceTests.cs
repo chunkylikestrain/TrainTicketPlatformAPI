@@ -624,6 +624,72 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
+        public async Task CreateBookingOrderAsync_PreservesRoundTripJourneyMetadata()
+        {
+            var db = NewDb("BookingOrderPreservesRoundTripJourneyMetadata");
+            SeedTrain(db);
+            SeedSeat(db, 1, true);
+            SeedSeat(db, 2, true);
+            SeedTripRoute(db);
+            var departure = DateTime.UtcNow.Date.AddDays(3).AddHours(8);
+            db.Trips.AddRange(
+                new Trip
+                {
+                    Id = 10,
+                    TrainId = 1,
+                    TrainRouteId = 1,
+                    DepartureTime = departure,
+                    ArrivalTime = departure.AddHours(2),
+                    Status = "Scheduled"
+                },
+                new Trip
+                {
+                    Id = 11,
+                    TrainId = 1,
+                    TrainRouteId = 1,
+                    DepartureTime = departure.AddDays(1).AddHours(8),
+                    ArrivalTime = departure.AddDays(1).AddHours(10),
+                    Status = "Scheduled"
+                });
+            await db.SaveChangesAsync();
+
+            var svc = new BookingService(db);
+            var order = await svc.CreateBookingOrderAsync(
+                new BookingOrder
+                {
+                    UserId = 42,
+                    TripType = "RoundTrip",
+                    SegmentCount = 2
+                },
+                new[]
+                {
+                    new Booking
+                    {
+                        TrainId = 1,
+                        TripId = 10,
+                        SeatId = 1,
+                        PassengerName = "Outbound Passenger",
+                        JourneyDirection = "Outbound",
+                        JourneySegmentIndex = 0
+                    },
+                    new Booking
+                    {
+                        TrainId = 1,
+                        TripId = 11,
+                        SeatId = 2,
+                        PassengerName = "Return Passenger",
+                        JourneyDirection = "Return",
+                        JourneySegmentIndex = 0
+                    }
+                });
+
+            Assert.That(order.TripType, Is.EqualTo("RoundTrip"));
+            Assert.That(order.SegmentCount, Is.EqualTo(2));
+            Assert.That(order.Bookings.Select(booking => booking.JourneyDirection), Is.EquivalentTo(new[] { "Outbound", "Return" }));
+            Assert.That(order.Bookings.Select(booking => booking.JourneySegmentIndex), Is.All.EqualTo(0));
+        }
+
+        [Test]
         public async Task CreateBookingOrderAsync_AllowsSameSeatOnNonOverlappingSegments()
         {
             var db = NewDb("BookingOrderAllowsSameSeatOnNonOverlappingSegments");

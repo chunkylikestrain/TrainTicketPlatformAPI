@@ -3,7 +3,10 @@ export type PaymentIntent = {
   bookingId: number | null;
   bookingOrderId: number | null;
   bookingIds: number[];
+  originalAmount: number;
   amount: number;
+  loyaltyPointsRedeemed: number;
+  loyaltyDiscountAmount: number;
   currency: string;
   status: string;
   expiresAtUtc: string | null;
@@ -19,4 +22,6 @@ export type Payment = {
   paymentDate: string;
   status: string;
   amount: number;
+  loyaltyPointsRedeemed: number;
+  loyaltyDiscountAmount: number;
 };

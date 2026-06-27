@@ -12,6 +12,14 @@ namespace TrainTicketPlatformAPI.Tests
 
         private async Task SeedPaymentGraphAsync(TrainTicketDbContext db)
         {
+            db.Users.Add(new User
+            {
+                Id = 42,
+                Email = "loyal-passenger@example.com",
+                PasswordHash = "hash",
+                Phone = "555-4242",
+                Role = "Passenger"
+            });
             db.Trains.Add(new Train
             {
                 Id = 1,
@@ -113,6 +121,35 @@ namespace TrainTicketPlatformAPI.Tests
             await db.SaveChangesAsync();
         }
 
+        private async Task SeedLoyaltyPointsAsync(TrainTicketDbContext db, int points = 1000)
+        {
+            var account = new LoyaltyAccount
+            {
+                UserId = 42,
+                RedeemablePoints = points,
+                RedeemableValuePln = points / 100m,
+                CreatedAtUtc = DateTime.UtcNow.AddDays(-1),
+                UpdatedAtUtc = DateTime.UtcNow.AddDays(-1)
+            };
+
+            db.LoyaltyAccounts.Add(account);
+            db.LoyaltyTransactions.Add(new LoyaltyTransaction
+            {
+                LoyaltyAccount = account,
+                Type = "Adjustment",
+                Status = "Available",
+                Points = points,
+                SourceAmount = 0m,
+                Currency = "PLN",
+                Reference = "TEST-POINTS",
+                Description = "Test points",
+                TransactionDateUtc = DateTime.UtcNow.AddDays(-1),
+                ValidFromUtc = DateTime.UtcNow.AddDays(-1),
+                ExpiresAtUtc = DateTime.UtcNow.AddYears(1)
+            });
+            await db.SaveChangesAsync();
+        }
+
         [Test]
         public async Task CreatePaymentIntentAsync_ReturnsIntentForBooking()
         {
@@ -128,6 +165,29 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.That(intent.Currency, Is.EqualTo("USD"));
             Assert.That(intent.TestPaymentMethodTokens, Does.Contain(PaymentService.SuccessToken));
             Assert.That(intent.TestPaymentMethodTokens, Does.Contain(PaymentService.FailToken));
+        }
+
+        [Test]
+        public async Task CreatePaymentIntentAsync_AppliesLoyaltyRedemption()
+        {
+            var db = NewDb("PayIntent_LoyaltySingle");
+            await SeedPaymentGraphAsync(db);
+            await SeedLoyaltyPointsAsync(db);
+            var svc = new PaymentService(db, new LoyaltyService(db));
+
+            var intent = await svc.CreatePaymentIntentAsync(1, redeemLoyaltyPoints: 200);
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(intent.OriginalAmount, Is.EqualTo(49.99m));
+                Assert.That(intent.Amount, Is.EqualTo(47.99m));
+                Assert.That(intent.LoyaltyPointsRedeemed, Is.EqualTo(200));
+                Assert.That(intent.LoyaltyDiscountAmount, Is.EqualTo(2m));
+            });
+
+            var booking = await db.Bookings.FindAsync(1);
+            Assert.That(booking!.LoyaltyPointsRedeemed, Is.EqualTo(200));
+            Assert.That(booking.LoyaltyDiscountAmount, Is.EqualTo(2m));
         }
 
         [Test]
@@ -186,6 +246,61 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
+        public async Task ConfirmPaymentAsync_AwardsLoyaltyPoints_ForLoggedInTicketPurchase()
+        {
+            var db = NewDb("Pay_LoyaltySingleTicket");
+            await SeedPaymentGraphAsync(db);
+            var svc = new PaymentService(db, new LoyaltyService(db));
+
+            await svc.ConfirmPaymentAsync("pi_1", PaymentService.SuccessToken);
+
+            var account = db.LoyaltyAccounts.Single(account => account.UserId == 42);
+            var transaction = db.LoyaltyTransactions.Single();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(account.RedeemablePoints, Is.EqualTo(249));
+                Assert.That(account.RedeemableValuePln, Is.EqualTo(2.49m));
+                Assert.That(transaction.Type, Is.EqualTo("TicketPurchase"));
+                Assert.That(transaction.Status, Is.EqualTo("Available"));
+                Assert.That(transaction.Points, Is.EqualTo(249));
+                Assert.That(transaction.SourceAmount, Is.EqualTo(49.99m));
+                Assert.That(transaction.Currency, Is.EqualTo("USD"));
+                Assert.That(transaction.BookingId, Is.EqualTo(1));
+                Assert.That(transaction.BookingOrderId, Is.Null);
+            });
+        }
+
+        [Test]
+        public async Task ConfirmPaymentAsync_RedeemsPointsAndAwardsPointsOnCashAmount()
+        {
+            var db = NewDb("Pay_LoyaltyRedeemSingleTicket");
+            await SeedPaymentGraphAsync(db);
+            await SeedLoyaltyPointsAsync(db);
+            var svc = new PaymentService(db, new LoyaltyService(db));
+
+            await svc.CreatePaymentIntentAsync(1, redeemLoyaltyPoints: 200);
+            var payment = await svc.ConfirmPaymentAsync("pi_1", PaymentService.SuccessToken);
+
+            var account = db.LoyaltyAccounts.Single(account => account.UserId == 42);
+            var redemption = db.LoyaltyTransactions.Single(transaction => transaction.Type == "Redemption");
+            var purchase = db.LoyaltyTransactions.Single(transaction => transaction.Type == "TicketPurchase");
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(payment.Amount, Is.EqualTo(47.99m));
+                Assert.That(payment.LoyaltyPointsRedeemed, Is.EqualTo(200));
+                Assert.That(payment.LoyaltyDiscountAmount, Is.EqualTo(2m));
+                Assert.That(redemption.Points, Is.EqualTo(-200));
+                Assert.That(redemption.SourceAmount, Is.EqualTo(2m));
+                Assert.That(purchase.Points, Is.EqualTo(239));
+                Assert.That(purchase.SourceAmount, Is.EqualTo(47.99m));
+                Assert.That(account.RedeemablePoints, Is.EqualTo(1039));
+                Assert.That(account.RedeemableValuePln, Is.EqualTo(10.39m));
+            });
+        }
+
+        [Test]
         public async Task ConfirmPaymentAsync_Fails_ForFailToken()
         {
             var db = NewDb("Pay_TokenFail");
@@ -222,6 +337,70 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.That(bookings.Select(booking => booking.PaymentStatus), Is.All.EqualTo("Successful"));
             Assert.That(bookings.Select(booking => booking.BookingStatus), Is.All.EqualTo("Confirmed"));
             Assert.That(bookings.Select(booking => booking.TicketNumber), Is.All.Not.Empty);
+        }
+
+        [Test]
+        public async Task ConfirmPaymentAsync_AwardsLoyaltyPoints_ForEachOrderTicket()
+        {
+            var db = NewDb("Pay_LoyaltyOrderTickets");
+            await SeedBookingOrderAsync(db);
+            var svc = new PaymentService(db, new LoyaltyService(db));
+
+            await svc.ConfirmPaymentAsync("pi_order_1", PaymentService.SuccessToken);
+
+            var account = db.LoyaltyAccounts.Single(account => account.UserId == 42);
+            var transactions = db.LoyaltyTransactions
+                .OrderBy(transaction => transaction.BookingId)
+                .ToList();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(transactions, Has.Count.EqualTo(2));
+                Assert.That(transactions.Select(transaction => transaction.Type), Is.All.EqualTo("TicketPurchase"));
+                Assert.That(transactions.Select(transaction => transaction.Status), Is.All.EqualTo("Available"));
+                Assert.That(transactions.Select(transaction => transaction.Points), Is.All.EqualTo(249));
+                Assert.That(transactions.Select(transaction => transaction.BookingOrderId), Is.All.EqualTo(1));
+                Assert.That(transactions.Select(transaction => transaction.BookingId), Is.EquivalentTo(new[] { 1, 2 }));
+                Assert.That(account.RedeemablePoints, Is.EqualTo(498));
+                Assert.That(account.RedeemableValuePln, Is.EqualTo(4.98m));
+            });
+        }
+
+        [Test]
+        public async Task ConfirmPaymentAsync_RedeemsPointsAcrossOrderTickets()
+        {
+            var db = NewDb("Pay_LoyaltyRedeemOrderTickets");
+            await SeedBookingOrderAsync(db);
+            await SeedLoyaltyPointsAsync(db);
+            var svc = new PaymentService(db, new LoyaltyService(db));
+
+            var intent = await svc.CreatePaymentIntentForOrderAsync(1, redeemLoyaltyPoints: 200);
+            var payment = await svc.ConfirmPaymentAsync("pi_order_1", PaymentService.SuccessToken);
+
+            var account = db.LoyaltyAccounts.Single(account => account.UserId == 42);
+            var order = await db.BookingOrders.FindAsync(1);
+            var bookings = db.Bookings.OrderBy(booking => booking.Id).ToList();
+            var redemption = db.LoyaltyTransactions.Single(transaction => transaction.Type == "Redemption");
+            var purchases = db.LoyaltyTransactions
+                .Where(transaction => transaction.Type == "TicketPurchase")
+                .OrderBy(transaction => transaction.BookingId)
+                .ToList();
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(intent.OriginalAmount, Is.EqualTo(99.98m));
+                Assert.That(intent.Amount, Is.EqualTo(97.98m));
+                Assert.That(payment.Amount, Is.EqualTo(97.98m));
+                Assert.That(payment.LoyaltyPointsRedeemed, Is.EqualTo(200));
+                Assert.That(order!.LoyaltyPointsRedeemed, Is.EqualTo(200));
+                Assert.That(order.LoyaltyDiscountAmount, Is.EqualTo(2m));
+                Assert.That(bookings.Select(booking => booking.LoyaltyPointsRedeemed), Is.All.EqualTo(100));
+                Assert.That(bookings.Select(booking => booking.LoyaltyDiscountAmount), Is.All.EqualTo(1m));
+                Assert.That(bookings.Select(booking => booking.Amount), Is.All.EqualTo(48.99m));
+                Assert.That(redemption.Points, Is.EqualTo(-200));
+                Assert.That(purchases.Select(transaction => transaction.Points), Is.All.EqualTo(244));
+                Assert.That(account.RedeemablePoints, Is.EqualTo(1288));
+            });
         }
 
         [Test]

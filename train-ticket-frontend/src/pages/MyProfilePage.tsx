@@ -4,21 +4,23 @@ import axios from "axios";
 import { getCurrentUser } from "../api/authApi";
 import { getMyTickets, refundMyTicket } from "../api/bookingApi";
 import { clearAuthSession, getProfileDisplayName, saveCurrentUser } from "../api/authSession";
+import { getMyLoyaltyAccount, getMyLoyaltyTransactions } from "../api/loyaltyApi";
 import { downloadOrderTicketPdf, downloadTicketPdf } from "../api/ticketApi";
 import type { CurrentUser } from "../types/auth";
 import type { Booking } from "../types/booking";
+import type { LoyaltyAccount, LoyaltyTransaction } from "../types/loyalty";
 import { getDisruptionMessage, getDisruptionSeverity, hasDisruption } from "../utils/disruptions";
-import { groupTicketsByOrder, type TicketGroup } from "../utils/ticketGrouping";
+import { groupTicketsByJourney, groupTicketsByOrder, type TicketGroup } from "../utils/ticketGrouping";
 
 const accountMenuItems = [
-  "My tickets",
-  "My invoices",
-  "My data",
-  "\"My IC\" Program",
-  "My shopping profiles",
-  "Settings",
-  "Useful links",
-];
+  { key: "tickets", label: "My tickets" },
+  { key: "invoices", label: "My invoices" },
+  { key: "data", label: "My data" },
+  { key: "myic", label: "\"My IC\" Program" },
+  { key: "shopping", label: "My shopping profiles" },
+  { key: "settings", label: "Settings" },
+  { key: "links", label: "Useful links" },
+] as const;
 
 const ticketSections = [
   { key: "tickets", label: "Tickets", empty: "You currently have no active tickets. Proceed to purchase tickets." },
@@ -28,6 +30,7 @@ const ticketSections = [
 ] as const;
 
 type TicketSectionKey = typeof ticketSections[number]["key"];
+type AccountSectionKey = typeof accountMenuItems[number]["key"];
 
 function LegalFooter() {
   return (
@@ -63,9 +66,14 @@ function MyProfilePage() {
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [displayName, setDisplayName] = useState("");
   const [tickets, setTickets] = useState<Booking[]>([]);
+  const [loyaltyAccount, setLoyaltyAccount] = useState<LoyaltyAccount | null>(null);
+  const [loyaltyTransactions, setLoyaltyTransactions] = useState<LoyaltyTransaction[]>([]);
   const [ticketError, setTicketError] = useState("");
+  const [loyaltyError, setLoyaltyError] = useState("");
+  const [activeAccountSection, setActiveAccountSection] = useState<AccountSectionKey>("tickets");
   const [activeTicketSection, setActiveTicketSection] = useState<TicketSectionKey>("tickets");
   const [isTicketsLoading, setIsTicketsLoading] = useState(false);
+  const [isLoyaltyLoading, setIsLoyaltyLoading] = useState(false);
   const [isDownloadingTicketId, setIsDownloadingTicketId] = useState<number | null>(null);
   const [isReturningTicketId, setIsReturningTicketId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(Boolean(localStorage.getItem("authToken")));
@@ -102,7 +110,7 @@ function MyProfilePage() {
   }, []);
 
   useEffect(() => {
-    if (!currentUser) {
+    if (!currentUser || activeAccountSection !== "tickets") {
       setTickets([]);
       return;
     }
@@ -121,7 +129,24 @@ function MyProfilePage() {
       .then(setTickets)
       .catch(() => setTicketError("Could not load your tickets. Try refreshing after the API is running."))
       .finally(() => setIsTicketsLoading(false));
-  }, [activeTicketSection, currentUser]);
+  }, [activeAccountSection, activeTicketSection, currentUser]);
+
+  useEffect(() => {
+    if (!currentUser || activeAccountSection !== "myic") {
+      return;
+    }
+
+    setIsLoyaltyLoading(true);
+    setLoyaltyError("");
+
+    Promise.all([getMyLoyaltyAccount(), getMyLoyaltyTransactions()])
+      .then(([account, transactions]) => {
+        setLoyaltyAccount(account);
+        setLoyaltyTransactions(transactions);
+      })
+      .catch(() => setLoyaltyError("Could not load My IC points. Try refreshing after the API is running."))
+      .finally(() => setIsLoyaltyLoading(false));
+  }, [activeAccountSection, currentUser]);
 
   function handleLogout() {
     clearAuthSession();
@@ -207,6 +232,13 @@ function MyProfilePage() {
   }
 
   const ticketGroups = groupTicketsByOrder(tickets);
+  const loyaltyRows = buildLoyaltyRows(loyaltyTransactions);
+  const redeemablePoints = loyaltyAccount?.redeemablePoints ?? 0;
+  const pendingPoints = loyaltyAccount?.pendingPoints ?? 0;
+  const expiringPoints = loyaltyAccount?.expiringPoints ?? 0;
+  const savedValue = loyaltyAccount?.redeemableValuePln ?? 0;
+  const earnRate = loyaltyAccount?.earnRatePointsPerPln ?? 5;
+  const redeemRate = loyaltyAccount?.redeemRatePointsPerPln ?? 100;
 
   return (
     <main className="tickets-page profile-page">
@@ -235,24 +267,25 @@ function MyProfilePage() {
 
         <div className="account-layout">
           <aside className="account-sidebar" aria-label="Account menu">
-            {accountMenuItems.map((item, index) => (
+            {accountMenuItems.map((item) => (
               <button
                 className={
-                  currentUser && index === 0
+                  currentUser && activeAccountSection === item.key
                     ? "account-menu-button account-menu-button-active"
                     : currentUser
                       ? "account-menu-button"
                       : "account-menu-button account-menu-button-muted"
                 }
-                key={item}
+                key={item.key}
+                onClick={() => currentUser && setActiveAccountSection(item.key)}
                 type="button"
               >
-                {item}
+                {item.label}
               </button>
             ))}
           </aside>
 
-          {currentUser ? (
+          {currentUser && activeAccountSection === "tickets" ? (
             <section className="ticket-dashboard profile-dashboard">
               <h2>My tickets</h2>
               <div className="ticket-tabs" role="tablist" aria-label="Ticket sections">
@@ -294,7 +327,7 @@ function MyProfilePage() {
                         <strong>{group.isOrder ? `Order #${group.orderId}` : firstTicket.ticketNumber || firstTicket.bookingReference}</strong>
                         <small>
                           {group.tickets.length} {group.tickets.length === 1 ? "ticket" : "tickets"}
-                          {!group.isOrder && <> · Booking: <b>{firstTicket.bookingReference}</b></>}
+                          {!group.isOrder && <> - Booking: <b>{firstTicket.bookingReference}</b></>}
                         </small>
                       </p>
                     </div>
@@ -327,24 +360,27 @@ function MyProfilePage() {
                           </div>
                         )}
 
-                        <div className="ticket-route-row">
-                          <span>Route</span>
-                          <strong>{firstTicket.route || "Selected route"}</strong>
-                          <em>{firstTicket.trainName || "Train"}</em>
-                        </div>
-
                         <div className="ticket-passenger-list">
-                        {group.tickets.map((ticket) => (
-                        <div className="ticket-price-row" key={ticket.id}>
-                          <span>
-                            <b>{ticket.passengerName || currentUser.email}</b>
-                            {ticket.seatLabel || `Seat ${ticket.seatId}`} · {ticket.discountName || "Normal Ticket"}
-                          </span>
-                          <span>
-                            <b>Price</b>
-                            {formatMoney(ticket.amount)}
-                          </span>
-                        </div>
+                        {groupTicketsByJourney(group.tickets).map((journey) => (
+                          <section className="ticket-journey-group" key={journey.direction}>
+                            <div className="ticket-route-row">
+                              <span>{journey.direction}</span>
+                              <strong>{buildJourneyRoute(journey.tickets)}</strong>
+                              <em>{buildJourneyTrains(journey.tickets)}</em>
+                            </div>
+                            {journey.tickets.map((ticket) => (
+                            <div className="ticket-price-row" key={ticket.id}>
+                              <span>
+                                <b>{ticket.passengerName || currentUser.email}</b>
+                                {ticket.seatLabel || `Seat ${ticket.seatId}`} · {ticket.discountName || "Normal Ticket"}
+                              </span>
+                              <span>
+                                <b>Price</b>
+                                {formatMoney(ticket.amount)}
+                              </span>
+                            </div>
+                            ))}
+                          </section>
                         ))}
                         {group.isOrder && (
                           <div className="ticket-order-total">
@@ -391,6 +427,80 @@ function MyProfilePage() {
                 })
               )}
             </section>
+          ) : currentUser && activeAccountSection === "myic" ? (
+            <section className="ticket-dashboard my-ic-dashboard">
+              <h2>"My IC" Program</h2>
+
+              <section className="my-ic-hero">
+                <div className="my-ic-points-total">
+                  <span aria-hidden="true">IC</span>
+                  <strong>{redeemablePoints.toLocaleString("en-GB")} points</strong>
+                  <small>Points to redeem</small>
+                </div>
+
+                <div className="my-ic-stat-grid">
+                  <article>
+                    <strong>+ {pendingPoints.toLocaleString("en-GB")} points</strong>
+                    <span>Waiting</span>
+                  </article>
+                  <article>
+                    <strong>{expiringPoints.toLocaleString("en-GB")} points</strong>
+                    <span>Expiring</span>
+                  </article>
+                </div>
+              </section>
+
+              <section className="my-ic-savings">
+                <strong>{formatMoney(savedValue)}</strong>
+                <span>Available ticket value from your points</span>
+              </section>
+
+              <section className="my-ic-history">
+                <h3>Transaction history</h3>
+                {isLoyaltyLoading && <div className="status-message">Loading My IC transactions...</div>}
+                {loyaltyError && <div className="status-message">{loyaltyError}</div>}
+                {!isLoyaltyLoading && !loyaltyError && loyaltyRows.length === 0 ? (
+                  <div className="status-message">Buy a confirmed ticket to start earning My IC points.</div>
+                ) : (
+                  <div className="my-ic-table" role="table" aria-label="My IC transaction history">
+                    <div className="my-ic-table-head" role="row">
+                      <span>Type</span>
+                      <span>Ticket no.</span>
+                      <span>Transaction date</span>
+                      <span>Status</span>
+                      <span>Valid</span>
+                      <span>Number of points</span>
+                    </div>
+                    {loyaltyRows.map((row) => (
+                      <div className="my-ic-table-row" role="row" key={row.id}>
+                        <strong>{formatLoyaltyType(row.type)}</strong>
+                        <span>{row.reference || "-"}</span>
+                        <span>{formatTicketDate(row.transactionDate)}</span>
+                        <span>{row.status}</span>
+                        <span>
+                          from {formatTicketDate(row.validFrom)}
+                          {row.expiresAt ? ` to ${formatTicketDate(row.expiresAt)}` : ""}
+                        </span>
+                        <b>{formatSignedPoints(row.points)}</b>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </section>
+
+              <details className="my-ic-faq">
+                <summary>Frequently asked questions</summary>
+                <p>
+                  RailBook awards {earnRate.toLocaleString("en-GB")} points for every 1 PLN spent on confirmed
+                  tickets. Every {redeemRate.toLocaleString("en-GB")} points can redeem 1 PLN in a future checkout step.
+                </p>
+              </details>
+            </section>
+          ) : currentUser ? (
+            <section className="profile-signin-panel profile-loading-panel">
+              <h2>{accountMenuItems.find((item) => item.key === activeAccountSection)?.label}</h2>
+              <p>This profile section is ready for a future feature.</p>
+            </section>
           ) : isLoading ? (
             <section className="profile-signin-panel profile-loading-panel" aria-live="polite">
               <h2>Checking your session</h2>
@@ -416,6 +526,57 @@ function MyProfilePage() {
       <LegalFooter />
     </main>
   );
+}
+
+function buildJourneyRoute(tickets: Booking[]) {
+  const first = tickets[0];
+  const last = tickets[tickets.length - 1];
+  if (!first || !last) {
+    return "Selected route";
+  }
+
+  const start = first.route.split(" -> ")[0];
+  const end = last.route.split(" -> ")[1];
+  return start && end ? `${start} -> ${end}` : first.route || "Selected route";
+}
+
+function buildJourneyTrains(tickets: Booking[]) {
+  const trains = [...new Set(tickets.map((ticket) => ticket.trainName).filter(Boolean))];
+  return trains.length > 0 ? trains.join(" + ") : "Train";
+}
+
+function buildLoyaltyRows(transactions: LoyaltyTransaction[]) {
+  return transactions
+    .map((transaction) => ({
+      id: transaction.id,
+      type: transaction.type,
+      reference: transaction.reference,
+      transactionDate: transaction.transactionDateUtc,
+      validFrom: transaction.validFromUtc,
+      expiresAt: transaction.expiresAtUtc,
+      status: transaction.status,
+      points: transaction.points,
+    }))
+    .sort((first, second) => new Date(second.transactionDate).getTime() - new Date(first.transactionDate).getTime());
+}
+
+function formatLoyaltyType(type: string) {
+  if (type === "TicketPurchase") {
+    return (
+      <>
+        Ticket
+        <br />
+        purchase
+      </>
+    );
+  }
+
+  return type.replace(/([a-z])([A-Z])/g, "$1 $2");
+}
+
+function formatSignedPoints(points: number) {
+  const sign = points >= 0 ? "+" : "";
+  return `${sign}${points.toLocaleString("en-GB")} points`;
 }
 
 export default MyProfilePage;

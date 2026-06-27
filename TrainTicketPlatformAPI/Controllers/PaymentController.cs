@@ -95,7 +95,9 @@ namespace TrainTicketPlatformAPI.Controllers
                     if (!CanAccessOrder(order))
                         return Forbid();
 
-                    intent = await _paymentService.CreatePaymentIntentForOrderAsync(request.BookingOrderId.Value);
+                    intent = await _paymentService.CreatePaymentIntentForOrderAsync(
+                        request.BookingOrderId.Value,
+                        request.RedeemLoyaltyPoints);
                 }
                 else
                 {
@@ -103,7 +105,9 @@ namespace TrainTicketPlatformAPI.Controllers
                     if (!CanAccessBooking(booking))
                         return Forbid();
 
-                    intent = await _paymentService.CreatePaymentIntentAsync(request.BookingId.Value);
+                    intent = await _paymentService.CreatePaymentIntentAsync(
+                        request.BookingId.Value,
+                        request.RedeemLoyaltyPoints);
                 }
 
                 return Ok(intent);
@@ -231,7 +235,9 @@ namespace TrainTicketPlatformAPI.Controllers
             PaymentIntentId = payment.PaymentIntentId,
             PaymentDate = payment.PaymentDate,
             Status = payment.Status,
-            Amount = payment.Amount
+            Amount = payment.Amount,
+            LoyaltyPointsRedeemed = payment.LoyaltyPointsRedeemed,
+            LoyaltyDiscountAmount = payment.LoyaltyDiscountAmount
         };
     }
 }

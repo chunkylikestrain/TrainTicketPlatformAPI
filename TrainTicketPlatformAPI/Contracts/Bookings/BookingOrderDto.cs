@@ -5,6 +5,7 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         public int Id { get; set; }
         public int? UserId { get; set; }
         public string OrderReference { get; set; } = string.Empty;
+        public string TripType { get; set; } = string.Empty;
         public string? ItineraryId { get; set; }
         public bool IsItinerary { get; set; }
         public int SegmentCount { get; set; }
@@ -19,6 +20,8 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         public string PaymentStatus { get; set; } = string.Empty;
         public DateTime? ConfirmedAtUtc { get; set; }
         public decimal Amount { get; set; }
+        public int LoyaltyPointsRedeemed { get; set; }
+        public decimal LoyaltyDiscountAmount { get; set; }
         public int TicketCount { get; set; }
         public bool HasTicketArtifacts { get; set; }
         public IEnumerable<BookingOrderSegmentDto> Segments { get; set; } = Enumerable.Empty<BookingOrderSegmentDto>();
@@ -28,6 +31,8 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
     public class BookingOrderSegmentDto
     {
         public int SegmentIndex { get; set; }
+        public string JourneyDirection { get; set; } = string.Empty;
+        public int JourneySegmentIndex { get; set; }
         public int? TripId { get; set; }
         public int TrainId { get; set; }
         public string TrainName { get; set; } = string.Empty;

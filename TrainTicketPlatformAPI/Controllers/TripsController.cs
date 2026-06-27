@@ -22,11 +22,12 @@ namespace TrainTicketPlatformAPI.Controllers
         public async Task<ActionResult<IEnumerable<TripSearchResultDto>>> Search(
             [FromQuery] string from,
             [FromQuery] string to,
-            [FromQuery] DateTime date)
+            [FromQuery] DateTime date,
+            [FromQuery] TimeSpan? time)
         {
             try
             {
-                var trips = await _tripService.SearchTripsAsync(from, to, date);
+                var trips = await _tripService.SearchTripsAsync(from, to, date, time);
                 return Ok(trips);
             }
             catch (InvalidOperationException ex)
@@ -41,11 +42,12 @@ namespace TrainTicketPlatformAPI.Controllers
         public async Task<ActionResult<IEnumerable<TripItinerarySearchResultDto>>> SearchItineraries(
             [FromQuery] string from,
             [FromQuery] string to,
-            [FromQuery] DateTime date)
+            [FromQuery] DateTime date,
+            [FromQuery] TimeSpan? time)
         {
             try
             {
-                var itineraries = await _tripService.SearchItinerariesAsync(from, to, date);
+                var itineraries = await _tripService.SearchItinerariesAsync(from, to, date, time);
                 return Ok(itineraries);
             }
             catch (InvalidOperationException ex)

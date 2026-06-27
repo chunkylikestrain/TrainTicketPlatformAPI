@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrainTicketPlatformAPI.Data;
 
@@ -11,9 +12,11 @@ using TrainTicketPlatformAPI.Data;
 namespace TrainTicketPlatformAPI.Migrations
 {
     [DbContext(typeof(TrainTicketDbContext))]
-    partial class TrainTicketDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260627170515_AddRoundTripOrderJourneys")]
+    partial class AddRoundTripOrderJourneys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,17 +115,6 @@ namespace TrainTicketPlatformAPI.Migrations
 
                     b.Property<int>("JourneySegmentIndex")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("LoyaltyDiscountAmount")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<int>("LoyaltyPointsRedeemed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
 
                     b.Property<string>("PassengerName")
                         .HasMaxLength(200)
@@ -300,17 +292,6 @@ namespace TrainTicketPlatformAPI.Migrations
 
                     b.Property<DateTime?>("JourneyDepartureTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal>("LoyaltyDiscountAmount")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<int>("LoyaltyPointsRedeemed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
 
                     b.Property<string>("OrderReference")
                         .IsRequired()
@@ -501,120 +482,6 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.ToTable("Localities");
                 });
 
-            modelBuilder.Entity("TrainTicketPlatformAPI.Models.LoyaltyAccount", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("ExpiringPoints")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PendingPoints")
-                        .HasColumnType("int");
-
-                    b.Property<int>("RedeemablePoints")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("RedeemableValuePln")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<DateTime>("UpdatedAtUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("LoyaltyAccounts");
-                });
-
-            modelBuilder.Entity("TrainTicketPlatformAPI.Models.LoyaltyTransaction", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("BookingId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("BookingOrderId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Currency")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(8)
-                        .HasColumnType("nvarchar(8)")
-                        .HasDefaultValue("PLN");
-
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(240)
-                        .HasColumnType("nvarchar(240)");
-
-                    b.Property<DateTime?>("ExpiresAtUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("LoyaltyAccountId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Points")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Reference")
-                        .IsRequired()
-                        .HasMaxLength(80)
-                        .HasColumnType("nvarchar(80)");
-
-                    b.Property<decimal>("SourceAmount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.Property<DateTime>("TransactionDateUtc")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasMaxLength(40)
-                        .HasColumnType("nvarchar(40)");
-
-                    b.Property<DateTime>("ValidFromUtc")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookingId");
-
-                    b.HasIndex("BookingOrderId");
-
-                    b.HasIndex("LoyaltyAccountId");
-
-                    b.ToTable("LoyaltyTransactions", t =>
-                        {
-                            t.HasCheckConstraint("CK_LoyaltyTransactions_Status", "[Status] IN ('Pending', 'Available', 'Redeemed', 'Expired', 'Cancelled')");
-
-                            t.HasCheckConstraint("CK_LoyaltyTransactions_Type", "[Type] IN ('TicketPurchase', 'Redemption', 'Adjustment')");
-                        });
-                });
-
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Payment", b =>
                 {
                     b.Property<int>("Id")
@@ -632,17 +499,6 @@ namespace TrainTicketPlatformAPI.Migrations
 
                     b.Property<int?>("BookingOrderId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("LoyaltyDiscountAmount")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<int>("LoyaltyPointsRedeemed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
 
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");
@@ -1377,42 +1233,6 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.Navigation("StateRegion");
                 });
 
-            modelBuilder.Entity("TrainTicketPlatformAPI.Models.LoyaltyAccount", b =>
-                {
-                    b.HasOne("TrainTicketPlatformAPI.Models.User", "User")
-                        .WithOne()
-                        .HasForeignKey("TrainTicketPlatformAPI.Models.LoyaltyAccount", "UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TrainTicketPlatformAPI.Models.LoyaltyTransaction", b =>
-                {
-                    b.HasOne("TrainTicketPlatformAPI.Models.Booking", "Booking")
-                        .WithMany()
-                        .HasForeignKey("BookingId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("TrainTicketPlatformAPI.Models.BookingOrder", "BookingOrder")
-                        .WithMany()
-                        .HasForeignKey("BookingOrderId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("TrainTicketPlatformAPI.Models.LoyaltyAccount", "LoyaltyAccount")
-                        .WithMany("Transactions")
-                        .HasForeignKey("LoyaltyAccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Booking");
-
-                    b.Navigation("BookingOrder");
-
-                    b.Navigation("LoyaltyAccount");
-                });
-
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Payment", b =>
                 {
                     b.HasOne("TrainTicketPlatformAPI.Models.Booking", "Booking")
@@ -1575,11 +1395,6 @@ namespace TrainTicketPlatformAPI.Migrations
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Locality", b =>
                 {
                     b.Navigation("Stations");
-                });
-
-            modelBuilder.Entity("TrainTicketPlatformAPI.Models.LoyaltyAccount", b =>
-                {
-                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Seat", b =>

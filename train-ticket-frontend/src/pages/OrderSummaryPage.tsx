@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
+import { getBookingOrder } from "../api/bookingApi";
 import { getTripById } from "../api/tripApi";
+import type { BookingOrder, BookingOrderSegment } from "../types/booking";
 import type { TripDetails } from "../types/trip";
 import {
   formatTripDate,
@@ -21,6 +23,7 @@ function OrderSummaryPage() {
   const { tripId } = useParams();
   const [searchParams] = useSearchParams();
   const [trip, setTrip] = useState<TripDetails | null>(null);
+  const [order, setOrder] = useState<BookingOrder | null>(null);
   const [tripError, setTripError] = useState("");
   const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
   const email = searchParams.get("email") ?? "";
@@ -53,6 +56,9 @@ function OrderSummaryPage() {
   dataParams.set("class", selectedClass);
   const currentSummaryUrl = `/order-summary/${tripId}?${checkoutParams.toString()}`;
   const discountSelectionUrl = buildDiscountSelectionUrl(currentSummaryUrl, checkoutParams);
+  const orderSegments = order?.segments ?? [];
+  const hasOrderDetails = orderSegments.length > 0;
+  const isRoundTripOrder = order?.tripType === "RoundTrip" || orderSegments.some((segment) => segment.journeyDirection === "Return");
 
   if (bookingId) {
     checkoutParams.set("bookingId", bookingId);
@@ -92,6 +98,21 @@ function OrderSummaryPage() {
       });
   }, [tripId]);
 
+  useEffect(() => {
+    if (!orderId) {
+      setOrder(null);
+      return;
+    }
+
+    getBookingOrder(orderId)
+      .then((loadedOrder) => {
+        setOrder(loadedOrder);
+      })
+      .catch(() => {
+        setOrder(null);
+      });
+  }, [orderId]);
+
   return (
     <main className="order-summary-page">
       <section className="connection-hero order-summary-hero" aria-hidden="true">
@@ -115,24 +136,30 @@ function OrderSummaryPage() {
 
         <section className="final-summary-card">
           <div className="final-summary-top">
-            <div className="final-timeline">
-              <h1>{formatTripDate(trip?.departureTime)}</h1>
-              <div>
-                <span className="final-line" aria-hidden="true" />
-                <p><strong>{formatTripTime(trip?.departureTime)}</strong> {segmentDepartureName ?? trip?.departureStationName ?? "Departure"}</p>
-                <p><strong>{formatTripTime(trip?.arrivalTime)}</strong> {segmentArrivalName ?? trip?.arrivalStationName ?? "Arrival"}</p>
-              </div>
-            </div>
+            {hasOrderDetails ? (
+              <OrderJourneySummary segments={orderSegments} />
+            ) : (
+              <>
+                <div className="final-timeline">
+                  <h1>{formatTripDate(trip?.departureTime)}</h1>
+                  <div>
+                    <span className="final-line" aria-hidden="true" />
+                    <p><strong>{formatTripTime(trip?.departureTime)}</strong> {segmentDepartureName ?? trip?.departureStationName ?? "Departure"}</p>
+                    <p><strong>{formatTripTime(trip?.arrivalTime)}</strong> {segmentArrivalName ?? trip?.arrivalStationName ?? "Arrival"}</p>
+                  </div>
+                </div>
 
-            <div className="final-train-details">
-              <p><strong>{trip?.trainName ?? "Selected train"}</strong></p>
-              <p>
-                {selectedSeatList.length > 1
-                  ? selectedSeatList.map(formatSeatToken).join(", ")
-                  : `Car ${selectedCar}, seat ${selectedSeat}`}
-              </p>
-              <span>A place at the table</span>
-            </div>
+                <div className="final-train-details">
+                  <p><strong>{trip?.trainName ?? "Selected train"}</strong></p>
+                  <p>
+                    {selectedSeatList.length > 1
+                      ? selectedSeatList.map(formatSeatToken).join(", ")
+                      : `Car ${selectedCar}, seat ${selectedSeat}`}
+                  </p>
+                  <span>A place at the table</span>
+                </div>
+              </>
+            )}
 
             <div className="final-passenger-details">
               <span>Time to buy: <strong>9:59</strong></span>
@@ -145,7 +172,7 @@ function OrderSummaryPage() {
 
           <div className="final-price-panel">
             <div>
-              <strong>Outbound journey</strong>
+              <strong>{isRoundTripOrder ? "Round-trip journey" : "Outbound journey"}</strong>
               <span>A-Base price</span>
             </div>
             <div>
@@ -203,6 +230,53 @@ function OrderSummaryPage() {
 function formatSeatToken(token: string) {
   const [car, seat] = token.split("-");
   return car && seat ? `Car ${car}, seat ${seat}` : token;
+}
+
+function OrderJourneySummary({ segments }: { segments: BookingOrderSegment[] }) {
+  const grouped = segments.reduce<Record<string, BookingOrderSegment[]>>((groups, segment) => {
+    const direction = segment.journeyDirection === "Return" ? "Return" : "Outbound";
+    return { ...groups, [direction]: [...(groups[direction] ?? []), segment] };
+  }, {});
+
+  return (
+    <div className="order-journey-summary">
+      {(["Outbound", "Return"] as const).flatMap((direction) => {
+        const journeySegments = grouped[direction] ?? [];
+        if (journeySegments.length === 0) {
+          return [];
+        }
+
+        const first = journeySegments[0];
+        const last = journeySegments[journeySegments.length - 1];
+
+        return (
+          <section className="order-journey-panel" key={direction}>
+            <h1>{direction}</h1>
+            <div className="order-journey-route">
+              <span className="final-line" aria-hidden="true" />
+              <p><strong>{formatTripTime(first.departureTime ?? undefined)}</strong> {getSegmentStart(first)}</p>
+              <p><strong>{formatTripTime(last.arrivalTime ?? undefined)}</strong> {getSegmentEnd(last)}</p>
+            </div>
+            <div className="order-journey-trains">
+              {journeySegments.map((segment) => (
+                <span key={`${direction}-${segment.journeySegmentIndex}-${segment.tripId}`}>
+                  {segment.trainName || "Train"} · {segment.tickets.length} {segment.tickets.length === 1 ? "ticket" : "tickets"}
+                </span>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+function getSegmentStart(segment: BookingOrderSegment) {
+  return segment.route.split(" -> ")[0] || "Departure";
+}
+
+function getSegmentEnd(segment: BookingOrderSegment) {
+  return segment.route.split(" -> ")[1] || "Arrival";
 }
 
 export default OrderSummaryPage;

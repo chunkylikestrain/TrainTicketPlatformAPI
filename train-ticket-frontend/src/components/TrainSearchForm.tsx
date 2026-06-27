@@ -20,17 +20,39 @@ type TrainSearchFormProps = {
 };
 
 function getToday() {
-  return new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+}
+
+function getCurrentLocalTime() {
+  const now = new Date();
+  const hours = String(now.getHours()).padStart(2, "0");
+  const minutes = String(now.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
+}
+
+function addDays(dateValue: string, days: number) {
+  const date = new Date(`${dateValue}T12:00:00`);
+  date.setDate(date.getDate() + days);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
 }
 
 function TrainSearchForm({ compact = false }: TrainSearchFormProps) {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const initialCounts = getPassengerCounts(searchParams);
-  const [departureStation, setDepartureStation] = useState("Rzeszow Glowny");
-  const [arrivalStation, setArrivalStation] = useState("Gdynia Glowna");
-  const [date, setDate] = useState(getToday());
-  const [time, setTime] = useState("13:38");
+  const initialTripType = searchParams.get("tripType") === "roundTrip" ? "roundTrip" : "oneWay";
+  const [departureStation, setDepartureStation] = useState(searchParams.get("departureStation") ?? "Rzeszow Glowny");
+  const [arrivalStation, setArrivalStation] = useState(searchParams.get("arrivalStation") ?? "Gdynia Glowna");
+  const [date, setDate] = useState(searchParams.get("date") ?? getToday());
+  const [time, setTime] = useState(searchParams.get("time") ?? getCurrentLocalTime());
+  const [tripType, setTripType] = useState<"oneWay" | "roundTrip">(initialTripType);
+  const [returnDate, setReturnDate] = useState(searchParams.get("returnDate") ?? addDays(searchParams.get("date") ?? getToday(), 1));
+  const [returnTime, setReturnTime] = useState(searchParams.get("returnTime") ?? getCurrentLocalTime());
   const [adults, setAdults] = useState(initialCounts.adults);
   const [children, setChildren] = useState(initialCounts.children);
   const filters = getFilterCodes(searchParams);
@@ -52,6 +74,25 @@ function TrainSearchForm({ compact = false }: TrainSearchFormProps) {
       .catch(() => setStationError("Station suggestions are unavailable. You can still type a station name."));
   }, []);
 
+  useEffect(() => {
+    const departureFromUrl = searchParams.get("departureStation");
+    const arrivalFromUrl = searchParams.get("arrivalStation");
+
+    if (departureFromUrl) {
+      setDepartureStation(departureFromUrl);
+    }
+
+    if (arrivalFromUrl) {
+      setArrivalStation(arrivalFromUrl);
+    }
+  }, [searchParams, stations]);
+
+  useEffect(() => {
+    if (tripType === "roundTrip" && returnDate < date) {
+      setReturnDate(addDays(date, 1));
+    }
+  }, [date, returnDate, tripType]);
+
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setSearchError("");
@@ -69,11 +110,22 @@ function TrainSearchForm({ compact = false }: TrainSearchFormProps) {
       return;
     }
 
+    if (tripType === "roundTrip" && `${returnDate}T${returnTime || "00:00"}` < `${date}T${time || "00:00"}`) {
+      setSearchError("Return date and time must be after the outbound departure.");
+      return;
+    }
+
     const query = new URLSearchParams({
       departureStation: departure.name,
       arrivalStation: arrival.name,
       date,
+      time,
     });
+    query.set("tripType", tripType);
+    if (tripType === "roundTrip") {
+      query.set("returnDate", returnDate);
+      query.set("returnTime", returnTime);
+    }
     writePurchasePreferenceParams(query, counts, visibleDiscounts, filters);
 
     navigate(`/search?${query.toString()}`);
@@ -109,9 +161,44 @@ function TrainSearchForm({ compact = false }: TrainSearchFormProps) {
     visibleDiscounts,
     filters,
   );
+  currentPreferenceParams.set("departureStation", departureStation);
+  currentPreferenceParams.set("arrivalStation", arrivalStation);
+  currentPreferenceParams.set("date", date);
+  currentPreferenceParams.set("time", time);
+  currentPreferenceParams.set("tripType", tripType);
+  if (tripType === "roundTrip") {
+    currentPreferenceParams.set("returnDate", returnDate);
+    currentPreferenceParams.set("returnTime", returnTime);
+  } else {
+    currentPreferenceParams.delete("returnDate");
+    currentPreferenceParams.delete("returnTime");
+  }
+  const homeReturnUrl = `/?${currentPreferenceParams.toString()}`;
 
   return (
     <form className={`journey-search ${compact ? "journey-search-compact" : ""}`} onSubmit={handleSubmit}>
+      <fieldset className="trip-type-toggle">
+        <legend>Journey type</legend>
+        <label>
+          <input
+            checked={tripType === "oneWay"}
+            name="tripType"
+            onChange={() => setTripType("oneWay")}
+            type="radio"
+          />
+          <span>One way</span>
+        </label>
+        <label>
+          <input
+            checked={tripType === "roundTrip"}
+            name="tripType"
+            onChange={() => setTripType("roundTrip")}
+            type="radio"
+          />
+          <span>Round trip</span>
+        </label>
+      </fieldset>
+
       <label className="journey-field">
         <span>From</span>
         <input
@@ -158,13 +245,42 @@ function TrainSearchForm({ compact = false }: TrainSearchFormProps) {
         Search
       </button>
 
+      {tripType === "roundTrip" && (
+        <section className="return-journey-fields" aria-label="Return journey">
+          <strong>Return journey</strong>
+          <div>
+            <span>{arrivalStation || "Arrival"} -&gt; {departureStation || "Departure"}</span>
+          </div>
+          <label className="journey-field">
+            <span>Return date</span>
+            <input
+              min={date}
+              name="returnDate"
+              onChange={(event) => setReturnDate(event.target.value)}
+              required
+              type="date"
+              value={returnDate}
+            />
+          </label>
+          <label className="journey-field">
+            <span>Return time</span>
+            <input
+              name="returnTime"
+              onChange={(event) => setReturnTime(event.target.value)}
+              type="time"
+              value={returnTime}
+            />
+          </label>
+        </section>
+      )}
+
       <section className="journey-preferences" aria-label="Search preferences">
         <div className="preference-box">
           <div>
             <span>Filters</span>
             <strong>{filters.length > 0 ? `${filters.length} selected` : "Any train"}</strong>
           </div>
-          <Link to={buildFilterSelectionUrl("/", currentPreferenceParams)}>Change filters</Link>
+          <Link to={buildFilterSelectionUrl(homeReturnUrl, currentPreferenceParams)}>Change filters</Link>
         </div>
 
         <div className="preference-box">
@@ -172,7 +288,7 @@ function TrainSearchForm({ compact = false }: TrainSearchFormProps) {
             <span>Discounts</span>
             <strong>{formatDiscountSummary(visibleDiscounts)}</strong>
           </div>
-          <Link to={buildDiscountSelectionUrl("/", currentPreferenceParams)}>Change discounts</Link>
+          <Link to={buildDiscountSelectionUrl(homeReturnUrl, currentPreferenceParams)}>Change discounts</Link>
         </div>
 
         <div className="preference-box">

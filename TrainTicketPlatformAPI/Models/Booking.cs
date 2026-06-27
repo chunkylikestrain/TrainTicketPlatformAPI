@@ -14,6 +14,8 @@
         public int? SegmentArrivalOrder { get; set; }
         public DateTime? SegmentDepartureTime { get; set; }
         public DateTime? SegmentArrivalTime { get; set; }
+        public string JourneyDirection { get; set; } = "Outbound";
+        public int JourneySegmentIndex { get; set; }
         public string BookingReference { get; set; } = string.Empty;
         public string TicketNumber { get; set; } = string.Empty;
         public string? GuestEmail { get; set; }
@@ -25,6 +27,8 @@
         public decimal BaseAmount { get; set; }
         public decimal Amount { get; set; }
         public string Currency { get; set; } = "PLN";
+        public int LoyaltyPointsRedeemed { get; set; }
+        public decimal LoyaltyDiscountAmount { get; set; }
         public DateTime BookingDate { get; set; }
         public DateTime TravelDate { get; set; }
         public DateTime? ExpiresAtUtc { get; set; }

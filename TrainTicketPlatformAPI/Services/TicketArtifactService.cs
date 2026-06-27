@@ -92,7 +92,7 @@ namespace TrainTicketPlatformAPI.Services
                 throw new InvalidOperationException("Booking order has no tickets");
 
             var pages = new List<(TicketArtifactDto Ticket, IReadOnlyList<System.Collections.BitArray> QrMatrix)>();
-            foreach (var booking in order.Bookings.OrderBy(booking => booking.Id))
+            foreach (var booking in OrderTickets(order.Bookings))
             {
                 var issued = await EnsureTicketIssuedAsync(booking.Id);
                 using var qrData = QRCodeGenerator.GenerateQrCode(
@@ -167,6 +167,7 @@ namespace TrainTicketPlatformAPI.Services
                 $"ticket={booking.TicketNumber}",
                 $"booking={booking.BookingReference}",
                 $"trip={booking.TripId?.ToString(CultureInfo.InvariantCulture) ?? "legacy"}",
+                $"journey={NormalizeJourneyDirection(booking.JourneyDirection).ToLowerInvariant()}-{booking.JourneySegmentIndex.ToString(CultureInfo.InvariantCulture)}",
                 $"seat={booking.Seat.Coach}-{booking.Seat.Number}",
                 $"segment={booking.SegmentDepartureOrder?.ToString(CultureInfo.InvariantCulture) ?? "origin"}-{booking.SegmentArrivalOrder?.ToString(CultureInfo.InvariantCulture) ?? "destination"}",
                 $"date={(booking.SegmentDepartureTime ?? booking.TravelDate):yyyy-MM-dd}",
@@ -198,6 +199,8 @@ namespace TrainTicketPlatformAPI.Services
                 TrainName = string.IsNullOrWhiteSpace(booking.Train.Code) ? booking.Train.Name : booking.Train.Code,
                 Route = GetRouteLabel(booking),
                 SeatLabel = $"Coach {booking.Seat.Coach}, seat {booking.Seat.Number}",
+                JourneyDirection = NormalizeJourneyDirection(booking.JourneyDirection),
+                JourneySegmentIndex = booking.JourneySegmentIndex,
                 TravelDate = booking.TravelDate,
                 DepartureTime = booking.SegmentDepartureTime ?? booking.Trip?.DepartureTime ?? booking.Train.DepartureTime,
                 ArrivalTime = booking.SegmentArrivalTime ?? booking.Trip?.ArrivalTime ?? booking.Train.ArrivalTime,
@@ -221,6 +224,21 @@ namespace TrainTicketPlatformAPI.Services
 
             return $"{booking.Train.DepartureStation} -> {booking.Train.ArrivalStation}";
         }
+
+        private static IEnumerable<Booking> OrderTickets(IEnumerable<Booking> bookings)
+            => bookings
+                .OrderBy(booking => JourneyDirectionRank(booking.JourneyDirection))
+                .ThenBy(booking => booking.JourneySegmentIndex)
+                .ThenBy(booking => booking.SegmentDepartureTime ?? booking.Trip?.DepartureTime ?? booking.TravelDate)
+                .ThenBy(booking => booking.Id);
+
+        private static string NormalizeJourneyDirection(string? direction)
+            => string.Equals(direction, "Return", StringComparison.OrdinalIgnoreCase)
+                ? "Return"
+                : "Outbound";
+
+        private static int JourneyDirectionRank(string? direction)
+            => string.Equals(direction, "Return", StringComparison.OrdinalIgnoreCase) ? 1 : 0;
 
         private static TicketEmailDeliveryDto ToDeliveryDto(TicketEmailDelivery delivery) => new()
         {

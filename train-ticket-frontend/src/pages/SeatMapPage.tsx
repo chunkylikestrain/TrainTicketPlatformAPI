@@ -4,7 +4,7 @@ import axios from "axios";
 import { createBookingHold, createBookingOrderHold } from "../api/bookingApi";
 import { getTripById, getTripSeats } from "../api/tripApi";
 import CarriageSeatMap, { type CarriageTemplate } from "../components/CarriageSeatMap";
-import type { TripDetails, TripItinerarySegment, TripSeatAvailability } from "../types/trip";
+import type { TripDetails, TripItinerarySearchResult, TripItinerarySegment, TripSeatAvailability } from "../types/trip";
 import { getDiscountCodes, getPassengerCounts, getPassengerTotal } from "../utils/purchasePreferences";
 
 function formatDate(value?: string) {
@@ -44,6 +44,15 @@ function decodeItinerarySegments(value: string | null): TripItinerarySegment[] {
   }
 }
 
+function getStoredItinerary(key: string) {
+  try {
+    const raw = window.sessionStorage.getItem(key);
+    return raw ? JSON.parse(raw) as TripItinerarySearchResult : null;
+  } catch {
+    return null;
+  }
+}
+
 function SeatMapPage() {
   const { tripId = "" } = useParams();
   const navigate = useNavigate();
@@ -56,13 +65,26 @@ function SeatMapPage() {
   const passengerCounts = getPassengerCounts(searchParams);
   const passengerTotal = getPassengerTotal(passengerCounts);
   const discountCodes = getDiscountCodes(searchParams, passengerCounts);
-  const itinerarySegments = useMemo(
+  const storedOutboundItinerary = useMemo(() => getStoredItinerary("railbook-round-trip-outbound"), []);
+  const storedReturnItinerary = useMemo(() => getStoredItinerary("railbook-round-trip-return"), []);
+  const isRoundTripMode = searchParams.get("tripType") === "roundTrip" &&
+    storedOutboundItinerary != null &&
+    storedReturnItinerary != null;
+  const decodedItinerarySegments = useMemo(
     () => decodeItinerarySegments(searchParams.get("itinerarySegments")),
     [searchParams],
   );
+  const itinerarySegments = useMemo(
+    () => isRoundTripMode
+      ? [...storedOutboundItinerary!.segments, ...storedReturnItinerary!.segments]
+      : decodedItinerarySegments,
+    [decodedItinerarySegments, isRoundTripMode, storedOutboundItinerary, storedReturnItinerary],
+  );
+  const roundTripReturnStartIndex = storedOutboundItinerary?.segments.length ?? 0;
   const isItineraryMode = itinerarySegments.length > 1;
   const segmentCount = isItineraryMode ? itinerarySegments.length : 1;
   const [activeSegmentIndex, setActiveSegmentIndex] = useState(0);
+  const activeJourneyLabel = isRoundTripMode && activeSegmentIndex >= roundTripReturnStartIndex ? "Return" : "Outbound";
   const activeItinerarySegment = isItineraryMode ? itinerarySegments[activeSegmentIndex] : null;
   const activeTripId = activeItinerarySegment ? String(activeItinerarySegment.tripId) : tripId;
   const activeFromStationId = activeItinerarySegment ? String(activeItinerarySegment.departureStationId) : fromStationId;
@@ -177,6 +199,115 @@ function SeatMapPage() {
 
   async function handleConfirmSeat() {
     if (!trip || !allPassengersHaveSeats) {
+      return;
+    }
+
+    if (isRoundTripMode) {
+      if (activeSegmentIndex < segmentCount - 1) {
+        setActiveSegmentIndex((current) => current + 1);
+        setActivePassengerIndex(0);
+        setItineraryCompletionMessage("");
+        return;
+      }
+
+      const firstIncompleteSegmentIndex = selectedSeatsBySegment.findIndex((segmentSeats) =>
+        segmentSeats.length !== passengerTotal || segmentSeats.some((seat) => !seat),
+      );
+
+      if (firstIncompleteSegmentIndex >= 0) {
+        setActiveSegmentIndex(firstIncompleteSegmentIndex);
+        setActivePassengerIndex(0);
+        setItineraryCompletionMessage(`Complete segment ${firstIncompleteSegmentIndex + 1} before finishing the itinerary.`);
+        return;
+      }
+
+      if (allItinerarySeatsHaveSeats && storedOutboundItinerary && storedReturnItinerary) {
+        setIsCreatingHold(true);
+        setError("");
+
+        try {
+          const order = await createBookingOrderHold({
+            trainId: storedOutboundItinerary.segments[0].trainId,
+            tripId: storedOutboundItinerary.segments[0].tripId,
+            travelDate: storedOutboundItinerary.segments[0].departureTime,
+            tripType: "RoundTrip",
+            itineraryId: searchParams.get("itineraryId") ?? undefined,
+            passengers: [],
+            journeys: [
+              {
+                direction: "Outbound",
+                segments: storedOutboundItinerary.segments.map((segment, segmentIndex) => ({
+                  segmentIndex,
+                  trainId: segment.trainId,
+                  tripId: segment.tripId,
+                  segmentDepartureStationId: segment.departureStationId,
+                  segmentArrivalStationId: segment.arrivalStationId,
+                  travelDate: segment.departureTime,
+                  passengers: (selectedSeatsBySegment[segmentIndex] ?? []).map((seat, passengerIndex) => ({
+                    seatId: seat?.seatId ?? 0,
+                    passengerName: `Passenger ${passengerIndex + 1}`,
+                    passengerType: passengerIndex < passengerCounts.adults ? "Adult" : "Child",
+                    discountCode: discountCodes[passengerIndex],
+                  })),
+                })),
+              },
+              {
+                direction: "Return",
+                segments: storedReturnItinerary.segments.map((segment, segmentIndex) => {
+                  const absoluteSegmentIndex = roundTripReturnStartIndex + segmentIndex;
+                  return {
+                    segmentIndex,
+                    trainId: segment.trainId,
+                    tripId: segment.tripId,
+                    segmentDepartureStationId: segment.departureStationId,
+                    segmentArrivalStationId: segment.arrivalStationId,
+                    travelDate: segment.departureTime,
+                    passengers: (selectedSeatsBySegment[absoluteSegmentIndex] ?? []).map((seat, passengerIndex) => ({
+                      seatId: seat?.seatId ?? 0,
+                      passengerName: `Passenger ${passengerIndex + 1}`,
+                      passengerType: passengerIndex < passengerCounts.adults ? "Adult" : "Child",
+                      discountCode: discountCodes[passengerIndex],
+                    })),
+                  };
+                }),
+              },
+            ],
+          });
+
+          const params = new URLSearchParams(flowParams);
+          const allSelectedSeats = selectedSeatsBySegment.flat();
+          params.set("tripType", "roundTrip");
+          params.set("orderId", String(order.id));
+          params.set("bookingIds", order.bookings.map((booking) => String(booking.id)).join(","));
+          params.set("seats", allSelectedSeats.map((seat) => `${seat?.coach}-${seat?.number}`).join(","));
+          params.set("amount", String(order.amount));
+          params.set("currency", order.bookings[0]?.currency || "PLN");
+          params.set("fromStationId", String(storedOutboundItinerary.segments[0].departureStationId));
+          params.set("toStationId", String(storedOutboundItinerary.segments[storedOutboundItinerary.segments.length - 1].arrivalStationId));
+          params.set("fromStation", storedOutboundItinerary.segments[0].departureStationName);
+          params.set("toStation", storedOutboundItinerary.segments[storedOutboundItinerary.segments.length - 1].arrivalStationName);
+          params.delete("bookingId");
+
+          const firstSeat = allSelectedSeats[0];
+          if (firstSeat) {
+            params.set("car", firstSeat.coach);
+            params.set("seat", firstSeat.number);
+          }
+
+          navigate(`/summary/${storedOutboundItinerary.segments[0].tripId}?${params.toString()}`);
+        } catch (reserveError) {
+          const message = getReservationErrorMessage(reserveError);
+          setError(message);
+
+          if (message.toLowerCase().includes("seat")) {
+            getTripSeats(activeTripId, { fromStationId: activeFromStationId, toStationId: activeToStationId })
+              .then(setSeats)
+              .catch(() => undefined);
+          }
+        } finally {
+          setIsCreatingHold(false);
+        }
+      }
       return;
     }
 
@@ -384,6 +515,10 @@ function SeatMapPage() {
             {itinerarySegments.map((segment, index) => {
               const segmentSeats = selectedSeatsBySegment[index] ?? [];
               const isComplete = segmentSeats.length === passengerTotal && segmentSeats.every(Boolean);
+              const journeyLabel = isRoundTripMode && index >= roundTripReturnStartIndex ? "Return" : "Outbound";
+              const journeySegmentIndex = isRoundTripMode && index >= roundTripReturnStartIndex
+                ? index - roundTripReturnStartIndex + 1
+                : index + 1;
               return (
                 <button
                   type="button"
@@ -399,7 +534,7 @@ function SeatMapPage() {
                   }}
                   key={`${segment.tripId}-${segment.departureStationId}-${segment.arrivalStationId}`}
                 >
-                  <strong>Segment {index + 1}</strong>
+                  <strong>{isRoundTripMode ? `${journeyLabel} ${journeySegmentIndex}` : `Segment ${index + 1}`}</strong>
                   <span>{segment.departureStationName} -&gt; {segment.arrivalStationName}</span>
                   <small>{formatTime(segment.departureTime)} - {formatTime(segment.arrivalTime)}</small>
                 </button>
@@ -483,14 +618,22 @@ function SeatMapPage() {
               onClick={() => setActivePassengerIndex(index)}
               key={`passenger-${index}`}
             >
-              <strong>{isItineraryMode ? `Segment ${activeSegmentIndex + 1}, passenger ${index + 1}` : `Passenger ${index + 1}`}</strong>
+              <strong>
+                {isRoundTripMode
+                  ? `${activeJourneyLabel}, passenger ${index + 1}`
+                  : isItineraryMode
+                    ? `Segment ${activeSegmentIndex + 1}, passenger ${index + 1}`
+                    : `Passenger ${index + 1}`}
+              </strong>
               <span>{seat ? `Class ${selectedClass}, car ${seat.coach}, seat ${seat.number}` : "Choose seat"}</span>
             </button>
           ))}
         </section>
 
         <div className="seat-map-notice">
-          {isItineraryMode
+          {isRoundTripMode
+            ? `Choose ${passengerTotal} ${passengerTotal === 1 ? "seat" : "seats"} for ${activeJourneyLabel.toLowerCase()} segment ${activeSegmentIndex >= roundTripReturnStartIndex ? activeSegmentIndex - roundTripReturnStartIndex + 1 : activeSegmentIndex + 1}.`
+            : isItineraryMode
             ? `Choose ${passengerTotal} ${passengerTotal === 1 ? "seat" : "seats"} for segment ${activeSegmentIndex + 1} of ${segmentCount}.`
             : `Choose ${passengerTotal} ${passengerTotal === 1 ? "seat" : "seats"} to activate the confirm your choice button`}
         </div>
@@ -505,10 +648,12 @@ function SeatMapPage() {
         >
           {isCreatingHold
             ? "Reserving..."
-            : isItineraryMode && activeSegmentIndex < segmentCount - 1
-              ? `Confirm segment ${activeSegmentIndex + 1}`
-              : isItineraryMode
-                ? "Confirm all segment seats"
+            : (isItineraryMode || isRoundTripMode) && activeSegmentIndex < segmentCount - 1
+              ? `Confirm ${isRoundTripMode ? activeJourneyLabel.toLowerCase() : "segment"} ${activeSegmentIndex + 1}`
+              : isRoundTripMode
+                ? "Confirm round-trip seats"
+                : isItineraryMode
+                  ? "Confirm all segment seats"
                 : "I confirm my choice"}
         </button>
       </section>

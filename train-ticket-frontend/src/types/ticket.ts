@@ -7,6 +7,8 @@ export type TicketArtifact = {
   trainName: string;
   route: string;
   seatLabel: string;
+  journeyDirection: string;
+  journeySegmentIndex: number;
   travelDate: string;
   departureTime: string | null;
   arrivalTime: string | null;

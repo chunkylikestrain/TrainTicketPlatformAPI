@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrainTicketPlatformAPI.Data;
 
@@ -11,9 +12,11 @@ using TrainTicketPlatformAPI.Data;
 namespace TrainTicketPlatformAPI.Migrations
 {
     [DbContext(typeof(TrainTicketDbContext))]
-    partial class TrainTicketDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260627183251_AddLoyaltyFoundation")]
+    partial class AddLoyaltyFoundation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,17 +115,6 @@ namespace TrainTicketPlatformAPI.Migrations
 
                     b.Property<int>("JourneySegmentIndex")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("LoyaltyDiscountAmount")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<int>("LoyaltyPointsRedeemed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
 
                     b.Property<string>("PassengerName")
                         .HasMaxLength(200)
@@ -300,17 +292,6 @@ namespace TrainTicketPlatformAPI.Migrations
 
                     b.Property<DateTime?>("JourneyDepartureTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<decimal>("LoyaltyDiscountAmount")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<int>("LoyaltyPointsRedeemed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
 
                     b.Property<string>("OrderReference")
                         .IsRequired()
@@ -632,17 +613,6 @@ namespace TrainTicketPlatformAPI.Migrations
 
                     b.Property<int?>("BookingOrderId")
                         .HasColumnType("int");
-
-                    b.Property<decimal>("LoyaltyDiscountAmount")
-                        .ValueGeneratedOnAdd()
-                        .HasPrecision(18, 2)
-                        .HasColumnType("decimal(18,2)")
-                        .HasDefaultValue(0m);
-
-                    b.Property<int>("LoyaltyPointsRedeemed")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValue(0);
 
                     b.Property<DateTime>("PaymentDate")
                         .HasColumnType("datetime2");

@@ -6,7 +6,9 @@ type ItineraryCardProps = {
   rank?: number;
   isExpanded?: boolean;
   purchaseQuery?: string;
+  selectionActionLabel?: string;
   onSelect?: () => void;
+  onChooseItinerary?: () => void;
 };
 
 function formatTime(value: string) {
@@ -44,7 +46,15 @@ function encodeItinerarySegments(itinerary: TripItinerarySearchResult) {
   );
 }
 
-function ItineraryCard({ itinerary, rank = 0, isExpanded = false, purchaseQuery = "", onSelect }: ItineraryCardProps) {
+function ItineraryCard({
+  itinerary,
+  rank = 0,
+  isExpanded = false,
+  purchaseQuery = "",
+  selectionActionLabel,
+  onSelect,
+  onChooseItinerary,
+}: ItineraryCardProps) {
   const isFast = rank < 2;
   const isDirect = itinerary.transferCount === 0;
   const firstSegment = itinerary.segments[0];
@@ -162,7 +172,17 @@ function ItineraryCard({ itinerary, rank = 0, isExpanded = false, purchaseQuery 
           </div>
 
           <div className="class-choice-grid">
-            {isDirect ? (
+            {selectionActionLabel ? (
+              <div className="itinerary-next-step-card">
+                <strong>{selectionActionLabel}</strong>
+                <p>Use this connection for the current round-trip journey step.</p>
+                <div className="itinerary-seat-actions">
+                  <button type="button" onClick={onChooseItinerary}>
+                    {selectionActionLabel}
+                  </button>
+                </div>
+              </div>
+            ) : isDirect ? (
               <>
                 <div className="class-choice-card">
                   <span>Class 1</span>
@@ -196,7 +216,7 @@ function ItineraryCard({ itinerary, rank = 0, isExpanded = false, purchaseQuery 
         <button type="button">Check seat availability</button>
         {!isExpanded && (
           <button type="button" className="trip-action" onClick={onSelect}>
-            {isDirect ? "Buy a ticket" : "View itinerary"}
+            {selectionActionLabel ?? (isDirect ? "Buy a ticket" : "View itinerary")}
           </button>
         )}
       </div>

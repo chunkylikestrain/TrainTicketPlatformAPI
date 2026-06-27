@@ -48,14 +48,15 @@ namespace TrainTicketPlatformAPI.Services
             WriteText(builder, "RailWay Ticket", 72, 670, 22, bold: true, white: true);
             WriteText(builder, $"Ticket {ticket.TicketNumber}", 380, 674, 13, bold: true, white: true);
             WriteText(builder, ticket.Route, 72, 610, 18, bold: true);
-            WriteText(builder, $"Train: {ticket.TrainName}", 72, 575, 12);
-            WriteText(builder, $"Passenger: {ticket.PassengerName}", 72, 552, 12);
-            WriteText(builder, $"Seat: {ticket.SeatLabel}", 72, 529, 12);
-            WriteText(builder, $"Travel date: {ticket.TravelDate:yyyy-MM-dd}", 72, 506, 12);
-            WriteText(builder, $"Departure: {FormatDateTime(ticket.DepartureTime)}", 72, 483, 12);
-            WriteText(builder, $"Arrival: {FormatDateTime(ticket.ArrivalTime)}", 72, 460, 12);
-            WriteText(builder, $"Booking reference: {ticket.BookingReference}", 72, 437, 12);
-            WriteText(builder, $"Issued: {ticket.IssuedAtUtc:yyyy-MM-dd HH:mm} UTC", 72, 414, 12);
+            WriteText(builder, $"Journey: {GetJourneyLabel(ticket)}", 72, 580, 12, bold: true);
+            WriteText(builder, $"Train: {ticket.TrainName}", 72, 557, 12);
+            WriteText(builder, $"Passenger: {ticket.PassengerName}", 72, 534, 12);
+            WriteText(builder, $"Seat: {ticket.SeatLabel}", 72, 511, 12);
+            WriteText(builder, $"Travel date: {ticket.TravelDate:yyyy-MM-dd}", 72, 488, 12);
+            WriteText(builder, $"Departure: {FormatDateTime(ticket.DepartureTime)}", 72, 465, 12);
+            WriteText(builder, $"Arrival: {FormatDateTime(ticket.ArrivalTime)}", 72, 442, 12);
+            WriteText(builder, $"Booking reference: {ticket.BookingReference}", 72, 419, 12);
+            WriteText(builder, $"Issued: {ticket.IssuedAtUtc:yyyy-MM-dd HH:mm} UTC", 72, 396, 12);
             WriteText(builder, "Scan the QR code during inspection.", 72, 360, 11);
             DrawQr(builder, qrMatrix, 372, 416, 144);
             WriteText(builder, "Demo ticket artifact for thesis scope.", 72, 128, 10);
@@ -141,6 +142,14 @@ namespace TrainTicketPlatformAPI.Services
 
         private static string FormatDateTime(DateTime? value)
             => value.HasValue ? value.Value.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) : "n/a";
+
+        private static string GetJourneyLabel(TicketArtifactDto ticket)
+        {
+            var direction = string.Equals(ticket.JourneyDirection, "Return", StringComparison.OrdinalIgnoreCase)
+                ? "Return"
+                : "Outbound";
+            return $"{direction} segment {ticket.JourneySegmentIndex + 1}";
+        }
 
         private static string Format(decimal value)
             => value.ToString("0.###", CultureInfo.InvariantCulture);

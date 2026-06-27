@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { getGuestTickets, refundGuestTicket } from "../api/bookingApi";
 import { downloadOrderTicketPdf, downloadTicketPdf } from "../api/ticketApi";
 import type { Booking } from "../types/booking";
-import { groupTicketsByOrder, isPastTicket, isReturnedTicket, type TicketGroup } from "../utils/ticketGrouping";
+import { groupTicketsByJourney, groupTicketsByOrder, isPastTicket, isReturnedTicket, type TicketGroup } from "../utils/ticketGrouping";
 
 type GuestTicketTab = "Tickets" | "Travel history" | "Returned";
 
@@ -204,24 +204,27 @@ function MyBookingsPage() {
                     </div>
                   </div>
 
-                  <div className="ticket-route-row">
-                    <span>Route</span>
-                    <strong>{firstTicket.route || "Selected route"}</strong>
-                    <em>{firstTicket.trainName || "Train"}</em>
-                  </div>
-
                   <div className="ticket-passenger-list">
-                    {group.tickets.map((passengerTicket) => (
-                    <div className="ticket-price-row" key={passengerTicket.id}>
-                      <span>
-                        <b>{passengerTicket.passengerName || "Passenger"}</b>
-                        {passengerTicket.seatLabel || `Seat ${passengerTicket.seatId}`} · {passengerTicket.discountName || "Normal Ticket"}
-                      </span>
-                      <span>
-                        <b>Price</b>
-                        {formatMoney(passengerTicket.amount, passengerTicket.currency)}
-                      </span>
-                    </div>
+                    {groupTicketsByJourney(group.tickets).map((journey) => (
+                      <section className="ticket-journey-group" key={journey.direction}>
+                        <div className="ticket-route-row">
+                          <span>{journey.direction}</span>
+                          <strong>{buildJourneyRoute(journey.tickets)}</strong>
+                          <em>{buildJourneyTrains(journey.tickets)}</em>
+                        </div>
+                        {journey.tickets.map((passengerTicket) => (
+                          <div className="ticket-price-row" key={passengerTicket.id}>
+                            <span>
+                              <b>{passengerTicket.passengerName || "Passenger"}</b>
+                              {passengerTicket.seatLabel || `Seat ${passengerTicket.seatId}`} · {passengerTicket.discountName || "Normal Ticket"}
+                            </span>
+                            <span>
+                              <b>Price</b>
+                              {formatMoney(passengerTicket.amount, passengerTicket.currency)}
+                            </span>
+                          </div>
+                        ))}
+                      </section>
                     ))}
                   </div>
                 </div>
@@ -300,4 +303,22 @@ function MyBookingsPage() {
   );
 }
 
+function buildJourneyRoute(tickets: Booking[]) {
+  const first = tickets[0];
+  const last = tickets[tickets.length - 1];
+  if (!first || !last) {
+    return "Selected route";
+  }
+
+  const start = first.route.split(" -> ")[0];
+  const end = last.route.split(" -> ")[1];
+  return start && end ? `${start} -> ${end}` : first.route || "Selected route";
+}
+
+function buildJourneyTrains(tickets: Booking[]) {
+  const trains = [...new Set(tickets.map((ticket) => ticket.trainName).filter(Boolean))];
+  return trains.length > 0 ? trains.join(" + ") : "Train";
+}
+
 export default MyBookingsPage;
+

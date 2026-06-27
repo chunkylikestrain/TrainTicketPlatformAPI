@@ -91,6 +91,8 @@ namespace TrainTicketPlatformAPI.Tests
                 PassengerName = "Test Passenger",
                 BookingDate = DateTime.UtcNow,
                 TravelDate = departure.Date,
+                JourneyDirection = "Outbound",
+                JourneySegmentIndex = 0,
                 BookingStatus = "Confirmed",
                 PaymentStatus = "Successful",
                 ConfirmedAtUtc = DateTime.UtcNow
@@ -151,6 +153,8 @@ namespace TrainTicketPlatformAPI.Tests
                 PassengerName = "Second Passenger",
                 BookingDate = DateTime.UtcNow,
                 TravelDate = trip.DepartureTime.Date,
+                JourneyDirection = "Return",
+                JourneySegmentIndex = 0,
                 BookingStatus = "Confirmed",
                 PaymentStatus = "Successful",
                 ConfirmedAtUtc = DateTime.UtcNow
@@ -169,8 +173,10 @@ namespace TrainTicketPlatformAPI.Tests
 
             Assert.That(ticket.TicketNumber, Is.EqualTo("WH2601011234"));
             Assert.That(ticket.QrPayload, Does.StartWith("railway-ticket-v1|ticket=WH2601011234"));
+            Assert.That(ticket.QrPayload, Does.Contain("|journey=outbound-0"));
             Assert.That(ticket.QrPayload, Does.Contain("|sig="));
             Assert.That(ticket.IssuedAtUtc, Is.Not.EqualTo(default(DateTime)));
+            Assert.That(ticket.JourneyDirection, Is.EqualTo("Outbound"));
         }
 
         [Test]
@@ -201,6 +207,8 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.That(text, Does.Contain("/Count 2"));
             Assert.That(text, Does.Contain("WH2601011234"));
             Assert.That(text, Does.Contain("WH2601015678"));
+            Assert.That(text, Does.Contain("Journey: Outbound segment 1"));
+            Assert.That(text, Does.Contain("Journey: Return segment 1"));
         }
 
         [Test]

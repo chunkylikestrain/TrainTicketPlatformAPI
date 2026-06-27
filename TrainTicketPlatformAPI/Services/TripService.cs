@@ -22,7 +22,8 @@ namespace TrainTicketPlatformAPI.Services
         public async Task<IEnumerable<TripSearchResultDto>> SearchTripsAsync(
             string from,
             string to,
-            DateTime date)
+            DateTime date,
+            TimeSpan? time = null)
         {
             if (string.IsNullOrWhiteSpace(from) || string.IsNullOrWhiteSpace(to))
                 throw new InvalidOperationException("Both departure and arrival stations are required");
@@ -30,6 +31,7 @@ namespace TrainTicketPlatformAPI.Services
             var departure = TripSegmentResolver.NormalizeSearchText(from);
             var arrival = TripSegmentResolver.NormalizeSearchText(to);
             var travelDate = date.Date;
+            var notBefore = BuildNotBefore(travelDate, time);
 
             var trips = await _db.Trips
                 .AsNoTracking()
@@ -55,13 +57,15 @@ namespace TrainTicketPlatformAPI.Services
                 .Select(trip => TryBuildSearchResult(trip, departure, arrival))
                 .Where(result => result != null)
                 .Select(result => result!)
+                .Where(result => !notBefore.HasValue || result.DepartureTime >= notBefore.Value)
                 .OrderBy(result => result.DepartureTime);
         }
 
         public async Task<IEnumerable<TripItinerarySearchResultDto>> SearchItinerariesAsync(
             string from,
             string to,
-            DateTime date)
+            DateTime date,
+            TimeSpan? time = null)
         {
             if (string.IsNullOrWhiteSpace(from) || string.IsNullOrWhiteSpace(to))
                 throw new InvalidOperationException("Both departure and arrival stations are required");
@@ -69,6 +73,7 @@ namespace TrainTicketPlatformAPI.Services
             var departure = TripSegmentResolver.NormalizeSearchText(from);
             var arrival = TripSegmentResolver.NormalizeSearchText(to);
             var travelDate = date.Date;
+            var notBefore = BuildNotBefore(travelDate, time);
 
             var trips = await _db.Trips
                 .AsNoTracking()
@@ -98,6 +103,7 @@ namespace TrainTicketPlatformAPI.Services
 
             var startSegments = candidates
                 .Where(segment => TripSegmentResolver.StationMatches(segment.DepartureStation, departure))
+                .Where(segment => !notBefore.HasValue || segment.DepartureTime >= notBefore.Value)
                 .ToList();
             var itineraries = new List<List<ItinerarySegmentCandidate>>();
 
@@ -372,6 +378,14 @@ namespace TrainTicketPlatformAPI.Services
                 BuildItineraryPaths(next, candidates, destination, path, results);
                 path.RemoveAt(path.Count - 1);
             }
+        }
+
+        private static DateTime? BuildNotBefore(DateTime travelDate, TimeSpan? time)
+        {
+            if (!time.HasValue)
+                return null;
+
+            return travelDate.Date.Add(time.Value);
         }
 
         private static TripItinerarySearchResultDto ToItineraryDto(IReadOnlyList<ItinerarySegmentCandidate> path)

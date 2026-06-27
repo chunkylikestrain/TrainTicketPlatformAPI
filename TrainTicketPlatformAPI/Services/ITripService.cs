@@ -7,12 +7,14 @@ namespace TrainTicketPlatformAPI.Services
         Task<IEnumerable<TripSearchResultDto>> SearchTripsAsync(
             string from,
             string to,
-            DateTime date);
+            DateTime date,
+            TimeSpan? time = null);
 
         Task<IEnumerable<TripItinerarySearchResultDto>> SearchItinerariesAsync(
             string from,
             string to,
-            DateTime date);
+            DateTime date,
+            TimeSpan? time = null);
 
         Task<TripDetailsDto> GetTripByIdAsync(int tripId);
         Task<IEnumerable<TripSeatAvailabilityDto>> GetSeatAvailabilityAsync(

@@ -28,6 +28,8 @@ namespace TrainTicketPlatformAPI.Data
         public DbSet<Payment> Payments { get; set; }
         public DbSet<DiscountRule> DiscountRules { get; set; }
         public DbSet<TicketEmailDelivery> TicketEmailDeliveries { get; set; }
+        public DbSet<LoyaltyAccount> LoyaltyAccounts { get; set; }
+        public DbSet<LoyaltyTransaction> LoyaltyTransactions { get; set; }
 
         // Optional: Fluent API configuration
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -113,6 +115,9 @@ namespace TrainTicketPlatformAPI.Data
                 .HasIndex(b => b.BookingOrderId);
 
             modelBuilder.Entity<Booking>()
+                .HasIndex(b => new { b.BookingOrderId, b.JourneyDirection, b.JourneySegmentIndex });
+
+            modelBuilder.Entity<Booking>()
                 .HasIndex(b => new { b.TripId, b.TravelDate });
 
             modelBuilder.Entity<Booking>()
@@ -167,9 +172,23 @@ namespace TrainTicketPlatformAPI.Data
                 .HasPrecision(18, 2);
 
             modelBuilder.Entity<Booking>()
+                .Property(b => b.LoyaltyPointsRedeemed)
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.LoyaltyDiscountAmount)
+                .HasPrecision(18, 2)
+                .HasDefaultValue(0m);
+
+            modelBuilder.Entity<Booking>()
                 .Property(b => b.Currency)
                 .HasMaxLength(8)
                 .HasDefaultValue("PLN");
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.JourneyDirection)
+                .HasMaxLength(40)
+                .HasDefaultValue("Outbound");
 
             modelBuilder.Entity<Booking>()
                 .Property(b => b.BookingStatus)
@@ -249,6 +268,15 @@ namespace TrainTicketPlatformAPI.Data
                 .HasMaxLength(32);
 
             modelBuilder.Entity<Payment>()
+                .Property(p => p.LoyaltyPointsRedeemed)
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Payment>()
+                .Property(p => p.LoyaltyDiscountAmount)
+                .HasPrecision(18, 2)
+                .HasDefaultValue(0m);
+
+            modelBuilder.Entity<Payment>()
                 .ToTable(t =>
                 {
                     t.HasCheckConstraint(
@@ -274,6 +302,11 @@ namespace TrainTicketPlatformAPI.Data
                 .HasMaxLength(40);
 
             modelBuilder.Entity<BookingOrder>()
+                .Property(o => o.TripType)
+                .HasMaxLength(40)
+                .HasDefaultValue("OneWay");
+
+            modelBuilder.Entity<BookingOrder>()
                 .Property(o => o.ItineraryId)
                 .HasMaxLength(120);
 
@@ -290,6 +323,15 @@ namespace TrainTicketPlatformAPI.Data
                 .Property(o => o.PaymentStatus)
                 .HasMaxLength(32)
                 .HasDefaultValue("Pending");
+
+            modelBuilder.Entity<BookingOrder>()
+                .Property(o => o.LoyaltyPointsRedeemed)
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<BookingOrder>()
+                .Property(o => o.LoyaltyDiscountAmount)
+                .HasPrecision(18, 2)
+                .HasDefaultValue(0m);
 
             modelBuilder.Entity<BookingOrder>()
                 .Property(o => o.SegmentCount)
@@ -330,6 +372,83 @@ namespace TrainTicketPlatformAPI.Data
             modelBuilder.Entity<TicketEmailDelivery>()
                 .Property(d => d.ErrorMessage)
                 .HasMaxLength(500);
+
+            modelBuilder.Entity<LoyaltyAccount>()
+                .HasOne(a => a.User)
+                .WithOne()
+                .HasForeignKey<LoyaltyAccount>(a => a.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LoyaltyAccount>()
+                .HasIndex(a => a.UserId)
+                .IsUnique();
+
+            modelBuilder.Entity<LoyaltyAccount>()
+                .Property(a => a.RedeemableValuePln)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .HasOne(t => t.LoyaltyAccount)
+                .WithMany(a => a.Transactions)
+                .HasForeignKey(t => t.LoyaltyAccountId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .HasOne(t => t.Booking)
+                .WithMany()
+                .HasForeignKey(t => t.BookingId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .HasOne(t => t.BookingOrder)
+                .WithMany()
+                .HasForeignKey(t => t.BookingOrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .HasIndex(t => t.LoyaltyAccountId);
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .HasIndex(t => t.BookingId);
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .HasIndex(t => t.BookingOrderId);
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .Property(t => t.Type)
+                .HasMaxLength(40);
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .Property(t => t.Status)
+                .HasMaxLength(40);
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .Property(t => t.SourceAmount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .Property(t => t.Currency)
+                .HasMaxLength(8)
+                .HasDefaultValue("PLN");
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .Property(t => t.Reference)
+                .HasMaxLength(80);
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .Property(t => t.Description)
+                .HasMaxLength(240);
+
+            modelBuilder.Entity<LoyaltyTransaction>()
+                .ToTable(t =>
+                {
+                    t.HasCheckConstraint(
+                        "CK_LoyaltyTransactions_Status",
+                        "[Status] IN ('Pending', 'Available', 'Redeemed', 'Expired', 'Cancelled')");
+                    t.HasCheckConstraint(
+                        "CK_LoyaltyTransactions_Type",
+                        "[Type] IN ('TicketPurchase', 'Redemption', 'Adjustment')");
+                });
 
             modelBuilder.Entity<User>()
                 .HasIndex(u => u.NormalizedEmail)

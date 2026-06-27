@@ -4,6 +4,7 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import BookingExpiredModal from "../components/BookingExpiredModal";
 import { getUserEmail, hasAuthToken } from "../api/authSession";
 import { getBookingOrder, getGuestTickets, updateGuestBookingData } from "../api/bookingApi";
+import { getMyLoyaltyAccount } from "../api/loyaltyApi";
 import { confirmPayment, createOrderPaymentIntent, createPaymentIntent } from "../api/paymentApi";
 import {
   downloadTicketPdf,
@@ -15,6 +16,8 @@ import {
   sendTicketEmail,
 } from "../api/ticketApi";
 import { getTripById } from "../api/tripApi";
+import type { BookingOrder, BookingOrderSegment } from "../types/booking";
+import type { LoyaltyAccount } from "../types/loyalty";
 import type { TicketArtifact } from "../types/ticket";
 import type { TripDetails } from "../types/trip";
 import {
@@ -22,7 +25,6 @@ import {
   formatTripPrice,
   formatTripTime,
   getTripPriceLabel,
-  getTripVatLabel,
 } from "../utils/tripDisplay";
 import {
   buildDiscountSelectionUrl,
@@ -54,16 +56,27 @@ function BookingCheckoutPage() {
   const passengerCounts = getPassengerCounts(searchParams);
   const discountCodes = getDiscountCodes(searchParams, passengerCounts);
   const [trip, setTrip] = useState<TripDetails | null>(null);
+  const [order, setOrder] = useState<BookingOrder | null>(null);
   const [tripError, setTripError] = useState("");
   const committedAmount = Number(searchParams.get("amount"));
   const committedCurrency = searchParams.get("currency") ?? "PLN";
   const hasCommittedAmount = Number.isFinite(committedAmount) && committedAmount > 0;
+  const payableBaseAmount = hasCommittedAmount ? committedAmount : getTripPriceAmount(trip, selectedClass);
+  const [loyaltyAccount, setLoyaltyAccount] = useState<LoyaltyAccount | null>(null);
+  const [loyaltyPointsToRedeem, setLoyaltyPointsToRedeem] = useState(0);
+  const [loyaltyError, setLoyaltyError] = useState("");
   const price = hasCommittedAmount
     ? formatTripPrice(committedAmount, committedCurrency)
     : getTripPriceLabel(trip, selectedClass);
-  const vat = hasCommittedAmount
-    ? formatTripPrice(committedAmount * 0.08, committedCurrency)
-    : getTripVatLabel(trip, selectedClass);
+  const maxRedeemablePoints = Math.max(
+    0,
+    Math.min(loyaltyAccount?.redeemablePoints ?? 0, Math.floor(payableBaseAmount * 100)),
+  );
+  const appliedLoyaltyPoints = Math.min(loyaltyPointsToRedeem, maxRedeemablePoints);
+  const loyaltyDiscountAmount = Math.min(payableBaseAmount, appliedLoyaltyPoints / 100);
+  const finalPayableAmount = Math.max(0, payableBaseAmount - loyaltyDiscountAmount);
+  const finalPrice = formatTripPrice(finalPayableAmount, committedCurrency);
+  const vat = formatTripPrice(finalPayableAmount * 0.08, committedCurrency);
   const passengerTotal = passengerCounts.adults + passengerCounts.children;
   const [travelerNames, setTravelerNames] = useState<string[]>(() =>
     Array.from({ length: passengerTotal }, (_, index) => (index === 0 ? "Trong Nguyen" : `Passenger ${index + 1}`)),
@@ -105,6 +118,9 @@ function BookingCheckoutPage() {
 
   const currentCheckoutUrl = `/checkout/${tripId}?${flowParams.toString()}`;
   const discountSelectionUrl = buildDiscountSelectionUrl(currentCheckoutUrl, flowParams);
+  const orderSegments = order?.segments ?? [];
+  const hasOrderDetails = orderSegments.length > 0;
+  const isRoundTripOrder = order?.tripType === "RoundTrip" || orderSegments.some((segment) => segment.journeyDirection === "Return");
 
   if (selectedSeat) {
     flowParams.set("seat", selectedSeat);
@@ -126,6 +142,41 @@ function BookingCheckoutPage() {
         setTripError("Selected trip details could not be loaded. Go back to the connection list and choose the train again.");
       });
   }, [tripId]);
+
+  useEffect(() => {
+    if (!orderId) {
+      setOrder(null);
+      return;
+    }
+
+    getBookingOrder(orderId)
+      .then(setOrder)
+      .catch(() => setOrder(null));
+  }, [orderId]);
+
+  useEffect(() => {
+    if (!isLoggedInPurchase) {
+      setLoyaltyAccount(null);
+      setLoyaltyPointsToRedeem(0);
+      setLoyaltyError("");
+      return;
+    }
+
+    getMyLoyaltyAccount()
+      .then((account) => {
+        setLoyaltyAccount(account);
+        setLoyaltyError("");
+      })
+      .catch(() => {
+        setLoyaltyAccount(null);
+        setLoyaltyPointsToRedeem(0);
+        setLoyaltyError("Could not load My IC points.");
+      });
+  }, [isLoggedInPurchase]);
+
+  useEffect(() => {
+    setLoyaltyPointsToRedeem((current) => Math.min(current, maxRedeemablePoints));
+  }, [maxRedeemablePoints]);
 
   useEffect(() => {
     if (secondsLeft <= 0) {
@@ -195,7 +246,7 @@ function BookingCheckoutPage() {
           ),
         );
 
-        const intent = await createOrderPaymentIntent(orderId);
+        const intent = await createOrderPaymentIntent(orderId, appliedLoyaltyPoints);
         await confirmPayment(intent.paymentIntentId, "tok_success");
         const orderTickets = await getOrderTickets(orderId, effectiveEmail);
         artifacts = orderTickets.tickets;
@@ -209,7 +260,7 @@ function BookingCheckoutPage() {
           acceptedMarketing: false,
         });
 
-        const intent = await createPaymentIntent(bookingId);
+        const intent = await createPaymentIntent(bookingId, appliedLoyaltyPoints);
         await confirmPayment(intent.paymentIntentId, "tok_success");
         const artifact = await getTicketArtifact(bookingId, effectiveEmail);
         artifacts = [artifact];
@@ -337,8 +388,9 @@ function BookingCheckoutPage() {
               </h2>
               <p>
                 {ticketNumbers.length === 1 ? "ticket number: " : "ticket numbers: "}
-                {ticketNumbers.map((ticketNumber) => (
+                {ticketNumbers.map((ticketNumber, index) => (
                   <span key={ticketNumber}>
+                    {ticketArtifacts[index] && <em>{getArtifactJourneyLabel(ticketArtifacts[index])}: </em>}
                     <strong>{ticketNumber}</strong><br />
                   </span>
                 ))}
@@ -428,24 +480,30 @@ function BookingCheckoutPage() {
 
         <section className="final-summary-card">
           <div className="final-summary-top">
-            <div className="final-timeline">
-              <h1>{formatTripDate(trip?.departureTime)}</h1>
-              <div>
-                <span className="final-line" aria-hidden="true" />
-                <p><strong>{formatTripTime(trip?.departureTime)}</strong> {segmentDepartureName ?? trip?.departureStationName ?? "Departure"}</p>
-                <p><strong>{formatTripTime(trip?.arrivalTime)}</strong> {segmentArrivalName ?? trip?.arrivalStationName ?? "Arrival"}</p>
-              </div>
-            </div>
+            {hasOrderDetails ? (
+              <OrderJourneySummary segments={orderSegments} />
+            ) : (
+              <>
+                <div className="final-timeline">
+                  <h1>{formatTripDate(trip?.departureTime)}</h1>
+                  <div>
+                    <span className="final-line" aria-hidden="true" />
+                    <p><strong>{formatTripTime(trip?.departureTime)}</strong> {segmentDepartureName ?? trip?.departureStationName ?? "Departure"}</p>
+                    <p><strong>{formatTripTime(trip?.arrivalTime)}</strong> {segmentArrivalName ?? trip?.arrivalStationName ?? "Arrival"}</p>
+                  </div>
+                </div>
 
-            <div className="final-train-details">
-              <p><strong>{trip?.trainName ?? "Selected train"}</strong></p>
-              <p>
-                {selectedSeatList.length > 1
-                  ? selectedSeatList.map(formatSeatToken).join(", ")
-                  : `Car ${selectedCar}, seat ${selectedSeat}, by the window`}
-              </p>
-              <span>A place at the table</span>
-            </div>
+                <div className="final-train-details">
+                  <p><strong>{trip?.trainName ?? "Selected train"}</strong></p>
+                  <p>
+                    {selectedSeatList.length > 1
+                      ? selectedSeatList.map(formatSeatToken).join(", ")
+                      : `Car ${selectedCar}, seat ${selectedSeat}, by the window`}
+                  </p>
+                  <span>A place at the table</span>
+                </div>
+              </>
+            )}
 
             <div className="final-passenger-details">
               <span>Time to buy: <strong>{formatTimer(secondsLeft)}</strong></span>
@@ -458,7 +516,7 @@ function BookingCheckoutPage() {
 
           <div className="final-price-panel">
             <div>
-              <strong>Outbound journey</strong>
+              <strong>{isRoundTripOrder ? "Round-trip journey" : "Outbound journey"}</strong>
               <span>A-Base price</span>
             </div>
             <div>
@@ -520,6 +578,38 @@ function BookingCheckoutPage() {
 
           <section>
             <h2>Payment method</h2>
+            {isLoggedInPurchase && (
+              <div className="loyalty-redemption-card">
+                <div>
+                  <h3>Use My IC points</h3>
+                  <p>
+                    {loyaltyAccount
+                      ? `${loyaltyAccount.redeemablePoints.toLocaleString("en-GB")} points available (${formatTripPrice(loyaltyAccount.redeemableValuePln, "PLN")})`
+                      : "Load your My IC balance to redeem points."}
+                  </p>
+                  {loyaltyError && <span>{loyaltyError}</span>}
+                </div>
+                <label>
+                  <span>Points</span>
+                  <input
+                    min={0}
+                    max={maxRedeemablePoints}
+                    step={1}
+                    type="number"
+                    value={loyaltyPointsToRedeem}
+                    onChange={(event) => setLoyaltyPointsToRedeem(clampPoints(event.target.value, maxRedeemablePoints))}
+                    disabled={!loyaltyAccount || maxRedeemablePoints === 0}
+                  />
+                </label>
+                <button
+                  type="button"
+                  onClick={() => setLoyaltyPointsToRedeem(maxRedeemablePoints)}
+                  disabled={!loyaltyAccount || maxRedeemablePoints === 0}
+                >
+                  Use all
+                </button>
+              </div>
+            )}
             <div className="payment-method-list">
               {paymentMethods.map((method) => (
                 <label className="payment-method-row" key={method}>
@@ -551,9 +641,16 @@ function BookingCheckoutPage() {
               <h2>Amount due</h2>
               <span>8% VAT</span>
               {email && <p>Ticket will be sent to {email}</p>}
+              {appliedLoyaltyPoints > 0 && (
+                <p>
+                  My IC discount: -{formatTripPrice(loyaltyDiscountAmount, committedCurrency)}
+                  {" "}({appliedLoyaltyPoints.toLocaleString("en-GB")} points)
+                </p>
+              )}
             </div>
             <div>
-              <strong>{price}</strong>
+              {appliedLoyaltyPoints > 0 && <em>{price}</em>}
+              <strong>{finalPrice}</strong>
               <span>{vat}</span>
             </div>
           </section>
@@ -597,6 +694,76 @@ function BookingCheckoutPage() {
 function formatSeatToken(token: string) {
   const [car, seat] = token.split("-");
   return car && seat ? `Car ${car}, seat ${seat}` : token;
+}
+
+function OrderJourneySummary({ segments }: { segments: BookingOrderSegment[] }) {
+  const grouped = segments.reduce<Record<string, BookingOrderSegment[]>>((groups, segment) => {
+    const direction = segment.journeyDirection === "Return" ? "Return" : "Outbound";
+    return { ...groups, [direction]: [...(groups[direction] ?? []), segment] };
+  }, {});
+
+  return (
+    <div className="order-journey-summary">
+      {(["Outbound", "Return"] as const).flatMap((direction) => {
+        const journeySegments = grouped[direction] ?? [];
+        if (journeySegments.length === 0) {
+          return [];
+        }
+
+        const first = journeySegments[0];
+        const last = journeySegments[journeySegments.length - 1];
+
+        return (
+          <section className="order-journey-panel" key={direction}>
+            <h1>{direction}</h1>
+            <div className="order-journey-route">
+              <span className="final-line" aria-hidden="true" />
+              <p><strong>{formatTripTime(first.departureTime ?? undefined)}</strong> {getSegmentStart(first)}</p>
+              <p><strong>{formatTripTime(last.arrivalTime ?? undefined)}</strong> {getSegmentEnd(last)}</p>
+            </div>
+            <div className="order-journey-trains">
+              {journeySegments.map((segment) => (
+                <span key={`${direction}-${segment.journeySegmentIndex}-${segment.tripId}`}>
+                  {segment.trainName || "Train"} · {segment.tickets.length} {segment.tickets.length === 1 ? "ticket" : "tickets"}
+                </span>
+              ))}
+            </div>
+          </section>
+        );
+      })}
+    </div>
+  );
+}
+
+function getSegmentStart(segment: BookingOrderSegment) {
+  return segment.route.split(" -> ")[0] || "Departure";
+}
+
+function getSegmentEnd(segment: BookingOrderSegment) {
+  return segment.route.split(" -> ")[1] || "Arrival";
+}
+
+function getArtifactJourneyLabel(ticket: TicketArtifact) {
+  const direction = ticket.journeyDirection === "Return" ? "Return" : "Outbound";
+  return `${direction} ${ticket.journeySegmentIndex + 1}`;
+}
+
+function getTripPriceAmount(trip: TripDetails | null, selectedClass: string) {
+  if (!trip) {
+    return 0;
+  }
+
+  const preferredFare = trip.fares.find((fare) => fare.classType.includes(selectedClass));
+  return preferredFare?.price ?? trip.lowestFare ?? 0;
+}
+
+function clampPoints(value: string, maxPoints: number) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return 0;
+  }
+
+  return Math.max(0, Math.min(maxPoints, Math.floor(parsed)));
 }
 
 export default BookingCheckoutPage;

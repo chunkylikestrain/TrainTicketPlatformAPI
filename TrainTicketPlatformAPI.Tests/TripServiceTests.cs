@@ -160,6 +160,22 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
+        public async Task SearchTripsAsync_ExcludesTripsDepartingBeforeRequestedTime()
+        {
+            var db = NewDb("Trips_SearchAfterTime");
+            await SeedTripGraphAsync(db);
+            var svc = new TripService(db);
+
+            var results = (await svc.SearchTripsAsync(
+                "WAW",
+                "Krakow",
+                new DateTime(2026, 7, 1),
+                new TimeSpan(9, 0, 0))).ToList();
+
+            Assert.That(results, Is.Empty);
+        }
+
+        [Test]
         public async Task SearchItinerariesAsync_ReturnsDirectItineraryShape()
         {
             var db = NewDb("Trips_ItineraryDirect");
@@ -178,6 +194,22 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.That(results[0].Segments.First().TripId, Is.EqualTo(1));
             Assert.That(results[0].Segments.First().DepartureStationCode, Is.EqualTo("WAW"));
             Assert.That(results[0].Segments.First().ArrivalStationCode, Is.EqualTo("KRK"));
+        }
+
+        [Test]
+        public async Task SearchItinerariesAsync_ExcludesItinerariesDepartingBeforeRequestedTime()
+        {
+            var db = NewDb("Trips_ItineraryAfterTime");
+            await SeedTripGraphAsync(db);
+            var svc = new TripService(db);
+
+            var results = (await svc.SearchItinerariesAsync(
+                "WAW",
+                "Krakow",
+                new DateTime(2026, 7, 1),
+                new TimeSpan(9, 0, 0))).ToList();
+
+            Assert.That(results, Is.Empty);
         }
 
         [Test]

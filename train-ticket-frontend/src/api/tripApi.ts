@@ -13,6 +13,7 @@ export async function searchTrips(params: TripSearchParams) {
       from: params.departureStation,
       to: params.arrivalStation,
       date: params.date,
+      time: params.time || undefined,
     },
   });
 
@@ -25,6 +26,7 @@ export async function searchItineraries(params: TripSearchParams) {
       from: params.departureStation,
       to: params.arrivalStation,
       date: params.date,
+      time: params.time || undefined,
     },
   });
 

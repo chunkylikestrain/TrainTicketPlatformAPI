@@ -13,6 +13,9 @@ namespace TrainTicketPlatformAPI.Models
         public string Status { get; set; } = string.Empty;
         [Precision(18, 2)]
         public decimal Amount { get; set; }
+        public int LoyaltyPointsRedeemed { get; set; }
+        [Precision(18, 2)]
+        public decimal LoyaltyDiscountAmount { get; set; }
 
         public Booking? Booking { get; set; }
         public BookingOrder? BookingOrder { get; set; }

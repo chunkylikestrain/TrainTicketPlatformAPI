@@ -119,6 +119,7 @@ builder.Services.AddScoped<ITrainService, TrainService>();
 builder.Services.AddScoped<IStationService, StationService>();
 builder.Services.AddScoped<ITripService, TripService>();
 builder.Services.AddScoped<ITicketArtifactService, TicketArtifactService>();
+builder.Services.AddScoped<ILoyaltyService, LoyaltyService>();
 
 
 // JWT Authentication
@@ -161,6 +162,7 @@ if (app.Environment.IsDevelopment())
 
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<TrainTicketDbContext>();
+    await db.Database.MigrateAsync();
     await DevelopmentSeedData.SeedAsync(db, app.Configuration);
 }
 

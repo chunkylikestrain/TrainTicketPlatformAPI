@@ -7,5 +7,7 @@ namespace TrainTicketPlatformAPI.Contracts.Payments
         public int? BookingId { get; set; }
 
         public int? BookingOrderId { get; set; }
+
+        public int RedeemLoyaltyPoints { get; set; }
     }
 }
