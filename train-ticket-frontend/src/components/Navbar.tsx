@@ -29,8 +29,7 @@ function Navbar() {
         <NavLink to="/">For Passengers</NavLink>
         <NavLink to="/profile">My tickets</NavLink>
         {isAdmin && <NavLink to="/admin">Admin</NavLink>}
-        <a href="#passenger-info">Help</a>
-        <a href="#offers">Offers</a>
+        <NavLink to="/help">Help</NavLink>
       </nav>
 
       <div className="nav-tools" aria-label="Account tools">

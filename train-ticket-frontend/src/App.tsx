@@ -17,10 +17,12 @@ const AdminSchedulesPage = lazy(() => import("./pages/admin/AdminSchedulesPage")
 const AdminTrainsPage = lazy(() => import("./pages/admin/AdminTrainsPage"));
 const AdminUsersPage = lazy(() => import("./pages/admin/AdminUsersPage"));
 const BookingCheckoutPage = lazy(() => import("./pages/BookingCheckoutPage"));
+const ContactPage = lazy(() => import("./pages/ContactPage"));
 const CurrentTripPage = lazy(() => import("./pages/CurrentTripPage"));
 const DataRequestPage = lazy(() => import("./pages/DataRequestPage"));
 const DiscountSelectionPage = lazy(() => import("./pages/DiscountSelectionPage"));
 const FilterSelectionPage = lazy(() => import("./pages/FilterSelectionPage"));
+const HelpPage = lazy(() => import("./pages/HelpPage"));
 const HomePage = lazy(() => import("./pages/HomePage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const MyBookingsPage = lazy(() => import("./pages/MyBookingsPage"));
@@ -56,6 +58,8 @@ function App() {
           <Route path="/admin/discounts" element={<AdminDiscountsPage />} />
           <Route path="/admin/revenue" element={<AdminRevenuePage />} />
           <Route path="/search" element={<SearchResultsPage />} />
+          <Route path="/help" element={<HelpPage />} />
+          <Route path="/contact" element={<ContactPage />} />
           <Route path="/profile" element={<MyProfilePage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />

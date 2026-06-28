@@ -4,6 +4,7 @@ import { Link, useParams, useSearchParams } from "react-router-dom";
 import BookingExpiredModal from "../components/BookingExpiredModal";
 import { getUserEmail, hasAuthToken } from "../api/authSession";
 import { getBookingOrder, getGuestTickets, updateGuestBookingData } from "../api/bookingApi";
+import { generateBookingInvoice, generateOrderInvoice } from "../api/invoiceApi";
 import { getMyLoyaltyAccount } from "../api/loyaltyApi";
 import { confirmPayment, createOrderPaymentIntent, createPaymentIntent } from "../api/paymentApi";
 import {
@@ -94,6 +95,7 @@ function BookingCheckoutPage() {
   const [ticketOrderReference, setTicketOrderReference] = useState("");
   const [ticketQrUrl, setTicketQrUrl] = useState("");
   const [ticketDownloadError, setTicketDownloadError] = useState("");
+  const [invoiceMessage, setInvoiceMessage] = useState("");
   const sessionEmail = getUserEmail();
   const effectiveEmail = email || sessionEmail || "";
   const isLoggedInPurchase = hasAuthToken() && Boolean(sessionEmail);
@@ -227,6 +229,7 @@ function BookingCheckoutPage() {
     }
 
     setError("");
+    setInvoiceMessage("");
     setPaymentStatus("processing");
 
     try {
@@ -248,6 +251,7 @@ function BookingCheckoutPage() {
 
         const intent = await createOrderPaymentIntent(orderId, appliedLoyaltyPoints);
         await confirmPayment(intent.paymentIntentId, "tok_success");
+        await maybeGenerateInvoice(orderId, true);
         const orderTickets = await getOrderTickets(orderId, effectiveEmail);
         artifacts = orderTickets.tickets;
         setTicketOrderReference(orderTickets.orderReference);
@@ -262,6 +266,7 @@ function BookingCheckoutPage() {
 
         const intent = await createPaymentIntent(bookingId, appliedLoyaltyPoints);
         await confirmPayment(intent.paymentIntentId, "tok_success");
+        await maybeGenerateInvoice(bookingId, false);
         const artifact = await getTicketArtifact(bookingId, effectiveEmail);
         artifacts = [artifact];
       }
@@ -316,6 +321,30 @@ function BookingCheckoutPage() {
     } catch {
       setPaymentStatus("form");
       setError("Payment could not be completed. The booking hold may have expired or the API is unavailable.");
+    }
+  }
+
+  async function maybeGenerateInvoice(targetId: string, isOrder: boolean) {
+    if (!needsInvoice) {
+      return;
+    }
+
+    if (!isLoggedInPurchase) {
+      setInvoiceMessage("Invoice generation is available for logged-in purchases.");
+      return;
+    }
+
+    try {
+      const request = {
+        buyerName: travelerNames[0]?.trim() || effectiveEmail,
+        buyerEmail: effectiveEmail,
+      };
+      const invoice = isOrder
+        ? await generateOrderInvoice(targetId, request)
+        : await generateBookingInvoice(targetId, request);
+      setInvoiceMessage(`Invoice ${invoice.invoiceNumber} saved in My invoices.`);
+    } catch {
+      setInvoiceMessage("Payment succeeded, but the invoice could not be generated.");
     }
   }
 
@@ -401,6 +430,7 @@ function BookingCheckoutPage() {
               {firstTicketArtifact?.emailDeliveryStatus && (
                 <p>ticket email <strong>{firstTicketArtifact.emailDeliveryStatus}</strong></p>
               )}
+              {invoiceMessage && <p>invoice <strong>{invoiceMessage}</strong></p>}
               {ticketDownloadError && <p className="data-error">{ticketDownloadError}</p>}
             </div>
           </section>

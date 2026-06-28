@@ -30,6 +30,7 @@ namespace TrainTicketPlatformAPI.Data
         public DbSet<TicketEmailDelivery> TicketEmailDeliveries { get; set; }
         public DbSet<LoyaltyAccount> LoyaltyAccounts { get; set; }
         public DbSet<LoyaltyTransaction> LoyaltyTransactions { get; set; }
+        public DbSet<Invoice> Invoices { get; set; }
 
         // Optional: Fluent API configuration
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -448,6 +449,96 @@ namespace TrainTicketPlatformAPI.Data
                     t.HasCheckConstraint(
                         "CK_LoyaltyTransactions_Type",
                         "[Type] IN ('TicketPurchase', 'Redemption', 'Adjustment')");
+                });
+
+            modelBuilder.Entity<Invoice>()
+                .HasOne(i => i.User)
+                .WithMany()
+                .HasForeignKey(i => i.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Invoice>()
+                .HasOne(i => i.Booking)
+                .WithMany()
+                .HasForeignKey(i => i.BookingId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Invoice>()
+                .HasOne(i => i.BookingOrder)
+                .WithMany()
+                .HasForeignKey(i => i.BookingOrderId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Invoice>()
+                .HasIndex(i => i.InvoiceNumber)
+                .IsUnique();
+
+            modelBuilder.Entity<Invoice>()
+                .HasIndex(i => i.UserId);
+
+            modelBuilder.Entity<Invoice>()
+                .HasIndex(i => i.BookingId)
+                .IsUnique()
+                .HasFilter("[BookingId] IS NOT NULL");
+
+            modelBuilder.Entity<Invoice>()
+                .HasIndex(i => i.BookingOrderId)
+                .IsUnique()
+                .HasFilter("[BookingOrderId] IS NOT NULL");
+
+            modelBuilder.Entity<Invoice>()
+                .Property(i => i.InvoiceNumber)
+                .HasMaxLength(40);
+
+            modelBuilder.Entity<Invoice>()
+                .Property(i => i.BuyerName)
+                .HasMaxLength(200);
+
+            modelBuilder.Entity<Invoice>()
+                .Property(i => i.BuyerEmail)
+                .HasMaxLength(256);
+
+            modelBuilder.Entity<Invoice>()
+                .Property(i => i.BuyerTaxId)
+                .HasMaxLength(64)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Invoice>()
+                .Property(i => i.BillingAddress)
+                .HasMaxLength(500)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Invoice>()
+                .Property(i => i.NetAmount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Invoice>()
+                .Property(i => i.VatAmount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Invoice>()
+                .Property(i => i.TotalAmount)
+                .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Invoice>()
+                .Property(i => i.Currency)
+                .HasMaxLength(8)
+                .HasDefaultValue("PLN");
+
+            modelBuilder.Entity<Invoice>()
+                .Property(i => i.Status)
+                .HasMaxLength(32)
+                .HasDefaultValue("Issued");
+
+            modelBuilder.Entity<Invoice>()
+                .ToTable(t =>
+                {
+                    t.HasCheckConstraint(
+                        "CK_Invoices_Target",
+                        "([BookingId] IS NOT NULL AND [BookingOrderId] IS NULL) OR ([BookingId] IS NULL AND [BookingOrderId] IS NOT NULL)");
+                    t.HasCheckConstraint(
+                        "CK_Invoices_Status",
+                        "[Status] IN ('Issued', 'Cancelled')");
                 });
 
             modelBuilder.Entity<User>()

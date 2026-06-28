@@ -4,10 +4,12 @@ import axios from "axios";
 import { getCurrentUser } from "../api/authApi";
 import { getMyTickets, refundMyTicket } from "../api/bookingApi";
 import { clearAuthSession, getProfileDisplayName, saveCurrentUser } from "../api/authSession";
+import { downloadInvoicePdf, getMyInvoices } from "../api/invoiceApi";
 import { getMyLoyaltyAccount, getMyLoyaltyTransactions } from "../api/loyaltyApi";
 import { downloadOrderTicketPdf, downloadTicketPdf } from "../api/ticketApi";
 import type { CurrentUser } from "../types/auth";
 import type { Booking } from "../types/booking";
+import type { Invoice } from "../types/invoice";
 import type { LoyaltyAccount, LoyaltyTransaction } from "../types/loyalty";
 import { getDisruptionMessage, getDisruptionSeverity, hasDisruption } from "../utils/disruptions";
 import { groupTicketsByJourney, groupTicketsByOrder, type TicketGroup } from "../utils/ticketGrouping";
@@ -17,7 +19,7 @@ const accountMenuItems = [
   { key: "invoices", label: "My invoices" },
   { key: "data", label: "My data" },
   { key: "myic", label: "\"My IC\" Program" },
-  { key: "links", label: "Useful links" },
+  { key: "help", label: "Help" },
 ] as const;
 
 const ticketSections = [
@@ -64,15 +66,19 @@ function MyProfilePage() {
   const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
   const [displayName, setDisplayName] = useState("");
   const [tickets, setTickets] = useState<Booking[]>([]);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loyaltyAccount, setLoyaltyAccount] = useState<LoyaltyAccount | null>(null);
   const [loyaltyTransactions, setLoyaltyTransactions] = useState<LoyaltyTransaction[]>([]);
   const [ticketError, setTicketError] = useState("");
+  const [invoiceError, setInvoiceError] = useState("");
   const [loyaltyError, setLoyaltyError] = useState("");
   const [activeAccountSection, setActiveAccountSection] = useState<AccountSectionKey>("tickets");
   const [activeTicketSection, setActiveTicketSection] = useState<TicketSectionKey>("tickets");
   const [isTicketsLoading, setIsTicketsLoading] = useState(false);
+  const [isInvoicesLoading, setIsInvoicesLoading] = useState(false);
   const [isLoyaltyLoading, setIsLoyaltyLoading] = useState(false);
   const [isDownloadingTicketId, setIsDownloadingTicketId] = useState<number | null>(null);
+  const [isDownloadingInvoiceId, setIsDownloadingInvoiceId] = useState<number | null>(null);
   const [isReturningTicketId, setIsReturningTicketId] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(Boolean(localStorage.getItem("authToken")));
   const [notice, setNotice] = useState(
@@ -144,6 +150,21 @@ function MyProfilePage() {
       })
       .catch(() => setLoyaltyError("Could not load My IC points. Try refreshing after the API is running."))
       .finally(() => setIsLoyaltyLoading(false));
+  }, [activeAccountSection, currentUser]);
+
+  useEffect(() => {
+    if (!currentUser || activeAccountSection !== "invoices") {
+      setInvoices([]);
+      return;
+    }
+
+    setIsInvoicesLoading(true);
+    setInvoiceError("");
+
+    getMyInvoices()
+      .then(setInvoices)
+      .catch(() => setInvoiceError("Could not load your invoices. Try refreshing after the API is running."))
+      .finally(() => setIsInvoicesLoading(false));
   }, [activeAccountSection, currentUser]);
 
   function handleLogout() {
@@ -225,8 +246,21 @@ function MyProfilePage() {
     }).format(new Date(value));
   }
 
-  function formatMoney(value: number) {
-    return `${value.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} PLN`;
+  function formatMoney(value: number, currency = "PLN") {
+    return `${value.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
+  }
+
+  async function handleDownloadInvoice(invoice: Invoice) {
+    setInvoiceError("");
+    setIsDownloadingInvoiceId(invoice.id);
+
+    try {
+      await downloadInvoicePdf(invoice);
+    } catch {
+      setInvoiceError("Could not download this invoice PDF.");
+    } finally {
+      setIsDownloadingInvoiceId(null);
+    }
   }
 
   const ticketGroups = groupTicketsByOrder(tickets);
@@ -267,20 +301,26 @@ function MyProfilePage() {
         <div className="account-layout">
           <aside className="account-sidebar" aria-label="Account menu">
             {accountMenuItems.map((item) => (
-              <button
-                className={
-                  currentUser && activeAccountSection === item.key
-                    ? "account-menu-button account-menu-button-active"
-                    : currentUser
-                      ? "account-menu-button"
-                      : "account-menu-button account-menu-button-muted"
-                }
-                key={item.key}
-                onClick={() => currentUser && setActiveAccountSection(item.key)}
-                type="button"
-              >
-                {item.label}
-              </button>
+              item.key === "help" ? (
+                <Link className="account-menu-button" key={item.key} to="/help">
+                  {item.label}
+                </Link>
+              ) : (
+                <button
+                  className={
+                    currentUser && activeAccountSection === item.key
+                      ? "account-menu-button account-menu-button-active"
+                      : currentUser
+                        ? "account-menu-button"
+                        : "account-menu-button account-menu-button-muted"
+                  }
+                  key={item.key}
+                  onClick={() => currentUser && setActiveAccountSection(item.key)}
+                  type="button"
+                >
+                  {item.label}
+                </button>
+              )
             ))}
           </aside>
 
@@ -499,6 +539,56 @@ function MyProfilePage() {
                   tickets. Every {redeemRate.toLocaleString("en-GB")} points can redeem 1 PLN in a future checkout step.
                 </p>
               </details>
+            </section>
+          ) : currentUser && activeAccountSection === "invoices" ? (
+            <section className="ticket-dashboard profile-invoice-dashboard">
+              <h2>My invoices</h2>
+
+              <label className="ticket-search profile-invoice-search">
+                <span>Search for an invoice</span>
+                <input aria-label="Search for an invoice" />
+                <b aria-hidden="true">Search</b>
+              </label>
+
+              {isInvoicesLoading && <div className="status-message">Loading your invoices...</div>}
+              {invoiceError && <div className="status-message">{invoiceError}</div>}
+
+              {!isInvoicesLoading && invoices.length === 0 ? (
+                <section className="profile-empty-tickets profile-empty-invoices">
+                  <div className="profile-invoice-empty-icon" aria-hidden="true" />
+                  <p>You currently have no invoices. Request an invoice during checkout.</p>
+                  <Link to="/">Buy a ticket</Link>
+                </section>
+              ) : (
+                <div className="profile-invoice-list">
+                  {invoices.map((invoice) => (
+                    <article className="profile-invoice-card" key={invoice.id}>
+                      <div>
+                        <span>Invoice</span>
+                        <strong>{invoice.invoiceNumber}</strong>
+                        <small>{formatTicketDate(invoice.issuedAtUtc)} · {invoice.status}</small>
+                      </div>
+                      <div>
+                        <span>Buyer</span>
+                        <strong>{invoice.buyerName}</strong>
+                        <small>{invoice.buyerEmail}</small>
+                      </div>
+                      <div>
+                        <span>Total</span>
+                        <strong>{formatMoney(invoice.totalAmount, invoice.currency)}</strong>
+                        <small>VAT {formatMoney(invoice.vatAmount, invoice.currency)}</small>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleDownloadInvoice(invoice)}
+                        disabled={isDownloadingInvoiceId === invoice.id}
+                      >
+                        {isDownloadingInvoiceId === invoice.id ? "Downloading..." : "Download PDF"}
+                      </button>
+                    </article>
+                  ))}
+                </div>
+              )}
             </section>
           ) : currentUser && activeAccountSection === "data" ? (
             <section className="ticket-dashboard profile-data-dashboard">

@@ -120,6 +120,7 @@ builder.Services.AddScoped<IStationService, StationService>();
 builder.Services.AddScoped<ITripService, TripService>();
 builder.Services.AddScoped<ITicketArtifactService, TicketArtifactService>();
 builder.Services.AddScoped<ILoyaltyService, LoyaltyService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 
 
 // JWT Authentication

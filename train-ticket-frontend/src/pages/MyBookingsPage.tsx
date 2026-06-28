@@ -1,5 +1,5 @@
 ﻿import { useEffect, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { getGuestTickets, refundGuestTicket } from "../api/bookingApi";
 import { downloadOrderTicketPdf, downloadTicketPdf } from "../api/ticketApi";
 import type { Booking } from "../types/booking";
@@ -137,7 +137,7 @@ function MyBookingsPage() {
             <button className="account-menu-button account-menu-button-muted">My data</button>
             <button className="account-menu-button account-menu-button-muted">"Moje IC" Program</button>
             <button className="account-menu-button">Manage your ticket - Guest account</button>
-            <button className="account-menu-button">Useful links</button>
+            <Link className="account-menu-button" to="/help">Help</Link>
           </aside>
 
           <section className="ticket-dashboard">

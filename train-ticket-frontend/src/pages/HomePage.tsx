@@ -11,14 +11,17 @@ const informationCards = [
   {
     title: "Customer Service Centres",
     text: "Find support before, during, or after your journey.",
+    to: "/contact",
   },
   {
     title: "Mobile Application",
     text: "Account access and ticket information for mobile travelers.",
+    to: "/help",
   },
   {
     title: "Railway Cards",
     text: "Manage passenger discounts and reusable travel preferences.",
+    to: "/help",
   },
 ];
 
@@ -90,13 +93,13 @@ function HomePage() {
         <h1>Important information for passengers</h1>
         <div className="info-link-grid">
           {informationCards.map((card) => (
-            <a href="#passenger-info" key={card.title} className="info-link-card">
+            <Link to={card.to} key={card.title} className="info-link-card">
               <span>
                 <strong>{card.title}</strong>
                 <small>{card.text}</small>
               </span>
               <span className="arrow" aria-hidden="true">-&gt;</span>
-            </a>
+            </Link>
           ))}
         </div>
       </section>
@@ -119,10 +122,10 @@ function HomePage() {
         <h2>For Passengers</h2>
         <div className="passenger-grid">
           {passengerLinks.map((link) => (
-            <a href="#passenger-info" className="passenger-card" key={link}>
+            <Link to={getPassengerLinkTarget(link)} className="passenger-card" key={link}>
               <span className="line-icon" aria-hidden="true" />
               {link}
-            </a>
+            </Link>
           ))}
         </div>
       </section>
@@ -133,6 +136,18 @@ function HomePage() {
       </footer>
     </main>
   );
+}
+
+function getPassengerLinkTarget(label: string) {
+  if (label === "Contact") {
+    return "/contact";
+  }
+
+  if (label === "Frequently Asked Questions") {
+    return "/help";
+  }
+
+  return "/help";
 }
 
 export default HomePage;

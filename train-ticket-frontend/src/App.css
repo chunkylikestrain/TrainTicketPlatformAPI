@@ -4074,6 +4074,8 @@
 }
 
 .account-menu-button {
+  display: flex;
+  align-items: center;
   min-height: 72px;
   padding: 0 22px;
   border: 1px solid #d3d0cf;
@@ -4084,6 +4086,7 @@
   font-size: 24px;
   font-weight: 800;
   text-align: left;
+  text-decoration: none;
 }
 
 .account-menu-button-active {
@@ -4565,6 +4568,104 @@
   border-radius: 6px;
 }
 
+.profile-invoice-dashboard {
+  display: grid;
+  gap: 24px;
+}
+
+.profile-invoice-search {
+  margin: 0;
+}
+
+.profile-empty-invoices {
+  min-height: 220px;
+}
+
+.profile-invoice-empty-icon {
+  position: relative;
+  width: 42px;
+  height: 56px;
+  border: 4px solid #1597dc;
+  border-radius: 4px;
+}
+
+.profile-invoice-empty-icon::before {
+  content: "";
+  position: absolute;
+  right: -4px;
+  top: -4px;
+  border-top: 16px solid var(--white);
+  border-left: 16px solid #1597dc;
+}
+
+.profile-invoice-empty-icon::after {
+  content: "";
+  position: absolute;
+  left: 9px;
+  top: 22px;
+  width: 20px;
+  height: 4px;
+  background: var(--navy);
+  box-shadow: 0 9px 0 var(--navy);
+}
+
+.profile-invoice-list {
+  display: grid;
+  gap: 14px;
+}
+
+.profile-invoice-card {
+  display: grid;
+  grid-template-columns: 1.25fr 1.25fr 1fr auto;
+  gap: 18px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid #d3d0cf;
+  border-radius: 6px;
+  background: var(--white);
+}
+
+.profile-invoice-card div {
+  display: grid;
+  gap: 6px;
+}
+
+.profile-invoice-card span {
+  color: #1597dc;
+  font-size: 14px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.profile-invoice-card strong {
+  overflow-wrap: anywhere;
+  color: var(--navy);
+  font-size: 20px;
+}
+
+.profile-invoice-card small {
+  color: #6f7895;
+  font-weight: 800;
+}
+
+.profile-invoice-card button {
+  min-width: 160px;
+  min-height: 58px;
+  border: 1px solid #d3d0cf;
+  border-radius: 4px;
+  background: var(--white);
+  color: var(--orange);
+  font: inherit;
+  font-weight: 900;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.profile-invoice-card button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
 .profile-data-dashboard {
   display: grid;
   gap: 26px;
@@ -4743,6 +4844,477 @@
 .profile-close-account button {
   justify-self: start;
   padding: 0;
+}
+
+.help-page {
+  min-height: calc(100vh - 92px);
+  padding: 48px 24px 90px;
+  background: linear-gradient(90deg, #eef8fd 0 8%, #fff 8% 92%, #eef8fd 92% 100%);
+}
+
+.help-shell {
+  display: grid;
+  gap: 32px;
+  width: min(100%, 1120px);
+  margin: 0 auto;
+}
+
+.help-heading {
+  display: grid;
+  gap: 12px;
+}
+
+.help-heading a {
+  justify-self: start;
+  color: var(--navy);
+  font-weight: 900;
+}
+
+.help-heading h1 {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(38px, 5vw, 58px);
+}
+
+.help-heading p {
+  max-width: 720px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.45;
+}
+
+.help-option-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.help-option-card {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  min-height: 210px;
+  padding: 22px;
+  border: 1px solid #d3d0cf;
+  border-radius: 6px;
+  background: var(--white);
+  color: var(--navy);
+  text-decoration: none;
+  box-shadow: var(--shadow);
+}
+
+.help-option-card:hover {
+  border-color: var(--orange);
+}
+
+.help-option-card span {
+  color: #1597dc;
+  font-size: 20px;
+  font-weight: 900;
+}
+
+.help-option-card p {
+  margin: 0;
+  color: var(--navy);
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.help-option-card b {
+  align-self: end;
+  color: var(--orange);
+  font-size: 28px;
+}
+
+.help-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.help-guide {
+  display: grid;
+  gap: 22px;
+  padding: 30px;
+  border: 1px solid #d3d0cf;
+  border-radius: 8px;
+  background: var(--white);
+}
+
+.help-guide-heading {
+  display: grid;
+  gap: 10px;
+  max-width: 820px;
+}
+
+.help-guide-heading h2 {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(32px, 4vw, 46px);
+}
+
+.help-guide-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.help-guide-step {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(360px, 1.1fr);
+  gap: 28px;
+  align-items: center;
+  padding: 24px 0;
+  border-top: 1px solid #e6e1df;
+}
+
+.help-guide-step h3 {
+  margin: 0 0 12px;
+  color: var(--navy);
+  font-size: 27px;
+}
+
+.help-guide-step p {
+  margin: 0;
+  color: var(--navy);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.55;
+}
+
+.help-mock {
+  border: 1px solid #d3d0cf;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: var(--shadow);
+}
+
+.help-search-mock {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+  gap: 14px;
+  align-items: end;
+  padding: 22px;
+  background: var(--navy-2);
+}
+
+.help-search-mock div,
+.help-payment-mock div {
+  display: grid;
+  gap: 8px;
+}
+
+.help-search-mock span,
+.help-preferences-mock span,
+.help-payment-mock span {
+  color: #cfe7ff;
+  font-size: 13px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.help-search-mock strong {
+  min-height: 34px;
+  border-bottom: 2px solid #c9d9f5;
+  color: #fff;
+  font-size: 16px;
+}
+
+.help-search-mock button,
+.help-result-mock button,
+.help-payment-mock button {
+  min-height: 48px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--orange);
+  color: #fff;
+  font: inherit;
+  font-weight: 900;
+}
+
+.help-preferences-mock {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  padding: 18px;
+  background: var(--navy-2);
+}
+
+.help-preferences-mock article {
+  display: grid;
+  gap: 12px;
+  min-height: 126px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.help-preferences-mock strong,
+.help-preferences-mock small {
+  color: #fff;
+  font-weight: 900;
+}
+
+.help-result-mock {
+  display: grid;
+  grid-template-columns: 120px minmax(0, 1fr) auto;
+  gap: 14px 24px;
+  align-items: center;
+  padding: 22px;
+}
+
+.help-result-mock span {
+  justify-self: start;
+  padding: 8px 12px;
+  background: var(--soft);
+  color: var(--navy);
+  font-weight: 900;
+}
+
+.help-result-mock strong {
+  color: var(--navy);
+  font-size: 27px;
+}
+
+.help-result-mock p {
+  grid-column: 2;
+  color: var(--navy);
+}
+
+.help-result-mock small {
+  grid-column: 2;
+  color: var(--muted);
+  font-weight: 800;
+}
+
+.help-result-mock button {
+  grid-column: 3;
+  grid-row: 1 / span 3;
+  padding: 0 22px;
+}
+
+.help-seat-mock {
+  display: grid;
+  grid-template-columns: repeat(6, 42px);
+  gap: 12px;
+  justify-content: center;
+  padding: 26px;
+}
+
+.help-seat-mock span {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border: 2px solid var(--navy);
+  border-radius: 8px;
+  background: #05ac59;
+  color: var(--navy);
+  font-weight: 900;
+}
+
+.help-seat-mock .selected {
+  background: var(--orange);
+  color: #fff;
+}
+
+.help-seat-mock .unavailable {
+  background: #c9ced5;
+  color: #6f7895;
+}
+
+.help-payment-mock {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+  padding: 22px;
+}
+
+.help-payment-mock span {
+  color: #1597dc;
+}
+
+.help-payment-mock strong {
+  color: var(--navy);
+  font-size: 30px;
+}
+
+.help-payment-mock label {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--navy);
+  font-weight: 900;
+}
+
+.help-payment-mock label span {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--navy);
+  border-radius: 4px;
+}
+
+.help-payment-mock button {
+  grid-column: 1 / -1;
+}
+
+.help-account-mock {
+  display: grid;
+  gap: 10px;
+  padding: 18px;
+}
+
+.help-account-mock span {
+  min-height: 48px;
+  padding: 14px 18px;
+  border: 1px solid #d3d0cf;
+  border-radius: 4px;
+  color: var(--navy);
+  font-weight: 900;
+}
+
+.help-account-mock span:first-child {
+  background: var(--navy-2);
+  color: #fff;
+}
+
+.help-detail-grid article {
+  padding: 24px;
+  border: 1px solid #d3d0cf;
+  border-radius: 6px;
+  background: var(--white);
+}
+
+.help-detail-grid h2 {
+  margin: 0 0 12px;
+  color: var(--navy);
+  font-size: 24px;
+}
+
+.help-detail-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.5;
+}
+
+.help-inline-link {
+  color: var(--navy);
+  font-weight: 900;
+}
+
+.contact-page {
+  min-height: calc(100vh - 92px);
+  padding: 52px 24px 90px;
+  background: var(--white);
+}
+
+.contact-shell {
+  display: grid;
+  gap: 34px;
+  width: min(100%, 1180px);
+  margin: 0 auto;
+  color: var(--navy);
+}
+
+.contact-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  font-size: 18px;
+}
+
+.contact-breadcrumb a,
+.contact-breadcrumb strong {
+  color: var(--navy);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.contact-breadcrumb span {
+  color: #1597dc;
+  font-weight: 900;
+}
+
+.contact-eyebrow {
+  justify-self: start;
+  margin: -8px 0 -24px;
+  color: var(--navy);
+  font-size: 14px;
+  font-weight: 800;
+  text-decoration: underline;
+  text-transform: uppercase;
+}
+
+.contact-shell h1 {
+  margin: 0;
+  color: var(--navy);
+  font-size: clamp(42px, 5vw, 62px);
+  line-height: 1;
+}
+
+.contact-panel {
+  display: grid;
+  gap: 16px;
+  max-width: 980px;
+}
+
+.contact-panel h2,
+.contact-panel h3 {
+  margin: 0;
+  color: var(--navy);
+  font-weight: 500;
+  line-height: 1.05;
+}
+
+.contact-panel h2 {
+  font-size: 32px;
+}
+
+.contact-panel h3 {
+  font-size: 36px;
+}
+
+.contact-panel p {
+  margin: 0;
+  color: var(--navy);
+  font-size: 20px;
+  line-height: 1.45;
+}
+
+.contact-panel p > a {
+  color: var(--navy);
+  font-weight: 900;
+}
+
+.contact-email-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 80px;
+  margin-top: 10px;
+}
+
+.contact-email-grid a {
+  display: grid;
+  gap: 6px;
+  color: var(--navy);
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 500;
+  line-height: 1;
+}
+
+.contact-email-grid span {
+  font-size: 16px;
+  font-weight: 800;
+  text-decoration: none;
 }
 
 .my-ic-dashboard {
@@ -6797,6 +7369,7 @@
   }
 
   .profile-data-field,
+  .profile-invoice-card,
   .profile-passenger-grid,
   .profile-passenger-card dl div {
     grid-template-columns: 1fr;
@@ -6820,6 +7393,55 @@
 
   .profile-passenger-card dd {
     text-align: left;
+  }
+
+  .profile-invoice-card button {
+    width: 100%;
+  }
+
+  .help-page {
+    padding: 28px 14px 56px;
+  }
+
+  .help-option-grid,
+  .help-detail-grid,
+  .help-guide-step {
+    grid-template-columns: 1fr;
+  }
+
+  .help-option-card {
+    min-height: 170px;
+  }
+
+  .help-guide {
+    padding: 20px;
+  }
+
+  .help-search-mock,
+  .help-preferences-mock,
+  .help-result-mock,
+  .help-payment-mock {
+    grid-template-columns: 1fr;
+  }
+
+  .help-result-mock p,
+  .help-result-mock small,
+  .help-result-mock button {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .help-seat-mock {
+    grid-template-columns: repeat(3, 42px);
+  }
+
+  .contact-page {
+    padding: 32px 16px 56px;
+  }
+
+  .contact-email-grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
   }
 
   .route-stop {
