@@ -1,73 +1,37 @@
-# React + TypeScript + Vite
+# RailBook Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This is the Vite + React + TypeScript frontend for RailBook.
 
-Currently, two official plugins are available:
+It contains both passenger-facing pages and the JWT-protected admin control panel. The frontend talks to the ASP.NET Core API over HTTP and should not import backend classes directly.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Main Areas
 
-## React Compiler
+- Passenger home page, station search, filters, discounts, and traveler selection.
+- Search results for direct, transfer, and round-trip itineraries.
+- Class and seat-map selection.
+- Booking summary, add-on dog/baggage tickets, checkout, payment, and ticket confirmation.
+- My account, My tickets, My invoices, loyalty points, current trip, and help pages.
+- Admin dashboard, trains, routes, schedules, pricing, discounts, users, bookings, revenue, and audit logs.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Run Locally
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```powershell
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The frontend expects the API at `https://localhost:7246` unless the Axios base URL is changed.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Build
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```powershell
+npm run build
 ```
+
+## Notes For Contributors
+
+- Keep passenger and admin UI patterns consistent with the existing components and CSS.
+- Preserve booking route/search/seat/order state through URLs and API calls.
+- Use the shared API clients in `src/api`.
+- Add frontend types in `src/types` when backend DTOs change.
+- Avoid hardcoded demo train values in booking flows.
