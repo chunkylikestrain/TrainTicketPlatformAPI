@@ -59,6 +59,9 @@ function OrderSummaryPage() {
   const orderSegments = order?.segments ?? [];
   const hasOrderDetails = orderSegments.length > 0;
   const isRoundTripOrder = order?.tripType === "RoundTrip" || orderSegments.some((segment) => segment.journeyDirection === "Return");
+  const dogTicketCount = order?.bookings.reduce((sum, booking) => sum + booking.dogTicketCount, 0) ?? Number(searchParams.get("dogs") ?? 0);
+  const largeBaggageTicketCount = order?.bookings.reduce((sum, booking) => sum + booking.largeBaggageTicketCount, 0) ?? Number(searchParams.get("bags") ?? 0);
+  const extraChargeAmount = order?.bookings.reduce((sum, booking) => sum + booking.extraChargeAmount, 0) ?? (dogTicketCount * 15 + largeBaggageTicketCount * 5);
 
   if (bookingId) {
     checkoutParams.set("bookingId", bookingId);
@@ -174,9 +177,12 @@ function OrderSummaryPage() {
             <div>
               <strong>{isRoundTripOrder ? "Round-trip journey" : "Outbound journey"}</strong>
               <span>A-Base price</span>
+              {dogTicketCount > 0 && <span>Dog transport ticket x{dogTicketCount}</span>}
+              {largeBaggageTicketCount > 0 && <span>Large baggage ticket x{largeBaggageTicketCount}</span>}
             </div>
             <div>
               <span>Price</span>
+              {extraChargeAmount > 0 && <small>Includes {formatTripPrice(extraChargeAmount, committedCurrency)} extras</small>}
               <strong>{price}</strong>
             </div>
           </div>

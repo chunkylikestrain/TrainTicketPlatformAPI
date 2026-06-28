@@ -7,6 +7,9 @@ export type TicketArtifact = {
   trainName: string;
   route: string;
   seatLabel: string;
+  dogTicketCount: number;
+  largeBaggageTicketCount: number;
+  extraChargeAmount: number;
   journeyDirection: string;
   journeySegmentIndex: number;
   travelDate: string;

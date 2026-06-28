@@ -57,6 +57,7 @@ namespace TrainTicketPlatformAPI.Services
             WriteText(builder, $"Arrival: {FormatDateTime(ticket.ArrivalTime)}", 72, 442, 12);
             WriteText(builder, $"Booking reference: {ticket.BookingReference}", 72, 419, 12);
             WriteText(builder, $"Issued: {ticket.IssuedAtUtc:yyyy-MM-dd HH:mm} UTC", 72, 396, 12);
+            WriteText(builder, $"Extras: {GetExtrasLabel(ticket)}", 72, 373, 12, bold: ticket.DogTicketCount > 0 || ticket.LargeBaggageTicketCount > 0);
             WriteText(builder, "Scan the QR code during inspection.", 72, 360, 11);
             DrawQr(builder, qrMatrix, 372, 416, 144);
             WriteText(builder, "Demo ticket artifact for thesis scope.", 72, 128, 10);
@@ -149,6 +150,19 @@ namespace TrainTicketPlatformAPI.Services
                 ? "Return"
                 : "Outbound";
             return $"{direction} segment {ticket.JourneySegmentIndex + 1}";
+        }
+
+        private static string GetExtrasLabel(TicketArtifactDto ticket)
+        {
+            var extras = new List<string>();
+            if (ticket.DogTicketCount > 0)
+                extras.Add($"{ticket.DogTicketCount} dog ticket");
+            if (ticket.LargeBaggageTicketCount > 0)
+                extras.Add($"{ticket.LargeBaggageTicketCount} large baggage ticket");
+
+            return extras.Count == 0
+                ? "None"
+                : $"{string.Join(", ", extras)} ({ticket.ExtraChargeAmount.ToString("0.00", CultureInfo.InvariantCulture)} PLN)";
         }
 
         private static string Format(decimal value)

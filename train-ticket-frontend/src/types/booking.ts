@@ -22,6 +22,9 @@ export type Booking = {
   discountName: string;
   discountPercent: number;
   baseAmount: number;
+  dogTicketCount: number;
+  largeBaggageTicketCount: number;
+  extraChargeAmount: number;
   bookingDate: string;
   travelDate: string;
   expiresAtUtc: string | null;
@@ -32,6 +35,12 @@ export type Booking = {
   cancellationReason: string | null;
   confirmedAtUtc: string | null;
   refundedAtUtc: string | null;
+  refundEligible: boolean;
+  refundPolicyCode: string;
+  refundPolicyMessage: string;
+  refundableAmount: number;
+  refundFeeAmount: number;
+  refundDeadlineUtc: string | null;
   ticketIssuedAtUtc: string | null;
   hasTicketArtifact: boolean;
   ticketEmailStatus: string;
@@ -111,6 +120,8 @@ export type CreateBookingRequest = {
   passengerName?: string;
   passengerType?: string;
   discountCode?: string;
+  dogTicketCount?: number;
+  largeBaggageTicketCount?: number;
 };
 
 export type CreateBookingOrderRequest = {
@@ -129,6 +140,8 @@ export type CreateBookingOrderRequest = {
     passengerName?: string;
     passengerType?: string;
     discountCode?: string;
+    dogTicketCount?: number;
+    largeBaggageTicketCount?: number;
   }>;
 };
 
@@ -149,7 +162,14 @@ export type CreateBookingOrderSegmentRequest = {
     passengerName?: string;
     passengerType?: string;
     discountCode?: string;
+    dogTicketCount?: number;
+    largeBaggageTicketCount?: number;
   }>;
+};
+
+export type UpdateBookingExtrasRequest = {
+  dogTicketCount: number;
+  largeBaggageTicketCount: number;
 };
 
 export type UpdateGuestBookingDataRequest = {

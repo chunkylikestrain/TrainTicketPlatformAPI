@@ -243,6 +243,62 @@ namespace TrainTicketPlatformAPI.Services
             return booking;
         }
 
+        public async Task<Booking> UpdateBookingExtrasAsync(int bookingId, int dogTicketCount, int largeBaggageTicketCount)
+        {
+            var booking = await _db.Bookings
+                .Include(b => b.Seat)
+                .Include(b => b.Trip)
+                    .ThenInclude(t => t!.Fares)
+                .FirstOrDefaultAsync(b => b.Id == bookingId)
+                ?? throw new KeyNotFoundException("Booking not found");
+
+            EnsureExtrasCanBeChanged(booking);
+            ApplyExtras(booking, dogTicketCount, largeBaggageTicketCount);
+            await ApplyPricingAsync(booking);
+
+            await _db.SaveChangesAsync();
+            return await GetBookingByIdAsync(booking.Id);
+        }
+
+        public async Task<BookingOrder> UpdateBookingOrderExtrasAsync(int bookingOrderId, int dogTicketCount, int largeBaggageTicketCount)
+        {
+            var order = await _db.BookingOrders
+                .Include(o => o.Bookings)
+                    .ThenInclude(b => b.Seat)
+                .Include(o => o.Bookings)
+                    .ThenInclude(b => b.Trip)
+                        .ThenInclude(t => t!.Fares)
+                .FirstOrDefaultAsync(o => o.Id == bookingOrderId)
+                ?? throw new KeyNotFoundException("Booking order not found");
+
+            if (order.Bookings.Count == 0)
+                throw new InvalidOperationException("Booking order has no tickets");
+
+            if (order.ExpiresAtUtc.HasValue && order.ExpiresAtUtc.Value <= DateTime.UtcNow)
+            {
+                order.BookingStatus = "Expired";
+                foreach (var expiredBooking in order.Bookings.Where(booking => booking.BookingStatus == "PendingPayment"))
+                    expiredBooking.BookingStatus = "Expired";
+                await _db.SaveChangesAsync();
+                throw new InvalidOperationException("Booking hold has expired");
+            }
+
+            foreach (var booking in order.Bookings)
+                EnsureExtrasCanBeChanged(booking);
+
+            foreach (var booking in order.Bookings)
+                ApplyExtras(booking, 0, 0);
+
+            foreach (var representativeBooking in RepresentativeExtraBookings(order.Bookings))
+                ApplyExtras(representativeBooking, dogTicketCount, largeBaggageTicketCount);
+
+            foreach (var booking in order.Bookings)
+                await ApplyPricingAsync(booking);
+
+            await _db.SaveChangesAsync();
+            return await GetBookingOrderByIdAsync(order.Id);
+        }
+
         public async Task CancelBookingAsync(int bookingId)
         {
             var booking = await _db.Bookings.FindAsync(bookingId)
@@ -502,25 +558,33 @@ namespace TrainTicketPlatformAPI.Services
             var normalizedTicketNumber = ticketNumber.Trim();
 
             var booking = await _db.Bookings
+                .Include(b => b.Train)
+                .Include(b => b.Seat)
+                .Include(b => b.Trip)
                 .FirstOrDefaultAsync(b => b.TicketNumber == normalizedTicketNumber)
                 ?? throw new KeyNotFoundException("Ticket not found");
 
             if (!string.Equals(booking.GuestEmail, normalizedEmail, StringComparison.OrdinalIgnoreCase))
                 throw new InvalidOperationException("Ticket does not belong to this guest email");
 
-            if (booking.BookingStatus != "Confirmed" || booking.PaymentStatus != "Successful")
-                throw new InvalidOperationException("Only paid confirmed tickets can be refunded");
-
-            var cutoff = booking.TravelDate.AddHours(-1);
-            if (DateTime.UtcNow > cutoff)
-                throw new InvalidOperationException("Cannot refund ticket within 1 hour of travel date");
+            var now = DateTime.UtcNow;
+            var refundPolicy = BookingRefundPolicy.Evaluate(booking, now);
+            if (!refundPolicy.IsEligible)
+                throw new InvalidOperationException(refundPolicy.Message);
 
             booking.BookingStatus = "Refunded";
             booking.PaymentStatus = "Refunded";
             booking.IsCancelled = true;
-            booking.CancellationDate = DateTime.UtcNow;
-            booking.CancellationReason = "Passenger requested refund";
-            booking.RefundedAtUtc = DateTime.UtcNow;
+            booking.CancellationDate = now;
+            booking.CancellationReason = BuildRefundReason("Passenger requested refund", refundPolicy);
+            booking.RefundedAtUtc = now;
+
+            var successfulPayments = await _db.Payments
+                .Where(p => p.BookingId == booking.Id && p.Status == "Successful")
+                .ToListAsync();
+
+            foreach (var payment in successfulPayments)
+                payment.Status = "Refunded";
 
             await _db.SaveChangesAsync();
             return booking;
@@ -529,24 +593,26 @@ namespace TrainTicketPlatformAPI.Services
         public async Task<Booking> RefundUserBookingAsync(int bookingId, int userId, string? reason)
         {
             var booking = await _db.Bookings
+                .Include(b => b.Train)
+                .Include(b => b.Seat)
+                .Include(b => b.Trip)
                 .FirstOrDefaultAsync(b => b.Id == bookingId && b.UserId == userId)
                 ?? throw new KeyNotFoundException("Ticket not found");
 
-            if (booking.BookingStatus != "Confirmed" || booking.PaymentStatus != "Successful")
-                throw new InvalidOperationException("Only paid confirmed tickets can be returned");
-
-            var cutoff = booking.TravelDate.AddHours(-1);
-            if (DateTime.UtcNow > cutoff)
-                throw new InvalidOperationException("Cannot return ticket within 1 hour of travel date");
+            var now = DateTime.UtcNow;
+            var refundPolicy = BookingRefundPolicy.Evaluate(booking, now);
+            if (!refundPolicy.IsEligible)
+                throw new InvalidOperationException(refundPolicy.Message);
 
             booking.BookingStatus = "Refunded";
             booking.PaymentStatus = "Refunded";
             booking.IsCancelled = true;
-            booking.CancellationDate = DateTime.UtcNow;
-            booking.CancellationReason = string.IsNullOrWhiteSpace(reason)
+            booking.CancellationDate = now;
+            var passengerReason = string.IsNullOrWhiteSpace(reason)
                 ? "Passenger requested return"
                 : reason.Trim();
-            booking.RefundedAtUtc = DateTime.UtcNow;
+            booking.CancellationReason = BuildRefundReason(passengerReason, refundPolicy);
+            booking.RefundedAtUtc = now;
 
             var successfulPayments = await _db.Payments
                 .Where(p => p.BookingId == bookingId && p.Status == "Successful")
@@ -557,6 +623,13 @@ namespace TrainTicketPlatformAPI.Services
 
             await _db.SaveChangesAsync();
             return booking;
+        }
+
+        private static string BuildRefundReason(string reason, BookingRefundPolicyResult refundPolicy)
+        {
+            var refundAmount = refundPolicy.RefundableAmount.ToString("0.00");
+            var feeAmount = refundPolicy.FeeAmount.ToString("0.00");
+            return $"{reason}. Refund policy: {refundPolicy.Code}; refundable {refundAmount} PLN; fee {feeAmount} PLN.";
         }
 
         public async Task<bool> CheckSeatAvailabilityAsync(int trainId, int seatId, DateTime travelDate)
@@ -811,8 +884,35 @@ namespace TrainTicketPlatformAPI.Services
         private static string GenerateTicketNumber()
             => $"WH{DateTime.UtcNow:yyMMdd}{Random.Shared.Next(1000, 9999)}";
 
+        private static void EnsureExtrasCanBeChanged(Booking booking)
+        {
+            if (booking.IsCancelled || booking.BookingStatus is "Cancelled" or "Expired" or "Refunded")
+                throw new InvalidOperationException("Cannot update extras for this booking");
+
+            if (booking.BookingStatus != "PendingPayment" || booking.PaymentStatus != "Pending")
+                throw new InvalidOperationException("Additional dog and baggage tickets can only be changed before payment");
+        }
+
+        private static void ApplyExtras(Booking booking, int dogTicketCount, int largeBaggageTicketCount)
+        {
+            booking.DogTicketCount = BookingPricingCalculator.NormalizeDogTicketCount(dogTicketCount);
+            booking.LargeBaggageTicketCount = BookingPricingCalculator.NormalizeLargeBaggageTicketCount(largeBaggageTicketCount);
+            booking.ExtraChargeAmount = BookingPricingCalculator.GetExtraChargeAmount(booking);
+        }
+
+        private static IEnumerable<Booking> RepresentativeExtraBookings(IEnumerable<Booking> bookings)
+            => bookings
+                .GroupBy(booking => NormalizeJourneyDirection(booking.JourneyDirection))
+                .Select(group => group
+                    .OrderBy(booking => booking.JourneySegmentIndex)
+                    .ThenBy(booking => booking.SegmentDepartureTime ?? booking.Trip?.DepartureTime ?? booking.TravelDate)
+                    .ThenBy(booking => booking.Id)
+                    .First());
+
         private async Task ApplyPricingAsync(Booking booking)
         {
+            ApplyExtras(booking, booking.DogTicketCount, booking.LargeBaggageTicketCount);
+
             var fare = await TryGetFareForBookingAsync(booking);
             if (fare == null)
             {
@@ -820,6 +920,7 @@ namespace TrainTicketPlatformAPI.Services
                 booking.DiscountCode = string.IsNullOrWhiteSpace(booking.DiscountCode) ? "normal" : booking.DiscountCode.Trim();
                 booking.DiscountName = string.IsNullOrWhiteSpace(booking.DiscountName) ? "Normal Ticket" : booking.DiscountName.Trim();
                 booking.Currency = string.IsNullOrWhiteSpace(booking.Currency) ? "PLN" : booking.Currency.Trim();
+                booking.Amount = booking.ExtraChargeAmount;
                 return;
             }
 
@@ -830,6 +931,7 @@ namespace TrainTicketPlatformAPI.Services
             booking.DiscountName = price.DiscountName;
             booking.DiscountPercent = price.DiscountPercent;
             booking.BaseAmount = price.BaseAmount;
+            booking.ExtraChargeAmount = price.ExtraChargeAmount;
             booking.Amount = price.Amount;
             booking.Currency = price.Currency;
         }

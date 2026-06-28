@@ -169,6 +169,8 @@ namespace TrainTicketPlatformAPI.Services
                 $"trip={booking.TripId?.ToString(CultureInfo.InvariantCulture) ?? "legacy"}",
                 $"journey={NormalizeJourneyDirection(booking.JourneyDirection).ToLowerInvariant()}-{booking.JourneySegmentIndex.ToString(CultureInfo.InvariantCulture)}",
                 $"seat={booking.Seat.Coach}-{booking.Seat.Number}",
+                $"dog={booking.DogTicketCount.ToString(CultureInfo.InvariantCulture)}",
+                $"bags={booking.LargeBaggageTicketCount.ToString(CultureInfo.InvariantCulture)}",
                 $"segment={booking.SegmentDepartureOrder?.ToString(CultureInfo.InvariantCulture) ?? "origin"}-{booking.SegmentArrivalOrder?.ToString(CultureInfo.InvariantCulture) ?? "destination"}",
                 $"date={(booking.SegmentDepartureTime ?? booking.TravelDate):yyyy-MM-dd}",
                 $"issued={issuedAt:O}");
@@ -199,6 +201,9 @@ namespace TrainTicketPlatformAPI.Services
                 TrainName = string.IsNullOrWhiteSpace(booking.Train.Code) ? booking.Train.Name : booking.Train.Code,
                 Route = GetRouteLabel(booking),
                 SeatLabel = $"Coach {booking.Seat.Coach}, seat {booking.Seat.Number}",
+                DogTicketCount = booking.DogTicketCount,
+                LargeBaggageTicketCount = booking.LargeBaggageTicketCount,
+                ExtraChargeAmount = booking.ExtraChargeAmount,
                 JourneyDirection = NormalizeJourneyDirection(booking.JourneyDirection),
                 JourneySegmentIndex = booking.JourneySegmentIndex,
                 TravelDate = booking.TravelDate,

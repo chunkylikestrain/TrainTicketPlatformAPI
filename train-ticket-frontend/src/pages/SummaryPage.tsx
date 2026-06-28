@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import { updateBookingExtras, updateBookingOrderExtras } from "../api/bookingApi";
 import { getUserEmail, hasAuthToken } from "../api/authSession";
 import { getTripById } from "../api/tripApi";
 import type { TripDetails } from "../types/trip";
@@ -12,11 +13,20 @@ import {
   getPassengerCounts,
 } from "../utils/purchasePreferences";
 
+const DOG_TICKET_PRICE = 15;
+const LARGE_BAGGAGE_TICKET_PRICE = 5;
+type ExtraConfirmationType = "dog" | "baggage" | null;
+
 function SummaryPage() {
   const { tripId } = useParams();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [isAccountPromptOpen, setIsAccountPromptOpen] = useState(false);
+  const [extraConfirmation, setExtraConfirmation] = useState<ExtraConfirmationType>(null);
+  const [dogTicketCount, setDogTicketCount] = useState(() => clampExtraCount(searchParams.get("dogs"), 0, 1));
+  const [largeBaggageTicketCount, setLargeBaggageTicketCount] = useState(() => clampExtraCount(searchParams.get("bags"), 0, 10));
+  const [syncedAmount, setSyncedAmount] = useState<number | null>(null);
+  const [extraError, setExtraError] = useState("");
   const [trip, setTrip] = useState<TripDetails | null>(null);
   const [tripError, setTripError] = useState("");
   const selectedClass = searchParams.get("class") === "2" ? "2" : "1";
@@ -35,6 +45,11 @@ function SummaryPage() {
   const discountCodes = getDiscountCodes(searchParams, passengerCounts);
   const summaryParams = new URLSearchParams(searchParams);
   summaryParams.set("class", selectedClass);
+  summaryParams.set("dogs", String(dogTicketCount));
+  summaryParams.set("bags", String(largeBaggageTicketCount));
+  if (syncedAmount != null) {
+    summaryParams.set("amount", String(syncedAmount));
+  }
 
   if (bookingId) {
     summaryParams.set("bookingId", bookingId);
@@ -56,6 +71,7 @@ function SummaryPage() {
   const dataRequestUrl = `/data/${tripId}?${summaryParams.toString()}`;
   const currentSummaryUrl = `/summary/${tripId}?${summaryParams.toString()}`;
   const discountSelectionUrl = buildDiscountSelectionUrl(currentSummaryUrl, summaryParams);
+  const extrasAmount = dogTicketCount * DOG_TICKET_PRICE + largeBaggageTicketCount * LARGE_BAGGAGE_TICKET_PRICE;
 
   useEffect(() => {
     if (!tripId) {
@@ -73,11 +89,46 @@ function SummaryPage() {
       });
   }, [tripId]);
 
-  function handleGoToPayments() {
+  async function syncExtras() {
+    if (!bookingId && !orderId) {
+      return null;
+    }
+
+    const request = {
+      dogTicketCount,
+      largeBaggageTicketCount,
+    };
+
+    if (orderId) {
+      const updatedOrder = await updateBookingOrderExtras(orderId, request);
+      setSyncedAmount(updatedOrder.amount);
+      return updatedOrder.amount;
+    }
+
+    const updatedBooking = await updateBookingExtras(bookingId, request);
+    setSyncedAmount(updatedBooking.amount);
+    return updatedBooking.amount;
+  }
+
+  async function handleGoToPayments() {
+    setExtraError("");
+
+    let latestAmount = syncedAmount;
+    try {
+      latestAmount = await syncExtras();
+    } catch {
+      setExtraError("Could not save dog or large baggage tickets. Try again before payment.");
+      return;
+    }
+
     const userEmail = getUserEmail();
+    const nextParams = new URLSearchParams(summaryParams);
+    if (latestAmount != null) {
+      nextParams.set("amount", String(latestAmount));
+    }
 
     if (hasAuthToken() && userEmail) {
-      const loggedInParams = new URLSearchParams(summaryParams);
+      const loggedInParams = new URLSearchParams(nextParams);
       loggedInParams.set("email", userEmail);
       navigate(`/order-summary/${tripId}?${loggedInParams.toString()}`);
       return;
@@ -176,30 +227,55 @@ function SummaryPage() {
 
           <fieldset className="summary-option-card">
             <legend>Additional tickets</legend>
+            <p className="addon-warning">
+              Dog tickets cost {DOG_TICKET_PRICE} PLN. Large baggage tickets cost {LARGE_BAGGAGE_TICKET_PRICE} PLN.
+              Keep these extras visible on your ticket for inspection.
+            </p>
             <div className="addon-row">
               <div>
                 <span className="paw-icon" aria-hidden="true" />
                 <strong>Dog</strong>
               </div>
-              <button type="button" disabled>
+              <button
+                type="button"
+                disabled={dogTicketCount === 0}
+                onClick={() => {
+                  setDogTicketCount(0);
+                  setSyncedAmount(null);
+                }}
+              >
                 -
               </button>
-              <span>0</span>
-              <button type="button">+</button>
+              <span>{dogTicketCount}</span>
+              <button type="button" disabled={dogTicketCount >= 1} onClick={() => setExtraConfirmation("dog")}>+</button>
             </div>
             <div className="addon-row">
               <div>
                 <span className="bag-icon" aria-hidden="true" />
                 <strong>Luggage</strong>
               </div>
-              <button type="button" disabled>
+              <button
+                type="button"
+                disabled={largeBaggageTicketCount === 0}
+                onClick={() => {
+                  setLargeBaggageTicketCount((current) => Math.max(0, current - 1));
+                  setSyncedAmount(null);
+                }}
+              >
                 -
               </button>
-              <span>0</span>
-              <button type="button">+</button>
+              <span>{largeBaggageTicketCount}</span>
+              <button type="button" onClick={() => setExtraConfirmation("baggage")}>+</button>
             </div>
+            {extrasAmount > 0 && (
+              <strong className="addon-total">
+                Additional tickets: {formatMoney(extrasAmount)}
+              </strong>
+            )}
           </fieldset>
         </section>
+
+        {extraError && <p className="data-error">{extraError}</p>}
 
         <section className="summary-actions">
           <button type="button" onClick={handleGoToPayments}>
@@ -273,6 +349,58 @@ function SummaryPage() {
           </section>
         </div>
       )}
+
+      {extraConfirmation && (
+        <div className="account-modal-backdrop" role="presentation">
+          <section className="account-modal addon-confirmation-modal" role="dialog" aria-modal="true" aria-labelledby="addon-confirmation-title">
+            <button
+              type="button"
+              className="account-modal-close"
+              onClick={() => setExtraConfirmation(null)}
+              aria-label="Close confirmation"
+            >
+              x
+            </button>
+            <h2 id="addon-confirmation-title">Confirmation</h2>
+            {extraConfirmation === "dog" ? (
+              <>
+                <p>You selected a seat for a person traveling with a dog.</p>
+                <p>
+                  Additional fee will be charged for traveling with a dog.
+                  <Link to="/help/passenger-rights"> You can check the fees and rules of transportation.</Link>
+                </p>
+                <p>Do you confirm that you will travel with a dog?</p>
+              </>
+            ) : (
+              <>
+                <p>A seat has been selected for a traveler with large luggage.</p>
+                <p>
+                  Additional fee will be charged for transporting the luggage.
+                  <Link to="/help/passenger-rights"> You can check the fees and rules of transportation.</Link>
+                </p>
+                <p>Please confirm that you will travel with the luggage.</p>
+              </>
+            )}
+            <div className="addon-confirmation-actions">
+              <button type="button" onClick={() => setExtraConfirmation(null)}>Resign</button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (extraConfirmation === "dog") {
+                    setDogTicketCount(1);
+                  } else {
+                    setLargeBaggageTicketCount((current) => Math.min(10, current + 1));
+                  }
+                  setSyncedAmount(null);
+                  setExtraConfirmation(null);
+                }}
+              >
+                Confirm
+              </button>
+            </div>
+          </section>
+        </div>
+      )}
     </main>
   );
 }
@@ -280,6 +408,19 @@ function SummaryPage() {
 function formatSeatToken(token: string) {
   const [car, seat] = token.split("-");
   return car && seat ? `Car ${car}, seat ${seat}` : token;
+}
+
+function clampExtraCount(value: string | null, min: number, max: number) {
+  const parsed = Number(value);
+  if (!Number.isFinite(parsed)) {
+    return min;
+  }
+
+  return Math.min(max, Math.max(min, Math.trunc(parsed)));
+}
+
+function formatMoney(value: number, currency = "PLN") {
+  return `${value.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
 }
 
 export default SummaryPage;

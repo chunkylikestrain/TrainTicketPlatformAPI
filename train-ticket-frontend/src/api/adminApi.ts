@@ -1,5 +1,6 @@
 import apiClient from "./apiClient";
 import type {
+  AdminAuditLog,
   AdminBooking,
   AdminDiscount,
   AdminRollingStockOption,
@@ -201,6 +202,18 @@ export async function adminCancelAndRefundBooking(id: number, reason: string) {
 export async function getAdminRevenueReport(from: string, to: string) {
   const response = await apiClient.get<AdminRevenueReport>("/admin/reports/revenue", {
     params: { from, to },
+  });
+  return response.data;
+}
+
+export async function getAdminAuditLogs(params: {
+  page?: number;
+  pageSize?: number;
+  search?: string;
+  entityType?: string;
+}) {
+  const response = await apiClient.get<PagedResponse<AdminAuditLog>>("/admin/audit-logs", {
+    params,
   });
   return response.data;
 }

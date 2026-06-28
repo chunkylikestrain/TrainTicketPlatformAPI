@@ -4,6 +4,9 @@ namespace TrainTicketPlatformAPI.Services
 {
     public static class BookingPricingCalculator
     {
+        public const decimal DogTicketPrice = 15m;
+        public const decimal LargeBaggageTicketPrice = 5m;
+
         private static readonly IReadOnlyDictionary<string, DiscountDefinition> Discounts =
             new Dictionary<string, DiscountDefinition>(StringComparer.OrdinalIgnoreCase)
             {
@@ -33,13 +36,16 @@ namespace TrainTicketPlatformAPI.Services
                 throw new InvalidOperationException($"{discount.Name} can only be used in second class");
             }
 
-            var amount = decimal.Round(fare.Price * (100m - discount.Percent) / 100m, 2, MidpointRounding.AwayFromZero);
+            var ticketAmount = decimal.Round(fare.Price * (100m - discount.Percent) / 100m, 2, MidpointRounding.AwayFromZero);
+            var extraChargeAmount = GetExtraChargeAmount(booking);
+            var amount = ticketAmount + extraChargeAmount;
             return new TicketPrice(
                 passengerType,
                 discount.Code,
                 discount.Name,
                 discount.Percent,
                 fare.Price,
+                extraChargeAmount,
                 amount,
                 fare.Currency);
         }
@@ -51,6 +57,16 @@ namespace TrainTicketPlatformAPI.Services
 
             return Calculate(booking, fare).Amount;
         }
+
+        public static decimal GetExtraChargeAmount(Booking booking)
+            => (NormalizeDogTicketCount(booking.DogTicketCount) * DogTicketPrice) +
+               (NormalizeLargeBaggageTicketCount(booking.LargeBaggageTicketCount) * LargeBaggageTicketPrice);
+
+        public static int NormalizeDogTicketCount(int count)
+            => Math.Clamp(count, 0, 1);
+
+        public static int NormalizeLargeBaggageTicketCount(int count)
+            => Math.Clamp(count, 0, 10);
 
         public static string NormalizePassengerType(string? passengerType)
         {
@@ -86,6 +102,7 @@ namespace TrainTicketPlatformAPI.Services
             string DiscountName,
             decimal DiscountPercent,
             decimal BaseAmount,
+            decimal ExtraChargeAmount,
             decimal Amount,
             string Currency);
     }

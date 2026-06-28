@@ -19,6 +19,8 @@ namespace TrainTicketPlatformAPI.Services
         Task<Booking> AdminCancelAndRefundAsync(int bookingId, string reason);
         Task<Booking> RefundTicketAsync(string ticketNumber, string guestEmail);
         Task<Booking> RefundUserBookingAsync(int bookingId, int userId, string? reason);
+        Task<Booking> UpdateBookingExtrasAsync(int bookingId, int dogTicketCount, int largeBaggageTicketCount);
+        Task<BookingOrder> UpdateBookingOrderExtrasAsync(int bookingOrderId, int dogTicketCount, int largeBaggageTicketCount);
         Task<Booking> UpdateBookingAsync(Booking booking);
         Task<Booking> ConfirmBookingAsync(int bookingId);
         Task<IEnumerable<Booking>> GetBookingsByUserAsync(int userId);

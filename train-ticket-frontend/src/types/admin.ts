@@ -180,6 +180,22 @@ export type AdminRevenueReport = {
   recentActivity: AdminRevenueActivity[];
 };
 
+export type AdminAuditLog = {
+  id: number;
+  createdAtUtc: string;
+  adminUserId: number | null;
+  adminEmail: string;
+  action: string;
+  entityType: string;
+  entityId: string;
+  httpMethod: string;
+  path: string;
+  statusCode: number;
+  summary: string;
+  ipAddress: string;
+  userAgent: string;
+};
+
 export type Station = {
   id: number;
   code: string;

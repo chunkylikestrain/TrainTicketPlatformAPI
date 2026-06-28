@@ -9,6 +9,7 @@ using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using TrainTicketPlatformAPI.Services;
 using TrainTicketPlatformAPI.Data;
+using TrainTicketPlatformAPI.Middleware;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -121,6 +122,7 @@ builder.Services.AddScoped<ITripService, TripService>();
 builder.Services.AddScoped<ITicketArtifactService, TicketArtifactService>();
 builder.Services.AddScoped<ILoyaltyService, LoyaltyService>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddScoped<IAdminAuditService, AdminAuditService>();
 
 
 // JWT Authentication
@@ -173,6 +175,7 @@ app.UseCors(FrontendCorsPolicy);
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<AdminAuditMiddleware>();
 
 app.MapControllers();
 app.MapHealthChecks("/health");

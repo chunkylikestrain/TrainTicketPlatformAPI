@@ -5,6 +5,7 @@ import Navbar from "./components/Navbar";
 import "./App.css";
 
 const AdminBookingsPage = lazy(() => import("./pages/admin/AdminBookingsPage"));
+const AdminAuditLogsPage = lazy(() => import("./pages/admin/AdminAuditLogsPage"));
 const AdminCreateRoutePage = lazy(() => import("./pages/admin/AdminCreateRoutePage"));
 const AdminCreateSchedulePage = lazy(() => import("./pages/admin/AdminCreateSchedulePage"));
 const AdminCreateTrainPage = lazy(() => import("./pages/admin/AdminCreateTrainPage"));
@@ -28,7 +29,9 @@ const LoginPage = lazy(() => import("./pages/LoginPage"));
 const MyBookingsPage = lazy(() => import("./pages/MyBookingsPage"));
 const MyProfilePage = lazy(() => import("./pages/MyProfilePage"));
 const OrderSummaryPage = lazy(() => import("./pages/OrderSummaryPage"));
+const PassengerRightsPage = lazy(() => import("./pages/PassengerRightsPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
+const RefundPolicyPage = lazy(() => import("./pages/RefundPolicyPage"));
 const SearchResultsPage = lazy(() => import("./pages/SearchResultsPage"));
 const SeatMapPage = lazy(() => import("./pages/SeatMapPage"));
 const SummaryPage = lazy(() => import("./pages/SummaryPage"));
@@ -57,8 +60,11 @@ function App() {
           <Route path="/admin/users" element={<AdminUsersPage />} />
           <Route path="/admin/discounts" element={<AdminDiscountsPage />} />
           <Route path="/admin/revenue" element={<AdminRevenuePage />} />
+          <Route path="/admin/audit-logs" element={<AdminAuditLogsPage />} />
           <Route path="/search" element={<SearchResultsPage />} />
           <Route path="/help" element={<HelpPage />} />
+          <Route path="/help/refund-policy" element={<RefundPolicyPage />} />
+          <Route path="/help/passenger-rights" element={<PassengerRightsPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/profile" element={<MyProfilePage />} />
           <Route path="/login" element={<LoginPage />} />

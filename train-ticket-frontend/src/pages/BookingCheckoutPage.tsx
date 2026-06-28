@@ -123,6 +123,9 @@ function BookingCheckoutPage() {
   const orderSegments = order?.segments ?? [];
   const hasOrderDetails = orderSegments.length > 0;
   const isRoundTripOrder = order?.tripType === "RoundTrip" || orderSegments.some((segment) => segment.journeyDirection === "Return");
+  const dogTicketCount = order?.bookings.reduce((sum, booking) => sum + booking.dogTicketCount, 0) ?? Number(searchParams.get("dogs") ?? 0);
+  const largeBaggageTicketCount = order?.bookings.reduce((sum, booking) => sum + booking.largeBaggageTicketCount, 0) ?? Number(searchParams.get("bags") ?? 0);
+  const extraChargeAmount = order?.bookings.reduce((sum, booking) => sum + booking.extraChargeAmount, 0) ?? (dogTicketCount * 15 + largeBaggageTicketCount * 5);
 
   if (selectedSeat) {
     flowParams.set("seat", selectedSeat);
@@ -424,6 +427,12 @@ function BookingCheckoutPage() {
                   </span>
                 ))}
               </p>
+              {ticketArtifacts.some((artifact) => artifact.dogTicketCount > 0 || artifact.largeBaggageTicketCount > 0) && (
+                <p>
+                  extras{" "}
+                  <strong>{ticketArtifacts.map(formatArtifactExtras).filter(Boolean).join("; ")}</strong>
+                </p>
+              )}
               <button className="ticket-pdf-button" type="button" onClick={handleDownloadTicketPdf}>
                 Download PDF
               </button>
@@ -548,9 +557,12 @@ function BookingCheckoutPage() {
             <div>
               <strong>{isRoundTripOrder ? "Round-trip journey" : "Outbound journey"}</strong>
               <span>A-Base price</span>
+              {dogTicketCount > 0 && <span>Dog transport ticket x{dogTicketCount}</span>}
+              {largeBaggageTicketCount > 0 && <span>Large baggage ticket x{largeBaggageTicketCount}</span>}
             </div>
             <div>
               <span>Price</span>
+              {extraChargeAmount > 0 && <small>Includes {formatTripPrice(extraChargeAmount, committedCurrency)} extras</small>}
               <strong>{price}</strong>
             </div>
           </div>
@@ -785,6 +797,18 @@ function getTripPriceAmount(trip: TripDetails | null, selectedClass: string) {
 
   const preferredFare = trip.fares.find((fare) => fare.classType.includes(selectedClass));
   return preferredFare?.price ?? trip.lowestFare ?? 0;
+}
+
+function formatArtifactExtras(ticket: TicketArtifact) {
+  const extras = [];
+  if (ticket.dogTicketCount > 0) {
+    extras.push(`${ticket.dogTicketCount}x dog`);
+  }
+  if (ticket.largeBaggageTicketCount > 0) {
+    extras.push(`${ticket.largeBaggageTicketCount}x large baggage`);
+  }
+
+  return extras.length > 0 ? `${getArtifactJourneyLabel(ticket)}: ${extras.join(", ")}` : "";
 }
 
 function clampPoints(value: string, maxPoints: number) {

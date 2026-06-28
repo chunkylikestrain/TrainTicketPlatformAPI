@@ -250,6 +250,31 @@ function MyProfilePage() {
     return `${value.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
   }
 
+  function getRefundButtonLabel(ticket: Booking) {
+    if (ticket.bookingStatus === "Refunded" || ticket.paymentStatus === "Refunded") {
+      return "Refund requested";
+    }
+
+    const passenger = ticket.passengerName || ticket.ticketNumber || "ticket";
+    if (ticket.refundEligible) {
+      return `Refund ${passenger} - ${formatMoney(ticket.refundableAmount, ticket.currency)}`;
+    }
+
+    return `Refund ${passenger}`;
+  }
+
+  function formatTicketExtras(ticket: Booking) {
+    const extras = [];
+    if (ticket.dogTicketCount > 0) {
+      extras.push(`${ticket.dogTicketCount}x dog`);
+    }
+    if (ticket.largeBaggageTicketCount > 0) {
+      extras.push(`${ticket.largeBaggageTicketCount}x large baggage`);
+    }
+
+    return extras.length > 0 ? ` - ${extras.join(", ")}` : "";
+  }
+
   async function handleDownloadInvoice(invoice: Invoice) {
     setInvoiceError("");
     setIsDownloadingInvoiceId(invoice.id);
@@ -411,7 +436,7 @@ function MyProfilePage() {
                             <div className="ticket-price-row" key={ticket.id}>
                               <span>
                                 <b>{ticket.passengerName || currentUser.email}</b>
-                                {ticket.seatLabel || `Seat ${ticket.seatId}`} · {ticket.discountName || "Normal Ticket"}
+                                {ticket.seatLabel || `Seat ${ticket.seatId}`} - {ticket.discountName || "Normal Ticket"}{formatTicketExtras(ticket)}
                               </span>
                               <span>
                                 <b>Price</b>
@@ -449,18 +474,29 @@ function MyProfilePage() {
                         )}
                         <button type="button" disabled>Purchase return ticket</button>
                         {group.tickets.map((ticket) => (
-                        <button
-                          type="button"
-                          onClick={() => handleReturnTicket(ticket)}
-                          disabled={
-                            activeTicketSection !== "tickets" ||
-                            isReturningTicketId === ticket.id ||
-                            ticket.bookingStatus !== "Confirmed"
-                          }
-                          key={ticket.id}
-                        >
-                          {isReturningTicketId === ticket.id ? "Returning..." : `Refund ${ticket.passengerName || ticket.ticketNumber || "ticket"}`}
-                        </button>
+                          <div className="ticket-refund-option" key={ticket.id}>
+                            {activeTicketSection === "tickets" && (
+                              <p className={ticket.refundEligible ? "ticket-refund-policy" : "ticket-refund-policy ticket-refund-policy-closed"}>
+                                {ticket.refundEligible
+                                  ? `${formatMoney(ticket.refundableAmount, ticket.currency)} refundable. ${ticket.refundPolicyMessage}`
+                                  : ticket.refundPolicyMessage}
+                              </p>
+                            )}
+                            <button
+                              className={ticket.refundEligible ? "refund-button" : "refund-button refund-button-refunded"}
+                              type="button"
+                              onClick={() => handleReturnTicket(ticket)}
+                              disabled={
+                                activeTicketSection !== "tickets" ||
+                                isReturningTicketId === ticket.id ||
+                                ticket.bookingStatus !== "Confirmed" ||
+                                !ticket.refundEligible
+                              }
+                              title={ticket.refundPolicyMessage}
+                            >
+                              {isReturningTicketId === ticket.id ? "Returning..." : getRefundButtonLabel(ticket)}
+                            </button>
+                          </div>
                         ))}
                         <button type="button" disabled>Exchange</button>
                         <button type="button" disabled>Change data</button>

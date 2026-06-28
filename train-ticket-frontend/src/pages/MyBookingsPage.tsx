@@ -112,6 +112,31 @@ function MyBookingsPage() {
     return `${value.toLocaleString("pl-PL", { minimumFractionDigits: 2, maximumFractionDigits: 2 })} ${currency}`;
   }
 
+  function getRefundButtonLabel(ticket: Booking) {
+    if (isReturnedTicket(ticket)) {
+      return "Refund requested";
+    }
+
+    const passenger = ticket.passengerName || ticket.ticketNumber || "ticket";
+    if (ticket.refundEligible) {
+      return `Refund ${passenger} - ${formatMoney(ticket.refundableAmount, ticket.currency)}`;
+    }
+
+    return `Refund ${passenger}`;
+  }
+
+  function formatTicketExtras(ticket: Booking) {
+    const extras = [];
+    if (ticket.dogTicketCount > 0) {
+      extras.push(`${ticket.dogTicketCount}x dog`);
+    }
+    if (ticket.largeBaggageTicketCount > 0) {
+      extras.push(`${ticket.largeBaggageTicketCount}x large baggage`);
+    }
+
+    return extras.length > 0 ? ` - ${extras.join(", ")}` : "";
+  }
+
   return (
     <main className="tickets-page">
       <section className="connection-hero" aria-hidden="true">
@@ -214,7 +239,7 @@ function MyBookingsPage() {
                           <div className="ticket-price-row" key={passengerTicket.id}>
                             <span>
                               <b>{passengerTicket.passengerName || "Passenger"}</b>
-                              {passengerTicket.seatLabel || `Seat ${passengerTicket.seatId}`} · {passengerTicket.discountName || "Normal Ticket"}
+                              {passengerTicket.seatLabel || `Seat ${passengerTicket.seatId}`} - {passengerTicket.discountName || "Normal Ticket"}{formatTicketExtras(passengerTicket)}
                             </span>
                             <span>
                               <b>Price</b>
@@ -234,15 +259,24 @@ function MyBookingsPage() {
                   <strong>{group.isOrder ? "Other features for this order" : "Other features for this ticket"}</strong>
                   <button type="button">Purchase return ticket</button>
                   {group.tickets.map((passengerTicket) => (
-                    <button
-                    className={isRefunded ? "refund-button refund-button-refunded" : "refund-button"}
-                    type="button"
-                    onClick={() => handleRefund(passengerTicket)}
-                    disabled={isReturnedTicket(passengerTicket)}
-                    key={passengerTicket.id}
-                  >
-                    {isReturnedTicket(passengerTicket) ? "Refund requested" : `Refund ${passengerTicket.passengerName || passengerTicket.ticketNumber || "ticket"}`}
-                  </button>
+                    <div className="ticket-refund-option" key={passengerTicket.id}>
+                      {activeTab === "Tickets" && (
+                        <p className={passengerTicket.refundEligible ? "ticket-refund-policy" : "ticket-refund-policy ticket-refund-policy-closed"}>
+                          {passengerTicket.refundEligible
+                            ? `${formatMoney(passengerTicket.refundableAmount, passengerTicket.currency)} refundable. ${passengerTicket.refundPolicyMessage}`
+                            : passengerTicket.refundPolicyMessage}
+                        </p>
+                      )}
+                      <button
+                        className={passengerTicket.refundEligible ? "refund-button" : "refund-button refund-button-refunded"}
+                        type="button"
+                        onClick={() => handleRefund(passengerTicket)}
+                        disabled={isReturnedTicket(passengerTicket) || !passengerTicket.refundEligible}
+                        title={passengerTicket.refundPolicyMessage}
+                      >
+                        {getRefundButtonLabel(passengerTicket)}
+                      </button>
+                    </div>
                   ))}
                   <button type="button">Exchange</button>
                   <button type="button">Change data</button>

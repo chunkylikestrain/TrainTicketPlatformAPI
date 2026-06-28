@@ -4,6 +4,7 @@ import type {
   BookingOrder,
   CreateBookingOrderRequest,
   CreateBookingRequest,
+  UpdateBookingExtrasRequest,
   UpdateGuestBookingDataRequest,
 } from "../types/booking";
 
@@ -29,6 +30,16 @@ export async function getBookingById(bookingId: number | string) {
 
 export async function updateGuestBookingData(bookingId: number | string, request: UpdateGuestBookingDataRequest) {
   const response = await apiClient.put<Booking>(`/Bookings/${bookingId}/guest-data`, request);
+  return response.data;
+}
+
+export async function updateBookingExtras(bookingId: number | string, request: UpdateBookingExtrasRequest) {
+  const response = await apiClient.put<Booking>(`/Bookings/${bookingId}/extras`, request);
+  return response.data;
+}
+
+export async function updateBookingOrderExtras(orderId: number | string, request: UpdateBookingExtrasRequest) {
+  const response = await apiClient.put<BookingOrder>(`/Bookings/orders/${orderId}/extras`, request);
   return response.data;
 }
 

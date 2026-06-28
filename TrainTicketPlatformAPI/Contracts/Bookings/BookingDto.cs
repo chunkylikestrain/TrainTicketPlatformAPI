@@ -25,6 +25,9 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         public string DiscountName { get; set; } = string.Empty;
         public decimal DiscountPercent { get; set; }
         public decimal BaseAmount { get; set; }
+        public int DogTicketCount { get; set; }
+        public int LargeBaggageTicketCount { get; set; }
+        public decimal ExtraChargeAmount { get; set; }
         public DateTime BookingDate { get; set; }
         public DateTime TravelDate { get; set; }
         public DateTime? ExpiresAtUtc { get; set; }
@@ -35,6 +38,12 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
         public string? CancellationReason { get; set; }
         public DateTime? ConfirmedAtUtc { get; set; }
         public DateTime? RefundedAtUtc { get; set; }
+        public bool RefundEligible { get; set; }
+        public string RefundPolicyCode { get; set; } = string.Empty;
+        public string RefundPolicyMessage { get; set; } = string.Empty;
+        public decimal RefundableAmount { get; set; }
+        public decimal RefundFeeAmount { get; set; }
+        public DateTime? RefundDeadlineUtc { get; set; }
         public string TrainName { get; set; } = string.Empty;
         public string Route { get; set; } = string.Empty;
         public string SeatLabel { get; set; } = string.Empty;

@@ -10,6 +10,9 @@ namespace TrainTicketPlatformAPI.Contracts.Tickets
         public string TrainName { get; set; } = string.Empty;
         public string Route { get; set; } = string.Empty;
         public string SeatLabel { get; set; } = string.Empty;
+        public int DogTicketCount { get; set; }
+        public int LargeBaggageTicketCount { get; set; }
+        public decimal ExtraChargeAmount { get; set; }
         public string JourneyDirection { get; set; } = string.Empty;
         public int JourneySegmentIndex { get; set; }
         public DateTime TravelDate { get; set; }

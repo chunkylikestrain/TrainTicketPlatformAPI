@@ -30,5 +30,11 @@ namespace TrainTicketPlatformAPI.Contracts.Bookings
 
         [StringLength(40)]
         public string? DiscountCode { get; set; }
+
+        [Range(0, 1)]
+        public int DogTicketCount { get; set; }
+
+        [Range(0, 10)]
+        public int LargeBaggageTicketCount { get; set; }
     }
 }

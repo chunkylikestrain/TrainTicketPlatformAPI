@@ -31,6 +31,7 @@ namespace TrainTicketPlatformAPI.Data
         public DbSet<LoyaltyAccount> LoyaltyAccounts { get; set; }
         public DbSet<LoyaltyTransaction> LoyaltyTransactions { get; set; }
         public DbSet<Invoice> Invoices { get; set; }
+        public DbSet<AdminAuditLog> AdminAuditLogs { get; set; }
 
         // Optional: Fluent API configuration
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -171,6 +172,19 @@ namespace TrainTicketPlatformAPI.Data
             modelBuilder.Entity<Booking>()
                 .Property(b => b.Amount)
                 .HasPrecision(18, 2);
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.DogTicketCount)
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.LargeBaggageTicketCount)
+                .HasDefaultValue(0);
+
+            modelBuilder.Entity<Booking>()
+                .Property(b => b.ExtraChargeAmount)
+                .HasPrecision(18, 2)
+                .HasDefaultValue(0m);
 
             modelBuilder.Entity<Booking>()
                 .Property(b => b.LoyaltyPointsRedeemed)
@@ -348,6 +362,51 @@ namespace TrainTicketPlatformAPI.Data
                         "CK_BookingOrders_PaymentStatus",
                         "[PaymentStatus] IN ('Pending', 'Successful', 'Failed', 'Refunded')");
                 });
+
+            modelBuilder.Entity<AdminAuditLog>()
+                .HasIndex(log => log.CreatedAtUtc);
+
+            modelBuilder.Entity<AdminAuditLog>()
+                .HasIndex(log => log.AdminUserId);
+
+            modelBuilder.Entity<AdminAuditLog>()
+                .HasIndex(log => log.EntityType);
+
+            modelBuilder.Entity<AdminAuditLog>()
+                .Property(log => log.AdminEmail)
+                .HasMaxLength(256);
+
+            modelBuilder.Entity<AdminAuditLog>()
+                .Property(log => log.Action)
+                .HasMaxLength(120);
+
+            modelBuilder.Entity<AdminAuditLog>()
+                .Property(log => log.EntityType)
+                .HasMaxLength(80);
+
+            modelBuilder.Entity<AdminAuditLog>()
+                .Property(log => log.EntityId)
+                .HasMaxLength(80);
+
+            modelBuilder.Entity<AdminAuditLog>()
+                .Property(log => log.HttpMethod)
+                .HasMaxLength(12);
+
+            modelBuilder.Entity<AdminAuditLog>()
+                .Property(log => log.Path)
+                .HasMaxLength(500);
+
+            modelBuilder.Entity<AdminAuditLog>()
+                .Property(log => log.Summary)
+                .HasMaxLength(700);
+
+            modelBuilder.Entity<AdminAuditLog>()
+                .Property(log => log.IpAddress)
+                .HasMaxLength(80);
+
+            modelBuilder.Entity<AdminAuditLog>()
+                .Property(log => log.UserAgent)
+                .HasMaxLength(500);
 
             modelBuilder.Entity<TicketEmailDelivery>()
                 .HasOne(d => d.Booking)

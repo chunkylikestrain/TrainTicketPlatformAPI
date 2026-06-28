@@ -26,6 +26,9 @@
         public decimal DiscountPercent { get; set; }
         public decimal BaseAmount { get; set; }
         public decimal Amount { get; set; }
+        public int DogTicketCount { get; set; }
+        public int LargeBaggageTicketCount { get; set; }
+        public decimal ExtraChargeAmount { get; set; }
         public string Currency { get; set; } = "PLN";
         public int LoyaltyPointsRedeemed { get; set; }
         public decimal LoyaltyDiscountAmount { get; set; }

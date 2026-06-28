@@ -9,12 +9,12 @@ const helpOptions = [
   {
     title: "Refunds and invoices",
     text: "How ticket returns work, where invoice PDFs are saved, and what happens after payment.",
-    href: "#refunds-invoices",
+    href: "/help/refund-policy",
   },
   {
     title: "Ticket rules",
     text: "Passenger details, discounts, seat reservations, ticket validity, and travel document rules.",
-    href: "#ticket-rules",
+    href: "/help/passenger-rights",
   },
   {
     title: "Contact support",

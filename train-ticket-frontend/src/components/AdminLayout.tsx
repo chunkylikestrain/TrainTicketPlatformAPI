@@ -7,6 +7,7 @@ import {
   CheckCircleOutlined,
   DashboardOutlined,
   DollarOutlined,
+  FileSearchOutlined,
   GiftOutlined,
   LogoutOutlined,
   ProfileOutlined,
@@ -30,6 +31,7 @@ const adminLinks = [
   { to: "/admin/users", label: "Users", icon: <TeamOutlined /> },
   { to: "/admin/discounts", label: "Discounts", icon: <GiftOutlined /> },
   { to: "/admin/revenue", label: "Revenue", icon: <BarChartOutlined /> },
+  { to: "/admin/audit-logs", label: "Audit logs", icon: <FileSearchOutlined /> },
 ];
 
 function AdminLayout({ children }: AdminLayoutProps) {

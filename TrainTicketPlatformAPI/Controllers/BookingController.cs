@@ -110,6 +110,8 @@ namespace TrainTicketPlatformAPI.Controllers
                     PassengerName = request.PassengerName,
                     PassengerType = request.PassengerType ?? "Adult",
                     DiscountCode = request.DiscountCode ?? "normal",
+                    DogTicketCount = request.DogTicketCount,
+                    LargeBaggageTicketCount = request.LargeBaggageTicketCount,
                     BookingStatus = "PendingPayment",
                     PaymentStatus = "Pending"
                 };
@@ -122,6 +124,32 @@ namespace TrainTicketPlatformAPI.Controllers
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        // PUT: api/Bookings/5/extras
+        [AllowAnonymous]
+        [HttpPut("{id}/extras")]
+        public async Task<ActionResult<BookingDto>> UpdateExtras(
+            int id,
+            [FromBody] UpdateBookingExtrasRequest request)
+        {
+            try
+            {
+                var booking = await _bookingService.UpdateBookingExtrasAsync(
+                    id,
+                    request.DogTicketCount,
+                    request.LargeBaggageTicketCount);
+
+                return Ok(ToDto(booking));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
             }
             catch (InvalidOperationException ex)
             {
@@ -285,6 +313,32 @@ namespace TrainTicketPlatformAPI.Controllers
             }
         }
 
+        // PUT: api/Bookings/orders/5/extras
+        [AllowAnonymous]
+        [HttpPut("orders/{id}/extras")]
+        public async Task<ActionResult<BookingOrderDto>> UpdateOrderExtras(
+            int id,
+            [FromBody] UpdateBookingExtrasRequest request)
+        {
+            try
+            {
+                var order = await _bookingService.UpdateBookingOrderExtrasAsync(
+                    id,
+                    request.DogTicketCount,
+                    request.LargeBaggageTicketCount);
+
+                return Ok(ToOrderDto(order));
+            }
+            catch (KeyNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         private static IEnumerable<Booking> BuildOrderBookings(
             int? currentUserId,
             string? guestEmail,
@@ -331,6 +385,8 @@ namespace TrainTicketPlatformAPI.Controllers
                 PassengerName = passenger.PassengerName,
                 PassengerType = passenger.PassengerType ?? "Adult",
                 DiscountCode = passenger.DiscountCode ?? "normal",
+                DogTicketCount = passenger.DogTicketCount,
+                LargeBaggageTicketCount = passenger.LargeBaggageTicketCount,
                 BookingStatus = "PendingPayment",
                 PaymentStatus = "Pending"
             };
@@ -790,73 +846,87 @@ namespace TrainTicketPlatformAPI.Controllers
                 .ThenBy(booking => booking.SegmentDepartureTime ?? booking.Trip?.DepartureTime ?? booking.TravelDate)
                 .ThenBy(booking => booking.Id);
 
-        private static BookingDto ToDto(Booking booking) => new()
+        private static BookingDto ToDto(Booking booking)
         {
-            Id = booking.Id,
-            UserId = booking.UserId,
-            TrainId = booking.TrainId,
-            TripId = booking.TripId,
-            BookingOrderId = booking.BookingOrderId,
-            SeatId = booking.SeatId,
-            SegmentDepartureStationId = booking.SegmentDepartureStationId,
-            SegmentArrivalStationId = booking.SegmentArrivalStationId,
-            SegmentDepartureOrder = booking.SegmentDepartureOrder,
-            SegmentArrivalOrder = booking.SegmentArrivalOrder,
-            SegmentDepartureTime = booking.SegmentDepartureTime,
-            SegmentArrivalTime = booking.SegmentArrivalTime,
-            JourneyDirection = NormalizeJourneyDirection(booking.JourneyDirection),
-            JourneySegmentIndex = booking.JourneySegmentIndex,
-            BookingReference = booking.BookingReference,
-            TicketNumber = booking.TicketNumber,
-            GuestEmail = booking.GuestEmail,
-            PassengerName = booking.PassengerName,
-            PassengerType = booking.PassengerType,
-            DiscountCode = booking.DiscountCode,
-            DiscountName = booking.DiscountName,
-            DiscountPercent = booking.DiscountPercent,
-            BaseAmount = booking.BaseAmount,
-            BookingDate = booking.BookingDate,
-            TravelDate = booking.TravelDate,
-            ExpiresAtUtc = booking.ExpiresAtUtc,
-            BookingStatus = booking.BookingStatus,
-            PaymentStatus = booking.PaymentStatus,
-            IsCancelled = booking.IsCancelled,
-            CancellationDate = booking.CancellationDate,
-            CancellationReason = booking.CancellationReason,
-            ConfirmedAtUtc = booking.ConfirmedAtUtc,
-            RefundedAtUtc = booking.RefundedAtUtc,
-            TicketIssuedAtUtc = booking.TicketIssuedAtUtc,
-            HasTicketArtifact = !string.IsNullOrWhiteSpace(booking.TicketQrPayload),
-            TicketEmailStatus = booking.TicketEmailStatus,
-            TicketEmailSentAtUtc = booking.TicketEmailSentAtUtc,
-            TicketEmailRecipient = booking.TicketEmailRecipient,
-            TrainName = booking.Train == null
-                ? string.Empty
-                : string.IsNullOrWhiteSpace(booking.Train.Code) ? booking.Train.Name : booking.Train.Code,
-            Route = GetRouteLabel(booking),
-            SeatLabel = booking.Seat == null ? string.Empty : $"Coach {booking.Seat.Coach}, seat {booking.Seat.Number}",
-            DepartureTime = booking.SegmentDepartureTime ?? booking.Trip?.DepartureTime ?? booking.Train?.DepartureTime,
-            ArrivalTime = booking.SegmentArrivalTime ?? booking.Trip?.ArrivalTime ?? booking.Train?.ArrivalTime,
-            Platform = booking.Trip?.Platform ?? string.Empty,
-            Track = booking.Trip?.Track ?? string.Empty,
-            DelayMinutes = booking.Trip?.DelayMinutes ?? 0,
-            TripCancellationReason = booking.Trip?.CancellationReason ?? string.Empty,
-            OriginalPlatform = booking.Trip?.OriginalPlatform ?? string.Empty,
-            OriginalTrack = booking.Trip?.OriginalTrack ?? string.Empty,
-            DisruptionMessage = GetDisruptionMessage(booking.Trip),
-            DisruptionSeverity = GetDisruptionSeverity(booking.Trip),
-            HasPlatformChange = HasPlatformChange(booking.Trip),
-            HasDisruption = HasDisruption(booking.Trip),
-            Amount = booking.Amount > 0m ? booking.Amount : booking.Trip?.Fares
-                .OrderByDescending(f => booking.Seat != null && f.ClassType == booking.Seat.ClassType)
-                .ThenBy(f => f.Price)
-                .FirstOrDefault()?.Price ?? 0m,
-            LoyaltyPointsRedeemed = booking.LoyaltyPointsRedeemed,
-            LoyaltyDiscountAmount = booking.LoyaltyDiscountAmount,
-            Currency = !string.IsNullOrWhiteSpace(booking.Currency)
-                ? booking.Currency
-                : booking.Trip?.Fares.FirstOrDefault()?.Currency ?? "PLN"
-        };
+            var refundPolicy = BookingRefundPolicy.Evaluate(booking, DateTime.UtcNow);
+
+            return new BookingDto
+            {
+                Id = booking.Id,
+                UserId = booking.UserId,
+                TrainId = booking.TrainId,
+                TripId = booking.TripId,
+                BookingOrderId = booking.BookingOrderId,
+                SeatId = booking.SeatId,
+                SegmentDepartureStationId = booking.SegmentDepartureStationId,
+                SegmentArrivalStationId = booking.SegmentArrivalStationId,
+                SegmentDepartureOrder = booking.SegmentDepartureOrder,
+                SegmentArrivalOrder = booking.SegmentArrivalOrder,
+                SegmentDepartureTime = booking.SegmentDepartureTime,
+                SegmentArrivalTime = booking.SegmentArrivalTime,
+                JourneyDirection = NormalizeJourneyDirection(booking.JourneyDirection),
+                JourneySegmentIndex = booking.JourneySegmentIndex,
+                BookingReference = booking.BookingReference,
+                TicketNumber = booking.TicketNumber,
+                GuestEmail = booking.GuestEmail,
+                PassengerName = booking.PassengerName,
+                PassengerType = booking.PassengerType,
+                DiscountCode = booking.DiscountCode,
+                DiscountName = booking.DiscountName,
+                DiscountPercent = booking.DiscountPercent,
+                BaseAmount = booking.BaseAmount,
+                DogTicketCount = booking.DogTicketCount,
+                LargeBaggageTicketCount = booking.LargeBaggageTicketCount,
+                ExtraChargeAmount = booking.ExtraChargeAmount,
+                BookingDate = booking.BookingDate,
+                TravelDate = booking.TravelDate,
+                ExpiresAtUtc = booking.ExpiresAtUtc,
+                BookingStatus = booking.BookingStatus,
+                PaymentStatus = booking.PaymentStatus,
+                IsCancelled = booking.IsCancelled,
+                CancellationDate = booking.CancellationDate,
+                CancellationReason = booking.CancellationReason,
+                ConfirmedAtUtc = booking.ConfirmedAtUtc,
+                RefundedAtUtc = booking.RefundedAtUtc,
+                RefundEligible = refundPolicy.IsEligible,
+                RefundPolicyCode = refundPolicy.Code,
+                RefundPolicyMessage = refundPolicy.Message,
+                RefundableAmount = refundPolicy.RefundableAmount,
+                RefundFeeAmount = refundPolicy.FeeAmount,
+                RefundDeadlineUtc = refundPolicy.DeadlineUtc,
+                TicketIssuedAtUtc = booking.TicketIssuedAtUtc,
+                HasTicketArtifact = !string.IsNullOrWhiteSpace(booking.TicketQrPayload),
+                TicketEmailStatus = booking.TicketEmailStatus,
+                TicketEmailSentAtUtc = booking.TicketEmailSentAtUtc,
+                TicketEmailRecipient = booking.TicketEmailRecipient,
+                TrainName = booking.Train == null
+                    ? string.Empty
+                    : string.IsNullOrWhiteSpace(booking.Train.Code) ? booking.Train.Name : booking.Train.Code,
+                Route = GetRouteLabel(booking),
+                SeatLabel = booking.Seat == null ? string.Empty : $"Coach {booking.Seat.Coach}, seat {booking.Seat.Number}",
+                DepartureTime = booking.SegmentDepartureTime ?? booking.Trip?.DepartureTime ?? booking.Train?.DepartureTime,
+                ArrivalTime = booking.SegmentArrivalTime ?? booking.Trip?.ArrivalTime ?? booking.Train?.ArrivalTime,
+                Platform = booking.Trip?.Platform ?? string.Empty,
+                Track = booking.Trip?.Track ?? string.Empty,
+                DelayMinutes = booking.Trip?.DelayMinutes ?? 0,
+                TripCancellationReason = booking.Trip?.CancellationReason ?? string.Empty,
+                OriginalPlatform = booking.Trip?.OriginalPlatform ?? string.Empty,
+                OriginalTrack = booking.Trip?.OriginalTrack ?? string.Empty,
+                DisruptionMessage = GetDisruptionMessage(booking.Trip),
+                DisruptionSeverity = GetDisruptionSeverity(booking.Trip),
+                HasPlatformChange = HasPlatformChange(booking.Trip),
+                HasDisruption = HasDisruption(booking.Trip),
+                Amount = booking.Amount > 0m ? booking.Amount : (booking.Trip?.Fares
+                    .OrderByDescending(f => booking.Seat != null && f.ClassType == booking.Seat.ClassType)
+                    .ThenBy(f => f.Price)
+                    .FirstOrDefault()?.Price ?? 0m) + booking.ExtraChargeAmount,
+                LoyaltyPointsRedeemed = booking.LoyaltyPointsRedeemed,
+                LoyaltyDiscountAmount = booking.LoyaltyDiscountAmount,
+                Currency = !string.IsNullOrWhiteSpace(booking.Currency)
+                    ? booking.Currency
+                    : booking.Trip?.Fares.FirstOrDefault()?.Currency ?? "PLN"
+            };
+        }
 
         private static string GetRouteLabel(Booking booking)
         {
@@ -902,10 +972,10 @@ namespace TrainTicketPlatformAPI.Controllers
                 .ThenBy(booking => booking.Id)
                 .Select(ToDto)
                 .ToList(),
-            Amount = order.Bookings.Sum(booking => booking.Amount > 0m ? booking.Amount : booking.Trip?.Fares
+            Amount = order.Bookings.Sum(booking => booking.Amount > 0m ? booking.Amount : (booking.Trip?.Fares
                 .OrderByDescending(f => booking.Seat != null && f.ClassType == booking.Seat.ClassType)
                 .ThenBy(f => f.Price)
-                .FirstOrDefault()?.Price ?? 0m)
+                .FirstOrDefault()?.Price ?? 0m) + booking.ExtraChargeAmount)
         };
 
         private static List<BookingOrderSegmentDto> BuildOrderSegments(BookingOrder order)
