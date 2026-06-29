@@ -635,6 +635,11 @@ namespace TrainTicketPlatformAPI.Data
                 .HasIndex(s => s.NormalizedName);
 
             modelBuilder.Entity<Station>()
+                .HasIndex(s => new { s.ExternalSource, s.ExternalStationId })
+                .IsUnique()
+                .HasFilter("[ExternalSource] <> '' AND [ExternalStationId] IS NOT NULL");
+
+            modelBuilder.Entity<Station>()
                 .Property(s => s.Code)
                 .HasMaxLength(32);
 
@@ -646,6 +651,11 @@ namespace TrainTicketPlatformAPI.Data
             modelBuilder.Entity<Station>()
                 .Property(s => s.Name)
                 .HasMaxLength(200);
+
+            modelBuilder.Entity<Station>()
+                .Property(s => s.ExternalSource)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
 
             modelBuilder.Entity<Station>()
                 .Property(s => s.NormalizedName)
@@ -744,6 +754,24 @@ namespace TrainTicketPlatformAPI.Data
                 .Property(s => s.StopType)
                 .HasMaxLength(30);
 
+            modelBuilder.Entity<TrainRouteStop>()
+                .HasIndex(s => new { s.ExternalStationId, s.TrainRouteId });
+
+            modelBuilder.Entity<TrainRouteStop>()
+                .Property(s => s.ExternalStopTypeName)
+                .HasMaxLength(80)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TrainRouteStop>()
+                .Property(s => s.ExternalArrivalTrainNumber)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TrainRouteStop>()
+                .Property(s => s.ExternalDepartureTrainNumber)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
             modelBuilder.Entity<Trip>()
                 .HasOne(t => t.Train)
                 .WithMany(t => t.Trips)
@@ -781,12 +809,52 @@ namespace TrainTicketPlatformAPI.Data
                 .HasMaxLength(1000)
                 .HasDefaultValue("");
 
+            modelBuilder.Entity<TrainRoute>()
+                .HasIndex(r => new
+                {
+                    r.ExternalSource,
+                    r.ExternalScheduleId,
+                    r.ExternalOrderId,
+                    r.ExternalOperatingDate
+                })
+                .IsUnique()
+                .HasFilter("[ExternalSource] <> '' AND [ExternalScheduleId] IS NOT NULL AND [ExternalOrderId] IS NOT NULL AND [ExternalOperatingDate] IS NOT NULL");
+
+            modelBuilder.Entity<TrainRoute>()
+                .Property(r => r.ExternalSource)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
             modelBuilder.Entity<Trip>()
                 .HasIndex(t => new { t.TrainRouteId, t.DepartureTime });
 
             modelBuilder.Entity<Trip>()
+                .HasIndex(t => new
+                {
+                    t.ExternalSource,
+                    t.ExternalScheduleId,
+                    t.ExternalOrderId,
+                    t.ExternalOperatingDate
+                })
+                .IsUnique()
+                .HasFilter("[ExternalSource] <> '' AND [ExternalScheduleId] IS NOT NULL AND [ExternalOrderId] IS NOT NULL AND [ExternalOperatingDate] IS NOT NULL");
+
+            modelBuilder.Entity<Trip>()
+                .HasIndex(t => new { t.ExternalSource, t.ExternalTrainOrderId });
+
+            modelBuilder.Entity<Trip>()
                 .Property(t => t.Platform)
                 .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Trip>()
+                .Property(t => t.ExternalSource)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Trip>()
+                .Property(t => t.ExternalRawVersion)
+                .HasMaxLength(80)
                 .HasDefaultValue("");
 
             modelBuilder.Entity<Trip>()
@@ -840,6 +908,15 @@ namespace TrainTicketPlatformAPI.Data
                 .HasFilter("[Code] <> ''");
 
             modelBuilder.Entity<Train>()
+                .HasIndex(t => new
+                {
+                    t.ExternalSource,
+                    t.ExternalCarrierCode,
+                    t.ExternalCommercialCategorySymbol,
+                    t.ExternalNationalNumber
+                });
+
+            modelBuilder.Entity<Train>()
                 .Property(t => t.Code)
                 .HasMaxLength(32)
                 .HasDefaultValue("");
@@ -853,6 +930,36 @@ namespace TrainTicketPlatformAPI.Data
                 .Property(t => t.Status)
                 .HasMaxLength(32)
                 .HasDefaultValue("Active");
+
+            modelBuilder.Entity<Train>()
+                .Property(t => t.ExternalSource)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Train>()
+                .Property(t => t.ExternalCarrierCode)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Train>()
+                .Property(t => t.ExternalCommercialCategorySymbol)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Train>()
+                .Property(t => t.ExternalNationalNumber)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Train>()
+                .Property(t => t.ExternalInternationalArrivalNumber)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<Train>()
+                .Property(t => t.ExternalInternationalDepartureNumber)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
 
             modelBuilder.Entity<TrainCarriage>()
                 .HasOne(c => c.Train)

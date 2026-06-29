@@ -288,13 +288,13 @@ namespace TrainTicketPlatformAPI.Data
             new("EIP-3508", "EIP 3508", "Express InterCity Premium", 7, 98),
             new("EIP-3510", "EIP 3510", "Express InterCity Premium", 7, 98),
             new("ED161-1610", "IC 1610 Dart", "InterCity", 8, 76),
-            new("EIC-1602", "EIC 1602 Kaszub", "Express InterCity", 5, 52),
-            new("IC-56", "IC 56 Wawel", "InterCity", 5, 56),
-            new("IC-3806", "IC 3806 Zefir", "InterCity", 4, 56),
-            new("IC-6102", "IC 6102 Heweliusz", "InterCity", 5, 56),
-            new("IC-7310", "IC 7310 Malczewski", "InterCity", 4, 56),
+            new("EIC-1602", "EIC 1602 Kaszub", "Express InterCity", 7, 72),
+            new("IC-56", "IC 56 Wawel", "InterCity", 6, 72),
+            new("IC-3806", "IC 3806 Zefir", "InterCity", 5, 72),
+            new("IC-6102", "IC 6102 Heweliusz", "InterCity", 6, 72),
+            new("IC-7310", "IC 7310 Malczewski", "InterCity", 5, 72),
             new("IC-3810", "IC 3810/1 Kossak", "InterCity", 8, 72),
-            new("IC-8120", "IC 8120 Odra", "InterCity", 4, 56),
+            new("IC-8120", "IC 8120 Odra", "InterCity", 5, 72),
             new("TLK-38170", "TLK 38170 Ustronie", "Twoje Linie Kolejowe", 6, 60)
         ];
 
@@ -417,36 +417,10 @@ namespace TrainTicketPlatformAPI.Data
             if (!configuration.GetValue("SeedData:UseDevelopmentSeedData", true))
                 return;
 
-            var seedLocations = await EnsureReferenceLocationsAsync(db, cancellationToken);
+            await EnsureReferenceLocationsAsync(db, cancellationToken);
             await EnsureCleanStationDisplaysAsync(db, cancellationToken);
+            await CleanupLegacyPrototypeSeedDataAsync(db, cancellationToken);
             await EnsureRollingStockOptionsAsync(db, cancellationToken);
-
-            var country = seedLocations.Countries["PL"];
-            var mazowieckie = seedLocations.Regions[RegionKey("PL", "MZ")];
-            var malopolskie = seedLocations.Regions[RegionKey("PL", "MA")];
-            var pomorskie = seedLocations.Regions[RegionKey("PL", "PM")];
-
-            var warsaw = await EnsureLocalityAsync(db, mazowieckie, "Warsaw", "City", cancellationToken);
-            var krakow = await EnsureLocalityAsync(db, malopolskie, "Krakow", "City", cancellationToken);
-            var gdansk = await EnsureLocalityAsync(db, pomorskie, "Gdansk", "City", cancellationToken);
-
-            var waw = await EnsureStationAsync(db, country, mazowieckie, warsaw, "WAW", "Warszawa Centralna", "Warsaw", cancellationToken);
-            var krk = await EnsureStationAsync(db, country, malopolskie, krakow, "KRK", "Krakow Glowny", "Krakow", cancellationToken);
-            var gdn = await EnsureStationAsync(db, country, pomorskie, gdansk, "GDN", "Gdansk Glowny", "Gdansk", cancellationToken);
-
-            var wawKrk = await EnsureRouteAsync(db, waw, krk, 293m, cancellationToken);
-            var krkGdn = await EnsureRouteAsync(db, krk, gdn, 600m, cancellationToken);
-
-            var ic101 = await EnsureTrainAsync(db, "IC 101", "Warsaw", "Krakow", MainTripDepartureUtc, MainTripDepartureUtc.AddHours(3), cancellationToken);
-            var ic202 = await EnsureTrainAsync(db, "IC 202", "Krakow", "Gdansk", MainTripDepartureUtc.AddHours(2), MainTripDepartureUtc.AddHours(8), cancellationToken);
-
-            var mainTrip = await EnsureTripAsync(db, ic101, wawKrk, MainTripDepartureUtc, MainTripDepartureUtc.AddHours(3), cancellationToken);
-            var secondTrip = await EnsureTripAsync(db, ic202, krkGdn, MainTripDepartureUtc.AddHours(2), MainTripDepartureUtc.AddHours(8), cancellationToken);
-
-            await EnsureFaresAsync(db, mainTrip, cancellationToken);
-            await EnsureFaresAsync(db, secondTrip, cancellationToken);
-            await EnsureSeatsAsync(db, ic101, cancellationToken);
-            await EnsureSeatsAsync(db, ic202, cancellationToken);
             await EnsureDemoSchedulesAsync(db, cancellationToken);
             await EnsureDiscountRulesAsync(db, cancellationToken);
 
@@ -454,6 +428,91 @@ namespace TrainTicketPlatformAPI.Data
             await EnsureUserAsync(db, configuration, "SeedData:PassengerPassword", PassengerEmail, "Passenger", cancellationToken);
 
             await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static async Task CleanupLegacyPrototypeSeedDataAsync(
+            TrainTicketDbContext db,
+            CancellationToken cancellationToken)
+        {
+            var legacyTrainNames = new[] { "IC 101", "IC 202" };
+            var legacyTrainIds = await db.Trains
+                .Where(t => legacyTrainNames.Contains(t.Name) || legacyTrainNames.Contains(t.Code))
+                .Select(t => t.Id)
+                .ToListAsync(cancellationToken);
+
+            if (legacyTrainIds.Count > 0)
+            {
+                var legacyTripIds = await db.Trips
+                    .Where(t => legacyTrainIds.Contains(t.TrainId))
+                    .Select(t => t.Id)
+                    .ToListAsync(cancellationToken);
+                var bookedTripIds = await db.Bookings
+                    .Where(b => b.TripId.HasValue && legacyTripIds.Contains(b.TripId.Value))
+                    .Select(b => b.TripId!.Value)
+                    .Distinct()
+                    .ToListAsync(cancellationToken);
+                var removableTripIds = legacyTripIds
+                    .Except(bookedTripIds)
+                    .ToList();
+
+                if (removableTripIds.Count > 0)
+                {
+                    var fares = await db.Fares
+                        .Where(f => removableTripIds.Contains(f.TripId))
+                        .ToListAsync(cancellationToken);
+                    var trips = await db.Trips
+                        .Where(t => removableTripIds.Contains(t.Id))
+                        .ToListAsync(cancellationToken);
+
+                    db.Fares.RemoveRange(fares);
+                    db.Trips.RemoveRange(trips);
+                    await db.SaveChangesAsync(cancellationToken);
+                }
+
+                var bookedTrainIds = await db.Bookings
+                    .Where(b => legacyTrainIds.Contains(b.TrainId))
+                    .Select(b => b.TrainId)
+                    .Distinct()
+                    .ToListAsync(cancellationToken);
+                var removableTrainIds = legacyTrainIds
+                    .Except(bookedTrainIds)
+                    .ToList();
+
+                if (removableTrainIds.Count > 0)
+                {
+                    var seats = await db.Seats
+                        .Where(s => removableTrainIds.Contains(s.TrainId))
+                        .ToListAsync(cancellationToken);
+                    var carriages = await db.TrainCarriages
+                        .Where(c => removableTrainIds.Contains(c.TrainId))
+                        .ToListAsync(cancellationToken);
+                    var trains = await db.Trains
+                        .Where(t => removableTrainIds.Contains(t.Id))
+                        .ToListAsync(cancellationToken);
+
+                    db.Seats.RemoveRange(seats);
+                    db.TrainCarriages.RemoveRange(carriages);
+                    db.Trains.RemoveRange(trains);
+                    await db.SaveChangesAsync(cancellationToken);
+                }
+            }
+
+            var emptyPrototypeRoutes = await db.TrainRoutes
+                .Include(r => r.Trips)
+                .Include(r => r.RouteStops)
+                .Where(r => string.IsNullOrWhiteSpace(r.Code) && !r.Trips.Any())
+                .ToListAsync(cancellationToken);
+
+            if (emptyPrototypeRoutes.Count > 0)
+            {
+                var emptyRouteStops = emptyPrototypeRoutes
+                    .SelectMany(r => r.RouteStops)
+                    .ToList();
+
+                db.TrainRouteStops.RemoveRange(emptyRouteStops);
+                db.TrainRoutes.RemoveRange(emptyPrototypeRoutes);
+                await db.SaveChangesAsync(cancellationToken);
+            }
         }
 
         private static async Task<SeedLocationIndex> EnsureReferenceLocationsAsync(
@@ -645,59 +704,6 @@ namespace TrainTicketPlatformAPI.Data
             return station;
         }
 
-        private static async Task<TrainRoute> EnsureRouteAsync(
-            TrainTicketDbContext db,
-            Station departure,
-            Station arrival,
-            decimal distanceKm,
-            CancellationToken cancellationToken)
-        {
-            var route = await db.TrainRoutes
-                .FirstOrDefaultAsync(r =>
-                    r.DepartureStationId == departure.Id &&
-                    r.ArrivalStationId == arrival.Id,
-                    cancellationToken);
-            if (route != null)
-                return route;
-
-            route = new TrainRoute
-            {
-                DepartureStationId = departure.Id,
-                ArrivalStationId = arrival.Id,
-                DistanceKm = distanceKm,
-                IsActive = true
-            };
-            db.TrainRoutes.Add(route);
-            await db.SaveChangesAsync(cancellationToken);
-            return route;
-        }
-
-        private static async Task<Train> EnsureTrainAsync(
-            TrainTicketDbContext db,
-            string name,
-            string departureStation,
-            string arrivalStation,
-            DateTime departureTime,
-            DateTime arrivalTime,
-            CancellationToken cancellationToken)
-        {
-            var train = await db.Trains.FirstOrDefaultAsync(t => t.Name == name, cancellationToken);
-            if (train != null)
-                return train;
-
-            train = new Train
-            {
-                Name = name,
-                DepartureStation = departureStation,
-                ArrivalStation = arrivalStation,
-                DepartureTime = departureTime,
-                ArrivalTime = arrivalTime
-            };
-            db.Trains.Add(train);
-            await db.SaveChangesAsync(cancellationToken);
-            return train;
-        }
-
         private static async Task<Trip> EnsureTripAsync(
             TrainTicketDbContext db,
             Train train,
@@ -726,17 +732,6 @@ namespace TrainTicketPlatformAPI.Data
             db.Trips.Add(trip);
             await db.SaveChangesAsync(cancellationToken);
             return trip;
-        }
-
-        private static async Task EnsureFaresAsync(TrainTicketDbContext db, Trip trip, CancellationToken cancellationToken)
-        {
-            if (await db.Fares.AnyAsync(f => f.TripId == trip.Id, cancellationToken))
-                return;
-
-            db.Fares.AddRange(
-                new Fare { TripId = trip.Id, ClassType = "Economy", Price = 49.99m, Currency = "USD" },
-                new Fare { TripId = trip.Id, ClassType = "Business", Price = 89.99m, Currency = "USD" });
-            await db.SaveChangesAsync(cancellationToken);
         }
 
         private static async Task EnsureSeatsAsync(
@@ -1042,23 +1037,7 @@ namespace TrainTicketPlatformAPI.Data
 
             if (carriageSeeds.Length == 0)
             {
-                carriageSeeds = Enumerable.Range(1, Math.Max(1, train.CarriageCount))
-                    .Select(position =>
-                    {
-                        var classType = position == 1 ? "Class 1" : "Class 2";
-                        var layoutType = position == 1 ? "FirstCompartment" : position == 2 ? "ComboAccessible" : "OpenSecond";
-                        return new DemoCarriageSeed(
-                            trainCode,
-                            position.ToString(),
-                            position,
-                            classType,
-                            layoutType,
-                            string.Empty,
-                            Math.Max(4, train.SeatsPerCarriage),
-                            HasAccessibleSpace: layoutType == "ComboAccessible",
-                            HasFamilyCompartment: layoutType == "ComboAccessible");
-                    })
-                    .ToArray();
+                carriageSeeds = BuildDefaultCarriages(train, trainCode);
             }
 
             var expectedCoaches = carriageSeeds
@@ -1104,6 +1083,94 @@ namespace TrainTicketPlatformAPI.Data
             }
 
             await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static DemoCarriageSeed[] BuildDefaultCarriages(Train train, string trainCode)
+        {
+            if (train.Type.Equals("Express InterCity", StringComparison.OrdinalIgnoreCase))
+                return BuildEicCarriages(trainCode);
+
+            if (train.Type.Equals("Twoje Linie Kolejowe", StringComparison.OrdinalIgnoreCase))
+                return BuildTlkCarriages(trainCode);
+
+            if (train.Code.StartsWith("ED", StringComparison.OrdinalIgnoreCase) ||
+                train.Name.Contains("Dart", StringComparison.OrdinalIgnoreCase) ||
+                train.Name.Contains("Flirt", StringComparison.OrdinalIgnoreCase))
+            {
+                return BuildGenericEmuCarriages(train, trainCode);
+            }
+
+            return BuildInterCityCarriages(trainCode);
+        }
+
+        private static DemoCarriageSeed[] BuildEicCarriages(string trainCode) =>
+        [
+            new(trainCode, "1", 1, "Class 1", "FirstCompartment", "A9nouz first-class compartment", 54, Notes: "First-class compartment coach."),
+            new(trainCode, "2", 2, "Dining", "Restaurant", "WRnouz WARS restaurant", 0, HasDiningSection: true, Notes: "Restaurant and bar car operated by WARS."),
+            new(trainCode, "3", 3, "Class 2", "SecondCompartment", "B10nouz second-class compartment", 66, Notes: "Second-class compartment coach."),
+            new(trainCode, "4", 4, "Class 2", "OpenSecondAccessible", "B8bnopuz accessible open coach", 82, HasAccessibleSpace: true, Notes: "Second-class open coach with wheelchair spaces and accessible toilet."),
+            new(trainCode, "5", 5, "Class 2", "OpenSecondBike", "B7nopuvz bicycle open coach", 72, HasBikeSpace: true, Notes: "Second-class open coach with bicycle racks."),
+            new(trainCode, "6", 6, "Class 2", "OpenSecond", "B9nopuvz second-class open coach", 88, Notes: "High-capacity second-class open coach."),
+            new(trainCode, "7", 7, "Class 2", "SecondCompartment", "B10nouz second-class compartment", 66, Notes: "Additional second-class compartment coach for longer EIC services.")
+        ];
+
+        private static DemoCarriageSeed[] BuildInterCityCarriages(string trainCode) =>
+        [
+            new(trainCode, "1", 1, "Class 1/2", "ComboFirstSecond", "AB9nouz first/second combo", 54, Notes: "Mixed first and second-class coach for IC routes."),
+            new(trainCode, "2", 2, "Class 2", "SecondCompartment", "B10nouz second-class compartment", 66, Notes: "Second-class compartment coach."),
+            new(trainCode, "3", 3, "Class 2", "SecondFamilyCompartment", "Bmnopux family compartment", 66, HasFamilyCompartment: true, Notes: "Second-class coach with family compartment."),
+            new(trainCode, "4", 4, "Class 2", "OpenSecondBike", "B7nopuvz bicycle open coach", 72, HasBikeSpace: true, Notes: "Second-class open coach with bicycle racks and vending area."),
+            new(trainCode, "5", 5, "Class 2", "OpenSecondAccessible", "B8bnopuz accessible open coach", 82, HasAccessibleSpace: true, Notes: "Second-class open coach with wheelchair spaces."),
+            new(trainCode, "6", 6, "Class 2", "OpenSecond", "B9nopuvz second-class open coach", 88, Notes: "Extra second-class open coach for busier IC services.")
+        ];
+
+        private static DemoCarriageSeed[] BuildTlkCarriages(string trainCode) =>
+        [
+            new(trainCode, "1", 1, "Class 2", "Sleeper", "WLAB sleeper coach", 30, Notes: "Sleeper coach used on overnight TLK services."),
+            new(trainCode, "2", 2, "Class 2", "Couchette", "Bc couchette coach", 54, Notes: "Couchette coach used on overnight TLK services."),
+            new(trainCode, "3", 3, "Class 2", "SecondCompartment", "B10nouz second-class compartment", 66, Notes: "Second-class compartment coach."),
+            new(trainCode, "4", 4, "Class 2", "OpenSecondBike", "B7nopuvz bicycle open coach", 72, HasBikeSpace: true, Notes: "Second-class open coach with bicycle racks."),
+            new(trainCode, "5", 5, "Class 2", "OpenSecond", "B9nopuvz second-class open coach", 88, Notes: "Second-class open coach."),
+            new(trainCode, "6", 6, "Class 2", "SecondCompartment", "B10nouz second-class compartment", 66, Notes: "Additional second-class compartment coach.")
+        ];
+
+        private static DemoCarriageSeed[] BuildGenericEmuCarriages(Train train, string trainCode)
+        {
+            var carriageCount = Math.Max(2, train.CarriageCount);
+            var seatsPerCarriage = Math.Max(40, train.SeatsPerCarriage);
+            var carriages = new List<DemoCarriageSeed>(carriageCount);
+
+            for (var position = 1; position <= carriageCount; position++)
+            {
+                var isFirst = position == 1;
+                var isAccessible = position == 2;
+                var isFamily = position == 2;
+                var isBike = position == carriageCount - 1;
+                var layoutType = isFirst
+                    ? "EmuFirstOpen"
+                    : isAccessible
+                        ? "EmuSecondAccessibleFamily"
+                        : isBike
+                            ? "EmuSecondBike"
+                            : "EmuSecondOpen";
+
+                carriages.Add(new DemoCarriageSeed(
+                    trainCode,
+                    position.ToString(),
+                    position,
+                    isFirst ? "Class 1" : "Class 2",
+                    layoutType,
+                    $"EMU unit {position}",
+                    seatsPerCarriage,
+                    HasBikeSpace: isBike,
+                    HasAccessibleSpace: isAccessible,
+                    HasFamilyCompartment: isFamily,
+                    Notes: isFirst
+                        ? "First-class EMU unit."
+                        : "Second-class EMU unit with fixed formation seating."));
+            }
+
+            return carriages.ToArray();
         }
 
         private static async Task EnsureFaresAsync(

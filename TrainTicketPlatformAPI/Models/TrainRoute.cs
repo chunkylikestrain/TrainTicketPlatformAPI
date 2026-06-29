@@ -17,6 +17,11 @@ namespace TrainTicketPlatformAPI.Models
         public string OperatingDays { get; set; } = "Daily";
         public string IntermediateStops { get; set; } = string.Empty;
         public bool IsActive { get; set; } = true;
+        public string ExternalSource { get; set; } = string.Empty;
+        public int? ExternalScheduleId { get; set; }
+        public int? ExternalOrderId { get; set; }
+        public int? ExternalTrainOrderId { get; set; }
+        public DateOnly? ExternalOperatingDate { get; set; }
 
         public Station DepartureStation { get; set; } = null!;
         public Station ArrivalStation { get; set; } = null!;

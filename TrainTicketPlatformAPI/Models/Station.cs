@@ -8,6 +8,8 @@ namespace TrainTicketPlatformAPI.Models
         public string Name { get; set; } = string.Empty;
         public string NormalizedName { get; set; } = string.Empty;
         public string City { get; set; } = string.Empty;
+        public string ExternalSource { get; set; } = string.Empty;
+        public int? ExternalStationId { get; set; }
         public int? CountryId { get; set; }
         public int? StateRegionId { get; set; }
         public int? LocalityId { get; set; }

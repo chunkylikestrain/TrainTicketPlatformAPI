@@ -16,6 +16,13 @@ namespace TrainTicketPlatformAPI.Models
         public string OriginalTrack { get; set; } = string.Empty;
         public string DisruptionMessage { get; set; } = string.Empty;
         public string DisruptionSeverity { get; set; } = string.Empty;
+        public string ExternalSource { get; set; } = string.Empty;
+        public int? ExternalScheduleId { get; set; }
+        public int? ExternalOrderId { get; set; }
+        public int? ExternalTrainOrderId { get; set; }
+        public DateOnly? ExternalOperatingDate { get; set; }
+        public DateTime? ExternalImportedAtUtc { get; set; }
+        public string ExternalRawVersion { get; set; } = string.Empty;
 
         public Train Train { get; set; } = null!;
         public TrainRoute TrainRoute { get; set; } = null!;

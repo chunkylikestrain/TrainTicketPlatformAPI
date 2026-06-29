@@ -15,6 +15,12 @@ namespace TrainTicketPlatformAPI.Models
         public string ArrivalStation { get; set; } = string.Empty;
         public DateTime DepartureTime { get; set; }
         public DateTime ArrivalTime { get; set; }
+        public string ExternalSource { get; set; } = string.Empty;
+        public string ExternalCarrierCode { get; set; } = string.Empty;
+        public string ExternalCommercialCategorySymbol { get; set; } = string.Empty;
+        public string ExternalNationalNumber { get; set; } = string.Empty;
+        public string ExternalInternationalArrivalNumber { get; set; } = string.Empty;
+        public string ExternalInternationalDepartureNumber { get; set; } = string.Empty;
         public ICollection<Trip> Trips { get; set; }
             = new List<Trip>();
         public ICollection<TrainCarriage> Carriages { get; set; }
