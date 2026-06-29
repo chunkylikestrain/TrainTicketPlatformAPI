@@ -1,4 +1,13 @@
-export type DiscountCode = "normal" | "student37" | "child37" | "senior30" | "largeFamily50";
+export type DiscountCode =
+  | "normal"
+  | "student51"
+  | "student37"
+  | "child37"
+  | "senior30"
+  | "senior37"
+  | "bigFamily30"
+  | "family30"
+  | "largeFamily50";
 
 export type PassengerCounts = {
   adults: number;
@@ -20,11 +29,18 @@ export const discountOptions: Array<{
     documentHint: "No discount document required",
   },
   {
-    code: "student37",
-    label: "Student 37%",
-    percent: 37,
+    code: "student51",
+    label: "Student 51%",
+    percent: 51,
     appliesTo: "adult",
     documentHint: "Student ID checked during travel",
+  },
+  {
+    code: "student37",
+    label: "Student/Doctoral 37%",
+    percent: 37,
+    appliesTo: "adult",
+    documentHint: "Student or doctoral entitlement document checked during travel",
   },
   {
     code: "child37",
@@ -41,11 +57,25 @@ export const discountOptions: Array<{
     documentHint: "Identity document checked during travel",
   },
   {
-    code: "largeFamily50",
-    label: "Large Family 50%",
-    percent: 50,
+    code: "senior37",
+    label: "Senior statutory 37%",
+    percent: 37,
+    appliesTo: "adult",
+    documentHint: "Pensioner or retiree entitlement document checked during travel",
+  },
+  {
+    code: "bigFamily30",
+    label: "Big Family 30%",
+    percent: 30,
     appliesTo: "all",
-    documentHint: "Large Family Card checked during travel",
+    documentHint: "Big Family Card checked during travel",
+  },
+  {
+    code: "family30",
+    label: "Family Ticket 30%",
+    percent: 30,
+    appliesTo: "all",
+    documentHint: "Child age document checked during travel",
   },
 ];
 

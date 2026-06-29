@@ -66,6 +66,12 @@ namespace TrainTicketPlatformAPI.Data
             string Notes = "",
             string Status = "Active");
         private sealed record StationDisplaySeed(string Code, string Name, string City, string LocalityName);
+        private sealed record DiscountRuleSeed(
+            string Name,
+            decimal Percent,
+            string EligibleClass,
+            string DocumentHint,
+            string Status = "Active");
 
         private static readonly CountrySeed[] ReferenceCountries =
         [
@@ -76,6 +82,45 @@ namespace TrainTicketPlatformAPI.Data
             new("LT", "Lithuania"),
             new("UA", "Ukraine"),
             new("AT", "Austria")
+        ];
+
+        private static readonly DiscountRuleSeed[] DiscountRules =
+        [
+            new(
+                "Normal Ticket",
+                0m,
+                "All classes",
+                "No discount document required"),
+            new(
+                "Student 51%",
+                51m,
+                "All classes",
+                "Valid student or doctoral student document checked during travel"),
+            new(
+                "Child 37%",
+                37m,
+                "Class 2 only",
+                "Age, school, or child entitlement document checked during travel"),
+            new(
+                "Senior 30%",
+                30m,
+                "All classes",
+                "Photo identification confirming age over 60 checked during travel"),
+            new(
+                "Senior statutory 37%",
+                37m,
+                "Class 2 only",
+                "Pensioner or retiree entitlement document checked during travel"),
+            new(
+                "Big Family 30%",
+                30m,
+                "All classes",
+                "Big Family Card or equivalent family entitlement checked during travel"),
+            new(
+                "Family Ticket 30%",
+                30m,
+                "All classes",
+                "Group must include a child under 16; age document checked during travel")
         ];
 
         private static readonly RegionSeed[] ReferenceRegions =
@@ -403,6 +448,7 @@ namespace TrainTicketPlatformAPI.Data
             await EnsureSeatsAsync(db, ic101, cancellationToken);
             await EnsureSeatsAsync(db, ic202, cancellationToken);
             await EnsureDemoSchedulesAsync(db, cancellationToken);
+            await EnsureDiscountRulesAsync(db, cancellationToken);
 
             await EnsureUserAsync(db, configuration, "SeedData:AdminPassword", AdminEmail, "Admin", cancellationToken);
             await EnsureUserAsync(db, configuration, "SeedData:PassengerPassword", PassengerEmail, "Passenger", cancellationToken);
@@ -795,6 +841,30 @@ namespace TrainTicketPlatformAPI.Data
                 option.UnitCount = seed.UnitCount;
                 option.Notes = seed.Notes;
                 option.Status = seed.Status;
+            }
+
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static async Task EnsureDiscountRulesAsync(
+            TrainTicketDbContext db,
+            CancellationToken cancellationToken)
+        {
+            foreach (var seed in DiscountRules)
+            {
+                var discount = await db.DiscountRules
+                    .FirstOrDefaultAsync(item => item.Name == seed.Name, cancellationToken);
+
+                if (discount == null)
+                {
+                    discount = new DiscountRule { Name = seed.Name };
+                    db.DiscountRules.Add(discount);
+                }
+
+                discount.Percent = seed.Percent;
+                discount.EligibleClass = seed.EligibleClass;
+                discount.DocumentHint = seed.DocumentHint;
+                discount.Status = seed.Status;
             }
 
             await db.SaveChangesAsync(cancellationToken);

@@ -11,9 +11,13 @@ namespace TrainTicketPlatformAPI.Services
             new Dictionary<string, DiscountDefinition>(StringComparer.OrdinalIgnoreCase)
             {
                 ["normal"] = new("normal", "Normal Ticket", 0m, "adult", true),
+                ["student51"] = new("student51", "Student 51%", 51m, "adult", true),
                 ["student37"] = new("student37", "Student 37%", 37m, "adult", false),
                 ["child37"] = new("child37", "Child 37%", 37m, "child", false),
                 ["senior30"] = new("senior30", "Senior 30%", 30m, "adult", true),
+                ["senior37"] = new("senior37", "Senior statutory 37%", 37m, "adult", false),
+                ["bigFamily30"] = new("bigFamily30", "Big Family 30%", 30m, "all", true),
+                ["family30"] = new("family30", "Family Ticket 30%", 30m, "all", true),
                 ["largeFamily50"] = new("largeFamily50", "Large Family 50%", 50m, "all", true)
             };
 

@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 import TrainSearchForm from "../components/TrainSearchForm";
+import ed250Image from "../../../docs/MyTrainImages/ED250.jpg";
+import explorePolandImage from "../../../docs/MyCityImages/Krakow.jpg";
+import studentOfferImage from "../../../docs/NotMyTrainImages/ED160(Radial's).jpg";
 
 const quickActions = [
   "Season ticket",
@@ -27,27 +30,25 @@ const informationCards = [
 
 const featureCards = [
   {
-    title: "Weekend offers",
-    imageClass: "feature-image-station",
-  },
-  {
     title: "Explore Poland by rail",
-    imageClass: "feature-image-city",
+    image: explorePolandImage,
+    to: "/offers/explore",
   },
   {
     title: "Our trains",
-    imageClass: "feature-image-train",
+    image: ed250Image,
+    to: "/trains",
   },
   {
     title: "Student offer",
-    imageClass: "feature-image-passengers",
+    image: studentOfferImage,
+    to: "/offers/student",
   },
 ];
 
 const passengerLinks = [
   "Complaints",
   "Contact",
-  "Special assistance",
   "Frequently Asked Questions",
 ];
 
@@ -109,10 +110,10 @@ function HomePage() {
         <h2>What's important in intercity</h2>
         <div className="feature-grid">
           {featureCards.map((card) => (
-            <article className="feature-card" key={card.title}>
-              <div className={`feature-image ${card.imageClass}`} />
+            <Link className="feature-card" key={card.title} to={card.to}>
+              <img className="feature-image" src={card.image} alt="" />
               <h3>{card.title}</h3>
-            </article>
+            </Link>
           ))}
         </div>
       </section>
@@ -144,7 +145,7 @@ function getPassengerLinkTarget(label: string) {
   }
 
   if (label === "Frequently Asked Questions") {
-    return "/help";
+    return "/help/faq";
   }
 
   return "/help";

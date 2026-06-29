@@ -22,18 +22,30 @@ const ContactPage = lazy(() => import("./pages/ContactPage"));
 const CurrentTripPage = lazy(() => import("./pages/CurrentTripPage"));
 const DataRequestPage = lazy(() => import("./pages/DataRequestPage"));
 const DiscountSelectionPage = lazy(() => import("./pages/DiscountSelectionPage"));
+const DomesticOfferDetailPage = lazy(() => import("./pages/DomesticOfferDetailPage"));
+const DomesticOffersPage = lazy(() => import("./pages/DomesticOffersPage"));
+const ExplorePolandPage = lazy(() => import("./pages/ExplorePolandPage"));
 const FilterSelectionPage = lazy(() => import("./pages/FilterSelectionPage"));
+const FaqPage = lazy(() => import("./pages/FaqPage"));
 const HelpPage = lazy(() => import("./pages/HelpPage"));
 const HomePage = lazy(() => import("./pages/HomePage"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
+const MealOfferPage = lazy(() => import("./pages/MealOfferPage"));
 const MyBookingsPage = lazy(() => import("./pages/MyBookingsPage"));
 const MyProfilePage = lazy(() => import("./pages/MyProfilePage"));
 const OrderSummaryPage = lazy(() => import("./pages/OrderSummaryPage"));
+const OffersPage = lazy(() => import("./pages/OffersPage"));
+const OurTrainsPage = lazy(() => import("./pages/OurTrainsPage"));
+const TrainEicPage = lazy(() => import("./pages/TrainEicPage"));
+const TrainEipPage = lazy(() => import("./pages/TrainEipPage"));
+const TrainIcPage = lazy(() => import("./pages/TrainIcPage"));
+const TrainTlkPage = lazy(() => import("./pages/TrainTlkPage"));
 const PassengerRightsPage = lazy(() => import("./pages/PassengerRightsPage"));
 const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const RefundPolicyPage = lazy(() => import("./pages/RefundPolicyPage"));
 const SearchResultsPage = lazy(() => import("./pages/SearchResultsPage"));
 const SeatMapPage = lazy(() => import("./pages/SeatMapPage"));
+const StudentOfferPage = lazy(() => import("./pages/StudentOfferPage"));
 const SummaryPage = lazy(() => import("./pages/SummaryPage"));
 
 function App() {
@@ -63,6 +75,7 @@ function App() {
           <Route path="/admin/audit-logs" element={<AdminAuditLogsPage />} />
           <Route path="/search" element={<SearchResultsPage />} />
           <Route path="/help" element={<HelpPage />} />
+          <Route path="/help/faq" element={<FaqPage />} />
           <Route path="/help/refund-policy" element={<RefundPolicyPage />} />
           <Route path="/help/passenger-rights" element={<PassengerRightsPage />} />
           <Route path="/contact" element={<ContactPage />} />
@@ -71,6 +84,17 @@ function App() {
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/discounts" element={<DiscountSelectionPage />} />
           <Route path="/filters" element={<FilterSelectionPage />} />
+          <Route path="/offers" element={<OffersPage />} />
+          <Route path="/offers/domestic" element={<DomesticOffersPage />} />
+          <Route path="/offers/domestic/:offerId" element={<DomesticOfferDetailPage />} />
+          <Route path="/offers/explore" element={<ExplorePolandPage />} />
+          <Route path="/offers/meal" element={<MealOfferPage />} />
+          <Route path="/offers/student" element={<StudentOfferPage />} />
+          <Route path="/trains" element={<OurTrainsPage />} />
+          <Route path="/trains/eic" element={<TrainEicPage />} />
+          <Route path="/trains/eip" element={<TrainEipPage />} />
+          <Route path="/trains/ic" element={<TrainIcPage />} />
+          <Route path="/trains/tlk" element={<TrainTlkPage />} />
           <Route path="/bookings" element={<MyBookingsPage />} />
           <Route path="/seat-map/:tripId" element={<SeatMapPage />} />
           <Route path="/summary/:tripId" element={<SummaryPage />} />

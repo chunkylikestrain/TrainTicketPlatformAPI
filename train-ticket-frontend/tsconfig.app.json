@@ -29,6 +29,7 @@
     "src/components/TrainSearchForm.tsx",
     "src/components/TripCard.tsx",
     "src/pages/**/*.tsx",
-    "src/types/**/*.ts"
+    "src/types/**/*.ts",
+    "src/**/*.d.ts"
   ]
 }

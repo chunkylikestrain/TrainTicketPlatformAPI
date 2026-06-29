@@ -4,7 +4,7 @@ const helpOptions = [
   {
     title: "How to buy a ticket",
     text: "Follow the purchase flow from search to seat selection, payment, ticket PDF, and account storage.",
-    href: "#faq",
+    href: "/help/faq",
   },
   {
     title: "Refunds and invoices",

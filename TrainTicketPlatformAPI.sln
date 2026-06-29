@@ -17,7 +17,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PasswordHasher", "PasswordH
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{92CD9D77-C23B-4232-8B9E-0A32B5AC5221}"
 	ProjectSection(SolutionItems) = preProject
+		.codex-locomotive-files.txt = .codex-locomotive-files.txt
+		.codex-seatmap-files.txt = .codex-seatmap-files.txt
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
 		AGENTS.md = AGENTS.md
+		docs\image-credits.md = docs\image-credits.md
+		README.md = README.md
 	EndProjectSection
 EndProject
 Global

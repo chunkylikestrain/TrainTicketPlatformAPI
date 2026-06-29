@@ -189,8 +189,8 @@ function RegisterPage() {
             </span>
           </label>
           <p className="registration-smallprint">
-            The Controller of your personal data provided with reference to voluntary registration in this demo
-            service has its registered office in Warsaw.
+            The Controller of your personal data provided with reference to voluntary registration in this service has
+            its registered office in Warsaw.
           </p>
           <label className="plain-checkbox-row">
             <input
