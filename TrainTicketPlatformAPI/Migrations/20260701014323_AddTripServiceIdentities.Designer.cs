@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrainTicketPlatformAPI.Data;
 
@@ -11,9 +12,11 @@ using TrainTicketPlatformAPI.Data;
 namespace TrainTicketPlatformAPI.Migrations
 {
     [DbContext(typeof(TrainTicketDbContext))]
-    partial class TrainTicketDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260701014323_AddTripServiceIdentities")]
+    partial class AddTripServiceIdentities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1575,74 +1578,6 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.ToTable("Trips");
                 });
 
-            modelBuilder.Entity("TrainTicketPlatformAPI.Models.TripCarriageSegment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("DestinationLabel")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(160)
-                        .HasColumnType("nvarchar(160)")
-                        .HasDefaultValue("");
-
-                    b.Property<int>("DisplayOrder")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("FromRouteStopId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsBookable")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bit")
-                        .HasDefaultValue(true);
-
-                    b.Property<string>("Notes")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(300)
-                        .HasColumnType("nvarchar(300)")
-                        .HasDefaultValue("");
-
-                    b.Property<string>("PortionCode")
-                        .IsRequired()
-                        .ValueGeneratedOnAdd()
-                        .HasMaxLength(80)
-                        .HasColumnType("nvarchar(80)")
-                        .HasDefaultValue("");
-
-                    b.Property<int?>("ToRouteStopId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TrainCarriageId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TripId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("FromRouteStopId");
-
-                    b.HasIndex("ToRouteStopId");
-
-                    b.HasIndex("TrainCarriageId");
-
-                    b.HasIndex("TripId", "DisplayOrder");
-
-                    b.HasIndex("TripId", "PortionCode");
-
-                    b.HasIndex("TripId", "TrainCarriageId");
-
-                    b.HasIndex("TripId", "FromRouteStopId", "ToRouteStopId");
-
-                    b.ToTable("TripCarriageSegments");
-                });
-
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.TripServiceIdentity", b =>
                 {
                     b.Property<int>("Id")
@@ -2072,39 +2007,6 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.Navigation("TrainRoute");
                 });
 
-            modelBuilder.Entity("TrainTicketPlatformAPI.Models.TripCarriageSegment", b =>
-                {
-                    b.HasOne("TrainTicketPlatformAPI.Models.TrainRouteStop", "FromRouteStop")
-                        .WithMany()
-                        .HasForeignKey("FromRouteStopId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("TrainTicketPlatformAPI.Models.TrainRouteStop", "ToRouteStop")
-                        .WithMany()
-                        .HasForeignKey("ToRouteStopId")
-                        .OnDelete(DeleteBehavior.Restrict);
-
-                    b.HasOne("TrainTicketPlatformAPI.Models.TrainCarriage", "TrainCarriage")
-                        .WithMany("TripSegments")
-                        .HasForeignKey("TrainCarriageId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("TrainTicketPlatformAPI.Models.Trip", "Trip")
-                        .WithMany("CarriageSegments")
-                        .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("FromRouteStop");
-
-                    b.Navigation("ToRouteStop");
-
-                    b.Navigation("TrainCarriage");
-
-                    b.Navigation("Trip");
-                });
-
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.TripServiceIdentity", b =>
                 {
                     b.HasOne("TrainTicketPlatformAPI.Models.TrainRouteStop", "FromRouteStop")
@@ -2185,11 +2087,6 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.Navigation("Trips");
                 });
 
-            modelBuilder.Entity("TrainTicketPlatformAPI.Models.TrainCarriage", b =>
-                {
-                    b.Navigation("TripSegments");
-                });
-
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.TrainRoute", b =>
                 {
                     b.Navigation("RouteStops");
@@ -2200,8 +2097,6 @@ namespace TrainTicketPlatformAPI.Migrations
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Trip", b =>
                 {
                     b.Navigation("Bookings");
-
-                    b.Navigation("CarriageSegments");
 
                     b.Navigation("Fares");
 

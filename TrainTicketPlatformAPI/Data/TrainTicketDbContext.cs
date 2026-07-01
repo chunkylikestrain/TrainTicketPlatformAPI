@@ -20,6 +20,8 @@ namespace TrainTicketPlatformAPI.Data
         public DbSet<TrainCarriage> TrainCarriages { get; set; }
         public DbSet<RollingStockOption> RollingStockOptions { get; set; }
         public DbSet<Trip> Trips { get; set; }
+        public DbSet<TripServiceIdentity> TripServiceIdentities { get; set; }
+        public DbSet<TripCarriageSegment> TripCarriageSegments { get; set; }
         public DbSet<Fare> Fares { get; set; }
         public DbSet<Seat> Seats { get; set; }
         public DbSet<Booking> Bookings { get; set; }
@@ -885,6 +887,129 @@ namespace TrainTicketPlatformAPI.Data
             modelBuilder.Entity<Trip>()
                 .Property(t => t.DisruptionSeverity)
                 .HasMaxLength(30)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .HasOne(i => i.Trip)
+                .WithMany(t => t.ServiceIdentities)
+                .HasForeignKey(i => i.TripId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .HasOne(i => i.FromRouteStop)
+                .WithMany()
+                .HasForeignKey(i => i.FromRouteStopId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .HasOne(i => i.ToRouteStop)
+                .WithMany()
+                .HasForeignKey(i => i.ToRouteStopId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .HasIndex(i => new { i.TripId, i.DisplayOrder });
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .HasIndex(i => new { i.TripId, i.IsPrimary });
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .HasIndex(i => new
+                {
+                    i.ExternalSource,
+                    i.CarrierCode,
+                    i.ServiceCategory,
+                    i.Number
+                });
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .Property(i => i.CarrierCode)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .Property(i => i.CountryCode)
+                .HasMaxLength(8)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .Property(i => i.ServiceCategory)
+                .HasMaxLength(24)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .Property(i => i.Number)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .Property(i => i.DisplayNumber)
+                .HasMaxLength(80)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .Property(i => i.ServiceName)
+                .HasMaxLength(160)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TripServiceIdentity>()
+                .Property(i => i.ExternalSource)
+                .HasMaxLength(40)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TripCarriageSegment>()
+                .HasOne(s => s.Trip)
+                .WithMany(t => t.CarriageSegments)
+                .HasForeignKey(s => s.TripId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            modelBuilder.Entity<TripCarriageSegment>()
+                .HasOne(s => s.TrainCarriage)
+                .WithMany(c => c.TripSegments)
+                .HasForeignKey(s => s.TrainCarriageId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TripCarriageSegment>()
+                .HasOne(s => s.FromRouteStop)
+                .WithMany()
+                .HasForeignKey(s => s.FromRouteStopId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TripCarriageSegment>()
+                .HasOne(s => s.ToRouteStop)
+                .WithMany()
+                .HasForeignKey(s => s.ToRouteStopId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<TripCarriageSegment>()
+                .HasIndex(s => new { s.TripId, s.TrainCarriageId });
+
+            modelBuilder.Entity<TripCarriageSegment>()
+                .HasIndex(s => new { s.TripId, s.DisplayOrder });
+
+            modelBuilder.Entity<TripCarriageSegment>()
+                .HasIndex(s => new { s.TripId, s.FromRouteStopId, s.ToRouteStopId });
+
+            modelBuilder.Entity<TripCarriageSegment>()
+                .HasIndex(s => new { s.TripId, s.PortionCode });
+
+            modelBuilder.Entity<TripCarriageSegment>()
+                .Property(s => s.PortionCode)
+                .HasMaxLength(80)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TripCarriageSegment>()
+                .Property(s => s.DestinationLabel)
+                .HasMaxLength(160)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TripCarriageSegment>()
+                .Property(s => s.IsBookable)
+                .HasDefaultValue(true);
+
+            modelBuilder.Entity<TripCarriageSegment>()
+                .Property(s => s.Notes)
+                .HasMaxLength(300)
                 .HasDefaultValue("");
 
             modelBuilder.Entity<Fare>()

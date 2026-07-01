@@ -17,5 +17,8 @@ namespace TrainTicketPlatformAPI.Models
         public string Notes { get; set; } = string.Empty;
 
         public Train Train { get; set; } = null!;
+
+        public ICollection<TripCarriageSegment> TripSegments { get; set; }
+            = new List<TripCarriageSegment>();
     }
 }

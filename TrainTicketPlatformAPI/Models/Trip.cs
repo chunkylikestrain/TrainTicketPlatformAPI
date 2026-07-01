@@ -30,6 +30,12 @@ namespace TrainTicketPlatformAPI.Models
         public ICollection<Fare> Fares { get; set; }
             = new List<Fare>();
 
+        public ICollection<TripServiceIdentity> ServiceIdentities { get; set; }
+            = new List<TripServiceIdentity>();
+
+        public ICollection<TripCarriageSegment> CarriageSegments { get; set; }
+            = new List<TripCarriageSegment>();
+
         public ICollection<Booking> Bookings { get; set; }
             = new List<Booking>();
     }
