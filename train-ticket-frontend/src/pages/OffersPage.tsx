@@ -7,7 +7,7 @@ const offerCategories = [
     intro: "Night journeys with places to rest on longer routes.",
     details: "Plan overnight travel with couchette and sleeper-style options where they are available in the timetable.",
     imageClass: "offer-card-image-sleeper",
-    to: "/search",
+    to: "/offers/sleeper",
   },
   {
     id: "domestic",

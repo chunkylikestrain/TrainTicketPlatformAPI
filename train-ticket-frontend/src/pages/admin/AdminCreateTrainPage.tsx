@@ -111,6 +111,40 @@ const carriagePresets: CarriagePreset[] = [
     notes: "10 compartments",
   },
   {
+    label: "International sleeper",
+    classType: "Sleeper",
+    layoutType: "InternationalSleeper",
+    vehicleType: "WLAB10mnouz",
+    seatCount: "22",
+    notes: "8 compartments: 6 triple berths plus 2 deluxe double shower compartments",
+  },
+  {
+    label: "Domestic sleeper",
+    classType: "Sleeper",
+    layoutType: "Sleeper",
+    vehicleType: "WLAB10nouz",
+    seatCount: "30",
+    notes: "10 triple-berth sleeper compartments",
+  },
+  {
+    label: "4-berth couchette",
+    classType: "Couchette",
+    layoutType: "Couchette",
+    vehicleType: "Bc8bnouz",
+    seatCount: "30",
+    hasAccessibleSpace: true,
+    notes: "One accessible compartment plus seven 4-berth couchette compartments",
+  },
+  {
+    label: "6-berth couchette",
+    classType: "Couchette",
+    layoutType: "SixBerthCouchette",
+    vehicleType: "Bc8bnouz",
+    seatCount: "44",
+    hasAccessibleSpace: true,
+    notes: "One accessible compartment plus seven 6-berth couchette compartments",
+  },
+  {
     label: "Mixed 1st/2nd compartment",
     classType: "Class 1/2",
     layoutType: "ComboFirstSecond",
@@ -465,12 +499,18 @@ function AdminCreateTrainPage() {
                       <option>Class 1</option>
                       <option>Class 2</option>
                       <option>Class 1/2</option>
+                      <option>Sleeper</option>
+                      <option>Couchette</option>
                       <option>Dining</option>
                     </select></label>
                     <label>Layout<select value={carriage.layoutType} onChange={(event) => updateCarriage(index, { layoutType: event.target.value, hasDiningSection: event.target.value === "Restaurant" })}>
                       <option>FirstCompartment</option>
                       <option>OpenFirst</option>
                       <option>SecondCompartment</option>
+                      <option>InternationalSleeper</option>
+                      <option>Sleeper</option>
+                      <option>Couchette</option>
+                      <option>SixBerthCouchette</option>
                       <option>OpenSecond</option>
                       <option>OpenSecondAccessible</option>
                       <option>OpenSecondBike</option>

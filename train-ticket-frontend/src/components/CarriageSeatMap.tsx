@@ -10,6 +10,10 @@ type CarriageTemplate =
   | "combo-first-second"
   | "first-compartment"
   | "second-compartment"
+  | "international-sleeper"
+  | "domestic-sleeper"
+  | "four-berth-couchette"
+  | "six-berth-couchette"
   | "mixed"
   | "emu-first-second"
   | "emu-second-open"
@@ -23,9 +27,11 @@ type CarriageTemplate =
   | "emu-dart-second-cab"
   | "restaurant";
 
+type SeatClassType = "Class 1" | "Class 2" | "Sleeper" | "Couchette";
+
 type SeatPlanSlot =
-  | { type: "seat"; classType?: "Class 1" | "Class 2" }
-  | { type: "compartment"; seats: number; classType?: "Class 1" | "Class 2" }
+  | { type: "seat"; classType?: SeatClassType }
+  | { type: "compartment"; seats: number; classType?: SeatClassType }
   | { type: "facility"; label: string; tone?: "large" | "long" }
   | { type: "class"; label: string }
   | { type: "corridor"; label?: string; size?: "short" }
@@ -34,7 +40,7 @@ type SeatPlanSlot =
 
 type PlannedSlot =
   | { type: "seat"; seat: TripSeatAvailability | null }
-  | { type: "compartment"; seats: Array<TripSeatAvailability | null>; classType?: "Class 1" | "Class 2" }
+  | { type: "compartment"; seats: Array<TripSeatAvailability | null>; classType?: SeatClassType }
   | Exclude<SeatPlanSlot, { type: "seat" | "compartment" }>;
 
 type CarriageSeatMapProps = {
@@ -66,7 +72,7 @@ type GraphicCompartmentSlot = {
   y: number;
 };
 
-function seatSlots(count: number, classType?: "Class 1" | "Class 2"): SeatPlanSlot[] {
+function seatSlots(count: number, classType?: SeatClassType): SeatPlanSlot[] {
   return Array.from({ length: count }, () => ({ type: "seat", classType }));
 }
 
@@ -79,6 +85,22 @@ function buildTemplate(template: CarriageTemplate, seats: TripSeatAvailability[]
 
   if (template === "second-compartment") {
     return buildCompartmentTemplate(Math.max(10, Math.ceil(seatCount / 6)), "2", "Class 2");
+  }
+
+  if (template === "international-sleeper") {
+    return buildInternationalSleeperTemplate();
+  }
+
+  if (template === "domestic-sleeper") {
+    return buildDomesticSleeperTemplate();
+  }
+
+  if (template === "four-berth-couchette") {
+    return buildFourBerthCouchetteTemplate();
+  }
+
+  if (template === "six-berth-couchette") {
+    return buildSixBerthCouchetteTemplate();
   }
 
   if (template === "open-first") {
@@ -240,6 +262,10 @@ function buildTemplate(template: CarriageTemplate, seats: TripSeatAvailability[]
 function defaultSeatCount(template: CarriageTemplate) {
   if (template === "first-compartment") return 54;
   if (template === "second-compartment") return 60;
+  if (template === "international-sleeper") return 22;
+  if (template === "domestic-sleeper") return 30;
+  if (template === "four-berth-couchette") return 30;
+  if (template === "six-berth-couchette") return 44;
   if (template === "open-first") return 54;
   if (template === "combo-first-second" || template === "mixed" || template === "emu-first-second") return 64;
   if (template === "emu-second-family-open") return 98;
@@ -252,6 +278,149 @@ function defaultSeatCount(template: CarriageTemplate) {
   if (template === "combo-accessible" || template === "combo-second-wheelchair-bike") return 56;
   if (template === "restaurant") return 0;
   return 88;
+}
+
+function buildInternationalSleeperTemplate(): SeatPlanSlot[][] {
+  const tripleCompartment = (): SeatPlanSlot => ({ type: "compartment", seats: 3, classType: "Sleeper" });
+  const deluxeCompartment = (): SeatPlanSlot => ({ type: "compartment", seats: 2, classType: "Sleeper" });
+
+  return [
+    [
+      { type: "facility", label: "WC", tone: "large" },
+      { type: "facility", label: "Attendant", tone: "long" },
+      { type: "divider" },
+      tripleCompartment(),
+      tripleCompartment(),
+      tripleCompartment(),
+      { type: "facility", label: "Shower", tone: "large" },
+      deluxeCompartment(),
+      deluxeCompartment(),
+      { type: "facility", label: "Shower", tone: "large" },
+      tripleCompartment(),
+      tripleCompartment(),
+      tripleCompartment(),
+      { type: "divider" },
+      { type: "facility", label: "WC", tone: "large" },
+    ],
+    [
+      { type: "space", size: "wide" },
+      { type: "corridor", label: "WLAB international sleeper" },
+      { type: "space", size: "wide" },
+    ],
+    [
+      { type: "facility", label: "3-berth compartments", tone: "long" },
+      { type: "space", size: "long" },
+      { type: "facility", label: "Deluxe 2-berth with shower", tone: "long" },
+      { type: "space", size: "long" },
+      { type: "facility", label: "3-berth compartments", tone: "long" },
+    ],
+  ];
+}
+
+function buildDomesticSleeperTemplate(): SeatPlanSlot[][] {
+  const tripleCompartment = (): SeatPlanSlot => ({ type: "compartment", seats: 3, classType: "Sleeper" });
+
+  return [
+    [
+      { type: "facility", label: "WC", tone: "large" },
+      { type: "facility", label: "Attendant", tone: "long" },
+      { type: "divider" },
+      tripleCompartment(),
+      tripleCompartment(),
+      tripleCompartment(),
+      tripleCompartment(),
+      tripleCompartment(),
+      tripleCompartment(),
+      tripleCompartment(),
+      tripleCompartment(),
+      tripleCompartment(),
+      tripleCompartment(),
+      { type: "divider" },
+      { type: "facility", label: "WC", tone: "large" },
+    ],
+    [
+      { type: "space", size: "wide" },
+      { type: "corridor", label: "WLAB domestic sleeper" },
+      { type: "space", size: "wide" },
+    ],
+    [
+      { type: "facility", label: "10 compartments", tone: "long" },
+      { type: "space", size: "long" },
+      { type: "facility", label: "3 berths per compartment", tone: "long" },
+    ],
+  ];
+}
+
+function buildFourBerthCouchetteTemplate(): SeatPlanSlot[][] {
+  const accessibleCompartment = (): SeatPlanSlot => ({ type: "compartment", seats: 2, classType: "Couchette" });
+  const couchetteCompartment = (): SeatPlanSlot => ({ type: "compartment", seats: 4, classType: "Couchette" });
+
+  return [
+    [
+      { type: "facility", label: "Accessible WC", tone: "long" },
+      { type: "facility", label: "Lift", tone: "large" },
+      accessibleCompartment(),
+      { type: "facility", label: "Attendant", tone: "long" },
+      { type: "divider" },
+      couchetteCompartment(),
+      couchetteCompartment(),
+      couchetteCompartment(),
+      couchetteCompartment(),
+      couchetteCompartment(),
+      couchetteCompartment(),
+      couchetteCompartment(),
+      { type: "divider" },
+      { type: "facility", label: "WC", tone: "large" },
+    ],
+    [
+      { type: "space", size: "wide" },
+      { type: "corridor", label: "Bc 4-berth couchette" },
+      { type: "space", size: "wide" },
+    ],
+    [
+      { type: "facility", label: "Accessible compartment", tone: "long" },
+      { type: "space", size: "long" },
+      { type: "facility", label: "7 compartments", tone: "long" },
+      { type: "space", size: "long" },
+      { type: "facility", label: "4 berths per compartment", tone: "long" },
+    ],
+  ];
+}
+
+function buildSixBerthCouchetteTemplate(): SeatPlanSlot[][] {
+  const accessibleCompartment = (): SeatPlanSlot => ({ type: "compartment", seats: 2, classType: "Couchette" });
+  const couchetteCompartment = (): SeatPlanSlot => ({ type: "compartment", seats: 6, classType: "Couchette" });
+
+  return [
+    [
+      { type: "facility", label: "Accessible WC", tone: "long" },
+      { type: "facility", label: "Lift", tone: "large" },
+      accessibleCompartment(),
+      { type: "facility", label: "Attendant", tone: "long" },
+      { type: "divider" },
+      couchetteCompartment(),
+      couchetteCompartment(),
+      couchetteCompartment(),
+      couchetteCompartment(),
+      couchetteCompartment(),
+      couchetteCompartment(),
+      couchetteCompartment(),
+      { type: "divider" },
+      { type: "facility", label: "WC", tone: "large" },
+    ],
+    [
+      { type: "space", size: "wide" },
+      { type: "corridor", label: "Bc 6-berth couchette" },
+      { type: "space", size: "wide" },
+    ],
+    [
+      { type: "facility", label: "Accessible compartment", tone: "long" },
+      { type: "space", size: "long" },
+      { type: "facility", label: "7 compartments", tone: "long" },
+      { type: "space", size: "long" },
+      { type: "facility", label: "6 berths per compartment", tone: "long" },
+    ],
+  ];
 }
 
 function splitAcrossRows(total: number, rowCount: number) {
@@ -415,7 +584,7 @@ function buildDartSecondCabTemplate(seatCount: number): SeatPlanSlot[][] {
 function buildOpenTemplate(
   seatCount: number,
   classLabel: string,
-  classType: "Class 1" | "Class 2",
+  classType: SeatClassType,
   facilities?: { start?: SeatPlanSlot[]; end?: SeatPlanSlot[] },
 ): SeatPlanSlot[][] {
   const seatsPerSideRow = Math.ceil(seatCount / 4);
@@ -453,7 +622,7 @@ function buildOpenTemplate(
   ];
 }
 
-function openRowSeats(count: number, classType: "Class 1" | "Class 2"): SeatPlanSlot[] {
+function openRowSeats(count: number, classType: SeatClassType): SeatPlanSlot[] {
   return Array.from({ length: count }).flatMap((_, index) => [
     { type: "seat", classType } as SeatPlanSlot,
     ...(index % 6 === 5 ? [{ type: "space" } as SeatPlanSlot] : []),
@@ -463,7 +632,7 @@ function openRowSeats(count: number, classType: "Class 1" | "Class 2"): SeatPlan
 function buildCompartmentTemplate(
   compartmentCount: number,
   classLabel: string,
-  classType: "Class 1" | "Class 2",
+  classType: SeatClassType,
 ): SeatPlanSlot[][] {
   return [
     [
@@ -527,11 +696,22 @@ function buildRows(template: CarriageTemplate, seats: TripSeatAvailability[]): P
 function takeNextSeat(
   seats: TripSeatAvailability[],
   usedSeatIds: Set<number>,
-  classType?: "Class 1" | "Class 2",
+  classType?: SeatClassType,
 ) {
   const classNumber = classType?.includes("1") ? "1" : classType?.includes("2") ? "2" : "";
-  const matchingIndex = seats.findIndex((seat) =>
-    !usedSeatIds.has(seat.seatId) && (!classNumber || seat.classType.includes(classNumber)));
+  const accommodationClass = classType === "Sleeper" || classType === "Couchette" ? classType.toLowerCase() : "";
+  const matchingIndex = seats.findIndex((seat) => {
+    if (usedSeatIds.has(seat.seatId)) {
+      return false;
+    }
+
+    const normalizedSeatClass = seat.classType.toLowerCase();
+    if (accommodationClass) {
+      return normalizedSeatClass === accommodationClass;
+    }
+
+    return !classNumber || normalizedSeatClass.includes(classNumber);
+  });
   const fallbackIndex = seats.findIndex((seat) => !usedSeatIds.has(seat.seatId));
   const seat = seats[matchingIndex >= 0 ? matchingIndex : fallbackIndex] ?? null;
 
@@ -631,7 +811,7 @@ function CarriageSeatMap({
         ))}
       </div>
       <p className="coach-caption">
-        Car {coach} - Class {selectedClass} - {templateLabel(template)}
+        Car {coach} - {getAccommodationLabel(template, selectedClass)} - {templateLabel(template)}
       </p>
     </div>
   );
@@ -697,7 +877,7 @@ function GraphicFamilyOpenCoach({
         </div>
       </div>
       <p className="coach-caption">
-        Car {coach} - Class {selectedClass} - {templateLabel(template)}
+        Car {coach} - {getAccommodationLabel(template, selectedClass)} - {templateLabel(template)}
       </p>
     </div>
   );
@@ -876,6 +1056,22 @@ function templateLabel(template: CarriageTemplate) {
     return "10-compartment second class coach";
   }
 
+  if (template === "international-sleeper") {
+    return "international sleeper with deluxe shower compartments";
+  }
+
+  if (template === "domestic-sleeper") {
+    return "domestic sleeper with 10 triple-berth compartments";
+  }
+
+  if (template === "four-berth-couchette") {
+    return "4-berth couchette with accessible compartment";
+  }
+
+  if (template === "six-berth-couchette") {
+    return "6-berth couchette with accessible compartment";
+  }
+
   if (template === "open-first") {
     return "first class open-space coach";
   }
@@ -893,6 +1089,18 @@ function templateLabel(template: CarriageTemplate) {
   }
 
   return "second class open-space coach";
+}
+
+function getAccommodationLabel(template: CarriageTemplate, selectedClass: string) {
+  if (template === "international-sleeper" || template === "domestic-sleeper") {
+    return "Sleeper";
+  }
+
+  if (template === "four-berth-couchette" || template === "six-berth-couchette") {
+    return "Couchette";
+  }
+
+  return `Class ${selectedClass}`;
 }
 
 export type { CarriageTemplate };

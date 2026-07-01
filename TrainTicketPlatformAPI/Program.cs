@@ -109,6 +109,29 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddDbContext<TrainTicketDbContext>(opts =>
     opts.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.Configure<OpenRailwayOptions>(options =>
+{
+    builder.Configuration.GetSection(OpenRailwayOptions.SectionName).Bind(options);
+
+    var legacySection = builder.Configuration.GetSection("PlkOpenRailway");
+    if (legacySection.Exists())
+    {
+        if (string.IsNullOrWhiteSpace(options.ApiKey))
+            options.ApiKey = legacySection["ApiKey"] ?? string.Empty;
+
+        if (string.IsNullOrWhiteSpace(options.BaseUrl) && !string.IsNullOrWhiteSpace(legacySection["BaseUrl"]))
+            options.BaseUrl = legacySection["BaseUrl"]!;
+    }
+});
+builder.Services.AddHttpClient<IOpenRailwayClient, OpenRailwayClient>((serviceProvider, client) =>
+{
+    var options = serviceProvider
+        .GetRequiredService<Microsoft.Extensions.Options.IOptions<OpenRailwayOptions>>()
+        .Value;
+
+    client.BaseAddress = new Uri(options.BaseUrl.TrimEnd('/'));
+    client.Timeout = TimeSpan.FromSeconds(30);
+});
 
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IBookingHoldExpiryService, BookingHoldExpiryService>();
@@ -123,6 +146,7 @@ builder.Services.AddScoped<ITicketArtifactService, TicketArtifactService>();
 builder.Services.AddScoped<ILoyaltyService, LoyaltyService>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IAdminAuditService, AdminAuditService>();
+builder.Services.AddScoped<IOpenRailwayImportService, OpenRailwayImportService>();
 
 
 // JWT Authentication
@@ -166,7 +190,7 @@ if (app.Environment.IsDevelopment())
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<TrainTicketDbContext>();
     await db.Database.MigrateAsync();
-    await DevelopmentSeedData.SeedAsync(db, app.Configuration);
+    await DevelopmentSeedData.SeedAsync(db, app.Configuration, contentRootPath: app.Environment.ContentRootPath);
 }
 
 app.UseHttpsRedirection();

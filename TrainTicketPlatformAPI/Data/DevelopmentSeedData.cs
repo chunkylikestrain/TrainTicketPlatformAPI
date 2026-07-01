@@ -1,4 +1,6 @@
+using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
+using TrainTicketPlatformAPI.Contracts.OpenRailway;
 using TrainTicketPlatformAPI.Models;
 
 namespace TrainTicketPlatformAPI.Data
@@ -412,7 +414,8 @@ namespace TrainTicketPlatformAPI.Data
         public static async Task SeedAsync(
             TrainTicketDbContext db,
             IConfiguration configuration,
-            CancellationToken cancellationToken = default)
+            CancellationToken cancellationToken = default,
+            string? contentRootPath = null)
         {
             if (!configuration.GetValue("SeedData:UseDevelopmentSeedData", true))
                 return;
@@ -421,7 +424,19 @@ namespace TrainTicketPlatformAPI.Data
             await EnsureCleanStationDisplaysAsync(db, cancellationToken);
             await CleanupLegacyPrototypeSeedDataAsync(db, cancellationToken);
             await EnsureRollingStockOptionsAsync(db, cancellationToken);
-            await EnsureDemoSchedulesAsync(db, cancellationToken);
+
+            var loadedOpenRailwaySnapshots = await EnsureOpenRailwaySeedSnapshotsAsync(
+                db,
+                configuration,
+                contentRootPath,
+                cancellationToken);
+            var useHandWrittenSchedules = configuration.GetValue("SeedData:UseHandWrittenDemoSchedules", false);
+            var useHandWrittenFallback = configuration.GetValue("SeedData:UseHandWrittenDemoScheduleFallback", true);
+
+            if (useHandWrittenSchedules || (!loadedOpenRailwaySnapshots && useHandWrittenFallback))
+            {
+                await EnsureDemoSchedulesAsync(db, cancellationToken);
+            }
             await EnsureDiscountRulesAsync(db, cancellationToken);
 
             await EnsureUserAsync(db, configuration, "SeedData:AdminPassword", AdminEmail, "Admin", cancellationToken);
@@ -790,14 +805,14 @@ namespace TrainTicketPlatformAPI.Data
             {
                 foreach (var carriage in carriages)
                 {
-                    for (var number = 1; number <= carriage.SeatCount; number++)
+                    foreach (var number in GetSeatNumbersForCarriage(carriage))
                     {
                         seats.Add(new Seat
                         {
                             TrainId = train.Id,
                             Coach = carriage.Coach,
-                            Number = number.ToString(),
-                            ClassType = GetSeatClassType(carriage, number),
+                            Number = number,
+                            ClassType = GetSeatClassType(carriage, int.Parse(number)),
                             IsAvailable = true
                         });
                     }
@@ -867,10 +882,636 @@ namespace TrainTicketPlatformAPI.Data
 
         private static string GetSeatClassType(TrainCarriage carriage, int seatNumber)
         {
+            if (carriage.LayoutType.Equals("InternationalSleeper", StringComparison.OrdinalIgnoreCase) ||
+                carriage.LayoutType.Equals("Sleeper", StringComparison.OrdinalIgnoreCase))
+                return "Sleeper";
+
+            if (carriage.LayoutType.Equals("Couchette", StringComparison.OrdinalIgnoreCase) ||
+                carriage.LayoutType.Equals("SixBerthCouchette", StringComparison.OrdinalIgnoreCase))
+                return "Couchette";
+
             if (IsMixedClassCarriage(carriage))
                 return seatNumber <= GetFirstClassSeatCount(carriage) ? "Class 1" : "Class 2";
 
             return carriage.ClassType == "Class 1/2" ? "Class 2" : carriage.ClassType;
+        }
+
+        private static IReadOnlyList<string> GetSeatNumbersForCarriage(TrainCarriage carriage)
+        {
+            if (carriage.LayoutType.Equals("InternationalSleeper", StringComparison.OrdinalIgnoreCase))
+                return InternationalSleeperBerths;
+
+            if (carriage.LayoutType.Equals("Sleeper", StringComparison.OrdinalIgnoreCase))
+                return DomesticSleeperBerths;
+
+            if (carriage.LayoutType.Equals("Couchette", StringComparison.OrdinalIgnoreCase))
+                return FourBerthCouchetteBerths;
+
+            if (carriage.LayoutType.Equals("SixBerthCouchette", StringComparison.OrdinalIgnoreCase))
+                return SixBerthCouchetteBerths;
+
+            return Enumerable.Range(1, carriage.SeatCount)
+                .Select(number => number.ToString())
+                .ToArray();
+        }
+
+        private static readonly string[] InternationalSleeperBerths =
+        [
+            "11", "13", "15",
+            "21", "23", "25",
+            "31", "33", "35",
+            "41", "45",
+            "51", "55",
+            "61", "63", "65",
+            "71", "73", "75",
+            "81", "83", "85"
+        ];
+
+        private static readonly string[] DomesticSleeperBerths =
+        [
+            "11", "13", "15",
+            "21", "23", "25",
+            "31", "33", "35",
+            "41", "43", "45",
+            "51", "53", "55",
+            "61", "63", "65",
+            "71", "73", "75",
+            "81", "83", "85",
+            "91", "93", "95",
+            "101", "103", "105"
+        ];
+
+        private static readonly string[] FourBerthCouchetteBerths =
+        [
+            "11", "15",
+            "21", "22", "25", "26",
+            "31", "32", "35", "36",
+            "41", "42", "45", "46",
+            "51", "52", "55", "56",
+            "61", "62", "65", "66",
+            "71", "72", "75", "76",
+            "81", "82", "85", "86"
+        ];
+
+        private static readonly string[] SixBerthCouchetteBerths =
+        [
+            "11", "15",
+            "21", "22", "23", "24", "25", "26",
+            "31", "32", "33", "34", "35", "36",
+            "41", "42", "43", "44", "45", "46",
+            "51", "52", "53", "54", "55", "56",
+            "61", "62", "63", "64", "65", "66",
+            "71", "72", "73", "74", "75", "76",
+            "81", "82", "83", "84", "85", "86"
+        ];
+
+        private static async Task<bool> EnsureOpenRailwaySeedSnapshotsAsync(
+            TrainTicketDbContext db,
+            IConfiguration configuration,
+            string? contentRootPath,
+            CancellationToken cancellationToken)
+        {
+            var configuredDirectory = configuration["SeedData:OpenRailwaySnapshotDirectory"];
+            var snapshotDirectory = string.IsNullOrWhiteSpace(configuredDirectory)
+                ? Path.Combine("App_Data", "SeedSnapshots")
+                : configuredDirectory;
+
+            if (!Path.IsPathRooted(snapshotDirectory))
+            {
+                snapshotDirectory = Path.Combine(
+                    contentRootPath ?? Directory.GetCurrentDirectory(),
+                    snapshotDirectory);
+            }
+
+            if (!Directory.Exists(snapshotDirectory))
+                return false;
+
+            var files = Directory
+                .EnumerateFiles(snapshotDirectory, "*.json")
+                .OrderBy(file => file, StringComparer.OrdinalIgnoreCase)
+                .ToArray();
+
+            if (files.Length == 0)
+                return false;
+
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            };
+
+            var loadedAny = false;
+            foreach (var file in files)
+            {
+                await using var stream = File.OpenRead(file);
+                var snapshot = await JsonSerializer.DeserializeAsync<OpenRailwaySeedSnapshotDto>(
+                    stream,
+                    options,
+                    cancellationToken);
+
+                if (snapshot == null)
+                    continue;
+
+                await EnsureOpenRailwaySeedSnapshotAsync(db, snapshot, cancellationToken);
+                loadedAny = true;
+            }
+
+            return loadedAny;
+        }
+
+        private static async Task EnsureOpenRailwaySeedSnapshotAsync(
+            TrainTicketDbContext db,
+            OpenRailwaySeedSnapshotDto snapshot,
+            CancellationToken cancellationToken)
+        {
+            var externalSource = string.IsNullOrWhiteSpace(snapshot.ExternalSource)
+                ? "PLK"
+                : snapshot.ExternalSource.Trim();
+
+            var stationsByExternalId = new Dictionary<int, Station>();
+            var stationsByCode = new Dictionary<string, Station>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var stationSeed in snapshot.Stations)
+            {
+                if (string.IsNullOrWhiteSpace(stationSeed.Code) ||
+                    string.IsNullOrWhiteSpace(stationSeed.Name))
+                {
+                    continue;
+                }
+
+                var station = await FindSnapshotStationAsync(
+                    db,
+                    externalSource,
+                    stationSeed.ExternalStationId,
+                    stationSeed.Code,
+                    cancellationToken);
+
+                if (station == null)
+                {
+                    station = new Station();
+                    db.Stations.Add(station);
+                }
+
+                station.Code = stationSeed.Code.Trim();
+                station.NormalizedCode = station.Code.ToUpperInvariant();
+                station.Name = stationSeed.Name.Trim();
+                station.NormalizedName = station.Name.ToUpperInvariant();
+                station.City = string.IsNullOrWhiteSpace(stationSeed.City)
+                    ? station.Name
+                    : stationSeed.City.Trim();
+                station.ExternalSource = externalSource;
+                station.ExternalStationId = stationSeed.ExternalStationId;
+
+                if (stationSeed.ExternalStationId.HasValue)
+                    stationsByExternalId[stationSeed.ExternalStationId.Value] = station;
+                stationsByCode[station.Code] = station;
+            }
+
+            await db.SaveChangesAsync(cancellationToken);
+
+            foreach (var station in await db.Stations
+                .Where(station => station.ExternalSource == externalSource)
+                .ToListAsync(cancellationToken))
+            {
+                if (station.ExternalStationId.HasValue)
+                    stationsByExternalId[station.ExternalStationId.Value] = station;
+                stationsByCode[station.Code] = station;
+            }
+
+            var trainsByCode = new Dictionary<string, Train>(StringComparer.OrdinalIgnoreCase);
+            foreach (var trainSeed in snapshot.Trains)
+            {
+                if (string.IsNullOrWhiteSpace(trainSeed.Code))
+                    continue;
+
+                var train = await db.Trains
+                    .FirstOrDefaultAsync(
+                        item => item.Code == trainSeed.Code ||
+                            (item.ExternalSource == externalSource &&
+                             item.ExternalCommercialCategorySymbol == trainSeed.ExternalCommercialCategorySymbol &&
+                             item.ExternalNationalNumber == trainSeed.ExternalNationalNumber &&
+                             trainSeed.ExternalNationalNumber != string.Empty),
+                        cancellationToken);
+
+                if (train == null)
+                {
+                    train = new Train();
+                    db.Trains.Add(train);
+                }
+
+                train.Code = trainSeed.Code.Trim();
+                train.Name = string.IsNullOrWhiteSpace(trainSeed.Name)
+                    ? train.Code
+                    : trainSeed.Name.Trim();
+                train.Type = string.IsNullOrWhiteSpace(trainSeed.Type)
+                    ? ResolveTrainType(trainSeed.ExternalCommercialCategorySymbol)
+                    : trainSeed.Type.Trim();
+                train.CarriageCount = Math.Max(1, trainSeed.CarriageCount);
+                train.SeatsPerCarriage = Math.Max(0, trainSeed.SeatsPerCarriage);
+                train.Status = string.IsNullOrWhiteSpace(trainSeed.Status) ? "Active" : trainSeed.Status.Trim();
+                train.DepartureStation = trainSeed.DepartureStation;
+                train.ArrivalStation = trainSeed.ArrivalStation;
+                train.DepartureTime = trainSeed.DepartureTime;
+                train.ArrivalTime = trainSeed.ArrivalTime;
+                train.ExternalSource = externalSource;
+                train.ExternalCarrierCode = trainSeed.ExternalCarrierCode;
+                train.ExternalCommercialCategorySymbol = trainSeed.ExternalCommercialCategorySymbol;
+                train.ExternalNationalNumber = trainSeed.ExternalNationalNumber;
+                train.ExternalInternationalArrivalNumber = trainSeed.ExternalInternationalArrivalNumber;
+                train.ExternalInternationalDepartureNumber = trainSeed.ExternalInternationalDepartureNumber;
+
+                await db.SaveChangesAsync(cancellationToken);
+                await EnsureSnapshotCarriagesAsync(db, train, trainSeed, cancellationToken);
+                await EnsureSeatsAsync(db, train, cancellationToken, refreshExistingDemoSeats: true);
+
+                trainsByCode[train.Code] = train;
+            }
+
+            var routesByCode = new Dictionary<string, TrainRoute>(StringComparer.OrdinalIgnoreCase);
+            foreach (var routeSeed in snapshot.Routes)
+            {
+                var firstStop = routeSeed.Stops.OrderBy(stop => stop.StopOrder).FirstOrDefault();
+                var lastStop = routeSeed.Stops.OrderBy(stop => stop.StopOrder).LastOrDefault();
+                var origin = ResolveSnapshotStation(stationsByExternalId, stationsByCode, routeSeed.DepartureExternalStationId, firstStop?.StationCode);
+                var destination = ResolveSnapshotStation(stationsByExternalId, stationsByCode, routeSeed.ArrivalExternalStationId, lastStop?.StationCode);
+
+                if (origin == null || destination == null || string.IsNullOrWhiteSpace(routeSeed.Code))
+                    continue;
+
+                var route = await db.TrainRoutes
+                    .Include(item => item.RouteStops)
+                    .FirstOrDefaultAsync(
+                        item =>
+                            item.ExternalSource == externalSource &&
+                            item.ExternalScheduleId == routeSeed.ExternalScheduleId &&
+                            item.ExternalOrderId == routeSeed.ExternalOrderId &&
+                            item.ExternalOperatingDate == routeSeed.ExternalOperatingDate,
+                        cancellationToken);
+
+                if (route == null)
+                {
+                    route = await db.TrainRoutes
+                        .Include(item => item.RouteStops)
+                        .FirstOrDefaultAsync(item => item.Code == routeSeed.Code, cancellationToken);
+                }
+
+                if (route == null)
+                {
+                    route = new TrainRoute();
+                    db.TrainRoutes.Add(route);
+                }
+
+                route.Code = routeSeed.Code.Trim();
+                route.Name = string.IsNullOrWhiteSpace(routeSeed.Name)
+                    ? $"{origin.Name} to {destination.Name}"
+                    : routeSeed.Name.Trim();
+                route.DepartureStationId = origin.Id;
+                route.ArrivalStationId = destination.Id;
+                route.DistanceKm = routeSeed.DistanceKm;
+                route.EstimatedDurationMinutes = routeSeed.EstimatedDurationMinutes;
+                route.OperatingDays = string.IsNullOrWhiteSpace(routeSeed.OperatingDays)
+                    ? "Imported"
+                    : routeSeed.OperatingDays.Trim();
+                route.IntermediateStops = routeSeed.IntermediateStops;
+                route.IsActive = routeSeed.IsActive;
+                route.ExternalSource = externalSource;
+                route.ExternalScheduleId = routeSeed.ExternalScheduleId;
+                route.ExternalOrderId = routeSeed.ExternalOrderId;
+                route.ExternalTrainOrderId = routeSeed.ExternalTrainOrderId;
+                route.ExternalOperatingDate = routeSeed.ExternalOperatingDate;
+
+                if (route.RouteStops.Count > 0)
+                    db.TrainRouteStops.RemoveRange(route.RouteStops);
+
+                foreach (var stopSeed in routeSeed.Stops.OrderBy(stop => stop.StopOrder))
+                {
+                    var station = ResolveSnapshotStation(
+                        stationsByExternalId,
+                        stationsByCode,
+                        stopSeed.ExternalStationId,
+                        stopSeed.StationCode);
+
+                    if (station == null)
+                        continue;
+
+                    route.RouteStops.Add(new TrainRouteStop
+                    {
+                        StationId = station.Id,
+                        StopOrder = stopSeed.StopOrder,
+                        ArrivalOffsetMinutes = stopSeed.ArrivalOffsetMinutes,
+                        DepartureOffsetMinutes = stopSeed.DepartureOffsetMinutes,
+                        Platform = stopSeed.Platform,
+                        Track = stopSeed.Track,
+                        StopType = stopSeed.StopType,
+                        ExternalStationId = stopSeed.ExternalStationId,
+                        ExternalStopTypeId = stopSeed.ExternalStopTypeId,
+                        ExternalStopTypeName = stopSeed.ExternalStopTypeName,
+                        ExternalArrivalTrainNumber = stopSeed.ExternalArrivalTrainNumber,
+                        ExternalDepartureTrainNumber = stopSeed.ExternalDepartureTrainNumber,
+                        ArrivalDayOffset = stopSeed.ArrivalDayOffset,
+                        DepartureDayOffset = stopSeed.DepartureDayOffset
+                    });
+                }
+
+                await db.SaveChangesAsync(cancellationToken);
+                routesByCode[route.Code] = route;
+            }
+
+            foreach (var tripSeed in snapshot.Trips)
+            {
+                if (!trainsByCode.TryGetValue(tripSeed.TrainCode, out var train) ||
+                    !routesByCode.TryGetValue(tripSeed.RouteCode, out var route))
+                {
+                    continue;
+                }
+
+                var trip = await db.Trips
+                    .FirstOrDefaultAsync(
+                        item =>
+                            item.ExternalSource == externalSource &&
+                            item.ExternalScheduleId == tripSeed.ExternalScheduleId &&
+                            item.ExternalOrderId == tripSeed.ExternalOrderId &&
+                            item.ExternalOperatingDate == tripSeed.ExternalOperatingDate,
+                        cancellationToken);
+
+                if (trip == null)
+                {
+                    trip = await db.Trips
+                        .FirstOrDefaultAsync(
+                            item => item.TrainId == train.Id &&
+                                item.TrainRouteId == route.Id &&
+                                item.DepartureTime == tripSeed.DepartureTime,
+                            cancellationToken);
+                }
+
+                if (trip == null)
+                {
+                    trip = new Trip
+                    {
+                        TrainId = train.Id,
+                        TrainRouteId = route.Id
+                    };
+                    db.Trips.Add(trip);
+                }
+
+                trip.TrainId = train.Id;
+                trip.TrainRouteId = route.Id;
+                trip.DepartureTime = tripSeed.DepartureTime;
+                trip.ArrivalTime = tripSeed.ArrivalTime;
+                trip.Platform = tripSeed.Platform;
+                trip.Track = tripSeed.Track;
+                trip.Status = string.IsNullOrWhiteSpace(tripSeed.Status) ? "Scheduled" : tripSeed.Status;
+                trip.DelayMinutes = tripSeed.DelayMinutes;
+                trip.CancellationReason = tripSeed.CancellationReason;
+                trip.OriginalPlatform = tripSeed.OriginalPlatform;
+                trip.OriginalTrack = tripSeed.OriginalTrack;
+                trip.DisruptionMessage = tripSeed.DisruptionMessage;
+                trip.DisruptionSeverity = tripSeed.DisruptionSeverity;
+                trip.ExternalSource = externalSource;
+                trip.ExternalScheduleId = tripSeed.ExternalScheduleId;
+                trip.ExternalOrderId = tripSeed.ExternalOrderId;
+                trip.ExternalTrainOrderId = tripSeed.ExternalTrainOrderId;
+                trip.ExternalOperatingDate = tripSeed.ExternalOperatingDate;
+                trip.ExternalImportedAtUtc = snapshot.ExportedAtUtc == default ? DateTime.UtcNow : snapshot.ExportedAtUtc;
+                trip.ExternalRawVersion = tripSeed.ExternalRawVersion;
+
+                await db.SaveChangesAsync(cancellationToken);
+                await EnsureSnapshotFaresAsync(db, trip, train, route, tripSeed.Fares, cancellationToken);
+            }
+
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static async Task<Station?> FindSnapshotStationAsync(
+            TrainTicketDbContext db,
+            string externalSource,
+            int? externalStationId,
+            string code,
+            CancellationToken cancellationToken)
+        {
+            if (externalStationId.HasValue)
+            {
+                var externalStation = await db.Stations
+                    .FirstOrDefaultAsync(
+                        station => station.ExternalSource == externalSource &&
+                            station.ExternalStationId == externalStationId.Value,
+                        cancellationToken);
+
+                if (externalStation != null)
+                    return externalStation;
+            }
+
+            return await db.Stations
+                .FirstOrDefaultAsync(station => station.Code == code, cancellationToken);
+        }
+
+        private static Station? ResolveSnapshotStation(
+            IReadOnlyDictionary<int, Station> stationsByExternalId,
+            IReadOnlyDictionary<string, Station> stationsByCode,
+            int? externalStationId,
+            string? code)
+        {
+            if (externalStationId.HasValue &&
+                stationsByExternalId.TryGetValue(externalStationId.Value, out var stationById))
+            {
+                return stationById;
+            }
+
+            if (!string.IsNullOrWhiteSpace(code) &&
+                stationsByCode.TryGetValue(code, out var stationByCode))
+            {
+                return stationByCode;
+            }
+
+            return null;
+        }
+
+        private static async Task EnsureSnapshotCarriagesAsync(
+            TrainTicketDbContext db,
+            Train train,
+            OpenRailwaySeedTrainDto trainSeed,
+            CancellationToken cancellationToken)
+        {
+            var carriageSeeds = trainSeed.Carriages.Count > 0
+                ? trainSeed.Carriages
+                : BuildDefaultCarriages(train, train.Code)
+                    .Select(seed => new OpenRailwaySeedCarriageDto
+                    {
+                        Coach = seed.Coach,
+                        Position = seed.Position,
+                        ClassType = seed.ClassType,
+                        LayoutType = seed.LayoutType,
+                        VehicleType = seed.VehicleType,
+                        SeatCount = seed.SeatCount,
+                        HasBikeSpace = seed.HasBikeSpace,
+                        HasAccessibleSpace = seed.HasAccessibleSpace,
+                        HasFamilyCompartment = seed.HasFamilyCompartment,
+                        HasDiningSection = seed.HasDiningSection,
+                        Notes = seed.Notes
+                    })
+                    .ToList();
+
+            var hasBookings = await db.Bookings
+                .AnyAsync(booking => booking.TrainId == train.Id, cancellationToken);
+            var expectedCoaches = carriageSeeds
+                .Select(seed => seed.Coach)
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var currentCarriages = await db.TrainCarriages
+                .Where(carriage => carriage.TrainId == train.Id)
+                .ToListAsync(cancellationToken);
+
+            if (!hasBookings)
+            {
+                var staleCarriages = currentCarriages
+                    .Where(carriage => !expectedCoaches.Contains(carriage.Coach))
+                    .ToList();
+
+                if (staleCarriages.Count > 0)
+                    db.TrainCarriages.RemoveRange(staleCarriages);
+            }
+
+            foreach (var seed in carriageSeeds)
+            {
+                var carriage = currentCarriages
+                    .FirstOrDefault(item => item.Coach.Equals(seed.Coach, StringComparison.OrdinalIgnoreCase));
+
+                if (carriage == null)
+                {
+                    carriage = new TrainCarriage
+                    {
+                        TrainId = train.Id,
+                        Coach = seed.Coach
+                    };
+                    db.TrainCarriages.Add(carriage);
+                }
+
+                carriage.Position = seed.Position;
+                carriage.ClassType = seed.ClassType;
+                carriage.LayoutType = seed.LayoutType;
+                carriage.VehicleType = seed.VehicleType;
+                carriage.SeatCount = seed.SeatCount;
+                carriage.HasBikeSpace = seed.HasBikeSpace;
+                carriage.HasAccessibleSpace = seed.HasAccessibleSpace;
+                carriage.HasFamilyCompartment = seed.HasFamilyCompartment;
+                carriage.HasDiningSection = seed.HasDiningSection;
+                carriage.Notes = seed.Notes;
+            }
+
+            train.CarriageCount = Math.Max(1, carriageSeeds.Count);
+            train.SeatsPerCarriage = carriageSeeds
+                .Where(seed => seed.SeatCount > 0)
+                .Select(seed => seed.SeatCount)
+                .DefaultIfEmpty(train.SeatsPerCarriage)
+                .Max();
+
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static async Task EnsureSnapshotFaresAsync(
+            TrainTicketDbContext db,
+            Trip trip,
+            Train train,
+            TrainRoute route,
+            IReadOnlyCollection<OpenRailwaySeedFareDto> fareSeeds,
+            CancellationToken cancellationToken)
+        {
+            if (fareSeeds.Count > 0)
+            {
+                foreach (var fareSeed in fareSeeds.Where(fare => !string.IsNullOrWhiteSpace(fare.ClassType)))
+                {
+                    await UpsertFareAsync(
+                        db,
+                        trip,
+                        fareSeed.ClassType,
+                        fareSeed.Price,
+                        cancellationToken);
+                }
+
+                return;
+            }
+
+            var (class1Price, class2Price) = EstimateSnapshotFares(train, route);
+            if (ShouldCreateFirstClassFare(train))
+            {
+                await UpsertFareAsync(db, trip, "Class 1", class1Price, cancellationToken);
+            }
+
+            await UpsertFareAsync(db, trip, "Class 2", class2Price, cancellationToken);
+        }
+
+        private static (decimal Class1Price, decimal Class2Price) EstimateSnapshotFares(
+            Train train,
+            TrainRoute route)
+        {
+            var category = FirstNonBlank(train.ExternalCommercialCategorySymbol, train.Type, train.Code)
+                .ToUpperInvariant();
+            var distanceFactor = route.DistanceKm <= 0
+                ? 1m
+                : Math.Clamp(route.DistanceKm / 700m, 0m, 1m);
+            var durationFactor = route.EstimatedDurationMinutes <= 0
+                ? 1m
+                : Math.Clamp(route.EstimatedDurationMinutes / 600m, 0m, 1m);
+            var routeFactor = Math.Max(distanceFactor, durationFactor);
+
+            if (category.Contains("EIP", StringComparison.OrdinalIgnoreCase) ||
+                train.Code.StartsWith("EIP", StringComparison.OrdinalIgnoreCase))
+            {
+                return (350m, 200m);
+            }
+
+            if (category.Contains("EIC", StringComparison.OrdinalIgnoreCase) ||
+                train.Code.StartsWith("EIC", StringComparison.OrdinalIgnoreCase))
+            {
+                return (250m, 170m);
+            }
+
+            if (category.Contains("TLK", StringComparison.OrdinalIgnoreCase) ||
+                train.Type.Contains("Twoje", StringComparison.OrdinalIgnoreCase) ||
+                train.Code.StartsWith("TLK", StringComparison.OrdinalIgnoreCase))
+            {
+                var class2 = RoundFare(20m + 50m * routeFactor);
+                var class1 = RoundFare(60m + 40m * routeFactor);
+                return (class1, class2);
+            }
+
+            var icClass2 = RoundFare(25m + 25m * routeFactor);
+            var icClass1 = RoundFare(75m + 55m * routeFactor);
+            return (icClass1, icClass2);
+        }
+
+        private static bool ShouldCreateFirstClassFare(Train train)
+        {
+            if (train.Type.Contains("Twoje", StringComparison.OrdinalIgnoreCase) ||
+                train.Code.StartsWith("TLK", StringComparison.OrdinalIgnoreCase))
+            {
+                return TrainHasFirstClass(train);
+            }
+
+            return true;
+        }
+
+        private static bool TrainHasFirstClass(Train train) =>
+            train.Carriages.Any(carriage =>
+                carriage.ClassType.Contains("Class 1", StringComparison.OrdinalIgnoreCase) ||
+                carriage.ClassType.Contains("1/2", StringComparison.OrdinalIgnoreCase));
+
+        private static decimal RoundFare(decimal price) =>
+            Math.Round(price, 0, MidpointRounding.AwayFromZero);
+
+        private static string FirstNonBlank(params string?[] values) =>
+            values.FirstOrDefault(value => !string.IsNullOrWhiteSpace(value))?.Trim() ?? string.Empty;
+
+        private static string ResolveTrainType(string category)
+        {
+            if (category.Equals("EIP", StringComparison.OrdinalIgnoreCase))
+                return "Express InterCity Premium";
+
+            if (category.Equals("EIC", StringComparison.OrdinalIgnoreCase))
+                return "Express InterCity";
+
+            if (category.Equals("TLK", StringComparison.OrdinalIgnoreCase))
+                return "Twoje Linie Kolejowe";
+
+            return "InterCity";
         }
 
         private static bool IsMixedClassCarriage(TrainCarriage carriage) =>
@@ -1126,8 +1767,8 @@ namespace TrainTicketPlatformAPI.Data
 
         private static DemoCarriageSeed[] BuildTlkCarriages(string trainCode) =>
         [
-            new(trainCode, "1", 1, "Class 2", "Sleeper", "WLAB sleeper coach", 30, Notes: "Sleeper coach used on overnight TLK services."),
-            new(trainCode, "2", 2, "Class 2", "Couchette", "Bc couchette coach", 54, Notes: "Couchette coach used on overnight TLK services."),
+            new(trainCode, "1", 1, "Sleeper", "Sleeper", "WLAB sleeper coach", 30, Notes: "Sleeper coach used on overnight TLK services."),
+            new(trainCode, "2", 2, "Couchette", "Couchette", "Bc couchette coach", 30, HasAccessibleSpace: true, Notes: "4-berth couchette coach with one accessible compartment and seven 4-berth compartments."),
             new(trainCode, "3", 3, "Class 2", "SecondCompartment", "B10nouz second-class compartment", 66, Notes: "Second-class compartment coach."),
             new(trainCode, "4", 4, "Class 2", "OpenSecondBike", "B7nopuvz bicycle open coach", 72, HasBikeSpace: true, Notes: "Second-class open coach with bicycle racks."),
             new(trainCode, "5", 5, "Class 2", "OpenSecond", "B9nopuvz second-class open coach", 88, Notes: "Second-class open coach."),

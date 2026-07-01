@@ -1,3 +1,15 @@
+import {
+  CoffeeOutlined,
+  FileProtectOutlined,
+  FileTextOutlined,
+  HomeOutlined,
+  MessageOutlined,
+  PhoneOutlined,
+  QuestionCircleOutlined,
+  SafetyCertificateOutlined,
+  TagsOutlined,
+} from "@ant-design/icons";
+import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import TrainSearchForm from "../components/TrainSearchForm";
 import ed250Image from "../../../docs/MyTrainImages/ED250.jpg";
@@ -5,26 +17,41 @@ import explorePolandImage from "../../../docs/MyCityImages/Krakow.jpg";
 import studentOfferImage from "../../../docs/NotMyTrainImages/ED160(Radial's).jpg";
 
 const quickActions = [
-  "Season ticket",
-  "Seat reservations",
-  "Rail passes",
+  {
+    title: "Sleeper cars and couchettes",
+    to: "/offers/sleeper",
+    icon: <HomeOutlined />,
+  },
+  {
+    title: "Domestic offers",
+    to: "/offers/domestic",
+    icon: <TagsOutlined />,
+  },
+  {
+    title: "Meal while travelling",
+    to: "/offers/meal",
+    icon: <CoffeeOutlined />,
+  },
 ];
 
-const informationCards = [
+const informationCards: Array<{ title: string; text: string; to: string; icon: ReactNode }> = [
   {
-    title: "Customer Service Centres",
-    text: "Find support before, during, or after your journey.",
-    to: "/contact",
+    title: "Refund policy",
+    text: "Check refund windows, returned ticket status, and cancellation handling.",
+    to: "/help/refund-policy",
+    icon: <FileProtectOutlined />,
   },
   {
-    title: "Mobile Application",
-    text: "Account access and ticket information for mobile travelers.",
-    to: "/help",
+    title: "Passenger rights",
+    text: "Read journey rules, disruption rights, and onboard obligations.",
+    to: "/help/passenger-rights",
+    icon: <SafetyCertificateOutlined />,
   },
   {
-    title: "Railway Cards",
-    text: "Manage passenger discounts and reusable travel preferences.",
-    to: "/help",
+    title: "Invoices",
+    text: "Generate an invoice at checkout and download it later from your account.",
+    to: "/profile",
+    icon: <FileTextOutlined />,
   },
 ];
 
@@ -47,9 +74,21 @@ const featureCards = [
 ];
 
 const passengerLinks = [
-  "Complaints",
-  "Contact",
-  "Frequently Asked Questions",
+  {
+    label: "Complaints",
+    to: "/contact",
+    icon: <MessageOutlined />,
+  },
+  {
+    label: "Contact",
+    to: "/contact",
+    icon: <PhoneOutlined />,
+  },
+  {
+    label: "Frequently Asked Questions",
+    to: "/help/faq",
+    icon: <QuestionCircleOutlined />,
+  },
 ];
 
 function HomePage() {
@@ -81,9 +120,9 @@ function HomePage() {
 
         <div className="quick-actions" id="offers">
           {quickActions.map((action) => (
-            <Link to="/search" key={action} className="quick-action-card">
-              <span className="ticket-icon" aria-hidden="true" />
-              {action}
+            <Link to={action.to} key={action.title} className="quick-action-card">
+              <span className="ticket-icon" aria-hidden="true">{action.icon}</span>
+              {action.title}
               <span className="arrow" aria-hidden="true">-&gt;</span>
             </Link>
           ))}
@@ -95,6 +134,7 @@ function HomePage() {
         <div className="info-link-grid">
           {informationCards.map((card) => (
             <Link to={card.to} key={card.title} className="info-link-card">
+              <span className="info-link-icon" aria-hidden="true">{card.icon}</span>
               <span>
                 <strong>{card.title}</strong>
                 <small>{card.text}</small>
@@ -123,9 +163,9 @@ function HomePage() {
         <h2>For Passengers</h2>
         <div className="passenger-grid">
           {passengerLinks.map((link) => (
-            <Link to={getPassengerLinkTarget(link)} className="passenger-card" key={link}>
-              <span className="line-icon" aria-hidden="true" />
-              {link}
+            <Link to={link.to} className="passenger-card" key={link.label}>
+              <span className="line-icon" aria-hidden="true">{link.icon}</span>
+              {link.label}
             </Link>
           ))}
         </div>
@@ -137,18 +177,6 @@ function HomePage() {
       </footer>
     </main>
   );
-}
-
-function getPassengerLinkTarget(label: string) {
-  if (label === "Contact") {
-    return "/contact";
-  }
-
-  if (label === "Frequently Asked Questions") {
-    return "/help/faq";
-  }
-
-  return "/help";
 }
 
 export default HomePage;

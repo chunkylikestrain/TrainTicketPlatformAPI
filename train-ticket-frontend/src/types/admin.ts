@@ -196,6 +196,98 @@ export type AdminAuditLog = {
   userAgent: string;
 };
 
+export type OpenRailwayRouteId = {
+  scheduleId: number;
+  orderId: number;
+  trainOrderId: number;
+  name: string | null;
+  carrierCode: string | null;
+};
+
+export type OpenRailwayRouteIdsResponse = {
+  generatedAt: string;
+  date: string;
+  count: number;
+  returnedCount: number;
+  routes: OpenRailwayRouteId[];
+};
+
+export type OpenRailwayImportRouteKey = {
+  scheduleId: number;
+  orderId: number;
+};
+
+export type OpenRailwayImportStopPreview = {
+  externalStationId: number;
+  orderNumber: number;
+  arrival: string | null;
+  departure: string | null;
+  platform: string | null;
+  track: string | null;
+  stopTypeId: number | null;
+  stopTypeName: string;
+};
+
+export type OpenRailwayImportPreview = {
+  externalSource: string;
+  scheduleId: number;
+  orderId: number;
+  trainOrderId: number;
+  trainCode: string;
+  trainName: string;
+  carrierCode: string;
+  category: string;
+  operatingDates: string[];
+  stops: OpenRailwayImportStopPreview[];
+};
+
+export type OpenRailwayImportRouteResult = {
+  externalSource: string;
+  scheduleId: number;
+  orderId: number;
+  operatingDate: string;
+  trainId: number;
+  trainRouteId: number;
+  tripId: number;
+  trainCreated: boolean;
+  routeCreated: boolean;
+  tripCreated: boolean;
+  defaultConsistApplied: boolean;
+  stationsCreated: number;
+  carriagesCreated: number;
+  seatsCreated: number;
+  stopsWritten: number;
+  trainCode: string;
+  routeCode: string;
+  routeName: string;
+};
+
+export type OpenRailwayImportDateRequest = {
+  limit: number;
+  dryRun: boolean;
+  routes: OpenRailwayImportRouteKey[];
+};
+
+export type OpenRailwayImportDateItemResult = {
+  scheduleId: number;
+  orderId: number;
+  status: string;
+  error: string | null;
+  preview: OpenRailwayImportPreview | null;
+  import: OpenRailwayImportRouteResult | null;
+};
+
+export type OpenRailwayImportDateResult = {
+  externalSource: string;
+  date: string;
+  dryRun: boolean;
+  requestedCount: number;
+  succeededCount: number;
+  failedCount: number;
+  skippedCount: number;
+  items: OpenRailwayImportDateItemResult[];
+};
+
 export type Station = {
   id: number;
   code: string;

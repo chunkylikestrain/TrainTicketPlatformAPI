@@ -625,7 +625,7 @@ function SeatMapPage() {
                     ? `Segment ${activeSegmentIndex + 1}, passenger ${index + 1}`
                     : `Passenger ${index + 1}`}
               </strong>
-              <span>{seat ? `Class ${selectedClass}, car ${seat.coach}, seat ${seat.number}` : "Choose seat"}</span>
+              <span>{seat ? `${seat.classType}, car ${seat.coach}, ${getPlaceLabel(seat.classType)} ${seat.number}` : "Choose seat"}</span>
             </button>
           ))}
         </section>
@@ -662,7 +662,17 @@ function SeatMapPage() {
 }
 
 function matchesSelectedClass(classType: string, selectedClass: string) {
-  return classType.toLowerCase().includes(selectedClass);
+  const normalizedClass = classType.toLowerCase();
+  if (normalizedClass === "sleeper" || normalizedClass === "couchette") {
+    return true;
+  }
+
+  return normalizedClass.includes(selectedClass);
+}
+
+function getPlaceLabel(classType: string) {
+  const normalizedClass = classType.toLowerCase();
+  return normalizedClass === "sleeper" || normalizedClass === "couchette" ? "berth" : "seat";
 }
 
 function getReservationErrorMessage(error: unknown) {
@@ -737,6 +747,22 @@ function getTemplateForCoach(
 
   if (layoutType === "secondcompartment") {
     return "second-compartment";
+  }
+
+  if (layoutType === "internationalsleeper") {
+    return "international-sleeper";
+  }
+
+  if (layoutType === "sleeper") {
+    return "domestic-sleeper";
+  }
+
+  if (layoutType === "couchette") {
+    return "four-berth-couchette";
+  }
+
+  if (layoutType === "sixberthcouchette") {
+    return "six-berth-couchette";
   }
 
   if (layoutType === "mixedfirstsecond") {
@@ -815,6 +841,14 @@ function getCarBadge(
 ) {
   const layoutType = seats.find((seat) => seat.coach === coach)?.layoutType?.toLowerCase() ?? "";
   const carriageClass = seats.find((seat) => seat.coach === coach)?.carriageClass?.toLowerCase() ?? "";
+  if (layoutType === "internationalsleeper" || layoutType === "sleeper" || carriageClass === "sleeper") {
+    return "WL";
+  }
+
+  if (layoutType === "couchette" || layoutType === "sixberthcouchette" || carriageClass === "couchette") {
+    return "Bc";
+  }
+
   if (layoutType === "combofirstsecond" || layoutType === "mixedfirstsecond" || layoutType === "emufirstsecond") {
     return "1 2";
   }

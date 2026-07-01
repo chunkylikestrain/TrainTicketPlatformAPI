@@ -8,9 +8,9 @@ const passengerMenuSections = [
     title: "Offers",
     to: "/offers",
     links: [
+      { label: "Sleeper cars and couchettes", to: "/offers/sleeper" },
       { label: "Domestic offers", to: "/offers/domestic" },
       { label: "Explore Poland by rail", to: "/offers/explore" },
-      { label: "Student offer", to: "/offers/student" },
       { label: "Meal while travelling", to: "/offers/meal" },
     ],
   },

@@ -11,6 +11,7 @@ const AdminCreateSchedulePage = lazy(() => import("./pages/admin/AdminCreateSche
 const AdminCreateTrainPage = lazy(() => import("./pages/admin/AdminCreateTrainPage"));
 const AdminDashboardPage = lazy(() => import("./pages/admin/AdminDashboardPage"));
 const AdminDiscountsPage = lazy(() => import("./pages/admin/AdminDiscountsPage"));
+const AdminOpenRailwayImportPage = lazy(() => import("./pages/admin/AdminOpenRailwayImportPage"));
 const AdminPricingPage = lazy(() => import("./pages/admin/AdminPricingPage"));
 const AdminRevenuePage = lazy(() => import("./pages/admin/AdminRevenuePage"));
 const AdminRoutesPage = lazy(() => import("./pages/admin/AdminRoutesPage"));
@@ -45,6 +46,7 @@ const RegisterPage = lazy(() => import("./pages/RegisterPage"));
 const RefundPolicyPage = lazy(() => import("./pages/RefundPolicyPage"));
 const SearchResultsPage = lazy(() => import("./pages/SearchResultsPage"));
 const SeatMapPage = lazy(() => import("./pages/SeatMapPage"));
+const SleeperOfferPage = lazy(() => import("./pages/SleeperOfferPage"));
 const StudentOfferPage = lazy(() => import("./pages/StudentOfferPage"));
 const SummaryPage = lazy(() => import("./pages/SummaryPage"));
 
@@ -65,6 +67,7 @@ function App() {
           <Route path="/admin/routes" element={<AdminRoutesPage />} />
           <Route path="/admin/routes/new" element={<AdminCreateRoutePage />} />
           <Route path="/admin/routes/:routeId/edit" element={<AdminCreateRoutePage />} />
+          <Route path="/admin/open-railway" element={<AdminOpenRailwayImportPage />} />
           <Route path="/admin/schedules" element={<AdminSchedulesPage />} />
           <Route path="/admin/schedules/new" element={<AdminCreateSchedulePage />} />
           <Route path="/admin/pricing" element={<AdminPricingPage />} />
@@ -89,6 +92,7 @@ function App() {
           <Route path="/offers/domestic/:offerId" element={<DomesticOfferDetailPage />} />
           <Route path="/offers/explore" element={<ExplorePolandPage />} />
           <Route path="/offers/meal" element={<MealOfferPage />} />
+          <Route path="/offers/sleeper" element={<SleeperOfferPage />} />
           <Route path="/offers/student" element={<StudentOfferPage />} />
           <Route path="/trains" element={<OurTrainsPage />} />
           <Route path="/trains/eic" element={<TrainEicPage />} />

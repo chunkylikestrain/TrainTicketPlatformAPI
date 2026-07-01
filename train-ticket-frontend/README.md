@@ -11,7 +11,7 @@ It contains both passenger-facing pages and the JWT-protected admin control pane
 - Class and seat-map selection.
 - Booking summary, add-on dog/baggage tickets, checkout, payment, and ticket confirmation.
 - My account, My tickets, My invoices, loyalty points, current trip, and help pages.
-- Admin dashboard, trains, routes, schedules, pricing, discounts, users, bookings, revenue, and audit logs.
+- Admin dashboard, trains, routes, schedules, pricing, discounts, users, bookings, revenue, audit logs, and Rail data import.
 
 ## Run Locally
 
@@ -35,3 +35,5 @@ npm run build
 - Use the shared API clients in `src/api`.
 - Add frontend types in `src/types` when backend DTOs change.
 - Avoid hardcoded demo train values in booking flows.
+- Keep the Open Railway import page admin-only and route it through the shared admin API client.
+- Treat Open Railway as a data preparation workflow: import/review routes, export a seed snapshot, then run demos from local seeded data rather than live PLK calls.

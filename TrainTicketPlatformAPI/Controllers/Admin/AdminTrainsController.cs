@@ -249,12 +249,12 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
 
             var seats = train.Carriages
                 .Where(IsPassengerCarriage)
-                .SelectMany(carriage => Enumerable.Range(1, carriage.SeatCount).Select(number => new Seat
+                .SelectMany(carriage => GetSeatNumbersForCarriage(carriage).Select(number => new Seat
                 {
                     TrainId = train.Id,
                     Coach = carriage.Coach,
-                    Number = number.ToString(),
-                    ClassType = GetSeatClassType(carriage, number),
+                    Number = number,
+                    ClassType = GetSeatClassType(carriage, int.Parse(number)),
                     IsAvailable = true
                 }));
 
@@ -270,11 +270,88 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
 
         private static string GetSeatClassType(TrainCarriage carriage, int seatNumber)
         {
+            if (carriage.LayoutType.Equals("InternationalSleeper", StringComparison.OrdinalIgnoreCase) ||
+                carriage.LayoutType.Equals("Sleeper", StringComparison.OrdinalIgnoreCase))
+                return "Sleeper";
+
+            if (carriage.LayoutType.Equals("Couchette", StringComparison.OrdinalIgnoreCase) ||
+                carriage.LayoutType.Equals("SixBerthCouchette", StringComparison.OrdinalIgnoreCase))
+                return "Couchette";
+
             if (IsMixedClassCarriage(carriage))
                 return seatNumber <= GetFirstClassSeatCount(carriage) ? "Class 1" : "Class 2";
 
             return carriage.ClassType == "Class 1/2" ? "Class 2" : carriage.ClassType;
         }
+
+        private static IReadOnlyList<string> GetSeatNumbersForCarriage(TrainCarriage carriage)
+        {
+            if (carriage.LayoutType.Equals("InternationalSleeper", StringComparison.OrdinalIgnoreCase))
+                return InternationalSleeperBerths;
+
+            if (carriage.LayoutType.Equals("Sleeper", StringComparison.OrdinalIgnoreCase))
+                return DomesticSleeperBerths;
+
+            if (carriage.LayoutType.Equals("Couchette", StringComparison.OrdinalIgnoreCase))
+                return FourBerthCouchetteBerths;
+
+            if (carriage.LayoutType.Equals("SixBerthCouchette", StringComparison.OrdinalIgnoreCase))
+                return SixBerthCouchetteBerths;
+
+            return Enumerable.Range(1, carriage.SeatCount)
+                .Select(number => number.ToString())
+                .ToArray();
+        }
+
+        private static readonly string[] InternationalSleeperBerths =
+        [
+            "11", "13", "15",
+            "21", "23", "25",
+            "31", "33", "35",
+            "41", "45",
+            "51", "55",
+            "61", "63", "65",
+            "71", "73", "75",
+            "81", "83", "85"
+        ];
+
+        private static readonly string[] DomesticSleeperBerths =
+        [
+            "11", "13", "15",
+            "21", "23", "25",
+            "31", "33", "35",
+            "41", "43", "45",
+            "51", "53", "55",
+            "61", "63", "65",
+            "71", "73", "75",
+            "81", "83", "85",
+            "91", "93", "95",
+            "101", "103", "105"
+        ];
+
+        private static readonly string[] FourBerthCouchetteBerths =
+        [
+            "11", "15",
+            "21", "22", "25", "26",
+            "31", "32", "35", "36",
+            "41", "42", "45", "46",
+            "51", "52", "55", "56",
+            "61", "62", "65", "66",
+            "71", "72", "75", "76",
+            "81", "82", "85", "86"
+        ];
+
+        private static readonly string[] SixBerthCouchetteBerths =
+        [
+            "11", "15",
+            "21", "22", "23", "24", "25", "26",
+            "31", "32", "33", "34", "35", "36",
+            "41", "42", "43", "44", "45", "46",
+            "51", "52", "53", "54", "55", "56",
+            "61", "62", "63", "64", "65", "66",
+            "71", "72", "73", "74", "75", "76",
+            "81", "82", "83", "84", "85", "86"
+        ];
 
         private static bool IsMixedClassCarriage(TrainCarriage carriage) =>
             carriage.ClassType == "Class 1/2" ||

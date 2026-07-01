@@ -9,6 +9,10 @@ import type {
   AdminSchedule,
   AdminTrain,
   AdminUser,
+  OpenRailwayImportDateRequest,
+  OpenRailwayImportDateResult,
+  OpenRailwayImportPreview,
+  OpenRailwayRouteIdsResponse,
   PagedResponse,
   Station,
 } from "../types/admin";
@@ -215,6 +219,26 @@ export async function getAdminAuditLogs(params: {
   const response = await apiClient.get<PagedResponse<AdminAuditLog>>("/admin/audit-logs", {
     params,
   });
+  return response.data;
+}
+
+export async function getOpenRailwayRoutes(date: string, limit = 100) {
+  const response = await apiClient.get<OpenRailwayRouteIdsResponse>(`/admin/open-railway/routes/${date}`, {
+    params: { limit },
+  });
+  return response.data;
+}
+
+export async function previewOpenRailwayRoute(scheduleId: number, orderId: number) {
+  const response = await apiClient.get<OpenRailwayImportPreview>(
+    `/admin/open-railway/routes/${scheduleId}/${orderId}/preview`);
+  return response.data;
+}
+
+export async function importOpenRailwayRoutesForDate(date: string, request: OpenRailwayImportDateRequest) {
+  const response = await apiClient.post<OpenRailwayImportDateResult>(
+    `/admin/open-railway/routes/${date}/import`,
+    request);
   return response.data;
 }
 

@@ -42,6 +42,7 @@ Admin-facing scope includes:
 - Schedule manager for assigning trains to routes and operating dates/times.
 - Stop-level timetable details, including route stop arrival/departure offsets, platform, track, and calling patterns.
 - Operational disruption tools for delays, cancellation reasons, platform/track changes, and passenger-facing banners.
+- Open Railway / PLK import tools for admin-reviewed timetable ingestion into local routes, trains, stops, and trips.
 - Pricing and dynamic fare rules.
 - Discount management; discount eligibility is applied by rule, while onboard document verification is outside the app.
 - User management.
@@ -62,6 +63,7 @@ Admin-facing scope includes:
 - Simulated payments are acceptable for thesis/demo scope, but keep the API shaped like a provider-backed flow using safe test tokens such as `tok_success` and `tok_fail`.
 - Preserve booking/payment/invoice/audit records as business history. Prefer cancellation/status fields over hard deletes for meaningful records.
 - Audit logging is currently middleware-backed for successful mutating `/api/admin/...` requests. Avoid logging sensitive request bodies or secrets.
+- Open Railway / PLK imports must keep RailBook primary keys local. Store provider identifiers in external ID/source fields and use them for matching/upserts.
 
 # Train And Seat-Map Direction
 
@@ -98,6 +100,14 @@ Seat-map expectations:
 
 Development seed data is important for demoability. Keep it realistic enough that a thesis demo can be run without manual SQL setup beyond migrations and connection configuration.
 
+The preferred schedule source is now a one-time PLK/Open Railway seed snapshot:
+
+- Use the admin Open Railway importer to preview/import realistic route data into a local database.
+- Export the reviewed imported data from `/api/admin/open-railway/seed-snapshot`.
+- Save the JSON in `TrainTicketPlatformAPI/App_Data/SeedSnapshots`.
+- Normal development seeding reads that JSON locally and should not call the external PLK API during startup.
+- The handwritten schedule seed is a fallback/reference. `SeedData:UseHandWrittenDemoSchedules=false` prevents always adding it, while `SeedData:UseHandWrittenDemoScheduleFallback=true` keeps tests/empty snapshot setups usable until real snapshots are saved.
+
 Seed data currently covers:
 
 - Admin and passenger accounts.
@@ -113,6 +123,18 @@ When adding new train layout, booking, ticketing, or admin support, update both:
 - Frontend admin and passenger rendering as needed.
 
 If seed behavior preserves existing rows, remember that a local database may need old train/carriage/seat rows manually cleared before refreshed seeded visuals appear.
+
+# Open Railway / PLK Import Direction
+
+The Open Railway importer is an admin workflow, not an anonymous passenger feature.
+
+- Configure the approved PLK API key through user secrets at `OpenRailway:ApiKey`; do not commit it.
+- Import endpoints live under `/api/admin/open-railway` and require admin authorization.
+- The admin frontend page is `/admin/open-railway` and is linked as `Rail data import`.
+- Route, train, station, stop, and trip records should be upserted using external identity fields, not by replacing local IDs.
+- Use the live importer for curation and snapshot generation, not as a passenger-runtime dependency.
+- PLK timetable data does not provide full carriage formation/seat-map data. Imported trains may receive RailBook default consist templates by train category, and admins can refine them later in the train manager.
+- Batch imports should remain reviewable: support preview/dry-run before writing and report per-route success or failure.
 
 # Development Workflow
 
@@ -144,6 +166,7 @@ Do not commit real SQL passwords or API keys. Prefer ASP.NET Core user secrets f
 dotnet user-secrets set "ConnectionStrings:DefaultConnection" "<local connection string>" --project TrainTicketPlatformAPI
 dotnet user-secrets set "SeedData:AdminPassword" "<admin password>" --project TrainTicketPlatformAPI
 dotnet user-secrets set "SeedData:PassengerPassword" "<passenger password>" --project TrainTicketPlatformAPI
+dotnet user-secrets set "OpenRailway:ApiKey" "<approved PLK API key>" --project TrainTicketPlatformAPI
 ```
 
 The frontend expects the API at `https://localhost:7246` unless configured otherwise.
