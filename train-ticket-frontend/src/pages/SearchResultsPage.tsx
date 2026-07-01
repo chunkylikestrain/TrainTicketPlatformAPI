@@ -13,6 +13,9 @@ import {
   getPassengerCounts,
 } from "../utils/purchasePreferences";
 
+const INITIAL_CONNECTION_COUNT = 4;
+const CONNECTION_INCREMENT = 3;
+
 function formatLongDate(value: string) {
   if (!value) {
     return "Select a date";
@@ -33,11 +36,62 @@ function formatNoticeDate(value: string) {
   return new Intl.DateTimeFormat("en-GB").format(new Date(`${value}T12:00:00`));
 }
 
+function shiftDate(value: string, days: number) {
+  if (!value) {
+    return "";
+  }
+
+  const nextDate = new Date(`${value}T12:00:00`);
+  if (Number.isNaN(nextDate.getTime())) {
+    return "";
+  }
+
+  nextDate.setDate(nextDate.getDate() + days);
+  return nextDate.toISOString().slice(0, 10);
+}
+
 function formatTime(value: string) {
   return new Intl.DateTimeFormat("en", {
     hour: "2-digit",
     minute: "2-digit",
   }).format(new Date(value));
+}
+
+function getDateTimeValue(value: string) {
+  const dateTime = new Date(value).getTime();
+  return Number.isNaN(dateTime) ? 0 : dateTime;
+}
+
+function getSameDayConnections(results: TripItinerarySearchResult[], travelDate: string) {
+  if (!travelDate) {
+    return [];
+  }
+
+  return [...results]
+    .filter((itinerary) => itinerary.departureTime.slice(0, 10) === travelDate)
+    .sort((left, right) => getDateTimeValue(left.departureTime) - getDateTimeValue(right.departureTime));
+}
+
+function getInitialConnectionStart(
+  results: TripItinerarySearchResult[],
+  travelDate: string,
+  travelTime: string,
+) {
+  if (!travelDate || !travelTime) {
+    return 0;
+  }
+
+  const cutoff = new Date(`${travelDate}T${travelTime}`).getTime();
+  if (Number.isNaN(cutoff)) {
+    return 0;
+  }
+
+  const nextConnectionIndex = results.findIndex((itinerary) => {
+    const departureTime = getDateTimeValue(itinerary.departureTime);
+    return departureTime >= cutoff;
+  });
+
+  return nextConnectionIndex === -1 ? results.length : nextConnectionIndex;
 }
 
 function getStoredItinerary(key: string) {
@@ -50,7 +104,7 @@ function getStoredItinerary(key: string) {
 }
 
 function SearchResultsPage() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [itineraries, setItineraries] = useState<TripItinerarySearchResult[]>([]);
   const [selectedOutbound, setSelectedOutbound] = useState<TripItinerarySearchResult | null>(() =>
     getStoredItinerary("railbook-round-trip-outbound"),
@@ -61,6 +115,8 @@ function SearchResultsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [expandedItineraryId, setExpandedItineraryId] = useState<string | null>(null);
+  const [visibleConnectionStart, setVisibleConnectionStart] = useState(0);
+  const [visibleConnectionEnd, setVisibleConnectionEnd] = useState(INITIAL_CONNECTION_COUNT);
 
   const departureStation = searchParams.get("departureStation") ?? "";
   const arrivalStation = searchParams.get("arrivalStation") ?? "";
@@ -83,20 +139,35 @@ function SearchResultsPage() {
   const purchaseQuery = copyPurchasePreferenceParams(searchParams).toString();
   const currentSearchUrl = `/search?${searchParams.toString()}`;
   const filterSelectionUrl = buildFilterSelectionUrl(currentSearchUrl, searchParams);
-  const searchSignature = [departureStation, arrivalStation, date, time, returnDate, returnTime, tripType].join("|");
-  const previousSearchSignature = useRef(searchSignature);
+  const activeDateParam = isChoosingReturn ? "returnDate" : "date";
+  const previousDate = shiftDate(activeDate, -1);
+  const nextDate = shiftDate(activeDate, 1);
+  const outboundSearchSignature = [departureStation, arrivalStation, date, time, tripType].join("|");
+  const returnSearchSignature = [returnDate, returnTime].join("|");
+  const previousOutboundSearchSignature = useRef(outboundSearchSignature);
+  const previousReturnSearchSignature = useRef(returnSearchSignature);
 
   useEffect(() => {
-    if (previousSearchSignature.current === searchSignature) {
+    if (previousOutboundSearchSignature.current === outboundSearchSignature) {
       return;
     }
 
-    previousSearchSignature.current = searchSignature;
+    previousOutboundSearchSignature.current = outboundSearchSignature;
     setSelectedOutbound(null);
     setSelectedReturn(null);
     window.sessionStorage.removeItem("railbook-round-trip-outbound");
     window.sessionStorage.removeItem("railbook-round-trip-return");
-  }, [searchSignature]);
+  }, [outboundSearchSignature]);
+
+  useEffect(() => {
+    if (previousReturnSearchSignature.current === returnSearchSignature) {
+      return;
+    }
+
+    previousReturnSearchSignature.current = returnSearchSignature;
+    setSelectedReturn(null);
+    window.sessionStorage.removeItem("railbook-round-trip-return");
+  }, [returnSearchSignature]);
 
   useEffect(() => {
     if (!activeDepartureStation || !activeArrivalStation || !activeDate) {
@@ -106,20 +177,69 @@ function SearchResultsPage() {
     setIsLoading(true);
     setError("");
     setExpandedItineraryId(null);
+    setVisibleConnectionStart(0);
+    setVisibleConnectionEnd(INITIAL_CONNECTION_COUNT);
 
     searchItineraries({
       departureStation: activeDepartureStation,
       arrivalStation: activeArrivalStation,
       date: activeDate,
-      time: activeTime,
+      time: "00:00",
     })
-      .then(setItineraries)
+      .then((results) => {
+        const sameDayConnections = getSameDayConnections(results, activeDate);
+        const firstVisibleIndex = getInitialConnectionStart(sameDayConnections, activeDate, activeTime);
+
+        setItineraries(sameDayConnections);
+        setVisibleConnectionStart(firstVisibleIndex);
+        setVisibleConnectionEnd(Math.min(firstVisibleIndex + INITIAL_CONNECTION_COUNT, sameDayConnections.length));
+      })
       .catch(() => {
         setItineraries([]);
+        setVisibleConnectionStart(0);
+        setVisibleConnectionEnd(0);
         setError("Connections could not be loaded from the API. Check that the backend is running and your search date has schedules.");
       })
       .finally(() => setIsLoading(false));
   }, [activeArrivalStation, activeDate, activeDepartureStation, activeTime]);
+
+  const visibleItineraries = itineraries.slice(visibleConnectionStart, visibleConnectionEnd);
+  const hasVisibleConnections = visibleItineraries.length > 0;
+  const hasEarlierConnections = visibleConnectionStart > 0;
+  const hasLaterConnections = visibleConnectionEnd < itineraries.length;
+  const firstVisibleItinerary = visibleItineraries[0];
+  const firstVisibleDepartureTime = firstVisibleItinerary ? formatTime(firstVisibleItinerary.departureTime) : activeTime;
+  const lastVisibleItinerary = visibleItineraries[visibleItineraries.length - 1];
+  const lastVisibleDepartureTime = lastVisibleItinerary ? formatTime(lastVisibleItinerary.departureTime) : activeTime;
+  const noConnectionsForWholeDay = !isLoading && !error && itineraries.length === 0;
+  const searchAfterLastSameDayConnection =
+    !isLoading && !error && itineraries.length > 0 && !hasVisibleConnections && visibleConnectionStart >= itineraries.length;
+  const isEarlyMorningSearch = Boolean(activeTime) && activeTime < "06:00";
+  const showPreviousDayBoundary =
+    !isLoading && !error && isEarlyMorningSearch && !hasEarlierConnections && Boolean(previousDate) && !noConnectionsForWholeDay;
+  const showNextDayBoundary = !isLoading && !error && hasVisibleConnections && !hasLaterConnections && Boolean(nextDate);
+  const showConnectionNotice = isLoading || error || noConnectionsForWholeDay || searchAfterLastSameDayConnection;
+
+  function showEarlierConnections() {
+    setVisibleConnectionStart((current) => Math.max(current - CONNECTION_INCREMENT, 0));
+  }
+
+  function showLaterConnections() {
+    setVisibleConnectionEnd((current) =>
+      Math.min(current + CONNECTION_INCREMENT, itineraries.length),
+    );
+  }
+
+  function navigateToActiveDate(nextDateValue: string) {
+    if (!nextDateValue) {
+      return;
+    }
+
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set(activeDateParam, nextDateValue);
+    setSearchParams(nextParams);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 
   function chooseItinerary(itinerary: TripItinerarySearchResult) {
     if (!isRoundTrip) {
@@ -179,10 +299,14 @@ function SearchResultsPage() {
         </div>
 
         <div className="date-toolbar">
-          <button type="button">&lt; Thu, 18 June</button>
+          <button type="button" onClick={() => navigateToActiveDate(previousDate)} disabled={!previousDate}>
+            &lt; {formatLongDate(previousDate)}
+          </button>
           <h1>{formatLongDate(activeDate)}</h1>
           <Link to={filterSelectionUrl}>Filters</Link>
-          <button type="button">Sat, 20 June &gt;</button>
+          <button type="button" onClick={() => navigateToActiveDate(nextDate)} disabled={!nextDate}>
+            {formatLongDate(nextDate)} &gt;
+          </button>
         </div>
 
         {isRoundTrip && (
@@ -226,30 +350,82 @@ function SearchResultsPage() {
           </section>
         )}
 
-        {(isLoading || error || itineraries.length === 0) && (
+        {showConnectionNotice && (
           <div className={`connection-notice ${error ? "connection-notice-warning" : ""}`} aria-live="polite">
             <strong>
               {isLoading
                 ? "Loading live connections..."
-                : `No live connections on ${formatNoticeDate(activeDate)} before ${activeTime || "the selected time"}.`}
+                : noConnectionsForWholeDay
+                  ? `No connections on ${formatNoticeDate(activeDate)}.`
+                  : `No connections on ${formatNoticeDate(activeDate)} after ${activeTime || "the selected time"}.`}
             </strong>
             <p>
               {error ||
-                "Try another date, route, or make sure this route has a schedule in the admin panel."}
+                (noConnectionsForWholeDay
+                  ? "Try the previous or next operating day, or make sure this route has a schedule in the admin panel."
+                  : "Use Earlier to show previous same-day connections, or check the next operating day.")}
+            </p>
+            {!isLoading && !error && (
+              <div className="connection-notice-actions">
+                {hasEarlierConnections && (
+                  <button type="button" className="connection-notice-link" onClick={showEarlierConnections}>
+                    Show earlier connections
+                  </button>
+                )}
+                {previousDate && noConnectionsForWholeDay && (
+                  <button type="button" className="connection-notice-link" onClick={() => navigateToActiveDate(previousDate)}>
+                    See {formatNoticeDate(previousDate)}
+                  </button>
+                )}
+                {nextDate && (
+                  <button type="button" className="connection-notice-link" onClick={() => navigateToActiveDate(nextDate)}>
+                    See {formatNoticeDate(nextDate)}
+                  </button>
+                )}
+              </div>
+            )}
+          </div>
+        )}
+
+        {showPreviousDayBoundary && (
+          <div className="connection-notice connection-boundary-notice" aria-live="polite">
+            <strong>No earlier same-day connections before {activeTime}.</strong>
+            <p>
+              Overnight trains may have started the previous evening.{" "}
+              <button type="button" className="connection-notice-link" onClick={() => navigateToActiveDate(previousDate)}>
+                See connections on {formatNoticeDate(previousDate)}.
+              </button>
             </p>
           </div>
         )}
 
-        <button type="button" className="timeline-button timeline-muted">
+        {hasVisibleConnections && (
+          <div className="connection-window-summary" aria-live="polite">
+            <span>
+              Showing connections {visibleConnectionStart + 1}-{visibleConnectionEnd} of {itineraries.length} on{" "}
+              {formatNoticeDate(activeDate)}.
+            </span>
+            <span>
+              {firstVisibleDepartureTime} - {lastVisibleDepartureTime}
+            </span>
+          </div>
+        )}
+
+        <button
+          type="button"
+          className={`timeline-button ${hasEarlierConnections ? "" : "timeline-muted"}`}
+          onClick={showEarlierConnections}
+          disabled={!hasEarlierConnections}
+        >
           Earlier
         </button>
 
         <section className="connection-list" aria-label="Available connections">
-          {itineraries.map((itinerary, index) => (
+          {visibleItineraries.map((itinerary, index) => (
             <ItineraryCard
               itinerary={itinerary}
               key={itinerary.itineraryId}
-              rank={index}
+              rank={visibleConnectionStart + index}
               isExpanded={expandedItineraryId === itinerary.itineraryId}
               purchaseQuery={purchaseQuery}
               selectionActionLabel={isRoundTrip ? `${isRoundTripComplete ? "Change" : "Select"} ${activeDirectionLabel}` : undefined}
@@ -268,9 +444,26 @@ function SearchResultsPage() {
           ))}
         </section>
 
-        <button type="button" className="timeline-button">
+        <button
+          type="button"
+          className={`timeline-button ${hasLaterConnections ? "" : "timeline-muted"}`}
+          onClick={showLaterConnections}
+          disabled={!hasLaterConnections}
+        >
           Later
         </button>
+
+        {showNextDayBoundary && (
+          <div className="connection-notice connection-boundary-notice" aria-live="polite">
+            <strong>No later same-day connections after {lastVisibleDepartureTime || "the last shown train"}.</strong>
+            <p>
+              You have reached the end of {formatNoticeDate(activeDate)}.{" "}
+              <button type="button" className="connection-notice-link" onClick={() => navigateToActiveDate(nextDate)}>
+                See connections on {formatNoticeDate(nextDate)}.
+              </button>
+            </p>
+          </div>
+        )}
 
         <Link to="/" className="back-to-search">
           Go back to the search engine

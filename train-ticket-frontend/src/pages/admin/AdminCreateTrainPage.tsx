@@ -331,7 +331,7 @@ function AdminCreateTrainPage() {
     }
 
     const payload = toAdminTrainPayload({
-      id: editingTrainId,
+      id: isEditing ? editingTrainId : 0,
       code,
       name,
       locomotive,
@@ -450,8 +450,7 @@ function AdminCreateTrainPage() {
               <option>InterCity</option>
               <option>Express InterCity</option>
               <option>{premiumTrainType}</option>
-              <option>EMU</option>
-              <option>Regional</option>
+              <option>Twoje Linie Kolejowe</option>
               <option>Night train</option>
             </select></label>
             <label>Status<select value={status} onChange={(event) => setStatus(event.target.value)}>
@@ -686,19 +685,58 @@ function getTrainSaveError(error: unknown) {
   if (!axios.isAxiosError(error))
     return "Train could not be saved. Please try again.";
 
+  const detail = formatApiError(error.response?.data);
+
   if (error.response?.status === 409)
-    return typeof error.response.data === "string" ? error.response.data : "A train with this code already exists.";
+    return detail || "A train with this code already exists.";
 
   if (error.response?.status === 400)
-    return typeof error.response.data === "string" ? error.response.data : "Train details are invalid.";
+    return detail ? `Train details are invalid: ${detail}` : "Train details are invalid.";
 
   if (error.response?.status === 401 || error.response?.status === 403)
     return "Your admin session expired. Please log in again.";
 
   if (error.response)
-    return `Train could not be saved. API returned ${error.response.status}.`;
+    return detail
+      ? `Train could not be saved. API returned ${error.response.status}: ${detail}`
+      : `Train could not be saved. API returned ${error.response.status}.`;
 
   return "Train could not be saved. Check that the API is running.";
+}
+
+function formatApiError(data: unknown) {
+  if (typeof data === "string")
+    return data.trim();
+
+  if (!data || typeof data !== "object")
+    return "";
+
+  const problem = data as {
+    title?: unknown;
+    detail?: unknown;
+    errors?: Record<string, unknown>;
+  };
+
+  const validationMessages = problem.errors && typeof problem.errors === "object"
+    ? Object.entries(problem.errors)
+        .flatMap(([field, messages]) => {
+          const values = Array.isArray(messages) ? messages : [messages];
+          return values
+            .filter((message): message is string => typeof message === "string" && message.trim().length > 0)
+            .map((message) => `${field}: ${message}`);
+        })
+    : [];
+
+  if (validationMessages.length > 0)
+    return validationMessages.join(" ");
+
+  if (typeof problem.detail === "string" && problem.detail.trim().length > 0)
+    return problem.detail.trim();
+
+  if (typeof problem.title === "string" && problem.title.trim().length > 0)
+    return problem.title.trim();
+
+  return "";
 }
 
 export default AdminCreateTrainPage;

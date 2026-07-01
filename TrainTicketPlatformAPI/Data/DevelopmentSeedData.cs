@@ -1,3 +1,5 @@
+using System.Globalization;
+using System.Text;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using TrainTicketPlatformAPI.Contracts.OpenRailway;
@@ -143,6 +145,7 @@ namespace TrainTicketPlatformAPI.Data
             new("PL", "WM", "Warminsko-Mazurskie"),
             new("PL", "WP", "Wielkopolskie"),
             new("PL", "ZP", "Zachodniopomorskie"),
+            new("PL", "PL", "Poland"),
             new("DE", "BE", "Berlin"),
             new("DE", "BB", "Brandenburg"),
             new("CZ", "PR", "Prague"),
@@ -154,8 +157,313 @@ namespace TrainTicketPlatformAPI.Data
             new("AT", "WI", "Vienna")
         ];
 
+        private const string PortalPasazeraBStationNamesText = """
+            Babi Dół
+            Babiak
+            Babica
+            Babica Kolonia
+            Babimost
+            Baborówko
+            Baboszewo
+            Baby
+            Baciuty
+            Bajtkowo
+            Balin
+            Balinka
+            Bańska Niżna
+            Baranówka
+            Barchów
+            Barcice
+            Barcząca
+            Barczewo
+            Bardo Przyłęk
+            Bardo Śląskie
+            Borcz
+            Bąków
+            Bąkowiec
+            Barłogi
+            Bartąg
+            Bartnica
+            Bartodzieje
+            Barwałd Górny
+            Barwałd Średni
+            Barzkowice
+            Baszewice
+            Basznia
+            Basznia Dolna
+            Batowice Lubańskie
+            Bażanowice
+            Bednary
+            Bedoń
+            Bełchów
+            Belęcin Wielkopolski
+            Bełsznica
+            Bełżec
+            Będów
+            Będziemyśl
+            Będzin Ksawera
+            Będzin Miasto
+            Będzino
+            Będźmierowice
+            Bełżec Drugi
+            Berejów
+            Berezów
+            Bezwola
+            Biadki
+            Biadoliny
+            Biała Górna
+            Biała Pilska
+            Biała Piska
+            Biała Podlaska
+            Biała Podlaska Wschodnia
+            Biała Szlachecka
+            Białki Siedleckie
+            Białogard
+            Białośliwie
+            Białuń
+            Biały Bór
+            Biały Dunajec
+            Biały Kościół
+            Biały Zdrój Południowy
+            Białystok
+            Białystok Bacieczki
+            Białystok Fabryczny
+            Białystok Nowe Miasto
+            Białystok Stadion
+            Białystok Starosielce
+            Białystok Zielone Wzgórza
+            Biecz
+            Bieczyno Pomorskie
+            Bielany Wrocławskie
+            Bielawa Centralna
+            Bielawa Góry Sowie
+            Bielawa Jezioro
+            Bielawa Zachodnia
+            Bielin
+            Bieliny Opoczyńskie
+            Bielsk Podlaski
+            Bielsko-Biała Główna
+            Bielsko-Biała Komorowice
+            Bielsko-Biała Leszczyny
+            Bielsko-Biała Lipnik
+            Bielsko-Biała Mikuszowice
+            Bielsko-Biała Północ
+            Bielsko-Biała Wschód
+            Bieniów
+            Bierawa
+            Bierkowice
+            Biernatowo
+            Bierutów
+            Bierzwnik
+            Biesal
+            Biesowice
+            Biłgoraj
+            Biniew
+            Bińcze
+            Biskupice
+            Biskupice koło Kluczborka
+            Biskupice Oławskie
+            Biskupice Wielkopolskie
+            Biskupiec Pomorski
+            Biskupnica
+            Blachownia
+            Błądzim
+            Błaszki
+            Błażkowa
+            Blizna
+            Bliżyn
+            Błonie
+            Błonie Rokitno
+            Błotnica
+            Błotnica Strzelecka
+            Bobowa
+            Bobowa-Miasto
+            Bobrowniki
+            Bobrówka
+            Bobrowo Pomorskie
+            Bobry
+            Bochnia
+            Boczów
+            Bodzechów
+            Bogaczewo
+            Bogaczów
+            Bogdaniec
+            Bogdanowo
+            Bogoniowice Ciężkowice
+            Boguchwała
+            Boguchwała Dolna
+            Bogumiłowice
+            Boguszewo
+            Boguszów-Gorce
+            Boguszów-Gorce Wschód
+            Boguszów-Gorce Zachód
+            Bojanowo
+            Bojary
+            Boksycka
+            Bolechowo
+            Bolesławice Świdnickie
+            Bolesławiec
+            Boleszewo
+            Boleszkowice
+            Boreczek
+            Borki-Kosy
+            Borkowice
+            Borkowo
+            Boronów
+            Borowa Oleśnicka
+            Borowiki
+            Borowina
+            Borsukówka
+            Borszewice
+            Borszyn Mały
+            Borszyn Wielki
+            Borucice
+            Boszkowo
+            Boża Wola
+            Bożacin
+            Bożepole Wielkie
+            Brachlewo
+            Braniewo
+            Bratków
+            Bratoszewice
+            Brochocin Trzebnicki
+            Brodnica
+            Brody Iłżeckie
+            Brody Warszawskie
+            Brokęcino
+            Bronów
+            Brusy
+            Brwinów
+            Brzask
+            Brzeg
+            Brzeg Dolny
+            Brzeg Głogowski
+            Brzesko Okocim
+            Brzeszcze
+            Brzeszcze Jawiszowice
+            Brzezie
+            Brzezinka Średzka
+            Brzeziny
+            Brzeźnica
+            Brzeźnica Bychawska
+            Brzeźno Człuchowskie
+            Brzóstowa
+            Brzoza Bydgoska
+            Brzoza Toruńska
+            Brzózki
+            Brzozowica
+            Brzozowiec Gorzowski
+            Brzustów
+            Buchałów
+            Budachów
+            Budki Nowe
+            Budy Głogowskie
+            Budziszowice
+            Budzyń
+            Bujaki
+            Buk
+            Bukowa
+            Bukowice Trzebnickie
+            Bukowiec Międzyrzecki
+            Bukowina Sycowska
+            Bukowno
+            Bukowno Przymiarki
+            Bukowo
+            Bukowo Człuchowskie
+            Bukwałd
+            Bulowice
+            Burkat
+            Burkatów
+            Bursztynowo
+            Busko-Zdrój
+            Byczyna Kluczborska
+            Bydgoszcz Bielawy
+            Bydgoszcz Błonie
+            Bydgoszcz Brdyujście
+            Bydgoszcz Fordon
+            Bydgoszcz Główna
+            Bydgoszcz Łęgnowo
+            Bydgoszcz Leśna
+            Bydgoszcz Osowa Góra
+            Bydgoszcz Politechnika
+            Bydgoszcz Wschód
+            Bydgoszcz Zachód
+            Bystra Podhalańska
+            Bystrzyca Górna
+            Bystrzyca Kłodzka
+            Bystrzyca Kłodzka Przedmieście
+            Bystrzyca koło Lublina
+            Bytnica
+            Bytom
+            Bytom Karb
+            Bytom Odrzański
+            Bytom Stroszek
+            Bytonia
+            Bzowiec
+            """;
+
+        private static readonly string[] PortalPasazeraBStationNames =
+            PortalPasazeraBStationNamesText.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        private static StationSeed PortalPasazeraStation(string stationName)
+        {
+            var cleanedStationName = stationName.Replace("▲", string.Empty, StringComparison.Ordinal).Trim();
+            var stationCode = BuildStationCode(cleanedStationName);
+
+            return new StationSeed("PL", "PL", cleanedStationName, "Locality", stationCode, cleanedStationName, cleanedStationName);
+        }
+
+        private static string BuildStationCode(string stationName)
+        {
+            var normalized = stationName
+                .Replace("Ł", "L", StringComparison.Ordinal)
+                .Replace("ł", "l", StringComparison.Ordinal)
+                .Normalize(NormalizationForm.FormD);
+
+            var builder = new StringBuilder(normalized.Length);
+            var previousWasSeparator = false;
+
+            foreach (var character in normalized)
+            {
+                if (CharUnicodeInfo.GetUnicodeCategory(character) == UnicodeCategory.NonSpacingMark)
+                {
+                    continue;
+                }
+
+                if (char.IsLetterOrDigit(character))
+                {
+                    builder.Append(char.ToUpperInvariant(character));
+                    previousWasSeparator = false;
+                }
+                else if (!previousWasSeparator)
+                {
+                    builder.Append('_');
+                    previousWasSeparator = true;
+                }
+            }
+
+            return builder.ToString().Trim('_');
+        }
+
         private static readonly StationSeed[] ReferenceStations =
         [
+            // Portal Pasazera station catalogue - A batch.
+            new("PL", "WM", "Adamowo", "Village", "ADAMOWO", "Adamowo", "Adamowo"),
+            new("PL", "LD", "Aleksandrów", "Town", "ALEKSANDROW", "Aleksandrów", "Aleksandrów"),
+            new("PL", "KP", "Aleksandrów Kujawski", "Town", "ALEKSANDROW_KUJAWSKI", "Aleksandrów Kujawski", "Aleksandrów Kujawski"),
+            new("PL", "MA", "Andrychów", "Town", "ANDRYCHOW", "Andrychów", "Andrychów"),
+            new("PL", "MA", "Andrychów", "Town", "ANDRYCHOW_GORNICA", "Andrychów Górnica", "Andrychów"),
+            new("PL", "MA", "Andrzejówka", "Village", "ANDRZEJOWKA", "Andrzejówka", "Andrzejówka"),
+            new("PL", "KP", "Anieliny", "Village", "ANIELINY", "Anieliny", "Anieliny"),
+            new("PL", "WP", "Antonin", "Village", "ANTONIN", "Antonin", "Antonin"),
+            new("PL", "LD", "Antoniów", "Village", "ANTONIOW", "Antoniów", "Antoniów"),
+            new("PL", "LB", "Antoniówka", "Village", "ANTONIOWKA", "Antoniówka", "Antoniówka"),
+            new("PL", "MZ", "Arcelin", "Village", "ARCELIN", "Arcelin", "Arcelin"),
+            new("PL", "PD", "Augustów", "Town", "AUGUSTOW", "Augustów", "Augustów"),
+            new("PL", "PD", "Augustów", "Town", "AUGUSTOW_PORT", "Augustów Port", "Augustów"),
+            new("PL", "PD", "Augustówka", "Village", "AUGUSTOWKA", "Augustówka", "Augustówka"),
+            // Portal Pasazera station catalogue - B batch.
+            ..PortalPasazeraBStationNames.Select(PortalPasazeraStation),
             new("PL", "WP", "Poznań", "City", "POZ", "Poznań Główny", "Poznań"),
             new("PL", "MA", "Kraków", "City", "KRK", "Kraków Główny", "Kraków"),
             new("PL", "MZ", "Warszawa", "City", "WAW", "Warszawa Centralna", "Warszawa"),

@@ -59,7 +59,7 @@ export async function getAdminTrain(id: number) {
   return response.data;
 }
 
-export async function createAdminTrain(train: Omit<AdminTrain, "id">) {
+export async function createAdminTrain(train: AdminTrain) {
   const response = await apiClient.post<AdminTrain>("/admin/trains", train);
   return response.data;
 }

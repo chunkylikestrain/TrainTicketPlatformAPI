@@ -2403,8 +2403,54 @@
   font-size: 19px;
 }
 
+.connection-notice-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 18px;
+  margin-top: 14px;
+}
+
+.connection-notice-link {
+  border: 0;
+  background: transparent;
+  color: var(--navy);
+  font: inherit;
+  font-weight: 800;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+
+.connection-notice-link:hover {
+  color: var(--orange);
+}
+
+.connection-notice-link:focus-visible {
+  outline: 2px solid var(--orange);
+  outline-offset: 4px;
+}
+
+.connection-boundary-notice {
+  margin: 16px 0 20px;
+}
+
 .connection-notice-warning {
   background: #fff2e9;
+}
+
+.connection-window-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 16px 0 10px;
+  color: var(--navy);
+  font-size: 18px;
+  font-weight: 800;
+}
+
+.connection-window-summary span:last-child {
+  color: var(--blue);
+  white-space: nowrap;
 }
 
 .timeline-button {
@@ -2414,6 +2460,10 @@
 
 .timeline-muted {
   color: #aab0b9;
+}
+
+.timeline-button:disabled {
+  cursor: not-allowed;
 }
 
 .connection-list {
@@ -9407,6 +9457,16 @@
   .journey-line strong {
     justify-content: center;
     font-size: 24px;
+  }
+
+  .connection-window-summary {
+    flex-direction: column;
+    gap: 4px;
+    font-size: 16px;
+  }
+
+  .connection-window-summary span:last-child {
+    white-space: normal;
   }
 
   .offer-ribbon {
