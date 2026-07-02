@@ -405,6 +405,514 @@ namespace TrainTicketPlatformAPI.Data
         private static readonly string[] PortalPasazeraBStationNames =
             PortalPasazeraBStationNamesText.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
+        private const string PortalPasazeraCStationNamesText = """
+            Cegłów
+            Cekcyn
+            Celestynów
+            Cerkiewnik
+            Chabówka
+            Chabówka Stadion
+            Chałupki
+            Chałupy
+            Charnowo Słupskie
+            Charsznica
+            Chechło
+            Chełm
+            Chełm Miasto
+            Chełm Śląski
+            Chełmek
+            Chełmek Wołowski
+            Chełmża
+            Chludowo
+            Chmielniki Bydgoskie
+            Chmielów Zagumnie
+            Chocianów
+            Chocicza
+            Chociszew
+            Chociszewo Rogoziniec
+            Chociw Łaski
+            Chociwel
+            Chocznia
+            Chocznia Górna
+            Chodzież
+            Chojna
+            Chojnice
+            Chojnik
+            Chojnów
+            Chorzele
+            Chorzelów
+            Chorzelów Południowy
+            Chorzew Siemkowice
+            Chorzów Batory
+            Chorzów Miasto
+            Chorzów Stary
+            Chorzów Uniwersytet
+            Choszczno
+            Chotomów
+            Chotyłów
+            Chronów
+            Chróścice
+            Chróścina Nyska
+            Chróścina Opolska
+            Chrosna
+            Chrośnica
+            Chróstnik
+            Chrusty Nowe
+            Chruszczobród
+            Chrzanów
+            Chrzanów Śródmieście
+            Chrząstawa Mała
+            Chrząstowice
+            Chrząstowice Olkuskie
+            Chrzęsne
+            Chwalibogowo
+            Chybie
+            Chybie Mnich
+            Chynów
+            Chytra
+            Ciasna
+            Ciechanów
+            Ciechanów Przemysłowy
+            Ciechanowice
+            Ciechocinek
+            Ciecholub
+            Ciecierzyn
+            Cięcina
+            Cięcina Dolna
+            Cieksyn
+            Cienin
+            Cienin Kościelny
+            Cieplewo
+            Cierpice
+            Cierpice Kąkol
+            Cierpigórz
+            Cieśle
+            Cieszków
+            Cieszyn
+            Cieszyn Marklowice
+            Cieszyn Uniwersytet
+            Cieszyno Łobeskie
+            Cikowice
+            Cisie
+            Cisiec
+            Ćmielów
+            Cmolas
+            Cybowo
+            Cygany
+            Cykarzew Północny
+            Czachówek Górny
+            Czachówek Południowy
+            Czachówek Wschodni
+            Czaplinek
+            Czarlin
+            Czarna Białostocka
+            Czarna Tarnowska
+            Czarna Woda
+            Czarnca
+            Czarne
+            Czarne Małe
+            Czarniecka Góra
+            Czarnobór
+            Czarnowęsy Pomorskie
+            Czarny Blok
+            Czechowice-Dziedzice
+            Czechowice-Dziedzice Południowe
+            Czechowice-Dziedzice Przystanek
+            Czechowizna
+            Czekanów
+            Czeluścin
+            Czempiń
+            Czepino
+            Czeremcha
+            Czermno
+            Czerna
+            Czerna Mała
+            Czernica Wrocławska
+            Czerniejewo
+            Czerniewice
+            Czernikowo
+            Czersk
+            Czersk Świecki
+            Czeruchy
+            Czerwieńsk
+            Czerwionka
+            Czerwionka Dębieńsko
+            Czerwonak
+            Czerwonak Osiedle
+            Czerwonka
+            Czeska Wieś
+            Czesławice
+            Częstochowa
+            Częstochowa Aniołów
+            Częstochowa Gnaszyn
+            Częstochowa Raków
+            Częstochowa Stradom
+            Człuchów
+            Czudec
+            Czuprynowo
+            Czyżew
+            Czyżowice
+            """;
+
+        private static readonly string[] PortalPasazeraCStationNames =
+            PortalPasazeraCStationNamesText.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        private const string PortalPasazeraDStationNamesText = """
+            Dąbie koło Dębicy
+            Dąbkowizna
+            Dąbroszyn
+            Dąbrowa Białostocka
+            Dąbrowa Chełmińska
+            Dąbrowa Chełmińska Centrum
+            Dąbrowa Górnicza
+            Dąbrowa Górnicza Gołonóg
+            Dąbrowa Górnicza Pogoria
+            Dąbrowa Górnicza Południowa
+            Dąbrowa Górnicza Sikorka
+            Dalanówek
+            Dalęcino
+            Dalekie
+            Daleszewo
+            Damnica
+            Daniszyn
+            Dankowice
+            Darłowo
+            Daszewo
+            Dąbrowa Górnicza Strzemieszyce
+            Dąbrowa Górnicza Wschodnia
+            Dąbrowa Górnicza Ząbkowice
+            Dąbrowa Niemodlińska
+            Dąbrowa Oleśnicka
+            Dąbrowa-Łazy
+            Dąbrowice Skierniewickie
+            Dąbrówka Jezioro Mucharskie
+            Dąbrówka Malborska
+            Dąbrówka Wielkopolska
+            Dąbrówka Zabłotnia
+            Dąbrowy
+            Dęba Opoczyńska
+            Dęba Rozalin
+            Dębe Wielkie
+            Dębica
+            Dębica Wschodnia
+            Dęblin
+            Dębska Kuźnia
+            Deszczno
+            Dębska Wola
+            Długi Kąt
+            Długołęka
+            Długopole-Zdrój
+            Dobczyn
+            Dobiegniew
+            Dobieszyn
+            Dobino Wałeckie
+            Doboszowice
+            Dobre Miasto
+            Dobrocin
+            Dobroń
+            Dobroszyce
+            Dobrowoda
+            Dobrynka
+            Dobryszyce koło Radomska
+            Dobrzechów
+            Dobrzejewice
+            Dobrzeń Wielki
+            Dobrzykowice Wrocławskie
+            Dobrzyń
+            Dobrzyniewo Duże
+            Dolice
+            Dolna Grupa
+            Dolna Odra
+            Dolnik
+            Domaniewice
+            Domaniewice Centrum
+            Domanin
+            Domasław
+            Domaszków
+            Domaszowice
+            Dominów
+            Domisław
+            Dopiewo
+            Dorohusk
+            Dragacz
+            Drawiny
+            Drawski Młyn
+            Drawsko Pomorskie
+            Drogomyśl
+            Drużyna Poznańska
+            Drygały
+            Drygulec
+            Drzeńsko
+            Drzewce
+            Drzewica
+            Drzonowo
+            Drzymałowo
+            Dubidze
+            Dubidze-Kolonia
+            Dubielno
+            Dulowa
+            Dunowo
+            Duszniki-Zdrój
+            Dwikozy
+            Dwory
+            Dygowo
+            Dytmarów
+            Działdowo
+            Działoszyn
+            Dzięczyn
+            Dziembówko
+            Dziemiany Kaszubskie
+            Dziergowice
+            Dzierżanów Wielkopolski
+            Dzierżążno
+            Dzierżoniów Śląski
+            Dzietrzniki
+            Dziewule
+            Dziwno
+            """;
+
+        private static readonly string[] PortalPasazeraDStationNames =
+            PortalPasazeraDStationNamesText.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        private const string PortalPasazeraEStationNamesText = """
+            Elbląg
+            Ełk
+            Ełk Szyba Wschód
+            Ełk Szyba Zachód
+            """;
+
+        private static readonly string[] PortalPasazeraEStationNames =
+            PortalPasazeraEStationNamesText.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        private const string PortalPasazeraFStationNamesText = """
+            Fałkowo
+            Fasty
+            Firlus
+            Fiszewo
+            Fosowskie
+            Fronołów
+            Frysztak
+            """;
+
+        private static readonly string[] PortalPasazeraFStationNames =
+            PortalPasazeraFStationNamesText.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+        private const string PortalPasazeraGStationNamesText = """
+            Gąbin
+            Gądki
+            Gądków Wielki
+            Gągławki
+            Gajówka
+            Gałęzinowo
+            Gałkówek
+            Gamerki Wielkie
+            Garbatka-Letnisko
+            Garbce
+            Garczegorze
+            Garczyn
+            Gardeja
+            Garki
+            Garwolin
+            Gąsawy Plebańskie
+            Gąsocin
+            Gawrony
+            Gdakowo
+            Gdańsk Brętowo
+            ...
+            Gdańsk Firoga
+            Gdańsk Główny
+            Gdańsk Jasień
+            Gdańsk Kiełpinek
+            Gdańsk Kokoszki
+            Gdańsk Lipce
+            Gdańsk Matarnia
+            Gdańsk Niedźwiednik
+            Gdańsk Oliwa
+            Gdańsk Orunia
+            Gdańsk Osowa
+            Gdańsk Politechnika
+            Gdańsk Port Lotniczy
+            Gdańsk Przymorze-Uniwersytet
+            Gdańsk Rębiechowo
+            Gdańsk Śródmieście
+            Gdańsk Stocznia
+            Gdańsk Strzyża
+            Gdańsk Wrzeszcz
+            Gdańsk Zaspa
+            Gdańsk Żabianka-AWFiS
+            Gdynia Chylonia
+            Gdynia Cisowa
+            Gdynia Główna
+            Gdynia Grabówek
+            Gdynia Karwiny
+            Gdynia Leszczynki
+            Gdynia Orłowo
+            Gdynia Redłowo
+            Gdynia Stadion
+            Gdynia Stocznia-Uniwersytet Morski
+            Gdynia Wzgórze Św.Maksymiliana
+            Gębarzewo
+            Geniusze
+            Gierałtów ▲
+            Gierałtów Wykroty
+            Gierwaty
+            Gilów
+            Giżycko
+            Gliniczek
+            Głębokie Międzyrzeckie
+            Gliniszcze
+            Glinnik
+            Glinnik Wieś
+            Gliwice
+            Gliwice Kuźnica
+            Gliwice Łabędy
+            Głogów
+            Głogów Huta
+            Głogów Krzepów
+            Głogów Małopolski
+            Głogów Małopolski Niwa
+            Głogów Małopolski Południowy
+            Głogów Wróblin
+            Głogówek
+            Głogówko
+            Głowaczewo
+            Głowno
+            Głowno Północne
+            Głuchołazy
+            Głuchołazy Miasto
+            Głuchów
+            Głuchowo
+            Głuszyca
+            Głuszyca Górna ▲
+            Głuszyno Pomorskie
+            Gniewczyna
+            Gniewkowo
+            Gniezno
+            Goczałków
+            Goczałkowice
+            Goczałkowice-Zdrój
+            Godętowo
+            Godki
+            Godków
+            Gogolewo
+            Gogolin
+            Goleniów
+            Goleniów Park Przemysłowy
+            Goleszów
+            Gołąb
+            Gołańcz
+            Gołaszewo Kujawskie
+            Golęczewo
+            Goleszów Górny
+            Golina
+            Gołotczyzna
+            Gołubie Kaszubskie
+            Gomunice
+            Goniądz
+            Gorlice
+            Gorlice Glinik
+            Gorlice Zagórzany
+            Gorzanów
+            Gorzędów
+            Gorzelin ▲
+            Gorzkowice
+            Gorzów Chrzanowski
+            Gorzów Wielkopolski
+            Gorzów Wielkopolski Karnin
+            Góra Kalwaria
+            Góra Śląska
+            Górażdże
+            Górka Duchowna
+            Gorzów Wielkopolski Wieprzyce
+            Gorzów Wielkopolski Wschodni
+            Gorzów Wielkopolski Zamoście
+            Gorzów Wielkopolski Zieleniec
+            Gorzuchów Kłodzki ▲
+            Gorzuchowo Chełmińskie
+            Gorzupia
+            Gościcino Wejherowskie
+            Gościszewo
+            Gośniewice
+            Gostynin
+            Goświnowice
+            Goszcza
+            Goszczowice
+            Goworowo
+            Gozdowo
+            Górki Noteckie
+            Górki Pomorskie
+            Górki Śląskie
+            Górowo
+            Górzyca
+            Górzyca Reska
+            Górzyniec ▲
+            Grabik
+            Grabiny
+            Grąblewo
+            Grabniak
+            Grabów nad Pilicą
+            Grabów Szlachecki
+            Grabowno Wielkie
+            Grabowo
+            Grajewo
+            Gralewo
+            Granowiec
+            Granowo
+            Gregorowce
+            Grębocice
+            Grębocin
+            Gręboszów
+            Grębów
+            Gregorowce Południowe
+            Grochowiska
+            Grodków Śląski
+            Grodzie
+            Grodzisk Mazowiecki
+            Grodzisk Mazowiecki Jordanowice
+            Grodzisk Mazowiecki Okrężna
+            Grodzisk Mazowiecki Piaskowa
+            Grodzisk Mazowiecki Radońska
+            Grodzisk Wielkopolski
+            Grodzisko Dolne
+            Grodziszcze Mazowieckie
+            Grom
+            Gromnik
+            Gronajny
+            Gronowo Elbląskie
+            Gródek
+            Groszowice Wrzosów
+            Grotniki
+            Grudziądz
+            Grudziądz Mniszek
+            Grudziądz Owczarki
+            Grudziądz Przedmieście
+            Grudziądz Rządz
+            Grudziądz Śródmieście
+            Grudziądz Tuszewo
+            Grupa
+            Grybów
+            Gryfice
+            Gryfino
+            Gryfów Śląski
+            Grylewo
+            Gryźliny
+            Grzędzice
+            Grzegorzewo
+            Grzęska
+            Grzmiąca
+            Grzybno
+            Grzywna
+            Gubin
+            Gułtowy
+            Gutowiec
+            Gutowo Wielkopolskie
+            Gwda Mała
+            Gzin
+            """;
+
+        private static readonly string[] PortalPasazeraGStationNames =
+            PortalPasazeraGStationNamesText.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
         private static StationSeed PortalPasazeraStation(string stationName)
         {
             var cleanedStationName = stationName.Replace("▲", string.Empty, StringComparison.Ordinal).Trim();
@@ -464,6 +972,16 @@ namespace TrainTicketPlatformAPI.Data
             new("PL", "PD", "Augustówka", "Village", "AUGUSTOWKA", "Augustówka", "Augustówka"),
             // Portal Pasazera station catalogue - B batch.
             ..PortalPasazeraBStationNames.Select(PortalPasazeraStation),
+            // Portal Pasazera station catalogue - C batch.
+            ..PortalPasazeraCStationNames.Select(PortalPasazeraStation),
+            // Portal Pasazera station catalogue - D batch.
+            ..PortalPasazeraDStationNames.Select(PortalPasazeraStation),
+            // Portal Pasazera station catalogue - E batch.
+            ..PortalPasazeraEStationNames.Select(PortalPasazeraStation),
+            // Portal Pasazera station catalogue - F batch.
+            ..PortalPasazeraFStationNames.Select(PortalPasazeraStation),
+            // Portal Pasazera station catalogue - G batch.
+            ..PortalPasazeraGStationNames.Select(PortalPasazeraStation),
             new("PL", "WP", "Poznań", "City", "POZ", "Poznań Główny", "Poznań"),
             new("PL", "MA", "Kraków", "City", "KRK", "Kraków Główny", "Kraków"),
             new("PL", "MZ", "Warszawa", "City", "WAW", "Warszawa Centralna", "Warszawa"),
@@ -1002,11 +1520,15 @@ namespace TrainTicketPlatformAPI.Data
             string city,
             CancellationToken cancellationToken)
         {
-            var station = await db.Stations.FirstOrDefaultAsync(s => s.Code == code, cancellationToken);
+            var stationCode = BuildSeedStationCode(code, name, locality.Id);
+            var stationName = string.IsNullOrWhiteSpace(name) ? stationCode : name.Trim();
+            var stationCity = string.IsNullOrWhiteSpace(city) ? stationName : city.Trim();
+
+            var station = await db.Stations.FirstOrDefaultAsync(s => s.Code == stationCode, cancellationToken);
             if (station != null)
             {
-                station.Name = name;
-                station.City = city;
+                station.Name = stationName;
+                station.City = stationCity;
                 station.CountryId = country.Id;
                 station.StateRegionId = region.Id;
                 station.LocalityId = locality.Id;
@@ -1015,16 +1537,52 @@ namespace TrainTicketPlatformAPI.Data
 
             station = new Station
             {
-                Code = code,
-                Name = name,
-                City = city,
+                Code = stationCode,
+                Name = stationName,
+                City = stationCity,
                 CountryId = country.Id,
                 StateRegionId = region.Id,
                 LocalityId = locality.Id
             };
             db.Stations.Add(station);
-            await db.SaveChangesAsync(cancellationToken);
+            try
+            {
+                await db.SaveChangesAsync(cancellationToken);
+            }
+            catch (DbUpdateException ex)
+            {
+                throw new InvalidOperationException(
+                    $"Could not seed station '{stationName}' with code '{stationCode}' and city '{stationCity}'.",
+                    ex);
+            }
+
             return station;
+        }
+
+        private static string BuildSeedStationCode(string code, string name, int localityId)
+        {
+            if (!string.IsNullOrWhiteSpace(code))
+            {
+                return code.Trim();
+            }
+
+            var source = string.IsNullOrWhiteSpace(name) ? $"STATION_{localityId}" : name.Trim();
+            var builder = new System.Text.StringBuilder(source.Length);
+
+            foreach (var character in source)
+            {
+                if (char.IsLetterOrDigit(character))
+                {
+                    builder.Append(char.ToUpperInvariant(character));
+                }
+            }
+
+            if (builder.Length == 0)
+            {
+                builder.Append("STATION_").Append(localityId);
+            }
+
+            return builder.Length <= 32 ? builder.ToString() : builder.ToString(0, 32);
         }
 
         private static async Task<Trip> EnsureTripAsync(
