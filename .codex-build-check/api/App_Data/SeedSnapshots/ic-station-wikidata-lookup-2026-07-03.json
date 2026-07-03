@@ -1,0 +1,3094 @@
+{
+  "generatedAtUtc": "2026-07-03T04:00:58Z",
+  "source": "wikidata-query-service",
+  "matchesByStationName": {
+    "Pabianice": [
+      {
+        "stationName": "Pabianice",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11802058",
+        "wikidataItemLabel": "Pabianice",
+        "wikidataAdminLabel": "Pabianice",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Jarocin": [
+      {
+        "stationName": "Jarocin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11720724",
+        "wikidataItemLabel": "Jarocin (stacja kolejowa)",
+        "wikidataAdminLabel": "Jarocin",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Kłodzko Miasto": [
+      {
+        "stationName": "Kłodzko Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11752139",
+        "wikidataItemLabel": "Kłodzko Miasto",
+        "wikidataAdminLabel": "Kłodzko",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Kłodzko Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11752139",
+        "wikidataItemLabel": "Kłodzko Miasto",
+        "wikidataAdminLabel": "Kłodzko",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Wysoka Kamieńska": [
+      {
+        "stationName": "Wysoka Kamieńska",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2397802",
+        "wikidataItemLabel": "Wysoka Kamieńska",
+        "wikidataAdminLabel": "Wysoka Kamieńska",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Zgorzelec": [
+      {
+        "stationName": "Zgorzelec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q801662",
+        "wikidataItemLabel": "Zgorzelec",
+        "wikidataAdminLabel": "Zgorzelec",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Zgorzelec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q801662",
+        "wikidataItemLabel": "Zgorzelec",
+        "wikidataAdminLabel": "Zgorzelec",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Zgorzelec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q801662",
+        "wikidataItemLabel": "Zgorzelec",
+        "wikidataAdminLabel": "Zgorzelec",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Bielsk Podlaski": [
+      {
+        "stationName": "Bielsk Podlaski",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2106173",
+        "wikidataItemLabel": "Bielsk Podlaski",
+        "wikidataAdminLabel": "Bielsk Podlaski",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Chojnów": [
+      {
+        "stationName": "Chojnów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2057058",
+        "wikidataItemLabel": "Chojnów",
+        "wikidataAdminLabel": "Chojnów",
+        "wikidataStateLabel": "województwo legnickie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Chojnów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2057058",
+        "wikidataItemLabel": "Chojnów",
+        "wikidataAdminLabel": "Chojnów",
+        "wikidataStateLabel": "województwo wrocławskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Chojnów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2057058",
+        "wikidataItemLabel": "Chojnów",
+        "wikidataAdminLabel": "Chojnów",
+        "wikidataStateLabel": "województwo legnickie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Chojnów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2057058",
+        "wikidataItemLabel": "Chojnów",
+        "wikidataAdminLabel": "Chojnów",
+        "wikidataStateLabel": "województwo wrocławskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Chojnów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2057058",
+        "wikidataItemLabel": "Chojnów",
+        "wikidataAdminLabel": "Chojnów",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Chojnów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2057058",
+        "wikidataItemLabel": "Chojnów",
+        "wikidataAdminLabel": "Chojnów",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Czyżew": [
+      {
+        "stationName": "Czyżew",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3920706",
+        "wikidataItemLabel": "Czyżew",
+        "wikidataAdminLabel": "Czyżew",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Węgliniec": [],
+    "Lubliniec": [
+      {
+        "stationName": "Lubliniec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2192556",
+        "wikidataItemLabel": "Lubliniec",
+        "wikidataAdminLabel": "Lubliniec",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Rejowiec": [
+      {
+        "stationName": "Rejowiec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2467096",
+        "wikidataItemLabel": "Rejowiec",
+        "wikidataAdminLabel": "Rejowiec Fabryczny",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Rejowiec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2467096",
+        "wikidataItemLabel": "Rejowiec",
+        "wikidataAdminLabel": "Rejowiec Fabryczny",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Bydgoszcz Wschód": [
+      {
+        "stationName": "Bydgoszcz Wschód",
+        "wikidataItem": "http://www.wikidata.org/entity/Q9182646",
+        "wikidataItemLabel": "Bydgoszcz Wschód",
+        "wikidataAdminLabel": "Bydgoszcz",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Bydgoszcz Wschód",
+        "wikidataItem": "http://www.wikidata.org/entity/Q9182646",
+        "wikidataItemLabel": "Bydgoszcz Wschód",
+        "wikidataAdminLabel": "Bydgoszcz",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Nysa": [
+      {
+        "stationName": "Nysa",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2624642",
+        "wikidataItemLabel": "Nysa",
+        "wikidataAdminLabel": "Nysa",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Nysa",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2624642",
+        "wikidataItemLabel": "Nysa",
+        "wikidataAdminLabel": "Nysa",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Łowicz Główny": [
+      {
+        "stationName": "Łowicz Główny",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2105724",
+        "wikidataItemLabel": "Łowicz Główny",
+        "wikidataAdminLabel": "Łowicz",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Usti nad Orlici": [],
+    "Oleśnica Rataje": [
+      {
+        "stationName": "Oleśnica Rataje",
+        "wikidataItem": "http://www.wikidata.org/entity/Q665284",
+        "wikidataItemLabel": "Oleśnica Rataje",
+        "wikidataAdminLabel": "Oleśnica",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Choszczno": [
+      {
+        "stationName": "Choszczno",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2338086",
+        "wikidataItemLabel": "Choszczno",
+        "wikidataAdminLabel": "Choszczno",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Choszczno",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2338086",
+        "wikidataItemLabel": "Choszczno",
+        "wikidataAdminLabel": "Choszczno",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Łask": [
+      {
+        "stationName": "Łask",
+        "wikidataItem": "http://www.wikidata.org/entity/Q4875109",
+        "wikidataItemLabel": "Łask",
+        "wikidataAdminLabel": "Łask",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Szepietowo": [
+      {
+        "stationName": "Szepietowo",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2077474",
+        "wikidataItemLabel": "Szepietowo",
+        "wikidataAdminLabel": "Szepietowo",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Maków Podhalański": [
+      {
+        "stationName": "Maków Podhalański",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2044965",
+        "wikidataItemLabel": "Maków Podhalański",
+        "wikidataAdminLabel": "Maków Podhalański",
+        "wikidataStateLabel": "województwo małopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Wronki": [
+      {
+        "stationName": "Wronki",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2796943",
+        "wikidataItemLabel": "Wronki",
+        "wikidataAdminLabel": "Wronki",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Wronki",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2796943",
+        "wikidataItemLabel": "Wronki",
+        "wikidataAdminLabel": "Wronki",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Sosnowiec Główny": [
+      {
+        "stationName": "Sosnowiec Główny",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2585729",
+        "wikidataItemLabel": "Sosnowiec Główny",
+        "wikidataAdminLabel": "Sosnowiec",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Sosnowiec Główny",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2585729",
+        "wikidataItemLabel": "Sosnowiec Główny",
+        "wikidataAdminLabel": "Sosnowiec",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Sosnowiec Główny",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2585729",
+        "wikidataItemLabel": "Sosnowiec Główny",
+        "wikidataAdminLabel": "Sosnowiec",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Sosnowiec Główny",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2585729",
+        "wikidataItemLabel": "Sosnowiec Główny",
+        "wikidataAdminLabel": "Sosnowiec",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Sosnowiec Główny",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2585729",
+        "wikidataItemLabel": "Sosnowiec Główny",
+        "wikidataAdminLabel": "Sosnowiec",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Sosnowiec Główny",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2585729",
+        "wikidataItemLabel": "Sosnowiec Główny",
+        "wikidataAdminLabel": "Sosnowiec",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Sieradz": [
+      {
+        "stationName": "Sieradz",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1859549",
+        "wikidataItemLabel": "Sieradz",
+        "wikidataAdminLabel": "Sieradz",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Gorzów Wielkopolski": [
+      {
+        "stationName": "Gorzów Wielkopolski",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2150313",
+        "wikidataItemLabel": "Gorzów Wielkopolski",
+        "wikidataAdminLabel": "Gorzów Wielkopolski",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Nidzica": [
+      {
+        "stationName": "Nidzica",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2554128",
+        "wikidataItemLabel": "Nidzica",
+        "wikidataAdminLabel": "Nidzica",
+        "wikidataStateLabel": "województwo warmińsko-mazurskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Sarnaki": [
+      {
+        "stationName": "Sarnaki",
+        "wikidataItem": "http://www.wikidata.org/entity/Q5455309",
+        "wikidataItemLabel": "Sarnaki",
+        "wikidataAdminLabel": "Chlebczyn",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Przemyśl Zasanie": [
+      {
+        "stationName": "Przemyśl Zasanie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2060837",
+        "wikidataItemLabel": "Przemyśl Zasanie",
+        "wikidataAdminLabel": "Przemyśl",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Przemyśl Zasanie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2060837",
+        "wikidataItemLabel": "Przemyśl Zasanie",
+        "wikidataAdminLabel": "Przemyśl",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Zawada": [
+      {
+        "stationName": "Zawada",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2963943",
+        "wikidataItemLabel": "Zawada",
+        "wikidataAdminLabel": "Zawada",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Goleniów": [
+      {
+        "stationName": "Goleniów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2535907",
+        "wikidataItemLabel": "Goleniów",
+        "wikidataAdminLabel": "Goleniów",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Mogilno": [
+      {
+        "stationName": "Mogilno",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2104971",
+        "wikidataItemLabel": "Mogilno",
+        "wikidataAdminLabel": "Mogilno",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Mogilno",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2104971",
+        "wikidataItemLabel": "Mogilno",
+        "wikidataAdminLabel": "Mogilno",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Rogoźno Wielkopolskie": [
+      {
+        "stationName": "Rogoźno Wielkopolskie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q728462",
+        "wikidataItemLabel": "Rogoźno Wielkopolskie",
+        "wikidataAdminLabel": "Rogoźno",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Rogoźno Wielkopolskie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q728462",
+        "wikidataItemLabel": "Rogoźno Wielkopolskie",
+        "wikidataAdminLabel": "Rogoźno",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Nowa Sól": [
+      {
+        "stationName": "Nowa Sól",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2212282",
+        "wikidataItemLabel": "Nowa Sól",
+        "wikidataAdminLabel": "Nowa Sól",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Nowa Sól",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2212282",
+        "wikidataItemLabel": "Nowa Sól",
+        "wikidataAdminLabel": "Nowa Sól",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Nowa Ruda": [
+      {
+        "stationName": "Nowa Ruda",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1921156",
+        "wikidataItemLabel": "Nowa Ruda",
+        "wikidataAdminLabel": "Nowa Ruda",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Świebodzin": [
+      {
+        "stationName": "Świebodzin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2805115",
+        "wikidataItemLabel": "Świebodzin",
+        "wikidataAdminLabel": "Świebodzin",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Świebodzin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2805115",
+        "wikidataItemLabel": "Świebodzin",
+        "wikidataAdminLabel": "Świebodzin",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Hrubieszów Miasto": [
+      {
+        "stationName": "Hrubieszów Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2795283",
+        "wikidataItemLabel": "Hrubieszów Miasto",
+        "wikidataAdminLabel": "Hrubieszów",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Hrubieszów Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2795283",
+        "wikidataItemLabel": "Hrubieszów Miasto",
+        "wikidataAdminLabel": "Hrubieszów",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Białystok Zielone Wzgórza": [],
+    "Skwierzyna": [
+      {
+        "stationName": "Skwierzyna",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1842068",
+        "wikidataItemLabel": "Skwierzyna",
+        "wikidataAdminLabel": "Skwierzyna",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Jaworzno Szczakowa": [
+      {
+        "stationName": "Jaworzno Szczakowa",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2037205",
+        "wikidataItemLabel": "Jaworzno Szczakowa",
+        "wikidataAdminLabel": "Jaworzno",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jaworzno Szczakowa",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2037205",
+        "wikidataItemLabel": "Jaworzno Szczakowa",
+        "wikidataAdminLabel": "Jaworzno",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jaworzno Szczakowa",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2037205",
+        "wikidataItemLabel": "Jaworzno Szczakowa",
+        "wikidataAdminLabel": "Jaworzno",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jaworzno Szczakowa",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2037205",
+        "wikidataItemLabel": "Jaworzno Szczakowa",
+        "wikidataAdminLabel": "Jaworzno",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Skarżysko-Kamienna": [
+      {
+        "stationName": "Skarżysko-Kamienna",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2063764",
+        "wikidataItemLabel": "Skarżysko-Kamienna",
+        "wikidataAdminLabel": "Skarżysko-Kamienna",
+        "wikidataStateLabel": "województwo świętokrzyskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Skarżysko-Kamienna",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2063764",
+        "wikidataItemLabel": "Skarżysko-Kamienna",
+        "wikidataAdminLabel": "Skarżysko-Kamienna",
+        "wikidataStateLabel": "województwo świętokrzyskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Werbkowice": [],
+    "Oborniki Śląskie": [
+      {
+        "stationName": "Oborniki Śląskie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2352126",
+        "wikidataItemLabel": "Oborniki Śląskie",
+        "wikidataAdminLabel": "Oborniki Śląskie",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Oborniki Śląskie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2352126",
+        "wikidataItemLabel": "Oborniki Śląskie",
+        "wikidataAdminLabel": "Oborniki Śląskie",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Tarnobrzeg": [
+      {
+        "stationName": "Tarnobrzeg",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2227934",
+        "wikidataItemLabel": "Tarnobrzeg",
+        "wikidataAdminLabel": "Tarnobrzeg",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Pionki Zachodnie": [
+      {
+        "stationName": "Pionki Zachodnie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1886496",
+        "wikidataItemLabel": "Stacja kolejowa Pionki Zachodnie",
+        "wikidataAdminLabel": "Pionki",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Miechów": [
+      {
+        "stationName": "Miechów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2278160",
+        "wikidataItemLabel": "Miechów",
+        "wikidataAdminLabel": "Miechów",
+        "wikidataStateLabel": "województwo małopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Międzyzdroje": [
+      {
+        "stationName": "Międzyzdroje",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2750911",
+        "wikidataItemLabel": "Międzyzdroje",
+        "wikidataAdminLabel": "Międzyzdroje",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Wrocław Mikołajów": [
+      {
+        "stationName": "Wrocław Mikołajów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3492677",
+        "wikidataItemLabel": "Wrocław Mikołajów",
+        "wikidataAdminLabel": "Wrocław",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Wrocław Mikołajów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3492677",
+        "wikidataItemLabel": "Wrocław Mikołajów",
+        "wikidataAdminLabel": "Wrocław",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Olsztyn Zachodni": [
+      {
+        "stationName": "Olsztyn Zachodni",
+        "wikidataItem": "http://www.wikidata.org/entity/Q445351",
+        "wikidataItemLabel": "Olsztyn Zachodni",
+        "wikidataAdminLabel": "Olsztyn",
+        "wikidataStateLabel": "województwo warmińsko-mazurskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Rudnik nad Sanem": [
+      {
+        "stationName": "Rudnik nad Sanem",
+        "wikidataItem": "http://www.wikidata.org/entity/Q920351",
+        "wikidataItemLabel": "Rudnik nad Sanem",
+        "wikidataAdminLabel": "Rudnik nad Sanem",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Zgorzelec Miasto": [],
+    "Żmigród": [
+      {
+        "stationName": "Żmigród",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2671288",
+        "wikidataItemLabel": "Żmigród",
+        "wikidataAdminLabel": "Żmigród",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Żmigród",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2671288",
+        "wikidataItemLabel": "Żmigród",
+        "wikidataAdminLabel": "Żmigród",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Swarzędz": [
+      {
+        "stationName": "Swarzędz",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2174132",
+        "wikidataItemLabel": "Swarzędz",
+        "wikidataAdminLabel": "Swarzędz",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Swarzędz",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2174132",
+        "wikidataItemLabel": "Swarzędz",
+        "wikidataAdminLabel": "Swarzędz",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Pieńsk": [
+      {
+        "stationName": "Pieńsk",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2233452",
+        "wikidataItemLabel": "Pieńsk",
+        "wikidataAdminLabel": "Pieńsk",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Olsztynek": [
+      {
+        "stationName": "Olsztynek",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2526548",
+        "wikidataItemLabel": "Olsztynek",
+        "wikidataAdminLabel": "Olsztynek",
+        "wikidataStateLabel": "województwo warmińsko-mazurskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Ostróda": [
+      {
+        "stationName": "Ostróda",
+        "wikidataItem": "http://www.wikidata.org/entity/Q423553",
+        "wikidataItemLabel": "Ostróda",
+        "wikidataAdminLabel": "Ostróda",
+        "wikidataStateLabel": "województwo warmińsko-mazurskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Ostróda",
+        "wikidataItem": "http://www.wikidata.org/entity/Q423553",
+        "wikidataItemLabel": "Ostróda",
+        "wikidataAdminLabel": "Ostróda",
+        "wikidataStateLabel": "województwo warmińsko-mazurskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Kolin": [
+      {
+        "stationName": "Kolin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2284217",
+        "wikidataItemLabel": "Kolin",
+        "wikidataAdminLabel": "Kolin",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Kolin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2284217",
+        "wikidataItemLabel": "Kolin",
+        "wikidataAdminLabel": "Kolin",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Zduńska Wola": [
+      {
+        "stationName": "Zduńska Wola",
+        "wikidataItem": "http://www.wikidata.org/entity/Q9389569",
+        "wikidataItemLabel": "Zduńska Wola",
+        "wikidataAdminLabel": "Zduńska Wola",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Nowy Targ": [
+      {
+        "stationName": "Nowy Targ",
+        "wikidataItem": "http://www.wikidata.org/entity/Q4295949",
+        "wikidataItemLabel": "Nowy Targ",
+        "wikidataAdminLabel": "Nowy Targ",
+        "wikidataStateLabel": "województwo małopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Leżajsk": [
+      {
+        "stationName": "Leżajsk",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2571659",
+        "wikidataItemLabel": "Leżajsk",
+        "wikidataAdminLabel": "Leżajsk",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Kowalewo Pomorskie": [
+      {
+        "stationName": "Kowalewo Pomorskie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q305394",
+        "wikidataItemLabel": "Kowalewo Pomorskie",
+        "wikidataAdminLabel": "Kowalewo Pomorskie",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Kowalewo Pomorskie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q305394",
+        "wikidataItemLabel": "Kowalewo Pomorskie",
+        "wikidataAdminLabel": "Kowalewo Pomorskie",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Działdowo": [
+      {
+        "stationName": "Działdowo",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2703968",
+        "wikidataItemLabel": "Działdowo",
+        "wikidataAdminLabel": "Działdowo",
+        "wikidataStateLabel": "województwo warmińsko-mazurskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Biłgoraj": [
+      {
+        "stationName": "Biłgoraj",
+        "wikidataItem": "http://www.wikidata.org/entity/Q924284",
+        "wikidataItemLabel": "Biłgoraj",
+        "wikidataAdminLabel": "Biłgoraj",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Toruń Wschodni": [
+      {
+        "stationName": "Toruń Wschodni",
+        "wikidataItem": "http://www.wikidata.org/entity/Q975723",
+        "wikidataItemLabel": "Toruń Wschodni",
+        "wikidataAdminLabel": "Toruń",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Toruń Wschodni",
+        "wikidataItem": "http://www.wikidata.org/entity/Q975723",
+        "wikidataItemLabel": "Toruń Wschodni",
+        "wikidataAdminLabel": "Toruń",
+        "wikidataStateLabel": "województwo toruńskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Toruń Wschodni",
+        "wikidataItem": "http://www.wikidata.org/entity/Q975723",
+        "wikidataItemLabel": "Toruń Wschodni",
+        "wikidataAdminLabel": "Toruń",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Toruń Wschodni",
+        "wikidataItem": "http://www.wikidata.org/entity/Q975723",
+        "wikidataItemLabel": "Toruń Wschodni",
+        "wikidataAdminLabel": "Toruń",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Toruń Wschodni",
+        "wikidataItem": "http://www.wikidata.org/entity/Q975723",
+        "wikidataItemLabel": "Toruń Wschodni",
+        "wikidataAdminLabel": "Toruń",
+        "wikidataStateLabel": "województwo toruńskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Toruń Wschodni",
+        "wikidataItem": "http://www.wikidata.org/entity/Q975723",
+        "wikidataItemLabel": "Toruń Wschodni",
+        "wikidataAdminLabel": "Toruń",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Pleszew": [
+      {
+        "stationName": "Pleszew",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2292008",
+        "wikidataItemLabel": "Pleszew",
+        "wikidataAdminLabel": "Kowalew",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Pleszew",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2292008",
+        "wikidataItemLabel": "Pleszew",
+        "wikidataAdminLabel": "Kowalew",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Tłuszcz": [
+      {
+        "stationName": "Tłuszcz",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2374978",
+        "wikidataItemLabel": "Tłuszcz",
+        "wikidataAdminLabel": "Tłuszcz",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Tłuszcz",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2374978",
+        "wikidataItemLabel": "Tłuszcz",
+        "wikidataAdminLabel": "Tłuszcz",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Zabrze": [
+      {
+        "stationName": "Zabrze",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2562351",
+        "wikidataItemLabel": "Zabrze",
+        "wikidataAdminLabel": "Zabrze",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Koło": [
+      {
+        "stationName": "Koło",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2476803",
+        "wikidataItemLabel": "Koło",
+        "wikidataAdminLabel": "Koło",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Koło",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2476803",
+        "wikidataItemLabel": "Koło",
+        "wikidataAdminLabel": "Koło",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Głogów": [
+      {
+        "stationName": "Głogów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2111496",
+        "wikidataItemLabel": "Głogów",
+        "wikidataAdminLabel": "Głogów",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Głogów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2111496",
+        "wikidataItemLabel": "Głogów",
+        "wikidataAdminLabel": "Głogów",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Brzeg Dolny": [
+      {
+        "stationName": "Brzeg Dolny",
+        "wikidataItem": "http://www.wikidata.org/entity/Q9180851",
+        "wikidataItemLabel": "Brzeg Dolny",
+        "wikidataAdminLabel": "Brzeg Dolny",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Brzeg Dolny",
+        "wikidataItem": "http://www.wikidata.org/entity/Q9180851",
+        "wikidataItemLabel": "Brzeg Dolny",
+        "wikidataAdminLabel": "Brzeg Dolny",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Solec Kujawski": [
+      {
+        "stationName": "Solec Kujawski",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1924038",
+        "wikidataItemLabel": "Solec Kujawski",
+        "wikidataAdminLabel": "Solec Kujawski",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Krajenka": [
+      {
+        "stationName": "Krajenka",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2450820",
+        "wikidataItemLabel": "Krajenka",
+        "wikidataAdminLabel": "Krajenka",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Krajenka",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2450820",
+        "wikidataItemLabel": "Krajenka",
+        "wikidataAdminLabel": "Krajenka",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Dąbrowa Górnicza": [
+      {
+        "stationName": "Dąbrowa Górnicza",
+        "wikidataItem": "http://www.wikidata.org/entity/Q5320686",
+        "wikidataItemLabel": "Dąbrowa Górnicza",
+        "wikidataAdminLabel": "Dąbrowa Górnicza",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Dąbrowa Górnicza",
+        "wikidataItem": "http://www.wikidata.org/entity/Q5320686",
+        "wikidataItemLabel": "Dąbrowa Górnicza",
+        "wikidataAdminLabel": "Dąbrowa Górnicza",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Lipka Krajeńska": [
+      {
+        "stationName": "Lipka Krajeńska",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11757715",
+        "wikidataItemLabel": "Lipka Krajeńska",
+        "wikidataAdminLabel": "Lipka",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Lipka Krajeńska",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11757715",
+        "wikidataItemLabel": "Lipka Krajeńska",
+        "wikidataAdminLabel": "Lipka",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Prudnik": [
+      {
+        "stationName": "Prudnik",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1989187",
+        "wikidataItemLabel": "Prudnik",
+        "wikidataAdminLabel": "Prudnik",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Rzesza Niemiecka"
+      },
+      {
+        "stationName": "Prudnik",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1989187",
+        "wikidataItemLabel": "Prudnik",
+        "wikidataAdminLabel": "Prudnik",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Rzesza Niemiecka"
+      },
+      {
+        "stationName": "Prudnik",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1989187",
+        "wikidataItemLabel": "Prudnik",
+        "wikidataAdminLabel": "Prudnik",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Prudnik",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1989187",
+        "wikidataItemLabel": "Prudnik",
+        "wikidataAdminLabel": "Prudnik",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Łódź Chojny": [
+      {
+        "stationName": "Łódź Chojny",
+        "wikidataItem": "http://www.wikidata.org/entity/Q940290",
+        "wikidataItemLabel": "Łódź Chojny",
+        "wikidataAdminLabel": "Chojny-Dąbrowa",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Tereszpol Biłgorajski": [
+      {
+        "stationName": "Tereszpol Biłgorajski",
+        "wikidataItem": "http://www.wikidata.org/entity/Q9357400",
+        "wikidataItemLabel": "Tereszpol Biłgorajski",
+        "wikidataAdminLabel": "Tereszpol",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Tereszpol Biłgorajski",
+        "wikidataItem": "http://www.wikidata.org/entity/Q9357400",
+        "wikidataItemLabel": "Tereszpol Biłgorajski",
+        "wikidataAdminLabel": "Tereszpol",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Strzelce Opolskie": [
+      {
+        "stationName": "Strzelce Opolskie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2540187",
+        "wikidataItemLabel": "Strzelce Opolskie",
+        "wikidataAdminLabel": "Strzelce Opolskie",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Łęczyca": [
+      {
+        "stationName": "Łęczyca",
+        "wikidataItem": "http://www.wikidata.org/entity/Q929283",
+        "wikidataItemLabel": "Łęczyca",
+        "wikidataAdminLabel": "Łęczyca",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Niemojki": [
+      {
+        "stationName": "Niemojki",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2323793",
+        "wikidataItemLabel": "Niemojki",
+        "wikidataAdminLabel": "Niemojki",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Niemojki",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2323793",
+        "wikidataItemLabel": "Niemojki",
+        "wikidataAdminLabel": "Niemojki",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Krotoszyn": [
+      {
+        "stationName": "Krotoszyn",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11748374",
+        "wikidataItemLabel": "Krotoszyn (stacja kolejowa)",
+        "wikidataAdminLabel": "Krotoszyn",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Mława": [
+      {
+        "stationName": "Mława",
+        "wikidataItem": "http://www.wikidata.org/entity/Q941294",
+        "wikidataItemLabel": "Mława",
+        "wikidataAdminLabel": "Mława",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Brzesko Okocim": [
+      {
+        "stationName": "Brzesko Okocim",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2325225",
+        "wikidataItemLabel": "Brzesko Okocim",
+        "wikidataAdminLabel": "Brzesko",
+        "wikidataStateLabel": "województwo małopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Będzin Miasto": [],
+    "Sędziszów Małopolski": [
+      {
+        "stationName": "Sędziszów Małopolski",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2364469",
+        "wikidataItemLabel": "Sędziszów Małopolski",
+        "wikidataAdminLabel": "Sędziszów Małopolski",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Zwierzyn": [
+      {
+        "stationName": "Zwierzyn",
+        "wikidataItem": "http://www.wikidata.org/entity/Q600110",
+        "wikidataItemLabel": "Zwierzyn",
+        "wikidataAdminLabel": "Zwierzyn",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Zwierzyn",
+        "wikidataItem": "http://www.wikidata.org/entity/Q600110",
+        "wikidataItemLabel": "Zwierzyn",
+        "wikidataAdminLabel": "Zwierzyn",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Bystrzyca Kłodzka": [],
+    "Chełm Miasto": [
+      {
+        "stationName": "Chełm Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1818609",
+        "wikidataItemLabel": "Chełm Miasto",
+        "wikidataAdminLabel": "Chełm",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Chełm Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1818609",
+        "wikidataItemLabel": "Chełm Miasto",
+        "wikidataAdminLabel": "Chełm",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Jastrowie": [
+      {
+        "stationName": "Jastrowie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2439016",
+        "wikidataItemLabel": "Jastrowie",
+        "wikidataAdminLabel": "Jastrowie",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jastrowie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2439016",
+        "wikidataItemLabel": "Jastrowie",
+        "wikidataAdminLabel": "Jastrowie",
+        "wikidataStateLabel": "województwo pilskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jastrowie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2439016",
+        "wikidataItemLabel": "Jastrowie",
+        "wikidataAdminLabel": "Jastrowie",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jastrowie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2439016",
+        "wikidataItemLabel": "Jastrowie",
+        "wikidataAdminLabel": "Jastrowie",
+        "wikidataStateLabel": "województwo pilskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jastrowie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2439016",
+        "wikidataItemLabel": "Jastrowie",
+        "wikidataAdminLabel": "Jastrowie",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jastrowie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2439016",
+        "wikidataItemLabel": "Jastrowie",
+        "wikidataAdminLabel": "Jastrowie",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jastrowie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2439016",
+        "wikidataItemLabel": "Jastrowie",
+        "wikidataAdminLabel": "Jastrowie",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jastrowie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2439016",
+        "wikidataItemLabel": "Jastrowie",
+        "wikidataAdminLabel": "Jastrowie",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Opalenica": [
+      {
+        "stationName": "Opalenica",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2455708",
+        "wikidataItemLabel": "Opalenica",
+        "wikidataAdminLabel": "Opalenica",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Opalenica",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2455708",
+        "wikidataItemLabel": "Opalenica",
+        "wikidataAdminLabel": "Opalenica",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Pszczyna": [
+      {
+        "stationName": "Pszczyna",
+        "wikidataItem": "http://www.wikidata.org/entity/Q655923",
+        "wikidataItemLabel": "Pszczyna",
+        "wikidataAdminLabel": "Pszczyna",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Wąbrzeźno": [
+      {
+        "stationName": "Wąbrzeźno",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1956157",
+        "wikidataItemLabel": "Wąbrzeźno",
+        "wikidataAdminLabel": "Wąbrzeźno",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Mielec": [
+      {
+        "stationName": "Mielec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1996019",
+        "wikidataItemLabel": "Mielec",
+        "wikidataAdminLabel": "Mielec",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Mielec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1996019",
+        "wikidataItemLabel": "Mielec",
+        "wikidataAdminLabel": "Mielec",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Radomsko": [
+      {
+        "stationName": "Radomsko",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2341427",
+        "wikidataItemLabel": "Radomsko",
+        "wikidataAdminLabel": "Radomsko",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Radomsko",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2341427",
+        "wikidataItemLabel": "Radomsko",
+        "wikidataAdminLabel": "Radomsko",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Nowa Sarzyna": [
+      {
+        "stationName": "Nowa Sarzyna",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11793438",
+        "wikidataItemLabel": "Nowa Sarzyna",
+        "wikidataAdminLabel": "Nowa Sarzyna",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Milicz": [
+      {
+        "stationName": "Milicz",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2550065",
+        "wikidataItemLabel": "Milicz",
+        "wikidataAdminLabel": "Milicz",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Grabowno Wielkie": [],
+    "Pardubice Hlavni Nadrazi": [],
+    "Świdnik Miasto": [
+      {
+        "stationName": "Świdnik Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1961725",
+        "wikidataItemLabel": "Świdnik Miasto",
+        "wikidataAdminLabel": "Świdnik",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Świdnik Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1961725",
+        "wikidataItemLabel": "Świdnik Miasto",
+        "wikidataAdminLabel": "Świdnik",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Sędzisław": [
+      {
+        "stationName": "Sędzisław",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2923077",
+        "wikidataItemLabel": "Sędzisław",
+        "wikidataAdminLabel": "Sędzisław",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Ścinawa": [
+      {
+        "stationName": "Ścinawa",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1959724",
+        "wikidataItemLabel": "Ścinawa",
+        "wikidataAdminLabel": "Ścinawa",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Ścinawa",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1959724",
+        "wikidataItemLabel": "Ścinawa",
+        "wikidataAdminLabel": "Ścinawa",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Wrocław Nadodrze": [
+      {
+        "stationName": "Wrocław Nadodrze",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11837968",
+        "wikidataItemLabel": "Wrocław Nadodrze",
+        "wikidataAdminLabel": "Nadodrze",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Wrocław Nadodrze",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11837968",
+        "wikidataItemLabel": "Wrocław Nadodrze",
+        "wikidataAdminLabel": "Nadodrze",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Wrocław Nadodrze",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11837968",
+        "wikidataItemLabel": "Wrocław Nadodrze",
+        "wikidataAdminLabel": "Wrocław",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Wrocław Nadodrze",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11837968",
+        "wikidataItemLabel": "Wrocław Nadodrze",
+        "wikidataAdminLabel": "Wrocław",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Wrocław Nadodrze",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11837968",
+        "wikidataItemLabel": "Wrocław Nadodrze",
+        "wikidataAdminLabel": "Nadodrze",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Wrocław Nadodrze",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11837968",
+        "wikidataItemLabel": "Wrocław Nadodrze",
+        "wikidataAdminLabel": "Nadodrze",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Wrocław Nadodrze",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11837968",
+        "wikidataItemLabel": "Wrocław Nadodrze",
+        "wikidataAdminLabel": "Wrocław",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Wrocław Nadodrze",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11837968",
+        "wikidataItemLabel": "Wrocław Nadodrze",
+        "wikidataAdminLabel": "Wrocław",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Łąg": [
+      {
+        "stationName": "Łąg",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2652423",
+        "wikidataItemLabel": "Łąg",
+        "wikidataAdminLabel": "Łąg",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Szamotuły": [
+      {
+        "stationName": "Szamotuły",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2789634",
+        "wikidataItemLabel": "Szamotuły",
+        "wikidataAdminLabel": "Szamotuły",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Szamotuły",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2789634",
+        "wikidataItemLabel": "Szamotuły",
+        "wikidataAdminLabel": "Szamotuły",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Lichkov": [],
+    "Jarosław": [
+      {
+        "stationName": "Jarosław",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2316035",
+        "wikidataItemLabel": "Jarosław",
+        "wikidataAdminLabel": "Jarosław",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jarosław",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2316035",
+        "wikidataItemLabel": "Jarosław",
+        "wikidataAdminLabel": "Jarosław",
+        "wikidataStateLabel": "województwo przemyskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jarosław",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2316035",
+        "wikidataItemLabel": "Jarosław",
+        "wikidataAdminLabel": "Jarosław",
+        "wikidataStateLabel": "województwo rzeszowskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jarosław",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1967106",
+        "wikidataItemLabel": "Jarosław",
+        "wikidataAdminLabel": "Jarosław",
+        "wikidataStateLabel": null,
+        "wikidataCountryLabel": "Rosja"
+      }
+    ],
+    "Stalowa Wola Rozwadów": [
+      {
+        "stationName": "Stalowa Wola Rozwadów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q7597333",
+        "wikidataItemLabel": "Stalowa Wola Rozwadów",
+        "wikidataAdminLabel": "Stalowa Wola",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Nowy Tomyśl": [
+      {
+        "stationName": "Nowy Tomyśl",
+        "wikidataItem": "http://www.wikidata.org/entity/Q946897",
+        "wikidataItemLabel": "Nowy Tomyśl",
+        "wikidataAdminLabel": "Nowy Tomyśl",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Nowy Tomyśl",
+        "wikidataItem": "http://www.wikidata.org/entity/Q946897",
+        "wikidataItemLabel": "Nowy Tomyśl",
+        "wikidataAdminLabel": "Nowy Tomyśl",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Trzebinia": [
+      {
+        "stationName": "Trzebinia",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3102081",
+        "wikidataItemLabel": "Trzebinia",
+        "wikidataAdminLabel": "Trzebinia",
+        "wikidataStateLabel": "województwo małopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Trzebinia",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3102081",
+        "wikidataItemLabel": "Trzebinia",
+        "wikidataAdminLabel": "Trzebinia",
+        "wikidataStateLabel": "województwo małopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Lublin Zachodni": [
+      {
+        "stationName": "Lublin Zachodni",
+        "wikidataItem": "http://www.wikidata.org/entity/Q56328800",
+        "wikidataItemLabel": "Lublin Zachodni",
+        "wikidataAdminLabel": "Lublin",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Lublin Zachodni",
+        "wikidataItem": "http://www.wikidata.org/entity/Q56328800",
+        "wikidataItemLabel": "Lublin Zachodni",
+        "wikidataAdminLabel": "Lublin",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Dąbrowa Górnicza Ząbkowice": [
+      {
+        "stationName": "Dąbrowa Górnicza Ząbkowice",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2454661",
+        "wikidataItemLabel": "Dąbrowa Górnicza Ząbkowice",
+        "wikidataAdminLabel": "Dąbrowa Górnicza",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Dąbrowa Górnicza Ząbkowice",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2454661",
+        "wikidataItemLabel": "Dąbrowa Górnicza Ząbkowice",
+        "wikidataAdminLabel": "Dąbrowa Górnicza",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Przeworsk": [
+      {
+        "stationName": "Przeworsk",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2109826",
+        "wikidataItemLabel": "Przeworsk",
+        "wikidataAdminLabel": "Przeworsk",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Chodzież": [
+      {
+        "stationName": "Chodzież",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2100852",
+        "wikidataItemLabel": "Chodzież",
+        "wikidataAdminLabel": "Chodzież",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Chodzież",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2100852",
+        "wikidataItemLabel": "Chodzież",
+        "wikidataAdminLabel": "Chodzież",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Nowy Dwór Mazowiecki": [
+      {
+        "stationName": "Nowy Dwór Mazowiecki",
+        "wikidataItem": "http://www.wikidata.org/entity/Q587229",
+        "wikidataItemLabel": "Nowy Dwór Mazowiecki",
+        "wikidataAdminLabel": "Nowy Dwór Mazowiecki",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Nurzec": [
+      {
+        "stationName": "Nurzec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2586794",
+        "wikidataItemLabel": "Nurzec",
+        "wikidataAdminLabel": "Nurzec-Stacja",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Gorzów Wielkopolski Wschodni": [],
+    "Dąbrowa Białostocka": [
+      {
+        "stationName": "Dąbrowa Białostocka",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3544946",
+        "wikidataItemLabel": "Dąbrowa Białostocka",
+        "wikidataAdminLabel": "Dąbrowa Białostocka",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Dąbrowa Białostocka",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3544946",
+        "wikidataItemLabel": "Dąbrowa Białostocka",
+        "wikidataAdminLabel": "Dąbrowa Białostocka",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Kalwaria Zebrzydowska Lanckorona": [
+      {
+        "stationName": "Kalwaria Zebrzydowska Lanckorona",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2680047",
+        "wikidataItemLabel": "Kalwaria Zebrzydowska Lanckorona",
+        "wikidataAdminLabel": "Kalwaria Zebrzydowska",
+        "wikidataStateLabel": "województwo małopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Strzelin": [
+      {
+        "stationName": "Strzelin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1994031",
+        "wikidataItemLabel": "Strzelin",
+        "wikidataAdminLabel": "Strzelin",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Mieszkowice": [
+      {
+        "stationName": "Mieszkowice",
+        "wikidataItem": "http://www.wikidata.org/entity/Q927669",
+        "wikidataItemLabel": "Mieszkowice",
+        "wikidataAdminLabel": "Mieszkowice",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Mieszkowice",
+        "wikidataItem": "http://www.wikidata.org/entity/Q927669",
+        "wikidataItemLabel": "Mieszkowice",
+        "wikidataAdminLabel": "Mieszkowice",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Środa Wielkopolska": [
+      {
+        "stationName": "Środa Wielkopolska",
+        "wikidataItem": "http://www.wikidata.org/entity/Q9395808",
+        "wikidataItemLabel": "Środa Wielkopolska",
+        "wikidataAdminLabel": "Środa Wielkopolska",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Środa Wielkopolska",
+        "wikidataItem": "http://www.wikidata.org/entity/Q9395808",
+        "wikidataItemLabel": "Środa Wielkopolska",
+        "wikidataAdminLabel": "Środa Wielkopolska",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Trzcianka": [
+      {
+        "stationName": "Trzcianka",
+        "wikidataItem": "http://www.wikidata.org/entity/Q9362122",
+        "wikidataItemLabel": "Trzcianka",
+        "wikidataAdminLabel": "Trzcianka",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Trzcianka",
+        "wikidataItem": "http://www.wikidata.org/entity/Q9362122",
+        "wikidataItemLabel": "Trzcianka",
+        "wikidataAdminLabel": "Trzcianka",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Wieleń": [
+      {
+        "stationName": "Wieleń",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2268872",
+        "wikidataItemLabel": "Wieleń",
+        "wikidataAdminLabel": "Wieleń",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Wieleń",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2268872",
+        "wikidataItemLabel": "Wieleń",
+        "wikidataAdminLabel": "Wieleń",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Rawicz": [
+      {
+        "stationName": "Rawicz",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2489936",
+        "wikidataItemLabel": "Rawicz",
+        "wikidataAdminLabel": "Q52898",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Rawicz",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2489936",
+        "wikidataItemLabel": "Rawicz",
+        "wikidataAdminLabel": "Q52898",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Frankfurt/Oder": [],
+    "Ropczyce": [
+      {
+        "stationName": "Ropczyce",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2513213",
+        "wikidataItemLabel": "Ropczyce",
+        "wikidataAdminLabel": "Ropczyce",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Ropczyce",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2513213",
+        "wikidataItemLabel": "Ropczyce",
+        "wikidataAdminLabel": "Ropczyce",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Mockava": [
+      {
+        "stationName": "Mockava",
+        "wikidataItem": "http://www.wikidata.org/entity/Q746754",
+        "wikidataItemLabel": "Mockava",
+        "wikidataAdminLabel": "Būdvietis",
+        "wikidataStateLabel": null,
+        "wikidataCountryLabel": "Litwa"
+      },
+      {
+        "stationName": "Mockava",
+        "wikidataItem": "http://www.wikidata.org/entity/Q746754",
+        "wikidataItemLabel": "Mockava",
+        "wikidataAdminLabel": "Būdvietis",
+        "wikidataStateLabel": null,
+        "wikidataCountryLabel": "Litwa"
+      }
+    ],
+    "Czarna Woda": [
+      {
+        "stationName": "Czarna Woda",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2067256",
+        "wikidataItemLabel": "Czarna Woda",
+        "wikidataAdminLabel": "Czarna Woda",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Czarna Woda",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2067256",
+        "wikidataItemLabel": "Czarna Woda",
+        "wikidataAdminLabel": "Czarna Woda",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Nowe Drezdenko": [
+      {
+        "stationName": "Nowe Drezdenko",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2430805",
+        "wikidataItemLabel": "Nowe Drezdenko",
+        "wikidataAdminLabel": "Drezdenko",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Chojna": [
+      {
+        "stationName": "Chojna",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2245501",
+        "wikidataItemLabel": "Chojna",
+        "wikidataAdminLabel": "Chojna",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Chojna",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2245501",
+        "wikidataItemLabel": "Chojna",
+        "wikidataAdminLabel": "Chojna",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Łapy": [
+      {
+        "stationName": "Łapy",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2336765",
+        "wikidataItemLabel": "Łapy",
+        "wikidataAdminLabel": "Łapy",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Pruszcz Gdański": [
+      {
+        "stationName": "Pruszcz Gdański",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2511526",
+        "wikidataItemLabel": "Pruszcz Gdański",
+        "wikidataAdminLabel": "Pruszcz Gdański",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Pruszcz Gdański",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2511526",
+        "wikidataItemLabel": "Pruszcz Gdański",
+        "wikidataAdminLabel": "Pruszcz Gdański",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Hajnówka": [
+      {
+        "stationName": "Hajnówka",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2066345",
+        "wikidataItemLabel": "Hajnówka",
+        "wikidataAdminLabel": "Hajnówka",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Sędziszów": [
+      {
+        "stationName": "Sędziszów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1995786",
+        "wikidataItemLabel": "Sędziszów",
+        "wikidataAdminLabel": "Sędziszów",
+        "wikidataStateLabel": "województwo świętokrzyskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Bolesławiec": [
+      {
+        "stationName": "Bolesławiec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2338583",
+        "wikidataItemLabel": "Bolesławiec",
+        "wikidataAdminLabel": "Bolesławiec",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Toruń Miasto": [
+      {
+        "stationName": "Toruń Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2798162",
+        "wikidataItemLabel": "Toruń Miasto",
+        "wikidataAdminLabel": "Toruń",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Toruń Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2798162",
+        "wikidataItemLabel": "Toruń Miasto",
+        "wikidataAdminLabel": "Toruń",
+        "wikidataStateLabel": "województwo toruńskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Toruń Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2798162",
+        "wikidataItemLabel": "Toruń Miasto",
+        "wikidataAdminLabel": "Toruń",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Toruń Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2798162",
+        "wikidataItemLabel": "Toruń Miasto",
+        "wikidataAdminLabel": "Toruń",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Toruń Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2798162",
+        "wikidataItemLabel": "Toruń Miasto",
+        "wikidataAdminLabel": "Toruń",
+        "wikidataStateLabel": "województwo toruńskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Toruń Miasto",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2798162",
+        "wikidataItemLabel": "Toruń Miasto",
+        "wikidataAdminLabel": "Toruń",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Gryfino": [
+      {
+        "stationName": "Gryfino",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2185435",
+        "wikidataItemLabel": "Gryfino",
+        "wikidataAdminLabel": "Gryfino",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Gryfino",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2185435",
+        "wikidataItemLabel": "Gryfino",
+        "wikidataAdminLabel": "Gryfino",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Międzyrzecz": [
+      {
+        "stationName": "Międzyrzecz",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2664401",
+        "wikidataItemLabel": "Międzyrzecz",
+        "wikidataAdminLabel": "Międzyrzecz",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Wołów": [
+      {
+        "stationName": "Wołów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2429018",
+        "wikidataItemLabel": "Wołów",
+        "wikidataAdminLabel": "Wołów",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Wołów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2429018",
+        "wikidataItemLabel": "Wołów",
+        "wikidataAdminLabel": "Wołów",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Koniecpol": [
+      {
+        "stationName": "Koniecpol",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1812890",
+        "wikidataItemLabel": "Koniecpol",
+        "wikidataAdminLabel": "Koniecpol",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Letohrad": [
+      {
+        "stationName": "Letohrad",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2777491",
+        "wikidataItemLabel": "Letohrad",
+        "wikidataAdminLabel": "Letohrad",
+        "wikidataStateLabel": null,
+        "wikidataCountryLabel": "Czechy"
+      },
+      {
+        "stationName": "Letohrad",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2777491",
+        "wikidataItemLabel": "Letohrad",
+        "wikidataAdminLabel": "Letohrad",
+        "wikidataStateLabel": null,
+        "wikidataCountryLabel": "Czechy"
+      }
+    ],
+    "Jedlina-Zdrój": [
+      {
+        "stationName": "Jedlina-Zdrój",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1816099",
+        "wikidataItemLabel": "Jedlina-Zdrój",
+        "wikidataAdminLabel": "Jedlina-Zdrój",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Jedlina-Zdrój",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1816099",
+        "wikidataItemLabel": "Jedlina-Zdrój",
+        "wikidataAdminLabel": "Jedlina-Zdrój",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Kłodzko Główne": [
+      {
+        "stationName": "Kłodzko Główne",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2510706",
+        "wikidataItemLabel": "Kłodzko Główne",
+        "wikidataAdminLabel": "Kłodzko",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Kłodzko Główne",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2510706",
+        "wikidataItemLabel": "Kłodzko Główne",
+        "wikidataAdminLabel": "Kłodzko",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Łochów": [
+      {
+        "stationName": "Łochów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3962321",
+        "wikidataItemLabel": "Łochów",
+        "wikidataAdminLabel": "Łochów",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Łochów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3962321",
+        "wikidataItemLabel": "Łochów",
+        "wikidataAdminLabel": "Łochów",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Stalowa Wola Centrum": [
+      {
+        "stationName": "Stalowa Wola Centrum",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2853323",
+        "wikidataItemLabel": "Stalowa Wola Centrum",
+        "wikidataAdminLabel": "Stalowa Wola",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Kamieniec Ząbkowicki": [
+      {
+        "stationName": "Kamieniec Ząbkowicki",
+        "wikidataItem": "http://www.wikidata.org/entity/Q947517",
+        "wikidataItemLabel": "Kamieniec Ząbkowicki",
+        "wikidataAdminLabel": "Kamieniec Ząbkowicki",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Kamieniec Ząbkowicki",
+        "wikidataItem": "http://www.wikidata.org/entity/Q947517",
+        "wikidataItemLabel": "Kamieniec Ząbkowicki",
+        "wikidataAdminLabel": "Kamieniec Ząbkowicki",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Aleksandrów Kujawski": [
+      {
+        "stationName": "Aleksandrów Kujawski",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1951631",
+        "wikidataItemLabel": "Aleksandrów Kujawski",
+        "wikidataAdminLabel": "Centrum",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Aleksandrów Kujawski",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1951631",
+        "wikidataItemLabel": "Aleksandrów Kujawski",
+        "wikidataAdminLabel": "Centrum",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Rzepin": [
+      {
+        "stationName": "Rzepin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q801385",
+        "wikidataItemLabel": "Rzepin",
+        "wikidataAdminLabel": "Rzepin",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Rzepin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q801385",
+        "wikidataItemLabel": "Rzepin",
+        "wikidataAdminLabel": "Rzepin",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Rzepin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q801385",
+        "wikidataItemLabel": "Rzepin",
+        "wikidataAdminLabel": "Rzepin",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Rzepin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q801385",
+        "wikidataItemLabel": "Rzepin",
+        "wikidataAdminLabel": "Rzepin",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Myszków": [
+      {
+        "stationName": "Myszków",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2317741",
+        "wikidataItemLabel": "Myszków",
+        "wikidataAdminLabel": "Myszków",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Trakiszki": [
+      {
+        "stationName": "Trakiszki",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2196314",
+        "wikidataItemLabel": "Trakiszki",
+        "wikidataAdminLabel": "Trakiszki",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Augustów": [
+      {
+        "stationName": "Augustów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3258961",
+        "wikidataItemLabel": "Augustów",
+        "wikidataAdminLabel": "Augustów",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Augustów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3258961",
+        "wikidataItemLabel": "Augustów",
+        "wikidataAdminLabel": "Augustów",
+        "wikidataStateLabel": "województwo suwalskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Augustów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3258961",
+        "wikidataItemLabel": "Augustów",
+        "wikidataAdminLabel": "Augustów",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Augustów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3258961",
+        "wikidataItemLabel": "Augustów",
+        "wikidataAdminLabel": "Augustów",
+        "wikidataStateLabel": "województwo suwalskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Kaliska": [],
+    "Oświęcim": [
+      {
+        "stationName": "Oświęcim",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2735909",
+        "wikidataItemLabel": "Oświęcim",
+        "wikidataAdminLabel": "Oświęcim",
+        "wikidataStateLabel": "województwo małopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Oświęcim",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2735909",
+        "wikidataItemLabel": "Oświęcim",
+        "wikidataAdminLabel": "Oświęcim",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Oświęcim",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2735909",
+        "wikidataItemLabel": "Oświęcim",
+        "wikidataAdminLabel": "Oświęcim",
+        "wikidataStateLabel": "województwo małopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Oświęcim",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2735909",
+        "wikidataItemLabel": "Oświęcim",
+        "wikidataAdminLabel": "Oświęcim",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Laskowice Pomorskie": [
+      {
+        "stationName": "Laskowice Pomorskie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11753036",
+        "wikidataItemLabel": "Laskowice Pomorskie",
+        "wikidataAdminLabel": "Laskowice",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Laskowice Pomorskie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q11753036",
+        "wikidataItemLabel": "Laskowice Pomorskie",
+        "wikidataAdminLabel": "Laskowice",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Dęblin": [
+      {
+        "stationName": "Dęblin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2518681",
+        "wikidataItemLabel": "Dęblin",
+        "wikidataAdminLabel": "Dęblin",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Dęblin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2518681",
+        "wikidataItemLabel": "Dęblin",
+        "wikidataAdminLabel": "Dęblin",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Słupca": [],
+    "Siemiatycze": [
+      {
+        "stationName": "Siemiatycze",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2799545",
+        "wikidataItemLabel": "Siemiatycze",
+        "wikidataAdminLabel": "Siemiatycze-Stacja",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Brzeg": [
+      {
+        "stationName": "Brzeg",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2702898",
+        "wikidataItemLabel": "Brzeg",
+        "wikidataAdminLabel": "Brzeg",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Szczecin Dąbie": [
+      {
+        "stationName": "Szczecin Dąbie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3051317",
+        "wikidataItemLabel": "Szczecin Dąbie",
+        "wikidataAdminLabel": "Szczecin",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Szczecin Dąbie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3051317",
+        "wikidataItemLabel": "Szczecin Dąbie",
+        "wikidataAdminLabel": "Szczecin",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Szczebrzeszyn": [
+      {
+        "stationName": "Szczebrzeszyn",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2606799",
+        "wikidataItemLabel": "Szczebrzeszyn",
+        "wikidataAdminLabel": "Brody Małe",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Małkinia": [
+      {
+        "stationName": "Małkinia",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2575361",
+        "wikidataItemLabel": "Małkinia",
+        "wikidataAdminLabel": "Małkinia Górna",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Małkinia",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2575361",
+        "wikidataItemLabel": "Małkinia",
+        "wikidataAdminLabel": "Małkinia Górna",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Nisko": [
+      {
+        "stationName": "Nisko",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3000683",
+        "wikidataItemLabel": "Nisko",
+        "wikidataAdminLabel": "Nisko",
+        "wikidataStateLabel": "województwo lwowskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Nisko",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3000683",
+        "wikidataItemLabel": "Nisko",
+        "wikidataAdminLabel": "Nisko",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Sucha Beskidzka Zamek": [],
+    "Łódź Żabieniec": [
+      {
+        "stationName": "Łódź Żabieniec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3088550",
+        "wikidataItemLabel": "Łódź Żabieniec",
+        "wikidataAdminLabel": "Teofilów-Wielkopolska",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Nałęczów": [
+      {
+        "stationName": "Nałęczów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q769053",
+        "wikidataItemLabel": "Nałęczów",
+        "wikidataAdminLabel": "Drzewce-Kolonia",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Chrzanów Śródmieście": [],
+    "Zgierz": [
+      {
+        "stationName": "Zgierz",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2436634",
+        "wikidataItemLabel": "Zgierz",
+        "wikidataAdminLabel": "Zgierz",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Zgierz",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2436634",
+        "wikidataItemLabel": "Zgierz",
+        "wikidataAdminLabel": "Zgierz",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Gdańsk Oliwa": [
+      {
+        "stationName": "Gdańsk Oliwa",
+        "wikidataItem": "http://www.wikidata.org/entity/Q594376",
+        "wikidataItemLabel": "Gdańsk Oliwa",
+        "wikidataAdminLabel": "Gdańsk",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Włoszczowa Północ": [
+      {
+        "stationName": "Włoszczowa Północ",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2309003",
+        "wikidataItemLabel": "Włoszczowa Północ",
+        "wikidataAdminLabel": "Włoszczowa",
+        "wikidataStateLabel": "województwo świętokrzyskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Jablonne nad Orlici": [],
+    "Paczków": [
+      {
+        "stationName": "Paczków",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2324773",
+        "wikidataItemLabel": "Paczków",
+        "wikidataAdminLabel": "Paczków",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Paczków",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2324773",
+        "wikidataItemLabel": "Paczków",
+        "wikidataAdminLabel": "Paczków",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Mrozy": [
+      {
+        "stationName": "Mrozy",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1822634",
+        "wikidataItemLabel": "Mrozy",
+        "wikidataAdminLabel": "Mrozy",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Jabłonowo Pomorskie": [
+      {
+        "stationName": "Jabłonowo Pomorskie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2064508",
+        "wikidataItemLabel": "Jabłonowo Pomorskie",
+        "wikidataAdminLabel": "Jabłonowo Pomorskie",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Zduńska Wola Karsznice": [
+      {
+        "stationName": "Zduńska Wola Karsznice",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1993166",
+        "wikidataItemLabel": "Zduńska Wola Karsznice",
+        "wikidataAdminLabel": "Zduńska Wola",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Zduńska Wola Karsznice",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1993166",
+        "wikidataItemLabel": "Zduńska Wola Karsznice",
+        "wikidataAdminLabel": "Zduńska Wola",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Ustka": [
+      {
+        "stationName": "Ustka",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2736677",
+        "wikidataItemLabel": "Ustka",
+        "wikidataAdminLabel": "Ustka",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Zwierzyniec": [
+      {
+        "stationName": "Zwierzyniec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q9392267",
+        "wikidataItemLabel": "Zwierzyniec",
+        "wikidataAdminLabel": "Zwierzyniec",
+        "wikidataStateLabel": "województwo lubelskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Zwierzyniec",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2295824",
+        "wikidataItemLabel": "Zwierzyniec",
+        "wikidataAdminLabel": null,
+        "wikidataStateLabel": null,
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Praha-Liben": [],
+    "Berlin Gesundbrunnen": [],
+    "Mysłowice": [
+      {
+        "stationName": "Mysłowice",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2362356",
+        "wikidataItemLabel": "Mysłowice",
+        "wikidataAdminLabel": "Mysłowice",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Mysłowice",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2362356",
+        "wikidataItemLabel": "Mysłowice",
+        "wikidataAdminLabel": "Mysłowice",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Mysłowice",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2362356",
+        "wikidataItemLabel": "Mysłowice",
+        "wikidataAdminLabel": "Mysłowice",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Mysłowice",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2362356",
+        "wikidataItemLabel": "Mysłowice",
+        "wikidataAdminLabel": "Mysłowice",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Otmuchów": [
+      {
+        "stationName": "Otmuchów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2713731",
+        "wikidataItemLabel": "Otmuchów",
+        "wikidataAdminLabel": "Otmuchów",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Otmuchów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2713731",
+        "wikidataItemLabel": "Otmuchów",
+        "wikidataAdminLabel": "Otmuchów",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Sokółka": [
+      {
+        "stationName": "Sokółka",
+        "wikidataItem": "http://www.wikidata.org/entity/Q5305929",
+        "wikidataItemLabel": "Sokółka",
+        "wikidataAdminLabel": "Sokółka",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Głogówek": [
+      {
+        "stationName": "Głogówek",
+        "wikidataItem": "http://www.wikidata.org/entity/Q940318",
+        "wikidataItemLabel": "Głogówek",
+        "wikidataAdminLabel": "Głogówek",
+        "wikidataStateLabel": "województwo opolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Jędrzejów": [
+      {
+        "stationName": "Jędrzejów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q5109522",
+        "wikidataItemLabel": "Jędrzejów",
+        "wikidataAdminLabel": "Jędrzejów",
+        "wikidataStateLabel": "województwo świętokrzyskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Krzyż": [
+      {
+        "stationName": "Krzyż",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2188798",
+        "wikidataItemLabel": "Krzyż",
+        "wikidataAdminLabel": "Krzyż Wielkopolski",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Rzesza Niemiecka"
+      },
+      {
+        "stationName": "Krzyż",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2188798",
+        "wikidataItemLabel": "Krzyż",
+        "wikidataAdminLabel": "Krzyż Wielkopolski",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Rzesza Niemiecka"
+      },
+      {
+        "stationName": "Krzyż",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2188798",
+        "wikidataItemLabel": "Krzyż",
+        "wikidataAdminLabel": "Krzyż Wielkopolski",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Krzyż",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2188798",
+        "wikidataItemLabel": "Krzyż",
+        "wikidataAdminLabel": "Krzyż Wielkopolski",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Radymno": [
+      {
+        "stationName": "Radymno",
+        "wikidataItem": "http://www.wikidata.org/entity/Q785458",
+        "wikidataItemLabel": "Radymno",
+        "wikidataAdminLabel": "Radymno",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Radymno",
+        "wikidataItem": "http://www.wikidata.org/entity/Q785458",
+        "wikidataItemLabel": "Radymno",
+        "wikidataAdminLabel": "Radymno",
+        "wikidataStateLabel": "województwo przemyskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Radymno",
+        "wikidataItem": "http://www.wikidata.org/entity/Q785458",
+        "wikidataItemLabel": "Radymno",
+        "wikidataAdminLabel": "Radymno",
+        "wikidataStateLabel": "województwo rzeszowskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Zamość Starówka": [],
+    "Babimost": [
+      {
+        "stationName": "Babimost",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2587805",
+        "wikidataItemLabel": "Babimost",
+        "wikidataAdminLabel": "Babimost",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Babimost",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2587805",
+        "wikidataItemLabel": "Babimost",
+        "wikidataAdminLabel": "Babimost",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Zamość Wschód": [],
+    "Łódź Widzew": [
+      {
+        "stationName": "Łódź Widzew",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1940317",
+        "wikidataItemLabel": "Łódź Widzew",
+        "wikidataAdminLabel": "Mileszki",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Łódź Widzew",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1940317",
+        "wikidataItemLabel": "Łódź Widzew",
+        "wikidataAdminLabel": "Mileszki",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Łódź Widzew",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1940317",
+        "wikidataItemLabel": "Łódź Widzew",
+        "wikidataAdminLabel": "Widzew-Wschód",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Łódź Widzew",
+        "wikidataItem": "http://www.wikidata.org/entity/Q1940317",
+        "wikidataItemLabel": "Łódź Widzew",
+        "wikidataAdminLabel": "Widzew-Wschód",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Sulechów": [
+      {
+        "stationName": "Sulechów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2936786",
+        "wikidataItemLabel": "Sulechów",
+        "wikidataAdminLabel": "Sulechów",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Sulechów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2936786",
+        "wikidataItemLabel": "Sulechów",
+        "wikidataAdminLabel": "Sulechów",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Czeremcha": [
+      {
+        "stationName": "Czeremcha",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2677271",
+        "wikidataItemLabel": "Czeremcha",
+        "wikidataAdminLabel": "Czeremcha",
+        "wikidataStateLabel": "województwo podlaskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Chabówka Stadion": [
+      {
+        "stationName": "Chabówka Stadion",
+        "wikidataItem": "http://www.wikidata.org/entity/Q136090950",
+        "wikidataItemLabel": "Chabówka Stadion",
+        "wikidataAdminLabel": null,
+        "wikidataStateLabel": null,
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Międzylesie": [
+      {
+        "stationName": "Międzylesie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3270892",
+        "wikidataItemLabel": "Międzylesie",
+        "wikidataAdminLabel": "Międzylesie",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Międzylesie",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3270892",
+        "wikidataItemLabel": "Międzylesie",
+        "wikidataAdminLabel": "Międzylesie",
+        "wikidataStateLabel": "województwo dolnośląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Częstochowa Stradom": [
+      {
+        "stationName": "Częstochowa Stradom",
+        "wikidataItem": "http://www.wikidata.org/entity/Q764387",
+        "wikidataItemLabel": "Częstochowa Stradom",
+        "wikidataAdminLabel": "Częstochowa",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Dobiegniew": [
+      {
+        "stationName": "Dobiegniew",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3401095",
+        "wikidataItemLabel": "Dobiegniew",
+        "wikidataAdminLabel": "Dobiegniew",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Dobiegniew",
+        "wikidataItem": "http://www.wikidata.org/entity/Q3401095",
+        "wikidataItemLabel": "Dobiegniew",
+        "wikidataAdminLabel": "Dobiegniew",
+        "wikidataStateLabel": "województwo lubuskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Wołomin": [
+      {
+        "stationName": "Wołomin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2686271",
+        "wikidataItemLabel": "Wołomin",
+        "wikidataAdminLabel": "Wołomin",
+        "wikidataStateLabel": "województwo mazowieckie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Września": [
+      {
+        "stationName": "Września",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2184231",
+        "wikidataItemLabel": "Września",
+        "wikidataAdminLabel": "Września",
+        "wikidataStateLabel": "województwo poznańskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Września",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2184231",
+        "wikidataItemLabel": "Września",
+        "wikidataAdminLabel": "Września",
+        "wikidataStateLabel": "województwo poznańskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Września",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2184231",
+        "wikidataItemLabel": "Września",
+        "wikidataAdminLabel": "Września",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Września",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2184231",
+        "wikidataItemLabel": "Września",
+        "wikidataAdminLabel": "Września",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Chorzów Batory": [
+      {
+        "stationName": "Chorzów Batory",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2735816",
+        "wikidataItemLabel": "Chorzów Batory",
+        "wikidataAdminLabel": "Chorzów",
+        "wikidataStateLabel": "województwo śląskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Łańcut": [
+      {
+        "stationName": "Łańcut",
+        "wikidataItem": "http://www.wikidata.org/entity/Q4486619",
+        "wikidataItemLabel": "Łańcut",
+        "wikidataAdminLabel": "Łańcut",
+        "wikidataStateLabel": "województwo podkarpackie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Łańcut",
+        "wikidataItem": "http://www.wikidata.org/entity/Q4486619",
+        "wikidataItemLabel": "Łańcut",
+        "wikidataAdminLabel": "Łańcut",
+        "wikidataStateLabel": "województwo lwowskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Złotów": [
+      {
+        "stationName": "Złotów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2369115",
+        "wikidataItemLabel": "Złotów",
+        "wikidataAdminLabel": "Złotów",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Złotów",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2369115",
+        "wikidataItemLabel": "Złotów",
+        "wikidataAdminLabel": "Złotów",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Poronin": [
+      {
+        "stationName": "Poronin",
+        "wikidataItem": "http://www.wikidata.org/entity/Q762526",
+        "wikidataItemLabel": "Poronin",
+        "wikidataAdminLabel": "Poronin",
+        "wikidataStateLabel": "województwo małopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Ozorków": [
+      {
+        "stationName": "Ozorków",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2184207",
+        "wikidataItemLabel": "Ozorków",
+        "wikidataAdminLabel": "Ozorków",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Ozorków",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2184207",
+        "wikidataItemLabel": "Ozorków",
+        "wikidataAdminLabel": "Ozorków",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Starogard Gdański": [],
+    "Czersk": [
+      {
+        "stationName": "Czersk",
+        "wikidataItem": "http://www.wikidata.org/entity/Q5202038",
+        "wikidataItemLabel": "Czersk",
+        "wikidataAdminLabel": "Czersk",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Koluszki": [
+      {
+        "stationName": "Koluszki",
+        "wikidataItem": "http://www.wikidata.org/entity/Q5956689",
+        "wikidataItemLabel": "Koluszki",
+        "wikidataAdminLabel": "Koluszki",
+        "wikidataStateLabel": "województwo łódzkie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Zbąszyń": [
+      {
+        "stationName": "Zbąszyń",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2646054",
+        "wikidataItemLabel": "Zbąszyń",
+        "wikidataAdminLabel": "Zbąszyń",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Zbąszyń",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2646054",
+        "wikidataItemLabel": "Zbąszyń",
+        "wikidataAdminLabel": "Zbąszyń",
+        "wikidataStateLabel": "województwo wielkopolskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Smętowo": [
+      {
+        "stationName": "Smętowo",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2713173",
+        "wikidataItemLabel": "Smętowo",
+        "wikidataAdminLabel": "Smętowo Graniczne",
+        "wikidataStateLabel": "województwo pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Bydgoszcz Leśna": [
+      {
+        "stationName": "Bydgoszcz Leśna",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2679620",
+        "wikidataItemLabel": "Bydgoszcz Leśna",
+        "wikidataAdminLabel": "Bydgoszcz",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      },
+      {
+        "stationName": "Bydgoszcz Leśna",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2679620",
+        "wikidataItemLabel": "Bydgoszcz Leśna",
+        "wikidataAdminLabel": "Bydgoszcz",
+        "wikidataStateLabel": "województwo kujawsko-pomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ],
+    "Sławno": [
+      {
+        "stationName": "Sławno",
+        "wikidataItem": "http://www.wikidata.org/entity/Q2101671",
+        "wikidataItemLabel": "Sławno",
+        "wikidataAdminLabel": "Sławno",
+        "wikidataStateLabel": "województwo zachodniopomorskie",
+        "wikidataCountryLabel": "Polska"
+      }
+    ]
+  },
+  "failedNames": [
+    "Węgliniec",
+    "Usti nad Orlici",
+    "Białystok Zielone Wzgórza",
+    "Werbkowice",
+    "Zgorzelec Miasto",
+    "Będzin Miasto",
+    "Bystrzyca Kłodzka",
+    "Grabowno Wielkie",
+    "Pardubice Hlavni Nadrazi",
+    "Lichkov",
+    "Gorzów Wielkopolski Wschodni",
+    "Frankfurt/Oder",
+    "Kaliska",
+    "Słupca",
+    "Sucha Beskidzka Zamek",
+    "Chrzanów Śródmieście",
+    "Jablonne nad Orlici",
+    "Praha-Liben",
+    "Berlin Gesundbrunnen",
+    "Zamość Starówka",
+    "Zamość Wschód",
+    "Starogard Gdański"
+  ]
+}

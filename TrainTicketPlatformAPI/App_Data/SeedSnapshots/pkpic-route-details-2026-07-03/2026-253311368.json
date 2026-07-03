@@ -1,0 +1,112 @@
+{
+  "scheduleId": 2026,
+  "orderId": 253311368,
+  "trainOrderId": 857781367,
+  "name": "ŚLĘŻA",
+  "carrierCode": "IC",
+  "nationalNumber": "1602",
+  "commercialCategorySymbol": "EIC",
+  "operatingDates": [
+    "2026-07-03",
+    "2026-07-04",
+    "2026-07-05",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-11",
+    "2026-07-12",
+    "2026-08-22",
+    "2026-08-23",
+    "2026-08-24",
+    "2026-08-25",
+    "2026-08-26",
+    "2026-08-27",
+    "2026-08-28",
+    "2026-08-29"
+  ],
+  "stations": [
+    {
+      "stationId": 38653,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "01602",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1602",
+      "departurePlatform": "1",
+      "departureTrack": "10",
+      "departureTime": "11:33:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1602",
+      "arrivalTime": "11:39:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1602",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "11:44:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 7,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1602",
+      "arrivalTime": "11:48:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1603",
+      "departurePlatform": "7",
+      "departureTrack": "5",
+      "departureTime": "11:49:30"
+    },
+    {
+      "stationId": 62802,
+      "orderNumber": 32,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1603",
+      "arrivalTime": "13:44:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1603",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "13:45:00"
+    },
+    {
+      "stationId": 71407,
+      "orderNumber": 40,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1603",
+      "arrivalTime": "14:04:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1603",
+      "departurePlatform": "2",
+      "departureTrack": "5",
+      "departureTime": "14:08:00"
+    },
+    {
+      "stationId": 60608,
+      "orderNumber": 48,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1603",
+      "arrivalTime": "14:38:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1603",
+      "departurePlatform": "4",
+      "departureTrack": "8",
+      "departureTime": "14:40:00"
+    },
+    {
+      "stationId": 60103,
+      "orderNumber": 59,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1603",
+      "arrivalTime": "15:18:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1603",
+      "departurePlatform": "1",
+      "departureTrack": "1"
+    }
+  ]
+}

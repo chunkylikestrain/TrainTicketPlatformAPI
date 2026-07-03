@@ -813,10 +813,6 @@ namespace TrainTicketPlatformAPI.Data
                 .HasDefaultValue("");
 
             modelBuilder.Entity<TrainRoute>()
-                .HasIndex(r => r.RouteFingerprint)
-                .HasFilter("[RouteFingerprint] <> ''");
-
-            modelBuilder.Entity<TrainRoute>()
                 .Property(r => r.OperatingDays)
                 .HasMaxLength(80)
                 .HasDefaultValue("Daily");

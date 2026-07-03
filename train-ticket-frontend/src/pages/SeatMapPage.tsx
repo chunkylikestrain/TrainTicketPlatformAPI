@@ -136,12 +136,42 @@ function SeatMapPage() {
   const [error, setError] = useState("");
   const selectedSeats = selectedSeatsBySegment[activeSegmentIndex] ?? [];
   const selectedSeat = selectedSeats[activePassengerIndex] ?? null;
+  const selectedSeatList = selectedSeats.filter((seat): seat is TripSeatAvailability => Boolean(seat));
+  const isGroupSeatSelection = passengerTotal > 1;
+  const selectedSeatCount = selectedSeatList.length;
+  const nextPassengerWithoutSeatIndex = selectedSeats.findIndex((seat) => !seat);
   const allPassengersHaveSeats = selectedSeats.length === passengerTotal && selectedSeats.every(Boolean);
   const allItinerarySeatsHaveSeats = selectedSeatsBySegment.length === segmentCount
     && selectedSeatsBySegment.every((segmentSeats) => segmentSeats.length === passengerTotal && segmentSeats.every(Boolean));
   const usedSeatIds = selectedSeats
-    .map((seat, index) => (index === activePassengerIndex ? null : seat?.seatId))
+    .map((seat) => seat?.seatId)
     .filter((seatId): seatId is number => Boolean(seatId));
+  const activeSegmentDisplayIndex = isRoundTripMode && activeSegmentIndex >= roundTripReturnStartIndex
+    ? activeSegmentIndex - roundTripReturnStartIndex + 1
+    : activeSegmentIndex + 1;
+  const seatInstruction = isRoundTripMode
+    ? `Choose ${passengerTotal} ${passengerTotal === 1 ? "seat" : "seats"} for ${activeJourneyLabel.toLowerCase()} segment ${activeSegmentDisplayIndex}.`
+    : isItineraryMode
+      ? `Choose ${passengerTotal} ${passengerTotal === 1 ? "seat" : "seats"} for segment ${activeSegmentIndex + 1} of ${segmentCount}.`
+      : `Choose ${passengerTotal} ${passengerTotal === 1 ? "seat" : "seats"} to activate the confirm your choice button.`;
+  const groupSeatInstruction = isGroupSeatSelection
+    ? " Click seats together on the map; RailBook assigns each click to the next passenger."
+    : "";
+
+  function isSeatRowComplete(segmentSeats: Array<TripSeatAvailability | null>) {
+    return segmentSeats.length === passengerTotal && segmentSeats.every(Boolean);
+  }
+
+  function findNextIncompleteSegmentIndex(rows: Array<Array<TripSeatAvailability | null>>, fromIndex: number) {
+    for (let offset = 1; offset < segmentCount; offset += 1) {
+      const candidateIndex = (fromIndex + offset) % segmentCount;
+      if (!isSeatRowComplete(rows[candidateIndex] ?? [])) {
+        return candidateIndex;
+      }
+    }
+
+    return -1;
+  }
 
   useEffect(() => {
     if (!activeTripId) {
@@ -211,19 +241,64 @@ function SeatMapPage() {
   function handleSelectSeat(seat: TripSeatAvailability) {
     setItineraryCompletionMessage("");
     let nextMissingIndex = -1;
+    let assignedPassengerIndex = activePassengerIndex;
+    let removedPassengerIndex = -1;
+    let nextIncompleteSegmentIndex = -1;
+    let shouldAdvanceToNextSegment = false;
 
     setSelectedSeatsBySegment((current) => {
       const next = current.map((segmentSeats) => segmentSeats.slice());
       const row = next[activeSegmentIndex] ?? Array.from({ length: passengerTotal }, () => null);
-      row[activePassengerIndex] = seat;
+      const existingSeatIndex = row.findIndex((item) => item?.seatId === seat.seatId);
+
+      if (existingSeatIndex >= 0) {
+        row[existingSeatIndex] = null;
+        removedPassengerIndex = existingSeatIndex;
+        next[activeSegmentIndex] = row;
+        nextMissingIndex = row.findIndex((item) => !item);
+        return next;
+      }
+
+      const firstMissingIndex = row.findIndex((item) => !item);
+      const wasIncomplete = firstMissingIndex >= 0;
+      assignedPassengerIndex = isGroupSeatSelection && firstMissingIndex >= 0
+        ? firstMissingIndex
+        : activePassengerIndex;
+      row[assignedPassengerIndex] = seat;
       next[activeSegmentIndex] = row;
-      nextMissingIndex = row.findIndex((item, index) => index !== activePassengerIndex && !item);
+      nextMissingIndex = row.findIndex((item) => !item);
+
+      if (wasIncomplete && nextMissingIndex < 0 && segmentCount > 1) {
+        nextIncompleteSegmentIndex = findNextIncompleteSegmentIndex(next, activeSegmentIndex);
+        shouldAdvanceToNextSegment = nextIncompleteSegmentIndex >= 0;
+      }
+
       return next;
     });
 
-    if (nextMissingIndex >= 0) {
+    if (removedPassengerIndex >= 0) {
+      setActivePassengerIndex(removedPassengerIndex);
+    } else if (nextMissingIndex >= 0) {
       setActivePassengerIndex(nextMissingIndex);
+    } else if (shouldAdvanceToNextSegment) {
+      setActiveSegmentIndex(nextIncompleteSegmentIndex);
+      setActivePassengerIndex(0);
+      setItineraryCompletionMessage(
+        `Segment ${activeSegmentIndex + 1} seats are selected. Continue with segment ${nextIncompleteSegmentIndex + 1}.`,
+      );
+    } else {
+      setActivePassengerIndex(assignedPassengerIndex);
     }
+  }
+
+  function handleClearSegmentSeats() {
+    setItineraryCompletionMessage("");
+    setSelectedSeatsBySegment((current) => {
+      const next = current.map((segmentSeats) => segmentSeats.slice());
+      next[activeSegmentIndex] = Array.from({ length: passengerTotal }, () => null);
+      return next;
+    });
+    setActivePassengerIndex(0);
   }
 
   async function handleConfirmSeat() {
@@ -524,11 +599,6 @@ function SeatMapPage() {
           </Link>
         </div>
 
-        <div className="seat-list-toggle">
-          <strong>I want to select a place from the list</strong>
-          <span aria-hidden="true" />
-        </div>
-
         <section className="seat-trip-meta">
           <strong>{activeItinerarySegment?.trainName ?? trip?.trainName ?? "Train"}</strong>
           <span>{formatDate(activeItinerarySegment?.departureTime ?? trip?.departureTime)}</span>
@@ -614,6 +684,7 @@ function SeatMapPage() {
               coach={activeCoach}
               selectedClass={selectedClass}
               selectedSeat={selectedSeat}
+              selectedSeats={selectedSeatList}
               seats={activeCoachSeats}
               template={activeTemplate}
               isSeatSelectable={(seat) =>
@@ -639,10 +710,26 @@ function SeatMapPage() {
         </section>
 
         <section className="seat-location-card">
-          <span>Location</span>
+          <div className="seat-location-header">
+            <span>Location</span>
+            {isGroupSeatSelection && (
+              <strong>
+                {selectedSeatCount} of {passengerTotal} seats selected
+              </strong>
+            )}
+            {selectedSeatCount > 0 && (
+              <button type="button" onClick={handleClearSegmentSeats}>
+                Clear seats
+              </button>
+            )}
+          </div>
           {selectedSeats.map((seat, index) => (
             <button
-              className={index === activePassengerIndex ? "seat-passenger-active" : ""}
+              className={[
+                index === activePassengerIndex ? "seat-passenger-active" : "",
+                seat ? "seat-passenger-complete" : "",
+                index === nextPassengerWithoutSeatIndex ? "seat-passenger-next" : "",
+              ].join(" ")}
               type="button"
               onClick={() => setActivePassengerIndex(index)}
               key={`passenger-${index}`}
@@ -654,17 +741,16 @@ function SeatMapPage() {
                     ? `Segment ${activeSegmentIndex + 1}, passenger ${index + 1}`
                     : `Passenger ${index + 1}`}
               </strong>
+              {isGroupSeatSelection && (
+                <small>{seat ? "Selected" : index === nextPassengerWithoutSeatIndex ? "Next seat goes here" : "Needs seat"}</small>
+              )}
               <span>{seat ? `${seat.classType}, car ${seat.coach}, ${getPlaceLabel(seat.classType)} ${seat.number}` : "Choose seat"}</span>
             </button>
           ))}
         </section>
 
         <div className="seat-map-notice">
-          {isRoundTripMode
-            ? `Choose ${passengerTotal} ${passengerTotal === 1 ? "seat" : "seats"} for ${activeJourneyLabel.toLowerCase()} segment ${activeSegmentIndex >= roundTripReturnStartIndex ? activeSegmentIndex - roundTripReturnStartIndex + 1 : activeSegmentIndex + 1}.`
-            : isItineraryMode
-            ? `Choose ${passengerTotal} ${passengerTotal === 1 ? "seat" : "seats"} for segment ${activeSegmentIndex + 1} of ${segmentCount}.`
-            : `Choose ${passengerTotal} ${passengerTotal === 1 ? "seat" : "seats"} to activate the confirm your choice button`}
+          {seatInstruction}{groupSeatInstruction}
         </div>
 
         {itineraryCompletionMessage && <div className="seat-map-notice seat-map-success">{itineraryCompletionMessage}</div>}
@@ -983,6 +1069,8 @@ function itineraryMatchesSearch(
 function normalizeSearchValue(value: string | null | undefined) {
   return (value ?? "")
     .trim()
+    .replace(/[Łł]/g, "l")
+    .replace(/[Đđ]/g, "d")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();

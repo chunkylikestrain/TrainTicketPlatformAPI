@@ -37,7 +37,7 @@ function AdminCreateSchedulePage() {
 
   const train = trains.find((item) => item.id === Number(trainId));
   const route = routes.find((item) => item.id === Number(routeId));
-  const routeLabel = route ? `${route.departureStationName} -> ${route.arrivalStationName}` : "Route";
+  const routeLabel = route ? route.adminDisplayName || `${route.departureStationName} -> ${route.arrivalStationName}` : "Route";
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -88,7 +88,7 @@ function AdminCreateSchedulePage() {
               {trains.map((option) => <option key={option.id} value={option.id}>{option.code || option.name}</option>)}
             </select></label>
             <label>Route<select value={routeId} onChange={(event) => setRouteId(event.target.value)}>
-              {routes.map((option) => <option key={option.id} value={option.id}>{option.code} - {option.departureStationName} to {option.arrivalStationName}</option>)}
+              {routes.map((option) => <option key={option.id} value={option.id}>{option.code} - {option.adminDisplayName || `${option.departureStationName} to ${option.arrivalStationName}`}</option>)}
             </select></label>
             <label>Status<select value={status} onChange={(event) => setStatus(event.target.value)}>
               <option>Scheduled</option>

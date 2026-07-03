@@ -1,0 +1,150 @@
+{
+  "scheduleId": 2026,
+  "orderId": 487429967,
+  "trainOrderId": 860848962,
+  "name": "BERLIN-WARSZAWA-EXPRESS",
+  "carrierCode": "IC",
+  "nationalNumber": "71006",
+  "internationalArrivalNumber": "47",
+  "commercialCategorySymbol": "EC/EIC",
+  "operatingDates": [
+    "2026-06-18",
+    "2026-06-19",
+    "2026-06-21",
+    "2026-06-22",
+    "2026-06-24",
+    "2026-06-25",
+    "2026-06-27",
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 248058,
+      "orderNumber": -1,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "45",
+      "arrivalTime": "11:44:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "45",
+      "departureTime": "11:44:00"
+    },
+    {
+      "stationId": 179212,
+      "orderNumber": 1,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "47/71006",
+      "arrivalTime": "12:47:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "47",
+      "departureTime": "12:50:00"
+    },
+    {
+      "stationId": 25809,
+      "orderNumber": 11,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "47",
+      "arrivalTime": "13:07:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71006",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "13:12:00"
+    },
+    {
+      "stationId": 28100,
+      "orderNumber": 15,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71006",
+      "arrivalTime": "13:37:18",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71006",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "13:38:18"
+    },
+    {
+      "stationId": 26104,
+      "orderNumber": 18,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71006",
+      "arrivalTime": "13:50:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71006",
+      "departurePlatform": "2a",
+      "departureTrack": "2",
+      "departureTime": "13:51:00"
+    },
+    {
+      "stationId": 30601,
+      "orderNumber": 27,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71006",
+      "arrivalTime": "14:33:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71006",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "14:36:00"
+    },
+    {
+      "stationId": 33100,
+      "orderNumber": 38,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71006",
+      "arrivalTime": "15:24:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71006",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "15:25:00"
+    },
+    {
+      "stationId": 32201,
+      "orderNumber": 47,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71006",
+      "arrivalTime": "15:59:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71006",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "16:00:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 62,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71006",
+      "arrivalTime": "16:57:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71007",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 65,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71007",
+      "arrivalTime": "17:04:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71007",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 66,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71007",
+      "arrivalTime": "17:15:00",
+      "departureTrainNumber": "071007",
+      "departurePlatform": "4",
+      "departureTrack": "1"
+    }
+  ]
+}

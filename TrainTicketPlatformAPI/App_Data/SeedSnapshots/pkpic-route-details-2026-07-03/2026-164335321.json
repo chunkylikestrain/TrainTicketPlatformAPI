@@ -1,0 +1,155 @@
+{
+  "scheduleId": 2026,
+  "orderId": 164335321,
+  "trainOrderId": 200735994,
+  "name": "RYTM",
+  "carrierCode": "IC",
+  "nationalNumber": "15105",
+  "commercialCategorySymbol": "ICN",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 33506,
+      "orderNumber": 16,
+      "arrivalTrainNumber": "015104",
+      "departureCommercialCategory": "ICN",
+      "departureTrainNumber": "15105",
+      "departurePlatform": "4",
+      "departureTrack": "8",
+      "departureTime": "14:08:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 19,
+      "arrivalCommercialCategory": "ICN",
+      "arrivalTrainNumber": "15105",
+      "arrivalTime": "14:12:00",
+      "departureCommercialCategory": "ICN",
+      "departureTrainNumber": "15105",
+      "departurePlatform": "2",
+      "departureTrack": "3",
+      "departureTime": "14:17:00"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 20,
+      "arrivalCommercialCategory": "ICN",
+      "arrivalTrainNumber": "15105",
+      "arrivalTime": "14:23:00",
+      "departureCommercialCategory": "ICN",
+      "departureTrainNumber": "15105",
+      "departurePlatform": "4",
+      "departureTrack": "3",
+      "departureTime": "14:26:00"
+    },
+    {
+      "stationId": 36939,
+      "orderNumber": 36,
+      "arrivalCommercialCategory": "ICN",
+      "arrivalTrainNumber": "15105",
+      "arrivalTime": "15:30:00",
+      "departureCommercialCategory": "ICN",
+      "departureTrainNumber": "15105",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "15:31:00"
+    },
+    {
+      "stationId": 22442,
+      "orderNumber": 41,
+      "arrivalCommercialCategory": "ICN",
+      "arrivalTrainNumber": "15105",
+      "arrivalTime": "16:01:00",
+      "departureCommercialCategory": "ICN",
+      "departureTrainNumber": "15105",
+      "departurePlatform": "3",
+      "departureTrack": "6",
+      "departureTime": "16:09:30"
+    },
+    {
+      "stationId": 9209,
+      "orderNumber": 48,
+      "arrivalCommercialCategory": "ICN",
+      "arrivalTrainNumber": "15105",
+      "arrivalTime": "17:26:00",
+      "departureCommercialCategory": "ICN",
+      "departureTrainNumber": "15105",
+      "departurePlatform": "4",
+      "departureTrack": "8",
+      "departureTime": "18:10:00"
+    },
+    {
+      "stationId": 8151,
+      "orderNumber": 58,
+      "arrivalCommercialCategory": "ICN",
+      "arrivalTrainNumber": "15104",
+      "arrivalTime": "19:34:00",
+      "departureCommercialCategory": "ICN",
+      "departureTrainNumber": "15104",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "19:50:00"
+    },
+    {
+      "stationId": 7872,
+      "orderNumber": 63,
+      "arrivalCommercialCategory": "ICN",
+      "arrivalTrainNumber": "15104",
+      "arrivalTime": "20:09:00",
+      "departureCommercialCategory": "ICN",
+      "departureTrainNumber": "15105",
+      "departurePlatform": "3",
+      "departureTrack": "1",
+      "departureTime": "20:10:00"
+    },
+    {
+      "stationId": 7500,
+      "orderNumber": 73,
+      "arrivalCommercialCategory": "ICN",
+      "arrivalTrainNumber": "15105",
+      "arrivalTime": "21:11:30",
+      "departureCommercialCategory": "ICN",
+      "departureTrainNumber": "15105",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "21:15:00"
+    },
+    {
+      "stationId": 5942,
+      "orderNumber": 77,
+      "arrivalCommercialCategory": "ICN",
+      "arrivalTrainNumber": "15105",
+      "arrivalTime": "21:27:00",
+      "departureCommercialCategory": "ICN",
+      "departureTrainNumber": "15105",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "21:28:00"
+    },
+    {
+      "stationId": 5900,
+      "orderNumber": 79,
+      "arrivalCommercialCategory": "ICN",
+      "arrivalTrainNumber": "15105",
+      "arrivalTime": "21:36:00",
+      "departureCommercialCategory": "ICN",
+      "departureTrainNumber": "15105",
+      "departurePlatform": "4",
+      "departureTrack": "6",
+      "departureTime": "21:40:00"
+    },
+    {
+      "stationId": 5256,
+      "orderNumber": 90,
+      "arrivalCommercialCategory": "ICN",
+      "arrivalTrainNumber": "15105",
+      "arrivalTime": "22:29:00",
+      "departureCommercialCategory": "ICN",
+      "departureTrainNumber": "15105",
+      "departurePlatform": "1",
+      "departureTrack": "3"
+    }
+  ]
+}

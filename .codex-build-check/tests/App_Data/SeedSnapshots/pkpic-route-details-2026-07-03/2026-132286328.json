@@ -1,0 +1,89 @@
+{
+  "scheduleId": 2026,
+  "orderId": 132286328,
+  "trainOrderId": 153804296,
+  "name": "USZATEK",
+  "carrierCode": "IC",
+  "nationalNumber": "1908",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-03",
+    "2026-07-10",
+    "2026-07-17",
+    "2026-07-24",
+    "2026-07-31",
+    "2026-08-07",
+    "2026-08-14",
+    "2026-08-21",
+    "2026-08-28"
+  ],
+  "stations": [
+    {
+      "stationId": 38653,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "01908",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1908",
+      "departurePlatform": "1",
+      "departureTrack": "10",
+      "departureTime": "17:37:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1908",
+      "arrivalTime": "17:43:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1908",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "17:46:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 7,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1908",
+      "arrivalTime": "17:50:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1909",
+      "departurePlatform": "7",
+      "departureTrack": "3",
+      "departureTime": "17:51:00"
+    },
+    {
+      "stationId": 47001,
+      "orderNumber": 16,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1909",
+      "arrivalTime": "18:18:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1909",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "18:19:30"
+    },
+    {
+      "stationId": 46409,
+      "orderNumber": 26,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1908",
+      "arrivalTime": "18:49:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1908",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 46458,
+      "orderNumber": 28,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1908",
+      "arrivalTime": "18:54:30",
+      "departureTrainNumber": "01909",
+      "departurePlatform": "4",
+      "departureTrack": "7"
+    }
+  ]
+}

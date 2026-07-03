@@ -1380,9 +1380,6 @@ namespace TrainTicketPlatformAPI.Migrations
 
                     b.HasIndex("DepartureStationId");
 
-                    b.HasIndex("RouteFingerprint")
-                        .HasFilter("[RouteFingerprint] <> ''");
-
                     b.HasIndex("ExternalSource", "ExternalScheduleId", "ExternalOrderId", "ExternalOperatingDate")
                         .IsUnique()
                         .HasFilter("[ExternalSource] <> '' AND [ExternalScheduleId] IS NOT NULL AND [ExternalOrderId] IS NOT NULL AND [ExternalOperatingDate] IS NOT NULL");

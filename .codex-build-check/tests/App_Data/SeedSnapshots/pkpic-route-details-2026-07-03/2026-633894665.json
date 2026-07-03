@@ -1,0 +1,153 @@
+{
+  "scheduleId": 2026,
+  "orderId": 633894665,
+  "trainOrderId": 105851213,
+  "name": "WETLINA",
+  "carrierCode": "IC",
+  "nationalNumber": "30111",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 80416,
+      "orderNumber": 5,
+      "arrivalTrainNumber": "030110",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "30111",
+      "departurePlatform": "4",
+      "departureTrack": "4",
+      "departureTime": "18:39:00"
+    },
+    {
+      "stationId": 79905,
+      "orderNumber": 7,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "30111",
+      "arrivalTime": "18:43:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "30111",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "18:44:30"
+    },
+    {
+      "stationId": 80630,
+      "orderNumber": 19,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "30111",
+      "arrivalTime": "19:26:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "30111",
+      "departurePlatform": "2",
+      "departureTrack": "3",
+      "departureTime": "19:28:00"
+    },
+    {
+      "stationId": 80986,
+      "orderNumber": 25,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "30111",
+      "arrivalTime": "19:48:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "30111",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "19:49:30"
+    },
+    {
+      "stationId": 81067,
+      "orderNumber": 28,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "30111",
+      "arrivalTime": "20:04:48",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "30111",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "20:05:48"
+    },
+    {
+      "stationId": 81703,
+      "orderNumber": 37,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "30111",
+      "arrivalTime": "20:43:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "30111",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "20:50:00"
+    },
+    {
+      "stationId": 81786,
+      "orderNumber": 38,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "30111",
+      "arrivalTime": "20:59:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "30111",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "21:06:30"
+    },
+    {
+      "stationId": 83410,
+      "orderNumber": 41,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "30111",
+      "arrivalPlatform": "2",
+      "arrivalTrack": "3",
+      "arrivalTime": "21:28:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "30111",
+      "departurePlatform": "BUS",
+      "departureTime": "21:38:00"
+    },
+    {
+      "stationId": 83501,
+      "orderNumber": 45,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "30111",
+      "arrivalTime": "22:07:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "30111",
+      "departurePlatform": "BUS",
+      "departureTime": "22:08:00"
+    },
+    {
+      "stationId": 83725,
+      "orderNumber": 48,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "30111",
+      "arrivalTime": "22:41:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "30111",
+      "departurePlatform": "BUS",
+      "departureTime": "22:42:00"
+    },
+    {
+      "stationId": 83600,
+      "orderNumber": 50,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "30111",
+      "arrivalTime": "23:01:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "30111",
+      "departurePlatform": "BUS",
+      "departureTime": "23:02:00"
+    },
+    {
+      "stationId": 83758,
+      "orderNumber": 52,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "30111",
+      "arrivalPlatform": "BUS",
+      "arrivalTime": "23:11:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "30111",
+      "departurePlatform": "BUS"
+    }
+  ]
+}

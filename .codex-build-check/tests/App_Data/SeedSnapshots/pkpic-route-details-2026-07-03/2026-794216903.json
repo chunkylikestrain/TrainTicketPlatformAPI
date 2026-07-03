@@ -1,0 +1,178 @@
+{
+  "scheduleId": 2026,
+  "orderId": 794216903,
+  "trainOrderId": 219224579,
+  "name": "ODRA",
+  "carrierCode": "IC",
+  "nationalNumber": "73004",
+  "internationalArrivalNumber": "55",
+  "commercialCategorySymbol": "EC/IC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 248058,
+      "orderNumber": -20,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "55",
+      "arrivalTime": "16:44:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "55",
+      "departureTime": "16:44:00"
+    },
+    {
+      "stationId": 179212,
+      "orderNumber": 1,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "55/73004",
+      "arrivalTime": "17:50:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "55",
+      "departureTime": "17:50:00"
+    },
+    {
+      "stationId": 25809,
+      "orderNumber": 13,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "55",
+      "arrivalTime": "18:09:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "73004",
+      "departurePlatform": "5",
+      "departureTrack": "32",
+      "departureTime": "18:12:00"
+    },
+    {
+      "stationId": 27805,
+      "orderNumber": 22,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "73004",
+      "arrivalTime": "18:55:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "73004",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "18:57:00"
+    },
+    {
+      "stationId": 42200,
+      "orderNumber": 30,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "73004",
+      "arrivalTime": "19:29:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "73004",
+      "departurePlatform": "1",
+      "departureTrack": "18",
+      "departureTime": "19:30:00"
+    },
+    {
+      "stationId": 53280,
+      "orderNumber": 36,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "73004",
+      "arrivalTime": "19:54:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "73004",
+      "departurePlatform": "2",
+      "departureTrack": "4",
+      "departureTime": "19:55:30"
+    },
+    {
+      "stationId": 53009,
+      "orderNumber": 39,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "73004",
+      "arrivalTime": "20:10:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "73004",
+      "departurePlatform": "3",
+      "departureTrack": "7",
+      "departureTime": "20:18:00"
+    },
+    {
+      "stationId": 60103,
+      "orderNumber": 51,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "73004",
+      "arrivalTime": "20:52:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "73004",
+      "departurePlatform": "3",
+      "departureTrack": "6",
+      "departureTime": "20:57:00"
+    },
+    {
+      "stationId": 60608,
+      "orderNumber": 61,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "73004",
+      "arrivalTime": "21:36:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "73004",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "21:38:00"
+    },
+    {
+      "stationId": 67009,
+      "orderNumber": 71,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "73004",
+      "arrivalTime": "21:59:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "73004",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "22:00:00"
+    },
+    {
+      "stationId": 69708,
+      "orderNumber": 79,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "73004",
+      "arrivalTime": "22:27:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "73004",
+      "departurePlatform": "2",
+      "departureTrack": "5",
+      "departureTime": "22:31:00"
+    },
+    {
+      "stationId": 69823,
+      "orderNumber": 80,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "73004",
+      "arrivalTime": "22:37:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "73004",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "22:38:30"
+    },
+    {
+      "stationId": 73312,
+      "orderNumber": 84,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "73004",
+      "arrivalTime": "22:52:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "73004",
+      "departurePlatform": "1",
+      "departureTrack": "7",
+      "departureTime": "22:55:00"
+    },
+    {
+      "stationId": 80416,
+      "orderNumber": 102,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "73005",
+      "arrivalTime": "23:46:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "73005",
+      "departurePlatform": "2",
+      "departureTrack": "5"
+    }
+  ]
+}

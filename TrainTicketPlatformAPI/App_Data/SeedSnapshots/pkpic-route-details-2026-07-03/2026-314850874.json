@@ -1,0 +1,212 @@
+{
+  "scheduleId": 2026,
+  "orderId": 314850874,
+  "trainOrderId": 349827829,
+  "name": "KUTER",
+  "carrierCode": "IC",
+  "nationalNumber": "5138",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 5900,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "05138",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "4",
+      "departureTrack": "6",
+      "departureTime": "17:52:00"
+    },
+    {
+      "stationId": 5942,
+      "orderNumber": 6,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "17:59:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "18:00:30"
+    },
+    {
+      "stationId": 7583,
+      "orderNumber": 8,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "18:04:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "18:05:00"
+    },
+    {
+      "stationId": 7534,
+      "orderNumber": 10,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "18:08:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "18:09:30"
+    },
+    {
+      "stationId": 7500,
+      "orderNumber": 11,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "18:13:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "18:16:30"
+    },
+    {
+      "stationId": 7112,
+      "orderNumber": 18,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "18:33:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "2",
+      "departureTrack": "6",
+      "departureTime": "18:35:00"
+    },
+    {
+      "stationId": 7872,
+      "orderNumber": 21,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "18:45:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "2",
+      "departureTrack": "6",
+      "departureTime": "18:46:30"
+    },
+    {
+      "stationId": 22905,
+      "orderNumber": 24,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "19:05:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "19:06:30"
+    },
+    {
+      "stationId": 21808,
+      "orderNumber": 27,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "19:23:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "19:24:00"
+    },
+    {
+      "stationId": 22442,
+      "orderNumber": 34,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "19:54:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "19:55:30"
+    },
+    {
+      "stationId": 37226,
+      "orderNumber": 36,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "20:04:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "20:05:00"
+    },
+    {
+      "stationId": 36939,
+      "orderNumber": 38,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "20:20:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "20:21:00"
+    },
+    {
+      "stationId": 36459,
+      "orderNumber": 43,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "20:48:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "20:49:00"
+    },
+    {
+      "stationId": 36509,
+      "orderNumber": 46,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "20:58:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "21:00:00"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 60,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "21:28:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 61,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "21:39:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5138",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 63,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5138",
+      "arrivalTime": "21:48:00",
+      "departureTrainNumber": "05139",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    }
+  ]
+}

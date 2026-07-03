@@ -13,6 +13,7 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import TrainSearchForm from "../components/TrainSearchForm";
 import ed250Image from "../../../docs/MyTrainImages/ED250.jpg";
+import ep07Image from "../../../docs/MyTrainImages/EP07.jpg";
 import explorePolandImage from "../../../docs/MyCityImages/Krakow.jpg";
 import studentOfferImage from "../../../docs/NotMyTrainImages/ED160(Radial's).jpg";
 
@@ -101,16 +102,11 @@ function HomePage() {
           <span />
         </div>
 
-        <div className="hero-visual" aria-label="Modern intercity train at a station">
-          <div className="train-scene">
-            <div className="train-body">
-              <span className="train-window" />
-              <span className="train-window" />
-              <span className="train-window" />
-              <span className="train-window" />
-            </div>
-            <div className="train-nose" />
-            <div className="rails" />
+        <div className="hero-visual" aria-label="EP07 locomotive on an intercity service">
+          <img src={ep07Image} alt="EP07 locomotive hauling an intercity train" />
+          <div className="hero-visual-caption">
+            <span>Intercity journeys</span>
+            <strong>Search real connections</strong>
           </div>
         </div>
 

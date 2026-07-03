@@ -33,14 +33,19 @@ function AdminRoutesPage() {
       <section className="admin-table-card">
         <table className="admin-table">
           <thead>
-            <tr><th>Route code</th><th>Origin</th><th>Destination</th><th>Distance</th><th>Duration</th><th>Status</th><th>Actions</th></tr>
+            <tr><th>Route code</th><th>Admin route</th><th>Origin</th><th>Destination</th><th>Stops</th><th>Distance</th><th>Duration</th><th>Status</th><th>Actions</th></tr>
           </thead>
           <tbody>
             {routes.map((route) => (
               <tr key={route.id}>
                 <td><span className="route-code-pill">{route.code}</span></td>
+                <td className="admin-route-identity">
+                  <strong>{route.adminDisplayName || route.name}</strong>
+                  <small>{route.routeFingerprint || buildRouteFingerprint(route)}</small>
+                </td>
                 <td>{route.departureStationName}</td>
                 <td>{route.arrivalStationName}</td>
+                <td>{route.stops.length}</td>
                 <td>{route.distanceKm} km</td>
                 <td>{route.estimatedDurationMinutes} min</td>
                 <td><span className={route.isActive ? "status-pill status-active" : "status-pill status-warning"}>{route.isActive ? "Active" : "Draft"}</span></td>
@@ -55,6 +60,15 @@ function AdminRoutesPage() {
       </section>
     </AdminLayout>
   );
+}
+
+function buildRouteFingerprint(route: AdminRoute) {
+  const stopCodes = route.stops
+    .slice()
+    .sort((left, right) => left.stopOrder - right.stopOrder)
+    .map((stop) => stop.stationCode);
+
+  return [route.departureStationName, ...stopCodes, route.arrivalStationName].join(" > ");
 }
 
 export default AdminRoutesPage;

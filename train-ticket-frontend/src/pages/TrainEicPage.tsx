@@ -5,6 +5,7 @@ import eicFirstInterior from "../../../docs/MyTrainImages/IC1stClassInterior.jpg
 import eicSecondInterior from "../../../docs/MyTrainImages/IC2nClassOpenInterior.jpg";
 import eu200Image from "../../../docs/MyTrainImages/EU200.jpg";
 import eu44Image from "../../../docs/MyTrainImages/EU44.jpg";
+import eicLogo from "../../../docs/NotMyTrainImages/EICLogo(Wikicommons).svg";
 
 const eicHighlights = [
   "Express InterCity services use higher-standard locomotive-hauled coaches with full seat reservation.",
@@ -156,6 +157,10 @@ function TrainEicPage() {
               </div>
             ))}
           </dl>
+        </section>
+
+        <section className="eip-logo-panel" aria-label="Express InterCity logo">
+          <img className="eic-logo" src={eicLogo} alt="EIC Express InterCity logo" />
         </section>
       </article>
     </main>

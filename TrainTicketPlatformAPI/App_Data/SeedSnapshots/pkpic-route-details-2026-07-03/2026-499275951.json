@@ -1,0 +1,121 @@
+{
+  "scheduleId": 2026,
+  "orderId": 499275951,
+  "trainOrderId": 889276038,
+  "name": "LECH",
+  "carrierCode": "IC",
+  "nationalNumber": "6113",
+  "commercialCategorySymbol": "EIC",
+  "operatingDates": [
+    "2026-06-27",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17",
+    "2026-07-18",
+    "2026-07-20",
+    "2026-07-21",
+    "2026-07-22",
+    "2026-07-23"
+  ],
+  "stations": [
+    {
+      "stationId": 60103,
+      "orderNumber": 1,
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "6113",
+      "departurePlatform": "2",
+      "departureTrack": "3",
+      "departureTime": "05:15:00"
+    },
+    {
+      "stationId": 42606,
+      "orderNumber": 14,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "6113",
+      "arrivalTime": "05:59:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "6113",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "06:00:00"
+    },
+    {
+      "stationId": 30601,
+      "orderNumber": 24,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "6113",
+      "arrivalTime": "06:33:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "6112",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "06:36:00"
+    },
+    {
+      "stationId": 33100,
+      "orderNumber": 35,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "6112",
+      "arrivalTime": "07:24:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "6112",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "07:25:00"
+    },
+    {
+      "stationId": 32201,
+      "orderNumber": 44,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "6112",
+      "arrivalTime": "07:59:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "6112",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "08:00:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 59,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "6112",
+      "arrivalTime": "08:57:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "6113",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 61,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "6113",
+      "arrivalTime": "09:04:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "6113",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 62,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "6113",
+      "arrivalTime": "09:15:00",
+      "departureTrainNumber": "06113",
+      "departurePlatform": "4",
+      "departureTrack": "1"
+    }
+  ]
+}

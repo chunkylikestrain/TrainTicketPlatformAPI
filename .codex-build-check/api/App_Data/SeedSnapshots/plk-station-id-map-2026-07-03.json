@@ -1,0 +1,2697 @@
+{
+  "generatedAtUtc": "2026-07-03T17:30:50Z",
+  "phase": "phase-2-station-id-map",
+  "operatingDate": "2026-07-03",
+  "source": "PLK OpenRailway station dictionary plus local station artifacts",
+  "apiCallsSpent": 1,
+  "dictionaryMeta": {
+    "generatedAt": "2026-07-03T17:22:05.7909661Z",
+    "totalCount": 3260,
+    "returnedCount": 3260,
+    "page": 1,
+    "pageSize": 10000,
+    "totalPages": 1
+  },
+  "routeStationIdCount": 535,
+  "mappedRouteStationIdCount": 535,
+  "unknownRouteStationIdCount": 0,
+  "unknownRouteStationIds": [],
+  "stations": [
+    {
+      "externalStationId": 273,
+      "name": "Szczecin Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 851,
+      "name": "Gryfino",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 1008,
+      "name": "Świnoujście",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 1024,
+      "name": "Międzyzdroje",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 1107,
+      "name": "Szczecin Dąbie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 1404,
+      "name": "Goleniów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 1560,
+      "name": "Wysoka Kamieńska",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 1859,
+      "name": "Nowogard",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 1958,
+      "name": "Płoty",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 2147,
+      "name": "Trzebiatów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 2170,
+      "name": "Gryfice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 2204,
+      "name": "Stargard",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 2477,
+      "name": "Recz Pomorski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 3004,
+      "name": "Szczecinek",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 3467,
+      "name": "Runowo Pomorskie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 3509,
+      "name": "Łobez",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 3517,
+      "name": "Chociwel",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 3632,
+      "name": "Świdwin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 3905,
+      "name": "Białogard",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 4101,
+      "name": "Kołobrzeg",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 4135,
+      "name": "Ustronie Morskie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 4408,
+      "name": "Koszalin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 4705,
+      "name": "Słupsk",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 4952,
+      "name": "Ustka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 5108,
+      "name": "Sławno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 5256,
+      "name": "Lębork",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 5355,
+      "name": "Łeba",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 5900,
+      "name": "Gdynia Główna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 5942,
+      "name": "Sopot",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 6098,
+      "name": "Rumia",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 6304,
+      "name": "Wejherowo",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 6700,
+      "name": "Puck",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 6734,
+      "name": "Chałupy",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 6742,
+      "name": "Władysławowo",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 6759,
+      "name": "Jurata",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 6767,
+      "name": "Kuźnica (Hel)",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 6775,
+      "name": "Jastarnia",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 6791,
+      "name": "Hel",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 7112,
+      "name": "Tczew",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 7302,
+      "name": "Pruszcz Gdański",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 7500,
+      "name": "Gdańsk Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 7534,
+      "name": "Gdańsk Wrzeszcz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 7583,
+      "name": "Gdańsk Oliwa",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 7872,
+      "name": "Malbork",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 8086,
+      "name": "Sztum",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 8151,
+      "name": "Elbląg",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 8409,
+      "name": "Pelplin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 8474,
+      "name": "Smętowo",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 8607,
+      "name": "Starogard Gdański",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 8904,
+      "name": "Czersk",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 8961,
+      "name": "Czarna Woda",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 8979,
+      "name": "Łąg",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 8995,
+      "name": "Kaliska",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 9209,
+      "name": "Olsztyn Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 9233,
+      "name": "Olsztyn Zachodni",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 9456,
+      "name": "Olsztynek",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 10009,
+      "name": "Korsze",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 10405,
+      "name": "Kętrzyn",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 10603,
+      "name": "Szczytno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 10827,
+      "name": "Ruciane-Nida",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 10900,
+      "name": "Morąg",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 10934,
+      "name": "Pasłęk",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 11809,
+      "name": "Ełk",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 12252,
+      "name": "Grajewo",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 12369,
+      "name": "Pisz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 12609,
+      "name": "Giżycko",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 12807,
+      "name": "Suwałki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 12872,
+      "name": "Trakiszki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 12963,
+      "name": "Augustów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 13003,
+      "name": "Kostrzyn",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 13334,
+      "name": "Chojna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 13417,
+      "name": "Mieszkowice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 13904,
+      "name": "Gorzów Wielkopolski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 14043,
+      "name": "Witnica",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 14308,
+      "name": "Zwierzyn",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 14407,
+      "name": "Piła Główna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 14514,
+      "name": "Wyrzysk Osiek",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 14548,
+      "name": "Trzcianka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 14704,
+      "name": "Wałcz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 14761,
+      "name": "Tuczno Krajeńskie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 15008,
+      "name": "Kalisz Pomorski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 15354,
+      "name": "Złotów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 15529,
+      "name": "Lipka Krajeńska",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 15537,
+      "name": "Krajenka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 15602,
+      "name": "Chojnice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 16139,
+      "name": "Rogoźno Wielkopolskie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 16188,
+      "name": "Chodzież",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 16402,
+      "name": "Jastrowie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 16717,
+      "name": "Bydgoszcz Wschód",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 17202,
+      "name": "Laskowice Pomorskie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 18200,
+      "name": "Nakło nad Notecią",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 18374,
+      "name": "Bydgoszcz Leśna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 18408,
+      "name": "Bydgoszcz Główna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 18705,
+      "name": "Inowrocław",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 18838,
+      "name": "Inowrocław Rąbinek",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 19174,
+      "name": "Babiak",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 19190,
+      "name": "Piotrków Kujawski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 19406,
+      "name": "Zduńska Wola Karsznice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 19430,
+      "name": "Zduńska Wola",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 19489,
+      "name": "Sieradz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 19703,
+      "name": "Toruń Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 19794,
+      "name": "Toruń Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 19844,
+      "name": "Solec Kujawski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 19901,
+      "name": "Toruń Wschodni",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 20024,
+      "name": "Lipno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 20164,
+      "name": "Chełmża",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 20503,
+      "name": "Grudziądz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 20719,
+      "name": "Kowalewo Pomorskie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 20743,
+      "name": "Wąbrzeźno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 20909,
+      "name": "Jabłonowo Pomorskie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 21204,
+      "name": "Brodnica",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 21428,
+      "name": "Rypin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 21501,
+      "name": "Aleksandrów Kujawski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 21600,
+      "name": "Włocławek",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 21808,
+      "name": "Iława Główna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 22004,
+      "name": "Ostróda",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 22202,
+      "name": "Nidzica",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 22442,
+      "name": "Działdowo",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 22905,
+      "name": "Prabuty",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 23101,
+      "name": "Kwidzyn",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 23309,
+      "name": "Ostrołęka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 23416,
+      "name": "Chorzele",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 23432,
+      "name": "Wielbark",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 23465,
+      "name": "Śniadowo",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 23804,
+      "name": "Łomża",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 24000,
+      "name": "Białystok",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 24133,
+      "name": "Mońki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 24158,
+      "name": "Osowiec",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 24232,
+      "name": "Czarna Białostocka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 24430,
+      "name": "Bielsk Podlaski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 24539,
+      "name": "Łapy",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 24638,
+      "name": "Szepietowo",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 24737,
+      "name": "Czyżew",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 24802,
+      "name": "Sokółka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 24893,
+      "name": "Dąbrowa Białostocka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 25205,
+      "name": "Czeremcha",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 25353,
+      "name": "Nurzec",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 25387,
+      "name": "Siemiatycze",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 25403,
+      "name": "Hajnówka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 25809,
+      "name": "Rzepin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 26104,
+      "name": "Zbąszynek",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 26146,
+      "name": "Zbąszyń",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 26161,
+      "name": "Babimost",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 26211,
+      "name": "Nowy Tomyśl",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 26500,
+      "name": "Skwierzyna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 26708,
+      "name": "Międzyrzecz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 27201,
+      "name": "Opalenica",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 27300,
+      "name": "Sulechów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 27805,
+      "name": "Zielona Góra Główna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 28100,
+      "name": "Świebodzin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 28472,
+      "name": "Swarzędz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 28803,
+      "name": "Szamotuły",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 28969,
+      "name": "Wronki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 29108,
+      "name": "Krzyż",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 29181,
+      "name": "Dobiegniew",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 29215,
+      "name": "Nowe Drezdenko",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 29223,
+      "name": "Wieleń",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 29405,
+      "name": "Choszczno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 29645,
+      "name": "Oborniki Wielkopolskie Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 30007,
+      "name": "Września",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 30122,
+      "name": "Słupca",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 30205,
+      "name": "Środa Wielkopolska",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 30601,
+      "name": "Poznań Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 30809,
+      "name": "Gniezno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 32003,
+      "name": "Mogilno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 32201,
+      "name": "Kutno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 32359,
+      "name": "Gostynin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 32433,
+      "name": "Żychlin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 32524,
+      "name": "Łęczyca",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 32540,
+      "name": "Ozorków",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 32607,
+      "name": "Płock",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 32706,
+      "name": "Sierpc",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 32904,
+      "name": "Łowicz Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 33100,
+      "name": "Konin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 33191,
+      "name": "Koło",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 33506,
+      "name": "Warszawa Zachodnia",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 33563,
+      "name": "Warszawa Służewiec",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 33605,
+      "name": "Warszawa Centralna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 33902,
+      "name": "Piaseczno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 34165,
+      "name": "Grodzisk Mazowiecki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 34207,
+      "name": "Żyrardów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 34603,
+      "name": "Sochaczew",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 36343,
+      "name": "Wołomin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 36459,
+      "name": "Nowy Dwór Mazowiecki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 36509,
+      "name": "Legionowo",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 36939,
+      "name": "Ciechanów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 37226,
+      "name": "Mława",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 37507,
+      "name": "Tłuszcz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 37911,
+      "name": "Łochów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 38307,
+      "name": "Małkinia",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 38653,
+      "name": "Warszawa Wschodnia",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 39008,
+      "name": "Mińsk Mazowiecki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 39206,
+      "name": "Pilawa",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 39404,
+      "name": "Siedlce",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 39743,
+      "name": "Niemojki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 39776,
+      "name": "Sarnaki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 39875,
+      "name": "Mrozy",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 39909,
+      "name": "Łuków",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 39974,
+      "name": "Radzyń Podlaski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 40030,
+      "name": "Parczew",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 40808,
+      "name": "Biała Podlaska",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 40832,
+      "name": "Międzyrzec Podlaski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 40949,
+      "name": "Chotyłów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 40998,
+      "name": "Terespol",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 42002,
+      "name": "Nowa Sól",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 42200,
+      "name": "Głogów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 42606,
+      "name": "Leszno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 43406,
+      "name": "Kościan",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 44008,
+      "name": "Krotoszyn",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 44305,
+      "name": "Rawicz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 44420,
+      "name": "Żmigród",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 44701,
+      "name": "Jarocin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 44842,
+      "name": "Pleszew",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 45245,
+      "name": "Kalisz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 45401,
+      "name": "Kępno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 45476,
+      "name": "Ostrzeszów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 45617,
+      "name": "Wieruszów Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 45682,
+      "name": "Wieluń",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 45906,
+      "name": "Ostrów Wielkopolski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 46409,
+      "name": "Łódź Widzew",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 46458,
+      "name": "Łódź Fabryczna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 46565,
+      "name": "Łódź Chojny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 46581,
+      "name": "Pabianice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 46649,
+      "name": "Łask",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 46706,
+      "name": "Łódź Kaliska",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 46789,
+      "name": "Łódź Żabieniec",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 46805,
+      "name": "Zgierz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 47001,
+      "name": "Skierniewice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 47258,
+      "name": "Koluszki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 47605,
+      "name": "Tomaszów Mazowiecki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 47704,
+      "name": "Piotrków Trybunalski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 47886,
+      "name": "Radomsko",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 48009,
+      "name": "Skarżysko-Kamienna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 48181,
+      "name": "Starachowice Wschodnie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 48355,
+      "name": "Radom Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 48504,
+      "name": "Warka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 48736,
+      "name": "Pionki Zachodnie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 48801,
+      "name": "Przysucha",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 48827,
+      "name": "Drzewica",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 48959,
+      "name": "Opoczno Południe",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 49205,
+      "name": "Ostrowiec Świętokrzyski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 49809,
+      "name": "Dęblin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 50021,
+      "name": "Puławy Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 50104,
+      "name": "Nałęczów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 50484,
+      "name": "Świdnik Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 50500,
+      "name": "Lublin Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 50609,
+      "name": "Lubartów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 50807,
+      "name": "Rejowiec",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 50906,
+      "name": "Chełm",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 50948,
+      "name": "Chełm Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 51102,
+      "name": "Dorohusk",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 51177,
+      "name": "Krasnystaw Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 51508,
+      "name": "Kraśnik",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 51805,
+      "name": "Węgliniec",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 51847,
+      "name": "Zgorzelec",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 51862,
+      "name": "Zgorzelec Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 51946,
+      "name": "Pieńsk",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 53009,
+      "name": "Legnica",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 53280,
+      "name": "Lubin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 53850,
+      "name": "Bolesławiec",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 54007,
+      "name": "Chojnów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 54403,
+      "name": "Jaworzyna Śląska",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 54528,
+      "name": "Świebodzice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 54551,
+      "name": "Wałbrzych Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 54817,
+      "name": "Świdnica Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 54908,
+      "name": "Dzierżoniów Śląski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 55103,
+      "name": "Wałbrzych Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 55145,
+      "name": "Jedlina-Zdrój",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 55632,
+      "name": "Sędzisław",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 55806,
+      "name": "Jelenia Góra",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 56093,
+      "name": "Jelenia Góra Cieplice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 56143,
+      "name": "Piechowice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 56168,
+      "name": "Szklarska Poręba Dolna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 56176,
+      "name": "Szklarska Poręba Średnia",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 56184,
+      "name": "Szklarska Poręba Górna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 56408,
+      "name": "Kamieniec Ząbkowicki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 56606,
+      "name": "Nysa",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 56697,
+      "name": "Otmuchów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 56713,
+      "name": "Paczków",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 56903,
+      "name": "Prudnik",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 57208,
+      "name": "Międzylesie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 57307,
+      "name": "Kłodzko Główne",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 57414,
+      "name": "Bystrzyca Kłodzka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 57463,
+      "name": "Kłodzko Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 57703,
+      "name": "Ząbkowice Śląskie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 57943,
+      "name": "Nowa Ruda",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 58271,
+      "name": "Oława",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 58651,
+      "name": "Wrocław Mikołajów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 58784,
+      "name": "Oborniki Śląskie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 59105,
+      "name": "Wrocław Nadodrze",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 59543,
+      "name": "Grabowno Wielkie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 59576,
+      "name": "Oleśnica Rataje",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 59675,
+      "name": "Milicz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 59808,
+      "name": "Strzelin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 60103,
+      "name": "Wrocław Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 60269,
+      "name": "Brzeg Dolny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 60335,
+      "name": "Wołów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 60400,
+      "name": "Ścinawa",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 60608,
+      "name": "Opole Główne",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 61200,
+      "name": "Kluczbork",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 61341,
+      "name": "Byczyna Kluczborska",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 61572,
+      "name": "Ozimek",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 61705,
+      "name": "Strzelce Opolskie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 61903,
+      "name": "Gogolin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 62109,
+      "name": "Brzeg",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 62653,
+      "name": "Częstochowa",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 62802,
+      "name": "Częstochowa Stradom",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 63073,
+      "name": "Koniecpol",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 63552,
+      "name": "Kielce Główne",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 64303,
+      "name": "Sędziszów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 64337,
+      "name": "Kozłów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 64352,
+      "name": "Klimontów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 64451,
+      "name": "Jędrzejów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 64626,
+      "name": "Tunel",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 64808,
+      "name": "Włoszczowa",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 64899,
+      "name": "Włoszczowa Północ",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 65003,
+      "name": "Stalowa Wola Rozwadów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 65029,
+      "name": "Stalowa Wola Centrum",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 65094,
+      "name": "Nisko",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 65144,
+      "name": "Rudnik nad Sanem",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 65243,
+      "name": "Zaklików",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 65300,
+      "name": "Sandomierz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 65466,
+      "name": "Tarnobrzeg",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 65532,
+      "name": "Nowa Dęba",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 65904,
+      "name": "Zamość",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 66050,
+      "name": "Zawada",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 66134,
+      "name": "Hrubieszów Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 66142,
+      "name": "Werbkowice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 66407,
+      "name": "Biłgoraj",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 66449,
+      "name": "Tereszpol Biłgorajski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 66589,
+      "name": "Zwierzyniec",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 67009,
+      "name": "Kędzierzyn-Koźle",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 67066,
+      "name": "Zdzieszowice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 67462,
+      "name": "Głogówek",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 67900,
+      "name": "Chałupki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 68205,
+      "name": "Rybnik",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 68403,
+      "name": "Wodzisław Śląski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 68700,
+      "name": "Racibórz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 68882,
+      "name": "Kuźnia Raciborska",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 69203,
+      "name": "Żory",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 69708,
+      "name": "Gliwice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 69823,
+      "name": "Zabrze",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 71001,
+      "name": "Tarnowskie Góry",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 71407,
+      "name": "Lubliniec",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 71555,
+      "name": "Olesno Śląskie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 71860,
+      "name": "Krzepice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 72272,
+      "name": "Chorzów Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 72306,
+      "name": "Bytom",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 73106,
+      "name": "Chorzów Batory",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 73312,
+      "name": "Katowice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 73403,
+      "name": "Sosnowiec Dańdówka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 73502,
+      "name": "Mysłowice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 73700,
+      "name": "Tychy",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 73908,
+      "name": "Jaworzno Szczakowa",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 74500,
+      "name": "Dąbrowa Górnicza Ząbkowice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 74583,
+      "name": "Dąbrowa Górnicza",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 74633,
+      "name": "Będzin Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 74658,
+      "name": "Sosnowiec Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 75309,
+      "name": "Zawiercie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 75424,
+      "name": "Myszków",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 75507,
+      "name": "Zebrzydowice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 75903,
+      "name": "Pszczyna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 76000,
+      "name": "Czechowice-Dziedzice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 76109,
+      "name": "Bielsko-Biała Główna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 76232,
+      "name": "Kęty",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 76273,
+      "name": "Andrychów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 76604,
+      "name": "Żywiec",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 77107,
+      "name": "Oświęcim",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 77503,
+      "name": "Trzebinia",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 77701,
+      "name": "Krzeszowice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 77834,
+      "name": "Chrzanów Śródmieście",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 78204,
+      "name": "Wadowice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 78345,
+      "name": "Kalwaria Zebrzydowska Lanckorona",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 78535,
+      "name": "Maków Podhalański",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 78907,
+      "name": "Nowy Targ",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 78980,
+      "name": "Poronin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79020,
+      "name": "Zakopane",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79327,
+      "name": "Zastów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79335,
+      "name": "Baranówka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79343,
+      "name": "Łuczyce",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79350,
+      "name": "Goszcza",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79368,
+      "name": "Niedźwiedź",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79376,
+      "name": "Słomniki Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79384,
+      "name": "Słomniki",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79426,
+      "name": "Smroków",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79434,
+      "name": "Szczepanowice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79459,
+      "name": "Kamieńczyce",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79467,
+      "name": "Miechów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79483,
+      "name": "Pstroszyce",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79657,
+      "name": "Bochnia",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79806,
+      "name": "Brzesko Okocim",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 79905,
+      "name": "Kraków Płaszów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 80416,
+      "name": "Kraków Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 80630,
+      "name": "Tarnów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 80986,
+      "name": "Tuchów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 81067,
+      "name": "Bogoniowice Ciężkowice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 81125,
+      "name": "Bobowa-Miasto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 81208,
+      "name": "Dębica",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 81232,
+      "name": "Ropczyce",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 81265,
+      "name": "Sędziszów Małopolski",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 81505,
+      "name": "Mielec",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 81604,
+      "name": "Stróże",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 81679,
+      "name": "Grybów",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 81703,
+      "name": "Gorlice Zagórzany",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 81786,
+      "name": "Biecz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 81901,
+      "name": "Nowy Sącz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 82032,
+      "name": "Stary Sącz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 82073,
+      "name": "Rytro",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 82099,
+      "name": "Piwniczna-Zdrój",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 82404,
+      "name": "Muszyna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 82446,
+      "name": "Muszyna Zdrój",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 82487,
+      "name": "Krynica-Zdrój",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 82552,
+      "name": "Żegiestów-Zdrój",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 82578,
+      "name": "Wierchomla Wielka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 82586,
+      "name": "Łomnica-Zdrój",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 82669,
+      "name": "Rzeszów Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 82974,
+      "name": "Kolbuszowa",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 83022,
+      "name": "Łańcut",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 83105,
+      "name": "Przeworsk",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 83220,
+      "name": "Leżajsk",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 83246,
+      "name": "Nowa Sarzyna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 83261,
+      "name": "Jarosław",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 83410,
+      "name": "Jasło",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 83501,
+      "name": "Krosno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 83600,
+      "name": "Sanok",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 83725,
+      "name": "Zarszyn",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 83758,
+      "name": "Zagórz",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 84301,
+      "name": "Radymno",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 84400,
+      "name": "Przemyśl Główny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 84434,
+      "name": "Przemyśl Zasanie",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 124876,
+      "name": "Darnytsia",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 124879,
+      "name": "Kyiv-Pasazhyrskyi",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 124974,
+      "name": "Volochysk",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 124979,
+      "name": "Khmelnytskyi",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125013,
+      "name": "Vinnytsia",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125048,
+      "name": "Shepetivka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125070,
+      "name": "Berdychiv",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125072,
+      "name": "Koziatyn-1",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125082,
+      "name": "Bila Tserkva",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125159,
+      "name": "Kovel",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125182,
+      "name": "Rivne",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125200,
+      "name": "Kivertsi",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125205,
+      "name": "Ternopil",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125208,
+      "name": "Zlochiv",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125266,
+      "name": "Lviv",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125334,
+      "name": "Krasne",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125508,
+      "name": "Oleksandriia",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125585,
+      "name": "Im. Tarasa Shevchenka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125634,
+      "name": "Kremenchuk",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125653,
+      "name": "Romodan",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125662,
+      "name": "Hrebinka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125672,
+      "name": "Lubny",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125711,
+      "name": "Kharkiv-Pasazhyrskyi",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125780,
+      "name": "Myrhorod",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125787,
+      "name": "Poltava-Kyivska",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125797,
+      "name": "Liubotyn",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125806,
+      "name": "Dnipro-Holovnyi",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125853,
+      "name": "Piatykhatky",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 125880,
+      "name": "Zaporizhzhia-1",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 127178,
+      "name": "Breclav",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 127265,
+      "name": "Hranice na Morave",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 127295,
+      "name": "Hodonin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 127419,
+      "name": "Olomouc Hlavni Nadrazi",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 127420,
+      "name": "Ostrava Hlavni Nadrazi",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 127436,
+      "name": "Ostrava-Svinov",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 127482,
+      "name": "Prerov",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 127651,
+      "name": "Zabreh na Morave",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 127662,
+      "name": "Otrokovice",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 127718,
+      "name": "Stare Mesto u Uher. Hradiste",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 127986,
+      "name": "Letohrad",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 128002,
+      "name": "Jablonne nad Orlici",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 128006,
+      "name": "Kolin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 128071,
+      "name": "Pardubice Hlavni Nadrazi",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 128154,
+      "name": "Usti nad Orlici",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 128157,
+      "name": "Usti nad Orlici Mesto",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 128166,
+      "name": "Ceska Trebova",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 129059,
+      "name": "Praha Hlavni Nadrazi",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 129083,
+      "name": "Praha-Liben",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 130357,
+      "name": "Budapest-Nyugati",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 130393,
+      "name": "Vac",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 130396,
+      "name": "Nagymaros-Visegrad",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 130399,
+      "name": "Szob",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 130963,
+      "name": "Kuty",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 130985,
+      "name": "Bratislava Hlavna Stanica",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 131012,
+      "name": "Nove Zamky",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 131023,
+      "name": "Sturovo",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 138923,
+      "name": "Rijeka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 138929,
+      "name": "Sapjane",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 138931,
+      "name": "Opatija-Matulji",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 138997,
+      "name": "Zidani Most",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 139006,
+      "name": "Ljubljana",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 139048,
+      "name": "Lasko",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 139049,
+      "name": "Celje",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 139064,
+      "name": "Maribor",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 139099,
+      "name": "Borovnica",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 139103,
+      "name": "Postojna",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 139105,
+      "name": "Pivka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 139128,
+      "name": "Ilirska Bistrica",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 140685,
+      "name": "Ruhland",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 140707,
+      "name": "Hoyerswerda",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 146599,
+      "name": "Rosenheim",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 146659,
+      "name": "Muenchen Ost",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 146771,
+      "name": "Muenchen Hbf",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 148445,
+      "name": "Leipzig Hbf",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 155861,
+      "name": "Wien Westbahnhof",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 155886,
+      "name": "St.Poelten Hbf",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 155921,
+      "name": "Linz Hauptbahnhof",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 155936,
+      "name": "Attnang-Puchheim",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 155955,
+      "name": "Salzburg Hbf.",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 157114,
+      "name": "Wien Meidling",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 157133,
+      "name": "Wiener Neustadt",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 157163,
+      "name": "Bruck A.D.Mur",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 157172,
+      "name": "Graz Hauptbahnhof",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 179200,
+      "name": "Mockava",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 179212,
+      "name": "Frankfurt/Oder",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 179223,
+      "name": "Bohumin",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 179228,
+      "name": "Lichkov",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 190042,
+      "name": "Rawa Ruska",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 209839,
+      "name": "Znamianka-Pasazhyrska",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 209910,
+      "name": "Kamianske-Pasazhyrske",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 212258,
+      "name": "Ljubljana Zalog",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 243509,
+      "name": "Wien Hbf",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 248058,
+      "name": "Berlin Gesundbrunnen",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 251575,
+      "name": "Małaszewicze",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 254539,
+      "name": "Izbica",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 258467,
+      "name": "Zamość Starówka",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 258468,
+      "name": "Zamość Wschód",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 258708,
+      "name": "Sucha Beskidzka Zamek",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 260653,
+      "name": "Gorzów Wielkopolski Wschodni",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 262848,
+      "name": "Lublin Zachodni",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 265126,
+      "name": "Pyrzowice Lotnisko",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 265251,
+      "name": "Chabówka Stadion",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 279919,
+      "name": "Białystok Zielone Wzgórza",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 280397,
+      "name": "Szczebrzeszyn",
+      "source": "openrailway-station-dictionary"
+    },
+    {
+      "externalStationId": 280603,
+      "name": "Kraków Piastów",
+      "source": "openrailway-station-dictionary"
+    }
+  ],
+  "allKnownStationIdCount": 3260
+}

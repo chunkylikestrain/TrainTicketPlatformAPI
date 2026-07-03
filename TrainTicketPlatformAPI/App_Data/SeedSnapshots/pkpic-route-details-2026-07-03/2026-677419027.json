@@ -1,0 +1,83 @@
+{
+  "scheduleId": 2026,
+  "orderId": 677419027,
+  "trainOrderId": 659614145,
+  "name": "TATRY",
+  "carrierCode": "IC",
+  "nationalNumber": "1350",
+  "commercialCategorySymbol": "EIC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 38653,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "01350",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1350",
+      "departurePlatform": "1",
+      "departureTrack": "10",
+      "departureTime": "07:29:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1350",
+      "arrivalTime": "07:35:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1350",
+      "departurePlatform": "4",
+      "departureTrack": "6",
+      "departureTime": "07:40:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 7,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1350",
+      "arrivalTime": "07:44:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1351",
+      "departurePlatform": "7",
+      "departureTrack": "3",
+      "departureTime": "07:45:30"
+    },
+    {
+      "stationId": 80416,
+      "orderNumber": 45,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1351",
+      "arrivalTime": "10:32:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1351",
+      "departurePlatform": "2",
+      "departureTrack": "3",
+      "departureTime": "10:35:00"
+    },
+    {
+      "stationId": 78907,
+      "orderNumber": 76,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1351",
+      "arrivalTime": "12:17:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1351",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "12:24:00"
+    },
+    {
+      "stationId": 79020,
+      "orderNumber": 80,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1351",
+      "arrivalTime": "12:39:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1351",
+      "departurePlatform": "2",
+      "departureTrack": "3"
+    }
+  ]
+}

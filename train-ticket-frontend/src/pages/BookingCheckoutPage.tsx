@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import BookingExpiredModal from "../components/BookingExpiredModal";
+import PassengerLegalFooter from "../components/PassengerLegalFooter";
 import { getUserEmail, hasAuthToken } from "../api/authSession";
 import { getBookingOrder, getGuestTickets, updateGuestBookingData } from "../api/bookingApi";
 import { generateBookingInvoice, generateOrderInvoice } from "../api/invoiceApi";
@@ -668,13 +669,13 @@ function BookingCheckoutPage() {
             </div>
 
             <label className="co2-row">
-              <span>CO2 compensation</span>
-              <button
-                type="button"
-                className={co2Compensation ? "consent-switch consent-switch-on" : "consent-switch"}
-                onClick={() => setCo2Compensation(!co2Compensation)}
-                aria-pressed={co2Compensation}
+              <input
+                checked={co2Compensation}
+                onChange={(event) => setCo2Compensation(event.target.checked)}
+                type="checkbox"
               />
+              <span className="consent-check" aria-hidden="true" />
+              <span>CO2 compensation</span>
             </label>
           </section>
 
@@ -710,23 +711,7 @@ function BookingCheckoutPage() {
         <div className="connection-train" />
       </section>
 
-      <section className="summary-legal">
-        <div>
-          <h2>Technological break.</h2>
-          <p>
-            Please remember about scheduled technical breaks in the online sales system. You cannot buy tickets
-            during this break.
-          </p>
-          <a href="#accessibility">Declaration of Accessibility</a>
-        </div>
-        <div>
-          <p>
-            The prices presented are indicative and published for informational purposes. Final confirmation
-            appears after payment is completed.
-          </p>
-          <strong>RailWay ticket platform</strong>
-        </div>
-      </section>
+      <PassengerLegalFooter />
 
       <BookingExpiredModal isOpen={isExpiredModalOpen} />
     </main>

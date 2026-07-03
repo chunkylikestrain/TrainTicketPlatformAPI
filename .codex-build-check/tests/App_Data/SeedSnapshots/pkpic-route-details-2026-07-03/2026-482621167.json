@@ -1,0 +1,79 @@
+{
+  "scheduleId": 2026,
+  "orderId": 482621167,
+  "trainOrderId": 988095328,
+  "name": "BALTAZAR",
+  "carrierCode": "IC",
+  "nationalNumber": "3405",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17",
+    "2026-08-03",
+    "2026-08-06",
+    "2026-08-07",
+    "2026-08-10",
+    "2026-08-13",
+    "2026-08-14",
+    "2026-08-17"
+  ],
+  "stations": [
+    {
+      "stationId": 80416,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "3405",
+      "departurePlatform": "5",
+      "departureTrack": "10",
+      "departureTime": "13:55:00"
+    },
+    {
+      "stationId": 77107,
+      "orderNumber": 17,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "3405",
+      "arrivalTime": "14:57:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "3405",
+      "departurePlatform": "3",
+      "departureTrack": "1",
+      "departureTime": "15:01:00"
+    },
+    {
+      "stationId": 76000,
+      "orderNumber": 21,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "3405",
+      "arrivalTime": "15:15:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "3405",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "15:28:00"
+    },
+    {
+      "stationId": 76109,
+      "orderNumber": 24,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "3405",
+      "arrivalTime": "15:37:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "3405",
+      "departurePlatform": "1a",
+      "departureTrack": "3"
+    }
+  ]
+}

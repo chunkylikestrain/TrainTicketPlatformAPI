@@ -664,34 +664,34 @@ namespace TrainTicketPlatformAPI.Data
 
         private static readonly StationDisplaySeed[] CleanStationDisplays =
         [
-            new("POZ", "Poznan Glowny", "Poznan", "Poznan"),
-            new("KRK", "Krakow Glowny", "Krakow", "Krakow"),
-            new("KRP", "Krakow Plaszow", "Krakow", "Krakow"),
+            new("POZ", "Poznań Główny", "Poznań", "Poznań"),
+            new("KRK", "Kraków Główny", "Kraków", "Kraków"),
+            new("KRP", "Kraków Płaszów", "Kraków", "Kraków"),
             new("WAW", "Warszawa Centralna", "Warszawa", "Warszawa"),
             new("WAWZ", "Warszawa Zachodnia", "Warszawa", "Warszawa"),
             new("WAWW", "Warszawa Wschodnia", "Warszawa", "Warszawa"),
-            new("WRO", "Wroclaw Glowny", "Wroclaw", "Wroclaw"),
-            new("GDN", "Gdansk Glowny", "Gdansk", "Gdansk"),
-            new("GDW", "Gdansk Wrzeszcz", "Gdansk", "Gdansk"),
-            new("GDY", "Gdynia Glowna", "Gdynia", "Gdynia"),
-            new("RZE", "Rzeszow Glowny", "Rzeszow", "Rzeszow"),
-            new("SZZ", "Szczecin Glowny", "Szczecin", "Szczecin"),
-            new("PRZ", "Przemysl Glowny", "Przemysl", "Przemysl"),
-            new("KOL", "Kolobrzeg", "Kolobrzeg", "Kolobrzeg"),
-            new("ILA", "Ilawa Glowna", "Ilawa", "Ilawa"),
+            new("WRO", "Wrocław Główny", "Wrocław", "Wrocław"),
+            new("GDN", "Gdańsk Główny", "Gdańsk", "Gdańsk"),
+            new("GDW", "Gdańsk Wrzeszcz", "Gdańsk", "Gdańsk"),
+            new("GDY", "Gdynia Główna", "Gdynia", "Gdynia"),
+            new("RZE", "Rzeszów Główny", "Rzeszów", "Rzeszów"),
+            new("SZZ", "Szczecin Główny", "Szczecin", "Szczecin"),
+            new("PRZ", "Przemyśl Główny", "Przemyśl", "Przemyśl"),
+            new("KOL", "Kołobrzeg", "Kołobrzeg", "Kołobrzeg"),
+            new("ILA", "Iława Główna", "Iława", "Iława"),
             new("MAL", "Malbork", "Malbork", "Malbork"),
             new("TCZ", "Tczew", "Tczew", "Tczew"),
             new("SOP", "Sopot", "Sopot", "Sopot"),
-            new("TAR", "Tarnow", "Tarnow", "Tarnow"),
+            new("TAR", "Tarnów", "Tarnów", "Tarnów"),
             new("KRZ", "Krzeszowice", "Krzeszowice", "Krzeszowice"),
             new("KTW", "Katowice", "Katowice", "Katowice"),
             new("GLI", "Gliwice", "Gliwice", "Gliwice"),
-            new("OPO", "Opole Glowne", "Opole", "Opole"),
-            new("CZE", "Czestochowa", "Czestochowa", "Czestochowa"),
+            new("OPO", "Opole Główne", "Opole", "Opole"),
+            new("CZE", "Częstochowa", "Częstochowa", "Częstochowa"),
             new("KON", "Konin", "Konin", "Konin"),
             new("KUT", "Kutno", "Kutno", "Kutno"),
             new("STG", "Stargard", "Stargard", "Stargard"),
-            new("PILA", "Pila Glowna", "Pila", "Pila"),
+            new("PILA", "Piła Główna", "Piła", "Piła"),
             new("KOS", "Koszalin", "Koszalin", "Koszalin")
         ];
 
@@ -721,12 +721,52 @@ namespace TrainTicketPlatformAPI.Data
             {
                 await EnsureDemoSchedulesAsync(db, cancellationToken);
             }
+            await EnsureRouteIdentityFieldsAsync(db, cancellationToken);
             await EnsureDiscountRulesAsync(db, cancellationToken);
 
             await EnsureUserAsync(db, configuration, "SeedData:AdminPassword", AdminEmail, "Admin", cancellationToken);
             await EnsureUserAsync(db, configuration, "SeedData:PassengerPassword", PassengerEmail, "Passenger", cancellationToken);
 
             await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static async Task EnsureRouteIdentityFieldsAsync(
+            TrainTicketDbContext db,
+            CancellationToken cancellationToken)
+        {
+            var routes = await db.TrainRoutes
+                .AsSplitQuery()
+                .Include(route => route.DepartureStation)
+                .Include(route => route.ArrivalStation)
+                .Include(route => route.RouteStops)
+                    .ThenInclude(stop => stop.Station)
+                .ToListAsync(cancellationToken);
+
+            foreach (var route in routes)
+            {
+                var orderedStopCodes = route.RouteStops
+                    .OrderBy(stop => stop.StopOrder)
+                    .Select(stop => stop.Station.Code);
+                var orderedStopNames = route.RouteStops
+                    .OrderBy(stop => stop.StopOrder)
+                    .Select(stop => stop.Station.Name);
+
+                if (string.IsNullOrWhiteSpace(route.RouteFingerprint))
+                {
+                    route.RouteFingerprint = BuildRouteFingerprint(
+                        route.DepartureStation.Code,
+                        orderedStopCodes,
+                        route.ArrivalStation.Code);
+                }
+
+                if (string.IsNullOrWhiteSpace(route.AdminDisplayName))
+                {
+                    route.AdminDisplayName = BuildAdminRouteDisplayName(
+                        route.DepartureStation.Name,
+                        route.ArrivalStation.Name,
+                        orderedStopNames);
+                }
+            }
         }
 
         private static async Task CleanupLegacyPrototypeSeedDataAsync(
@@ -1034,6 +1074,8 @@ namespace TrainTicketPlatformAPI.Data
             }
             catch (DbUpdateException ex)
             {
+                db.Entry(station).State = EntityState.Detached;
+
                 // Possible unique constraint race or existing DB row; try re-querying by normalized name
                 var existing = await db.Stations
                     .FirstOrDefaultAsync(s => s.NormalizedName == normalizedName, cancellationToken);
@@ -1115,10 +1157,18 @@ namespace TrainTicketPlatformAPI.Data
             var existingSeats = await db.Seats
                 .Where(s => s.TrainId == train.Id)
                 .ToListAsync(cancellationToken);
+            var carriages = await db.TrainCarriages
+                .Where(c => c.TrainId == train.Id && c.SeatCount > 0)
+                .OrderBy(c => c.Position)
+                .ToListAsync(cancellationToken);
+            var seats = BuildExpectedSeats(train, carriages);
 
             if (existingSeats.Count > 0)
             {
                 if (!refreshExistingDemoSeats)
+                    return;
+
+                if (SeatLayoutsMatch(existingSeats, seats))
                     return;
 
                 var hasBookings = await db.Bookings
@@ -1131,12 +1181,13 @@ namespace TrainTicketPlatformAPI.Data
                 await db.SaveChangesAsync(cancellationToken);
             }
 
-            var carriages = await db.TrainCarriages
-                .Where(c => c.TrainId == train.Id && c.SeatCount > 0)
-                .OrderBy(c => c.Position)
-                .ToListAsync(cancellationToken);
-            var seats = new List<Seat>();
+            db.Seats.AddRange(seats);
+            await db.SaveChangesAsync(cancellationToken);
+        }
 
+        private static List<Seat> BuildExpectedSeats(Train train, IReadOnlyCollection<TrainCarriage> carriages)
+        {
+            var seats = new List<Seat>();
             if (carriages.Count == 0)
             {
                 var carriageCount = Math.Max(1, train.CarriageCount);
@@ -1175,9 +1226,22 @@ namespace TrainTicketPlatformAPI.Data
                     }
                 }
             }
+            return seats;
+        }
 
-            db.Seats.AddRange(seats);
-            await db.SaveChangesAsync(cancellationToken);
+        private static bool SeatLayoutsMatch(IReadOnlyCollection<Seat> existingSeats, IReadOnlyCollection<Seat> expectedSeats)
+        {
+            if (existingSeats.Count != expectedSeats.Count)
+                return false;
+
+            var existing = existingSeats
+                .Select(seat => $"{seat.Coach}|{seat.Number}|{seat.ClassType}")
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+            var expected = expectedSeats
+                .Select(seat => $"{seat.Coach}|{seat.Number}|{seat.ClassType}")
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            return existing.SetEquals(expected);
         }
 
         private static async Task EnsureRollingStockOptionsAsync(
@@ -1344,7 +1408,7 @@ namespace TrainTicketPlatformAPI.Data
                 return false;
 
             var files = Directory
-                .EnumerateFiles(snapshotDirectory, "*.json")
+                .EnumerateFiles(snapshotDirectory, "*.seed-snapshot.json")
                 .OrderBy(file => file, StringComparer.OrdinalIgnoreCase)
                 .ToArray();
 
@@ -1400,6 +1464,7 @@ namespace TrainTicketPlatformAPI.Data
                     externalSource,
                     stationSeed.ExternalStationId,
                     stationSeed.Code,
+                    stationSeed.Name,
                     cancellationToken);
 
                 if (station == null)
@@ -1478,7 +1543,6 @@ namespace TrainTicketPlatformAPI.Data
 
                 await db.SaveChangesAsync(cancellationToken);
                 await EnsureSnapshotCarriagesAsync(db, train, trainSeed, cancellationToken);
-                await EnsureSeatsAsync(db, train, cancellationToken, refreshExistingDemoSeats: true);
 
                 trainsByCode[train.Code] = train;
             }
@@ -1561,6 +1625,7 @@ namespace TrainTicketPlatformAPI.Data
                 if (route.RouteStops.Count > 0)
                     db.TrainRouteStops.RemoveRange(route.RouteStops);
 
+                var routeStopStationIds = new HashSet<int>();
                 foreach (var stopSeed in orderedStopSeeds)
                 {
                     var station = ResolveSnapshotStation(
@@ -1570,6 +1635,9 @@ namespace TrainTicketPlatformAPI.Data
                         stopSeed.StationCode);
 
                     if (station == null)
+                        continue;
+
+                    if (!routeStopStationIds.Add(station.Id))
                         continue;
 
                     route.RouteStops.Add(new TrainRouteStop
@@ -1651,7 +1719,7 @@ namespace TrainTicketPlatformAPI.Data
                 trip.ExternalTrainOrderId = tripSeed.ExternalTrainOrderId;
                 trip.ExternalOperatingDate = tripSeed.ExternalOperatingDate;
                 trip.ExternalImportedAtUtc = snapshot.ExportedAtUtc == default ? DateTime.UtcNow : snapshot.ExportedAtUtc;
-                trip.ExternalRawVersion = tripSeed.ExternalRawVersion;
+                trip.ExternalRawVersion = Truncate(tripSeed.ExternalRawVersion, 80);
 
                 await db.SaveChangesAsync(cancellationToken);
                 await EnsureSnapshotFaresAsync(db, trip, train, route, tripSeed.Fares, cancellationToken);
@@ -1665,6 +1733,7 @@ namespace TrainTicketPlatformAPI.Data
             string externalSource,
             int? externalStationId,
             string code,
+            string name,
             CancellationToken cancellationToken)
         {
             if (externalStationId.HasValue)
@@ -1680,7 +1749,20 @@ namespace TrainTicketPlatformAPI.Data
             }
 
             return await db.Stations
-                .FirstOrDefaultAsync(station => station.Code == code, cancellationToken);
+                .FirstOrDefaultAsync(station => station.Code == code, cancellationToken)
+                ?? await db.Stations
+                    .FirstOrDefaultAsync(
+                        station => station.NormalizedName == name.Trim().ToUpperInvariant(),
+                        cancellationToken);
+        }
+
+        private static string Truncate(string? value, int maxLength)
+        {
+            if (string.IsNullOrWhiteSpace(value))
+                return string.Empty;
+
+            var trimmed = value.Trim();
+            return trimmed.Length <= maxLength ? trimmed : trimmed[..maxLength];
         }
 
         private static Station? ResolveSnapshotStation(

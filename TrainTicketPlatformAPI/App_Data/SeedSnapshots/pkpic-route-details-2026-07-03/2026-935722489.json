@@ -1,0 +1,75 @@
+{
+  "scheduleId": 2026,
+  "orderId": 935722489,
+  "trainOrderId": 325841895,
+  "name": "ZKA 601 KASZTELAN",
+  "carrierCode": "IC",
+  "nationalNumber": "32120",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-04",
+    "2026-07-05",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-11",
+    "2026-07-12",
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17",
+    "2026-07-18",
+    "2026-07-19",
+    "2026-07-20"
+  ],
+  "stations": [
+    {
+      "stationId": 81208,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "32120",
+      "departurePlatform": "BUS",
+      "departureTime": "09:31:00"
+    },
+    {
+      "stationId": 81505,
+      "orderNumber": 6,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "32120",
+      "arrivalTime": "10:15:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "32120",
+      "departurePlatform": "BUS",
+      "departureTime": "10:16:00"
+    },
+    {
+      "stationId": 65466,
+      "orderNumber": 11,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "32120",
+      "arrivalTime": "11:01:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "32120",
+      "departurePlatform": "BUS",
+      "departureTime": "11:02:00"
+    },
+    {
+      "stationId": 65003,
+      "orderNumber": 18,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "32121",
+      "arrivalPlatform": "BUS",
+      "arrivalTime": "11:36:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "32121",
+      "departurePlatform": "BUS"
+    }
+  ]
+}

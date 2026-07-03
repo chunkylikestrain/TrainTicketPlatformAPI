@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Options;
 using TrainTicketPlatformAPI.Contracts.OpenRailway;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Cryptography;
+using System.Text;
 using TrainTicketPlatformAPI.Data;
 using TrainTicketPlatformAPI.Models;
 
@@ -142,7 +144,8 @@ namespace TrainTicketPlatformAPI.Services
             await _db.SaveChangesAsync(cancellationToken);
             var consistResult = await EnsureDefaultConsistAsync(train, route, departureTime, cancellationToken);
 
-            var routeCode = BuildRouteCode(route, selectedOperatingDate);
+            var routeFingerprint = BuildRouteFingerprint(orderedStops, stationMap);
+            var adminDisplayName = BuildAdminRouteDisplayName(orderedStops, stationMap);
             var trainRoute = await _db.TrainRoutes
                 .Include(r => r.RouteStops)
                 .FirstOrDefaultAsync(r =>
@@ -151,6 +154,19 @@ namespace TrainTicketPlatformAPI.Services
                     r.ExternalOrderId == route.OrderId &&
                     r.ExternalOperatingDate == selectedOperatingDate,
                     cancellationToken);
+            var matchedByExternalIdentity = trainRoute != null;
+
+            if (trainRoute == null)
+            {
+                trainRoute = await _db.TrainRoutes
+                    .Include(r => r.RouteStops)
+                    .FirstOrDefaultAsync(r =>
+                        r.DepartureStationId == departureStation.Id &&
+                        r.ArrivalStationId == arrivalStation.Id &&
+                        r.RouteFingerprint == routeFingerprint,
+                        cancellationToken);
+            }
+
             var routeCreated = trainRoute == null;
             if (trainRoute == null)
             {
@@ -158,52 +174,96 @@ namespace TrainTicketPlatformAPI.Services
                 _db.TrainRoutes.Add(trainRoute);
             }
 
-            trainRoute.Code = routeCode;
-            trainRoute.Name = Truncate($"{departureStation.Name} -> {arrivalStation.Name}", 240);
+            trainRoute.Code = string.IsNullOrWhiteSpace(trainRoute.Code)
+                ? await BuildUniqueRouteCodeAsync(departureStation, arrivalStation, routeFingerprint, cancellationToken)
+                : trainRoute.Code;
+            if (routeCreated || matchedByExternalIdentity || string.IsNullOrWhiteSpace(trainRoute.Name))
+            {
+                trainRoute.Name = Truncate($"{departureStation.Name} -> {arrivalStation.Name}", 240);
+            }
+
+            trainRoute.RouteFingerprint = routeFingerprint;
+            if (routeCreated || matchedByExternalIdentity || string.IsNullOrWhiteSpace(trainRoute.AdminDisplayName))
+            {
+                trainRoute.AdminDisplayName = adminDisplayName;
+            }
+
             trainRoute.DepartureStationId = departureStation.Id;
             trainRoute.ArrivalStationId = arrivalStation.Id;
-            trainRoute.EstimatedDurationMinutes = Math.Max(0, (int)Math.Round((arrivalTime - departureTime).TotalMinutes));
-            trainRoute.DistanceKm = 0m;
-            trainRoute.OperatingDays = "Imported";
-            trainRoute.IntermediateStops = Truncate(string.Join(", ", orderedStops
-                .Skip(1)
-                .Take(Math.Max(0, orderedStops.Count - 2))
-                .Select(stop => stationMap[stop.StationId].Name)), 1000);
-            trainRoute.IsActive = true;
-            trainRoute.ExternalSource = _options.ExternalSource;
-            trainRoute.ExternalScheduleId = route.ScheduleId;
-            trainRoute.ExternalOrderId = route.OrderId;
-            trainRoute.ExternalTrainOrderId = route.TrainOrderId;
-            trainRoute.ExternalOperatingDate = selectedOperatingDate;
-
-            var existingStops = trainRoute.RouteStops.ToList();
-            if (existingStops.Count > 0)
-                _db.TrainRouteStops.RemoveRange(existingStops);
-
-            foreach (var stop in orderedStops)
+            if (routeCreated || matchedByExternalIdentity || trainRoute.EstimatedDurationMinutes <= 0)
             {
-                var arrivalOffset = BuildOffsetMinutes(selectedOperatingDate, departureTime, stop.ArrivalDay, stop.ArrivalTime);
-                var departureOffset = BuildOffsetMinutes(selectedOperatingDate, departureTime, stop.DepartureDay, stop.DepartureTime);
-                var isFirst = stop == firstStop;
-                var isLast = stop == lastStop;
+                trainRoute.EstimatedDurationMinutes = Math.Max(0, (int)Math.Round((arrivalTime - departureTime).TotalMinutes));
+            }
 
-                trainRoute.RouteStops.Add(new TrainRouteStop
+            if (routeCreated || matchedByExternalIdentity)
+            {
+                trainRoute.DistanceKm = 0m;
+            }
+
+            if (routeCreated || matchedByExternalIdentity || string.IsNullOrWhiteSpace(trainRoute.OperatingDays))
+            {
+                trainRoute.OperatingDays = "Imported";
+            }
+
+            if (routeCreated || matchedByExternalIdentity || string.IsNullOrWhiteSpace(trainRoute.IntermediateStops))
+            {
+                trainRoute.IntermediateStops = Truncate(string.Join(", ", orderedStops
+                    .Skip(1)
+                    .Take(Math.Max(0, orderedStops.Count - 2))
+                    .Select(stop => stationMap[stop.StationId].Name)), 1000);
+            }
+
+            if (routeCreated || matchedByExternalIdentity)
+            {
+                trainRoute.IsActive = true;
+            }
+
+            if (routeCreated || string.IsNullOrWhiteSpace(trainRoute.ExternalSource))
+            {
+                trainRoute.ExternalSource = _options.ExternalSource;
+                trainRoute.ExternalScheduleId = route.ScheduleId;
+                trainRoute.ExternalOrderId = route.OrderId;
+                trainRoute.ExternalTrainOrderId = route.TrainOrderId;
+                trainRoute.ExternalOperatingDate = selectedOperatingDate;
+            }
+
+            var shouldRewriteRouteStops = routeCreated || matchedByExternalIdentity || trainRoute.RouteStops.Count == 0;
+            if (shouldRewriteRouteStops)
+            {
+                var existingStops = trainRoute.RouteStops.ToList();
+                if (existingStops.Count > 0)
+                    _db.TrainRouteStops.RemoveRange(existingStops);
+
+                var routeStopStationIds = new HashSet<int>();
+                foreach (var stop in orderedStops)
                 {
-                    StationId = stationMap[stop.StationId].Id,
-                    StopOrder = stop.OrderNumber,
-                    ArrivalOffsetMinutes = isFirst ? null : arrivalOffset,
-                    DepartureOffsetMinutes = isLast ? null : departureOffset,
-                    Platform = FirstNonBlank(stop.DeparturePlatform, stop.ArrivalPlatform),
-                    Track = FirstNonBlank(stop.DepartureTrack, stop.ArrivalTrack),
-                    StopType = MapStopType(stop.StopTypeName, isFirst || isLast),
-                    ExternalStationId = stop.StationId,
-                    ExternalStopTypeId = stop.StopTypeId,
-                    ExternalStopTypeName = stop.StopTypeName ?? string.Empty,
-                    ExternalArrivalTrainNumber = stop.ArrivalTrainNumber ?? string.Empty,
-                    ExternalDepartureTrainNumber = stop.DepartureTrainNumber ?? string.Empty,
-                    ArrivalDayOffset = stop.ArrivalDay,
-                    DepartureDayOffset = stop.DepartureDay
-                });
+                    var arrivalOffset = BuildOffsetMinutes(selectedOperatingDate, departureTime, stop.ArrivalDay, stop.ArrivalTime);
+                    var departureOffset = BuildOffsetMinutes(selectedOperatingDate, departureTime, stop.DepartureDay, stop.DepartureTime);
+                    var isFirst = stop == firstStop;
+                    var isLast = stop == lastStop;
+                    var stationId = stationMap[stop.StationId].Id;
+
+                    if (!routeStopStationIds.Add(stationId))
+                        continue;
+
+                    trainRoute.RouteStops.Add(new TrainRouteStop
+                    {
+                        StationId = stationId,
+                        StopOrder = stop.OrderNumber,
+                        ArrivalOffsetMinutes = isFirst ? null : arrivalOffset,
+                        DepartureOffsetMinutes = isLast ? null : departureOffset,
+                        Platform = FirstNonBlank(stop.DeparturePlatform, stop.ArrivalPlatform),
+                        Track = FirstNonBlank(stop.DepartureTrack, stop.ArrivalTrack),
+                        StopType = MapStopType(stop.StopTypeName, isFirst || isLast),
+                        ExternalStationId = stop.StationId,
+                        ExternalStopTypeId = stop.StopTypeId,
+                        ExternalStopTypeName = stop.StopTypeName ?? string.Empty,
+                        ExternalArrivalTrainNumber = stop.ArrivalTrainNumber ?? string.Empty,
+                        ExternalDepartureTrainNumber = stop.DepartureTrainNumber ?? string.Empty,
+                        ArrivalDayOffset = stop.ArrivalDay,
+                        DepartureDayOffset = stop.DepartureDay
+                    });
+                }
             }
 
             await _db.SaveChangesAsync(cancellationToken);
@@ -255,6 +315,7 @@ namespace TrainTicketPlatformAPI.Services
                 TripId = trip.Id,
                 TrainCreated = trainCreated,
                 RouteCreated = routeCreated,
+                RouteReused = !routeCreated,
                 TripCreated = tripCreated,
                 DefaultConsistApplied = consistResult.Applied,
                 StationsCreated = stationsCreated,
@@ -263,7 +324,9 @@ namespace TrainTicketPlatformAPI.Services
                 StopsWritten = orderedStops.Count,
                 TrainCode = train.Code,
                 RouteCode = trainRoute.Code,
-                RouteName = trainRoute.Name
+                RouteName = trainRoute.Name,
+                AdminDisplayName = trainRoute.AdminDisplayName,
+                RouteFingerprint = trainRoute.RouteFingerprint
             };
         }
 
@@ -999,13 +1062,78 @@ namespace TrainTicketPlatformAPI.Services
                 ? trainNumber
                 : $"{route.CommercialCategorySymbol} {trainNumber} {route.Name}".Trim();
 
-        private static string BuildRouteCode(OpenRailwayRouteDto route, DateOnly operatingDate)
+        private async Task<string> BuildUniqueRouteCodeAsync(
+            Station departureStation,
+            Station arrivalStation,
+            string routeFingerprint,
+            CancellationToken cancellationToken)
         {
-            var code = $"PLK-{route.ScheduleId}-{route.OrderId}-{operatingDate:yyyyMMdd}";
-            if (code.Length <= 32)
-                return code;
+            var hash = Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(routeFingerprint)))[..8];
+            var baseCode = $"{CleanRouteCodePart(departureStation.Code)}-{CleanRouteCodePart(arrivalStation.Code)}-{hash}";
 
-            return $"PLK-{route.ScheduleId:X}-{route.OrderId:X}-{operatingDate:yyMMdd}";
+            for (var suffix = 0; suffix < 100; suffix++)
+            {
+                var code = suffix == 0
+                    ? baseCode
+                    : Truncate($"{baseCode}-{suffix + 1}", 32);
+
+                var existingRoute = await _db.TrainRoutes
+                    .AsNoTracking()
+                    .FirstOrDefaultAsync(route => route.Code == code, cancellationToken);
+
+                if (existingRoute == null ||
+                    string.Equals(existingRoute.RouteFingerprint, routeFingerprint, StringComparison.OrdinalIgnoreCase))
+                {
+                    return code;
+                }
+            }
+
+            return Truncate($"{CleanRouteCodePart(departureStation.Code, 4)}-{CleanRouteCodePart(arrivalStation.Code, 4)}-{hash}", 32);
+        }
+
+        private static string CleanRouteCodePart(string stationCode, int maxLength = 8)
+        {
+            var value = new string(stationCode
+                .Where(char.IsLetterOrDigit)
+                .Select(char.ToUpperInvariant)
+                .Take(maxLength)
+                .ToArray());
+
+            return string.IsNullOrWhiteSpace(value) ? "STA" : value;
+        }
+
+        private static string BuildRouteFingerprint(
+            IReadOnlyList<OpenRailwayStationOnRouteDto> orderedStops,
+            IReadOnlyDictionary<int, Station> stationMap)
+        {
+            return Truncate(string.Join(
+                ">",
+                orderedStops
+                    .Select(stop => stationMap[stop.StationId].Code.Trim().ToUpperInvariant())
+                    .Where(code => !string.IsNullOrWhiteSpace(code))), 1200);
+        }
+
+        private static string BuildAdminRouteDisplayName(
+            IReadOnlyList<OpenRailwayStationOnRouteDto> orderedStops,
+            IReadOnlyDictionary<int, Station> stationMap)
+        {
+            if (orderedStops.Count == 0)
+                return string.Empty;
+
+            var origin = stationMap[orderedStops[0].StationId].Name;
+            var destination = stationMap[orderedStops[^1].StationId].Name;
+            var keyStops = orderedStops
+                .Skip(1)
+                .Take(Math.Max(0, orderedStops.Count - 2))
+                .Select(stop => stationMap[stop.StationId].Name)
+                .Take(3)
+                .ToList();
+
+            return Truncate(
+                keyStops.Count == 0
+                    ? $"{origin} to {destination}"
+                    : $"{origin} to {destination} via {string.Join(", ", keyStops)}",
+                300);
         }
 
         private static string MapTrainType(string? category)

@@ -64,7 +64,7 @@ function HelpVisual({ type }: { type: string }) {
         <div><span>To</span><strong>Gdynia Glowna</strong></div>
         <div><span>When</span><strong>28-Jun-2026</strong></div>
         <div><span>Time</span><strong>13:38</strong></div>
-        <button type="button">Search</button>
+        <span className="help-mock-action">Search</span>
       </div>
     );
   }
@@ -86,7 +86,7 @@ function HelpVisual({ type }: { type: string }) {
         <strong>05:48 AM &gt; 01:27 PM</strong>
         <p>Rzeszow Glowny -&gt; Gdynia Glowna</p>
         <small>IC 7310 Malczewski + IC 3806 Zefir</small>
-        <button type="button">Choose class 2</button>
+        <span className="help-mock-action">Choose class 2</span>
       </div>
     );
   }
@@ -108,7 +108,7 @@ function HelpVisual({ type }: { type: string }) {
       <div className="help-mock help-payment-mock" aria-hidden="true">
         <div><span>Amount due</span><strong>90,00 PLN</strong></div>
         <label><span /> I want an invoice</label>
-        <button type="button">Pay</button>
+        <span className="help-mock-action">Pay</span>
       </div>
     );
   }

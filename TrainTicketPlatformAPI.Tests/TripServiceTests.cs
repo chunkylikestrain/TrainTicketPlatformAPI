@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using TrainTicketPlatformAPI.Data;
 using TrainTicketPlatformAPI.Models;
 using TrainTicketPlatformAPI.Services;
@@ -502,6 +503,86 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.That(stops[1].DepartureTime, Is.EqualTo(new DateTime(2026, 7, 1, 9, 34, 0)));
             Assert.That(stops[2].StationCode, Is.EqualTo("KRK"));
             Assert.That(stops[2].ArrivalTime, Is.EqualTo(new DateTime(2026, 7, 1, 11, 0, 0)));
+        }
+
+        [Test]
+        public async Task SearchTripsAsync_DoesNotDuplicateImportedEndpointStops()
+        {
+            var db = NewDb("Trips_SearchImportedEndpointStops");
+            await SeedTripGraphAsync(db);
+            var route = await db.TrainRoutes
+                .Include(item => item.RouteStops)
+                .SingleAsync();
+            var departure = await db.Stations.SingleAsync(station => station.Code == "WAW");
+            var intermediate = await db.Stations.SingleAsync(station => station.Code == "KAT");
+            var arrival = await db.Stations.SingleAsync(station => station.Code == "KRK");
+
+            db.TrainRouteStops.RemoveRange(route.RouteStops);
+            db.TrainRouteStops.AddRange(
+                new TrainRouteStop
+                {
+                    TrainRouteId = route.Id,
+                    StationId = departure.Id,
+                    Station = departure,
+                    StopOrder = 0,
+                    DepartureOffsetMinutes = 0
+                },
+                new TrainRouteStop
+                {
+                    TrainRouteId = route.Id,
+                    StationId = intermediate.Id,
+                    Station = intermediate,
+                    StopOrder = 1,
+                    ArrivalOffsetMinutes = 86,
+                    DepartureOffsetMinutes = 94
+                },
+                new TrainRouteStop
+                {
+                    TrainRouteId = route.Id,
+                    StationId = arrival.Id,
+                    Station = arrival,
+                    StopOrder = 2,
+                    ArrivalOffsetMinutes = 180
+                });
+            await db.SaveChangesAsync();
+            var svc = new TripService(db);
+
+            var result = (await svc.SearchTripsAsync(
+                "WAW",
+                "Krakow",
+                new DateTime(2026, 7, 1))).Single();
+            var stops = result.CallingPattern.ToList();
+
+            Assert.That(stops.Select(stop => stop.StationCode), Is.EqualTo(new[] { "WAW", "KAT", "KRK" }));
+            Assert.That(stops.Select(stop => stop.StopOrder), Is.EqualTo(new[] { 0, 1, 2 }));
+        }
+
+        [Test]
+        public async Task SearchTripsAsync_ReturnsOvernightTripWhenSegmentDepartsOnSearchDate()
+        {
+            var db = NewDb("Trips_SearchOvernightSegment");
+            await SeedTripGraphAsync(db);
+            var trip = await db.Trips.SingleAsync();
+            trip.DepartureTime = new DateTime(2026, 6, 30, 23, 30, 0);
+            trip.ArrivalTime = new DateTime(2026, 7, 1, 3, 30, 0);
+
+            var route = await db.TrainRoutes
+                .Include(item => item.RouteStops)
+                .SingleAsync();
+            route.RouteStops.Single().ArrivalOffsetMinutes = 90;
+            route.RouteStops.Single().DepartureOffsetMinutes = 100;
+            await db.SaveChangesAsync();
+            var svc = new TripService(db);
+
+            var results = (await svc.SearchTripsAsync(
+                "Katowice",
+                "Krakow",
+                new DateTime(2026, 7, 1))).ToList();
+
+            Assert.That(results, Has.Count.EqualTo(1));
+            Assert.That(results[0].DepartureStationCode, Is.EqualTo("KAT"));
+            Assert.That(results[0].DepartureTime, Is.EqualTo(new DateTime(2026, 7, 1, 1, 10, 0)));
+            Assert.That(results[0].ArrivalTime, Is.EqualTo(new DateTime(2026, 7, 1, 3, 30, 0)));
         }
 
         [Test]

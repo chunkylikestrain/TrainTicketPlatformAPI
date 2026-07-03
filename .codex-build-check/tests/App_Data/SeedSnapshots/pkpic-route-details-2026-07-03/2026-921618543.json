@@ -1,0 +1,133 @@
+{
+  "scheduleId": 2026,
+  "orderId": 921618543,
+  "trainOrderId": 299208704,
+  "name": "ONDRASZEK",
+  "carrierCode": "IC",
+  "nationalNumber": "1410",
+  "commercialCategorySymbol": "EIC",
+  "operatingDates": [
+    "2026-07-03",
+    "2026-07-10",
+    "2026-07-17"
+  ],
+  "stations": [
+    {
+      "stationId": 38653,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "01410",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1410",
+      "departurePlatform": "1",
+      "departureTrack": "10",
+      "departureTime": "16:05:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1410",
+      "arrivalTime": "16:11:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1410",
+      "departurePlatform": "4",
+      "departureTrack": "6",
+      "departureTime": "16:16:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 7,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1410",
+      "arrivalTime": "16:20:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1411",
+      "departurePlatform": "7",
+      "departureTrack": "5",
+      "departureTime": "16:22:00"
+    },
+    {
+      "stationId": 75309,
+      "orderNumber": 25,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1411",
+      "arrivalTime": "18:07:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1411",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "18:08:00"
+    },
+    {
+      "stationId": 74658,
+      "orderNumber": 34,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1411",
+      "arrivalTime": "18:29:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1411",
+      "departurePlatform": "3",
+      "departureTrack": "3",
+      "departureTime": "18:36:00"
+    },
+    {
+      "stationId": 73312,
+      "orderNumber": 38,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1411",
+      "arrivalTime": "18:48:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1411",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "18:51:00"
+    },
+    {
+      "stationId": 73700,
+      "orderNumber": 42,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1411",
+      "arrivalTime": "19:09:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1411",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "19:19:00"
+    },
+    {
+      "stationId": 75903,
+      "orderNumber": 44,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1411",
+      "arrivalTime": "19:37:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1411",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "19:38:00"
+    },
+    {
+      "stationId": 76000,
+      "orderNumber": 46,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1411",
+      "arrivalTime": "19:45:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1411",
+      "departurePlatform": "2",
+      "departureTrack": "5",
+      "departureTime": "19:46:00"
+    },
+    {
+      "stationId": 76109,
+      "orderNumber": 49,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1411",
+      "arrivalTime": "19:55:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1411",
+      "departurePlatform": "3",
+      "departureTrack": "8"
+    }
+  ]
+}

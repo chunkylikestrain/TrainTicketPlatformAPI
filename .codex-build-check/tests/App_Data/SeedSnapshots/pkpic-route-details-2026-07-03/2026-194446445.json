@@ -1,0 +1,151 @@
+{
+  "scheduleId": 2026,
+  "orderId": 194446445,
+  "trainOrderId": 981333111,
+  "name": "KILIŃSKI",
+  "carrierCode": "IC",
+  "nationalNumber": "7112",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 30601,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "7112",
+      "departurePlatform": "2",
+      "departureTrack": "6",
+      "departureTime": "03:44:00"
+    },
+    {
+      "stationId": 28472,
+      "orderNumber": 3,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "7112",
+      "arrivalTime": "03:54:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "7112",
+      "departurePlatform": "2",
+      "departureTrack": "4",
+      "departureTime": "03:55:00"
+    },
+    {
+      "stationId": 30007,
+      "orderNumber": 8,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "7112",
+      "arrivalTime": "04:13:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "7112",
+      "departurePlatform": "2",
+      "departureTrack": "5",
+      "departureTime": "04:15:00"
+    },
+    {
+      "stationId": 30122,
+      "orderNumber": 13,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "7112",
+      "arrivalTime": "04:27:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "7112",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "04:28:30"
+    },
+    {
+      "stationId": 33100,
+      "orderNumber": 16,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "7112",
+      "arrivalTime": "04:42:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "7112",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "04:43:00"
+    },
+    {
+      "stationId": 33191,
+      "orderNumber": 18,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "7112",
+      "arrivalTime": "04:56:12",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "7112",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "04:57:12"
+    },
+    {
+      "stationId": 32201,
+      "orderNumber": 25,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "7112",
+      "arrivalTime": "05:20:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "7112",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "05:21:00"
+    },
+    {
+      "stationId": 32904,
+      "orderNumber": 29,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "7112",
+      "arrivalTime": "05:42:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "7112",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "05:43:30"
+    },
+    {
+      "stationId": 34603,
+      "orderNumber": 33,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "7112",
+      "arrivalTime": "05:56:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "7112",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "05:57:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 40,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "7112",
+      "arrivalTime": "06:22:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "7113",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 43,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "7113",
+      "arrivalTime": "06:28:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "7113",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 44,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "7113",
+      "arrivalTime": "06:43:00",
+      "departureTrainNumber": "07113",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    }
+  ]
+}

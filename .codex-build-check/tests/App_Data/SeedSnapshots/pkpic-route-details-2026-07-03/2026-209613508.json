@@ -1,0 +1,75 @@
+{
+  "scheduleId": 2026,
+  "orderId": 209613508,
+  "trainOrderId": 408163618,
+  "name": "ZKA 603 HETMAN",
+  "carrierCode": "IC",
+  "nationalNumber": "23122",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-04",
+    "2026-07-05",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-11",
+    "2026-07-12",
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17",
+    "2026-07-18",
+    "2026-07-19",
+    "2026-07-20"
+  ],
+  "stations": [
+    {
+      "stationId": 65003,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "23122",
+      "departurePlatform": "BUS",
+      "departureTime": "08:16:00"
+    },
+    {
+      "stationId": 65466,
+      "orderNumber": 8,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "23123",
+      "arrivalTime": "08:50:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "23123",
+      "departurePlatform": "BUS",
+      "departureTime": "08:51:00"
+    },
+    {
+      "stationId": 81505,
+      "orderNumber": 13,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "23123",
+      "arrivalTime": "09:35:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "23123",
+      "departurePlatform": "BUS",
+      "departureTime": "09:36:00"
+    },
+    {
+      "stationId": 81208,
+      "orderNumber": 18,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "23123",
+      "arrivalPlatform": "BUS",
+      "arrivalTime": "10:21:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "23123",
+      "departurePlatform": "BUS"
+    }
+  ]
+}

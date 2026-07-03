@@ -1,0 +1,138 @@
+{
+  "scheduleId": 2026,
+  "orderId": 411847133,
+  "trainOrderId": 226520116,
+  "name": "ONDRASZEK",
+  "carrierCode": "IC",
+  "nationalNumber": "4110",
+  "commercialCategorySymbol": "EIC",
+  "operatingDates": [
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17"
+  ],
+  "stations": [
+    {
+      "stationId": 76109,
+      "orderNumber": 1,
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "4110",
+      "departurePlatform": "2",
+      "departureTrack": "4",
+      "departureTime": "05:01:00"
+    },
+    {
+      "stationId": 76000,
+      "orderNumber": 4,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "4110",
+      "arrivalTime": "05:10:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "4110",
+      "departurePlatform": "2",
+      "departureTrack": "7",
+      "departureTime": "05:11:00"
+    },
+    {
+      "stationId": 75903,
+      "orderNumber": 6,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "4110",
+      "arrivalTime": "05:17:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "4110",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "05:18:30"
+    },
+    {
+      "stationId": 73700,
+      "orderNumber": 8,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "4110",
+      "arrivalTime": "05:37:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "4110",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "05:38:00"
+    },
+    {
+      "stationId": 73312,
+      "orderNumber": 12,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "4110",
+      "arrivalTime": "05:57:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "4110",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "06:00:00"
+    },
+    {
+      "stationId": 74658,
+      "orderNumber": 17,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "4110",
+      "arrivalTime": "06:13:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "4110",
+      "departurePlatform": "3",
+      "departureTrack": "1",
+      "departureTime": "06:14:00"
+    },
+    {
+      "stationId": 75309,
+      "orderNumber": 26,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "4110",
+      "arrivalTime": "06:36:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "4110",
+      "departurePlatform": "1",
+      "departureTrack": "4",
+      "departureTime": "06:37:30"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 44,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "4110",
+      "arrivalTime": "08:23:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "4111",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 46,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "4111",
+      "arrivalTime": "08:28:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "4111",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 47,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "4111",
+      "arrivalTime": "08:43:00",
+      "departureTrainNumber": "04111",
+      "departurePlatform": "4",
+      "departureTrack": "1"
+    }
+  ]
+}

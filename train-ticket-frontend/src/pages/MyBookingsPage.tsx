@@ -2,6 +2,7 @@
 import { Link, useSearchParams } from "react-router-dom";
 import { getGuestTickets, refundGuestTicket } from "../api/bookingApi";
 import { downloadOrderTicketPdf, downloadTicketPdf } from "../api/ticketApi";
+import PassengerLegalFooter from "../components/PassengerLegalFooter";
 import type { Booking } from "../types/booking";
 import { groupTicketsByJourney, groupTicketsByOrder, isPastTicket, isReturnedTicket, type TicketGroup } from "../utils/ticketGrouping";
 
@@ -157,11 +158,11 @@ function MyBookingsPage() {
 
         <div className="account-layout">
           <aside className="account-sidebar" aria-label="Account menu">
-            <button className="account-menu-button account-menu-button-active">My tickets</button>
-            <button className="account-menu-button">My invoices</button>
-            <button className="account-menu-button account-menu-button-muted">My data</button>
-            <button className="account-menu-button account-menu-button-muted">"Moje IC" Program</button>
-            <button className="account-menu-button">Manage your ticket - Guest account</button>
+            <span className="account-menu-button account-menu-button-active">My tickets</span>
+            <span className="account-menu-button account-menu-button-muted">My invoices</span>
+            <span className="account-menu-button account-menu-button-muted">My data</span>
+            <span className="account-menu-button account-menu-button-muted">"Moje IC" Program</span>
+            <span className="account-menu-button account-menu-button-muted">Manage your ticket - Guest account</span>
             <Link className="account-menu-button" to="/help">Help</Link>
           </aside>
 
@@ -205,8 +206,8 @@ function MyBookingsPage() {
                   <small>{group.tickets.length} {group.tickets.length === 1 ? "ticket" : "tickets"}</small>
                 </p>
                 <div className="ticket-tools" aria-label="Calendar and wallet options">
-                  <button type="button">Cal</button>
-                  <button type="button">G</button>
+                  <span aria-label="Calendar export unavailable">Cal</span>
+                  <span aria-label="Wallet export unavailable">G</span>
                 </div>
               </div>
 
@@ -257,7 +258,9 @@ function MyBookingsPage() {
                     {isDownloadingKey === group.key ? "Downloading..." : group.isOrder ? "Download order PDF" : "Download PDF"}
                   </button>
                   <strong>{group.isOrder ? "Other features for this order" : "Other features for this ticket"}</strong>
-                  <button type="button">Purchase return ticket</button>
+                  <Link className="ticket-feature-link" to={buildReturnTicketSearchUrl(firstTicket)}>
+                    Purchase return ticket
+                  </Link>
                   {group.tickets.map((passengerTicket) => (
                     <div className="ticket-refund-option" key={passengerTicket.id}>
                       {activeTab === "Tickets" && (
@@ -278,9 +281,7 @@ function MyBookingsPage() {
                       </button>
                     </div>
                   ))}
-                  <button type="button">Exchange</button>
-                  <button type="button">Change data</button>
-                  <button type="button">VAT invoice</button>
+                  <span className="ticket-feature-unavailable">VAT invoice</span>
                 </aside>
               </div>
 
@@ -299,38 +300,15 @@ function MyBookingsPage() {
             })}
 
             <div className="ticket-pagination" aria-label="Ticket list pagination">
-              <button type="button" aria-label="Previous page">&lt;</button>
+              <span aria-label="Previous page unavailable">&lt;</span>
               <strong>1</strong>
-              <button type="button" aria-label="Next page">&gt;</button>
+              <span aria-label="Next page unavailable">&gt;</span>
             </div>
           </section>
         </div>
       </section>
 
-      <section className="summary-legal">
-        <div>
-          <h2>Technological break.</h2>
-          <p>
-            Please remember about the technological break in the online sales system from 11:45pm - 0:30 am.
-            You cannot buy any tickets during this break.
-          </p>
-          <p><strong>Deactivation of the e-IC 1.0 service</strong> v</p>
-          <a href="#accessibility">Declaration of Accessibility</a>
-        </div>
-        <div>
-          <p>
-            The prices presented are <strong>indicative</strong>, published for informational purposes, and do
-            not constitute an offer. The final prices are available in the purchase summary.
-          </p>
-          <p>
-            <strong>
-              The Controller of personal data provided in connection with voluntary registration on the service
-              has its registered office in Warsaw.
-            </strong>{" "}
-            v
-          </p>
-        </div>
-      </section>
+      <PassengerLegalFooter />
     </main>
   );
 }
@@ -350,6 +328,52 @@ function buildJourneyRoute(tickets: Booking[]) {
 function buildJourneyTrains(tickets: Booking[]) {
   const trains = [...new Set(tickets.map((ticket) => ticket.trainName).filter(Boolean))];
   return trains.length > 0 ? trains.join(" + ") : "Train";
+}
+
+function buildReturnTicketSearchUrl(ticket: Booking) {
+  const [departureStation, arrivalStation] = splitRoute(ticket.route);
+  const searchDate = addDays(formatSearchDate(ticket.travelDate), 1);
+  const params = new URLSearchParams({
+    departureStation: arrivalStation,
+    arrivalStation: departureStation,
+    date: searchDate,
+    time: "08:00",
+    tripType: "oneWay",
+    adults: "1",
+    children: "0",
+    discounts: ticket.discountCode || "normal",
+  });
+
+  return `/search?${params.toString()}`;
+}
+
+function splitRoute(route: string) {
+  const [departure, arrival] = route.split(/\s*(?:->|→)\s*/);
+  return [
+    departure?.trim() || "Departure station",
+    arrival?.trim() || "Arrival station",
+  ] as const;
+}
+
+function formatSearchDate(value: string) {
+  if (/^\d{4}-\d{2}-\d{2}/.test(value)) {
+    return value.slice(0, 10);
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  return date.toISOString().slice(0, 10);
+}
+
+function addDays(dateValue: string, days: number) {
+  const date = new Date(`${dateValue}T12:00:00`);
+  date.setDate(date.getDate() + days);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
 }
 
 export default MyBookingsPage;

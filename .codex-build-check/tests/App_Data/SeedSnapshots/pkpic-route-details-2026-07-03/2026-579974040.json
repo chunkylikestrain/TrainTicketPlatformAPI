@@ -1,0 +1,159 @@
+{
+  "scheduleId": 2026,
+  "orderId": 579974040,
+  "trainOrderId": 477031799,
+  "name": "KRASZEWSKI",
+  "carrierCode": "IC",
+  "nationalNumber": "1051",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-06-26",
+    "2026-07-03",
+    "2026-07-05",
+    "2026-07-10",
+    "2026-07-12"
+  ],
+  "stations": [
+    {
+      "stationId": 33506,
+      "orderNumber": 16,
+      "arrivalTrainNumber": "01050",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1051",
+      "departurePlatform": "5",
+      "departureTrack": "6",
+      "departureTime": "13:08:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 19,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1051",
+      "arrivalTime": "13:12:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1051",
+      "departurePlatform": "1",
+      "departureTrack": "5",
+      "departureTime": "13:14:00"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 20,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1051",
+      "arrivalTime": "13:20:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1051",
+      "departurePlatform": "5",
+      "departureTrack": "5",
+      "departureTime": "13:21:00"
+    },
+    {
+      "stationId": 39008,
+      "orderNumber": 28,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1051",
+      "arrivalTime": "13:45:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1051",
+      "departurePlatform": "3",
+      "departureTrack": "1",
+      "departureTime": "13:47:00"
+    },
+    {
+      "stationId": 39875,
+      "orderNumber": 29,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1051",
+      "arrivalTime": "13:56:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1051",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "13:58:00"
+    },
+    {
+      "stationId": 39404,
+      "orderNumber": 31,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1051",
+      "arrivalTime": "14:14:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1051",
+      "departurePlatform": "3",
+      "departureTrack": "1",
+      "departureTime": "14:16:00"
+    },
+    {
+      "stationId": 39909,
+      "orderNumber": 36,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1051",
+      "arrivalTime": "14:29:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1051",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "14:31:00"
+    },
+    {
+      "stationId": 40832,
+      "orderNumber": 38,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1051",
+      "arrivalTime": "14:44:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1051",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "14:45:00"
+    },
+    {
+      "stationId": 40808,
+      "orderNumber": 40,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1051",
+      "arrivalTime": "14:56:12",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1051",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "14:58:00"
+    },
+    {
+      "stationId": 40949,
+      "orderNumber": 43,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1051",
+      "arrivalTime": "15:05:48",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1051",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "15:07:36"
+    },
+    {
+      "stationId": 251575,
+      "orderNumber": 46,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1051",
+      "arrivalTime": "15:14:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1051",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "15:15:30"
+    },
+    {
+      "stationId": 40998,
+      "orderNumber": 48,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1051",
+      "arrivalTime": "15:22:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1051",
+      "departurePlatform": "1",
+      "departureTrack": "7"
+    }
+  ]
+}

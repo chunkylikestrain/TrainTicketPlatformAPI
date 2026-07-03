@@ -1,0 +1,130 @@
+{
+  "scheduleId": 2026,
+  "orderId": 345858689,
+  "trainOrderId": 876620446,
+  "name": "DASZYŃSKI",
+  "carrierCode": "IC",
+  "nationalNumber": "1420",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 33605,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1420",
+      "departurePlatform": "4",
+      "departureTrack": "8",
+      "departureTime": "07:52:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 3,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1420",
+      "arrivalTime": "07:56:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1421",
+      "departurePlatform": "7",
+      "departureTrack": "5",
+      "departureTime": "07:57:00"
+    },
+    {
+      "stationId": 62653,
+      "orderNumber": 32,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1421",
+      "arrivalTime": "10:08:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1421",
+      "departurePlatform": "2",
+      "departureTrack": "5",
+      "departureTime": "10:23:00"
+    },
+    {
+      "stationId": 75424,
+      "orderNumber": 36,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1421",
+      "arrivalTime": "10:38:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1421",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "10:41:30"
+    },
+    {
+      "stationId": 75309,
+      "orderNumber": 38,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1421",
+      "arrivalTime": "10:49:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1421",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "10:50:00"
+    },
+    {
+      "stationId": 74500,
+      "orderNumber": 43,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1421",
+      "arrivalTime": "11:05:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1421",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "11:06:30"
+    },
+    {
+      "stationId": 73502,
+      "orderNumber": 51,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1421",
+      "arrivalTime": "11:26:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1421",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "11:37:30"
+    },
+    {
+      "stationId": 73312,
+      "orderNumber": 58,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1421",
+      "arrivalTime": "11:52:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1421",
+      "departurePlatform": "1",
+      "departureTrack": "9",
+      "departureTime": "11:57:00"
+    },
+    {
+      "stationId": 69823,
+      "orderNumber": 62,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1421",
+      "arrivalTime": "12:13:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1421",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "12:14:00"
+    },
+    {
+      "stationId": 69708,
+      "orderNumber": 63,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1421",
+      "arrivalTime": "12:21:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1421",
+      "departurePlatform": "2",
+      "departureTrack": "6"
+    }
+  ]
+}

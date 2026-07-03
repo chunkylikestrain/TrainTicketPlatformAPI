@@ -1,0 +1,144 @@
+{
+  "scheduleId": 2026,
+  "orderId": 305847503,
+  "trainOrderId": 494378205,
+  "carrierCode": "IC",
+  "nationalNumber": "8152",
+  "commercialCategorySymbol": "EIP",
+  "operatingDates": [
+    "2026-06-27",
+    "2026-06-28",
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 1008,
+      "orderNumber": 1,
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "8150",
+      "departurePlatform": "2",
+      "departureTrack": "4",
+      "departureTime": "06:26:00"
+    },
+    {
+      "stationId": 1024,
+      "orderNumber": 4,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "8150",
+      "arrivalTime": "06:36:30",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "8150",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "06:37:00"
+    },
+    {
+      "stationId": 1404,
+      "orderNumber": 13,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "8150",
+      "arrivalTime": "07:15:30",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "8150",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "07:16:00"
+    },
+    {
+      "stationId": 273,
+      "orderNumber": 24,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "8151",
+      "arrivalTime": "07:44:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "8150",
+      "departurePlatform": "1",
+      "departureTrack": "3",
+      "departureTime": "07:47:00"
+    },
+    {
+      "stationId": 1107,
+      "orderNumber": 33,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "8150",
+      "arrivalTime": "07:59:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "8150",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "08:00:00"
+    },
+    {
+      "stationId": 2204,
+      "orderNumber": 37,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "8150",
+      "arrivalTime": "08:13:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "8150",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "08:14:00"
+    },
+    {
+      "stationId": 29108,
+      "orderNumber": 45,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "8150",
+      "arrivalTime": "08:53:30",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "8150",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "08:54:30"
+    },
+    {
+      "stationId": 30601,
+      "orderNumber": 56,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "8150",
+      "arrivalTime": "09:34:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "8150",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "09:41:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 91,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "8150",
+      "arrivalTime": "11:54:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "8151",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 94,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "8151",
+      "arrivalTime": "11:59:36",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "8151",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 95,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "8151",
+      "arrivalTime": "12:15:00",
+      "departureTrainNumber": "08151",
+      "departurePlatform": "5",
+      "departureTrack": "5"
+    }
+  ]
+}

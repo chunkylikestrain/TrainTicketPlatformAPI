@@ -40,6 +40,28 @@ function formatPlatform(segment: TripItinerarySegment) {
   return `${platform} ${track}`;
 }
 
+function getIntermediateStopCount(segment: TripItinerarySegment) {
+  if (segment.callingPattern.length === 0) {
+    return 0;
+  }
+
+  return Math.max(0, segment.callingPattern.length - 2);
+}
+
+function formatJourneySummary(itinerary: TripItinerarySearchResult) {
+  const intermediateStops = itinerary.segments.reduce(
+    (total, segment) => total + getIntermediateStopCount(segment),
+    0);
+  const stopLabel = intermediateStops === 1 ? "intermediate stop" : "intermediate stops";
+  const transferLabel = itinerary.transferCount === 1 ? "transfer" : "transfers";
+
+  if (itinerary.transferCount === 0) {
+    return `${intermediateStops} ${stopLabel}`;
+  }
+
+  return `${itinerary.transferCount} ${transferLabel}, ${intermediateStops} ${stopLabel}`;
+}
+
 function encodeItinerarySegments(itinerary: TripItinerarySearchResult) {
   return window.btoa(
     encodeURIComponent(JSON.stringify(itinerary.segments)),
@@ -103,12 +125,13 @@ function ItineraryCard({
         </div>
 
         <div className="connection-route-block">
-          <span>Route</span>
+          <span>Journey</span>
           <p>
             {firstSegment?.departureStationName ?? "Departure"} <em>-&gt;</em>{" "}
             {lastSegment?.arrivalStationName ?? "Arrival"}
           </p>
           <strong>{itinerary.segments.map((segment) => segment.trainName).join(" + ")}</strong>
+          <small>{formatJourneySummary(itinerary)}</small>
         </div>
 
         <div className="connection-price-block">
@@ -135,9 +158,9 @@ function ItineraryCard({
       {isExpanded && (
         <div className="connection-expanded-panel">
           <div className="connection-details">
-            <button type="button" className="details-toggle">
+            <span className="details-toggle">
               Show itinerary details
-            </button>
+            </span>
 
             <div className="route-timeline itinerary-timeline">
               {itinerary.segments.map((segment, index) => (
@@ -213,7 +236,6 @@ function ItineraryCard({
       )}
 
       <div className="connection-card-footer">
-        <button type="button">Check seat availability</button>
         {!isExpanded && (
           <button type="button" className="trip-action" onClick={onSelect}>
             {selectionActionLabel ?? (isDirect ? "Buy a ticket" : "View itinerary")}

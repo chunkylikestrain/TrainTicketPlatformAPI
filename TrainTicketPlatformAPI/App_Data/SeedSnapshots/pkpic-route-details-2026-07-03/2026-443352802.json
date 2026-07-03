@@ -1,0 +1,65 @@
+{
+  "scheduleId": 2026,
+  "orderId": 443352802,
+  "trainOrderId": 979687801,
+  "carrierCode": "IC",
+  "nationalNumber": "3100",
+  "commercialCategorySymbol": "EIP",
+  "operatingDates": [
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-04",
+    "2026-07-05",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-11"
+  ],
+  "stations": [
+    {
+      "stationId": 80416,
+      "orderNumber": 3,
+      "arrivalTrainNumber": "03100",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "3100",
+      "departurePlatform": "1",
+      "departureTrack": "9",
+      "departureTime": "21:03:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 41,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "3100",
+      "arrivalTime": "23:49:30",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "3101",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 43,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "3101",
+      "arrivalTime": "23:56:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "3101",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 44,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "3101",
+      "arrivalDay": 1,
+      "arrivalTime": "00:03:00",
+      "departureTrainNumber": "03101",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    }
+  ]
+}

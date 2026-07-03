@@ -1,0 +1,98 @@
+{
+  "scheduleId": 2026,
+  "orderId": 210225873,
+  "trainOrderId": 193512519,
+  "carrierCode": "IC",
+  "nationalNumber": "6104",
+  "commercialCategorySymbol": "EIP",
+  "operatingDates": [
+    "2026-07-03",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-24",
+    "2026-07-25",
+    "2026-07-26"
+  ],
+  "stations": [
+    {
+      "stationId": 60103,
+      "orderNumber": 1,
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "6104",
+      "departurePlatform": "3",
+      "departureTrack": "5",
+      "departureTime": "06:36:00"
+    },
+    {
+      "stationId": 60608,
+      "orderNumber": 12,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "6104",
+      "arrivalTime": "07:14:30",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "6104",
+      "departurePlatform": "4",
+      "departureTrack": "8",
+      "departureTime": "07:16:00"
+    },
+    {
+      "stationId": 71407,
+      "orderNumber": 20,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "6104",
+      "arrivalTime": "07:45:30",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "6104",
+      "departurePlatform": "2",
+      "departureTrack": "3",
+      "departureTime": "07:46:30"
+    },
+    {
+      "stationId": 62802,
+      "orderNumber": 28,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "6104",
+      "arrivalTime": "08:06:30",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "6104",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "08:07:30"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 53,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "6104",
+      "arrivalTime": "10:01:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "6105",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 55,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "6105",
+      "arrivalTime": "10:08:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "6105",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 56,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "6105",
+      "arrivalTime": "10:19:00",
+      "departureTrainNumber": "06105",
+      "departurePlatform": "4",
+      "departureTrack": "3"
+    }
+  ]
+}

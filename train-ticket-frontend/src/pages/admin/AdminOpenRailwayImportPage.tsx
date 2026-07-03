@@ -293,7 +293,7 @@ function AdminOpenRailwayImportPage() {
           </div>
           <table className="admin-table">
             <thead>
-              <tr><th>Schedule</th><th>Order</th><th>Status</th><th>Result</th></tr>
+              <tr><th>Schedule</th><th>Order</th><th>Status</th><th>Route shape</th><th>Result</th></tr>
             </thead>
             <tbody>
               {batchResult.items.map((item) => (
@@ -301,12 +301,12 @@ function AdminOpenRailwayImportPage() {
                   <td>{item.scheduleId}</td>
                   <td>{item.orderId}</td>
                   <td><span className={item.status === "Failed" ? "status-pill status-warning" : "status-pill status-active"}>{item.status}</span></td>
-                  <td>
-                    {item.error ||
-                      item.import?.routeName ||
-                      item.preview?.trainName ||
-                      "-"}
-                  </td>
+                  <td>{item.import ? (
+                    <span className={item.import.routeCreated ? "status-pill status-active" : "status-pill status-on-time"}>
+                      {item.import.routeCreated ? "New" : "Reused"}
+                    </span>
+                  ) : "-"}</td>
+                  <td>{renderImportResult(item)}</td>
                 </tr>
               ))}
             </tbody>
@@ -315,6 +315,22 @@ function AdminOpenRailwayImportPage() {
       )}
     </AdminLayout>
   );
+}
+
+function renderImportResult(item: OpenRailwayImportDateResult["items"][number]) {
+  if (item.error)
+    return item.error;
+
+  if (item.import) {
+    return (
+      <span className="open-railway-result-detail">
+        <strong>{item.import.adminDisplayName || item.import.routeName}</strong>
+        <small>{item.import.routeCode} - {item.import.routeFingerprint}</small>
+      </span>
+    );
+  }
+
+  return item.preview?.trainName || "-";
 }
 
 export default AdminOpenRailwayImportPage;

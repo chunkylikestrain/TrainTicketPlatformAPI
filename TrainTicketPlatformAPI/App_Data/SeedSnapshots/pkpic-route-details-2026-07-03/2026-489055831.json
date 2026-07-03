@@ -1,0 +1,58 @@
+{
+  "scheduleId": 2026,
+  "orderId": 489055831,
+  "trainOrderId": 193053332,
+  "carrierCode": "IC",
+  "nationalNumber": "1302",
+  "commercialCategorySymbol": "EIC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 38653,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "01302",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1302",
+      "departurePlatform": "1",
+      "departureTrack": "12",
+      "departureTime": "06:29:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1302",
+      "arrivalTime": "06:35:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1302",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "06:40:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 7,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1302",
+      "arrivalTime": "06:44:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1303",
+      "departurePlatform": "7",
+      "departureTrack": "3",
+      "departureTime": "06:45:00"
+    },
+    {
+      "stationId": 80416,
+      "orderNumber": 45,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1303",
+      "arrivalTime": "09:38:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1303",
+      "departurePlatform": "2",
+      "departureTrack": "5"
+    }
+  ]
+}

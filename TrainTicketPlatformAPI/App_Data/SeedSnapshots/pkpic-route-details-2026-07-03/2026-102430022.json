@@ -1,0 +1,157 @@
+{
+  "scheduleId": 2026,
+  "orderId": 102430022,
+  "trainOrderId": 377693880,
+  "name": "REYMONT",
+  "carrierCode": "IC",
+  "nationalNumber": "1329",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 46458,
+      "orderNumber": 15,
+      "arrivalTrainNumber": "01328",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1329",
+      "departurePlatform": "3",
+      "departureTrack": "5",
+      "departureTime": "05:08:00"
+    },
+    {
+      "stationId": 46409,
+      "orderNumber": 18,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1329",
+      "arrivalTime": "05:14:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1329",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "05:15:00"
+    },
+    {
+      "stationId": 47704,
+      "orderNumber": 29,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1329",
+      "arrivalTime": "05:51:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1329",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "05:52:00"
+    },
+    {
+      "stationId": 47886,
+      "orderNumber": 37,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1329",
+      "arrivalTime": "06:19:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1329",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "06:23:00"
+    },
+    {
+      "stationId": 62653,
+      "orderNumber": 42,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1329",
+      "arrivalTime": "06:53:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1329",
+      "departurePlatform": "2",
+      "departureTrack": "5",
+      "departureTime": "07:08:00"
+    },
+    {
+      "stationId": 75424,
+      "orderNumber": 46,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1329",
+      "arrivalTime": "07:24:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1329",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "07:42:30"
+    },
+    {
+      "stationId": 75309,
+      "orderNumber": 48,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1329",
+      "arrivalTime": "07:50:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1329",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "07:52:30"
+    },
+    {
+      "stationId": 74500,
+      "orderNumber": 53,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1329",
+      "arrivalTime": "08:07:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1329",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "08:08:30"
+    },
+    {
+      "stationId": 73908,
+      "orderNumber": 59,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1329",
+      "arrivalTime": "08:29:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1329",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "08:30:00"
+    },
+    {
+      "stationId": 77503,
+      "orderNumber": 62,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1329",
+      "arrivalTime": "08:38:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1329",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "08:39:00"
+    },
+    {
+      "stationId": 77701,
+      "orderNumber": 63,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1329",
+      "arrivalTime": "08:46:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1329",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "08:51:30"
+    },
+    {
+      "stationId": 80416,
+      "orderNumber": 67,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1329",
+      "arrivalTime": "09:13:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1329",
+      "departurePlatform": "5",
+      "departureTrack": "10"
+    }
+  ]
+}

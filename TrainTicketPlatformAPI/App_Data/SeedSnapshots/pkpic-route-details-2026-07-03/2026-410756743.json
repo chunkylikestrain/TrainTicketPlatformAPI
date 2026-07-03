@@ -1,0 +1,87 @@
+{
+  "scheduleId": 2026,
+  "orderId": 410756743,
+  "trainOrderId": 359151027,
+  "name": "TATRY",
+  "carrierCode": "IC",
+  "nationalNumber": "3150",
+  "commercialCategorySymbol": "EIC",
+  "operatingDates": [
+    "2026-07-03",
+    "2026-07-10",
+    "2026-07-17",
+    "2026-07-24",
+    "2026-07-31",
+    "2026-08-07",
+    "2026-08-14",
+    "2026-08-21",
+    "2026-08-28"
+  ],
+  "stations": [
+    {
+      "stationId": 79020,
+      "orderNumber": 1,
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3150",
+      "departurePlatform": "2",
+      "departureTrack": "3",
+      "departureTime": "15:53:00"
+    },
+    {
+      "stationId": 78907,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3150",
+      "arrivalTime": "16:08:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3150",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "16:09:00"
+    },
+    {
+      "stationId": 80416,
+      "orderNumber": 36,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3150",
+      "arrivalTime": "17:51:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3150",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "17:55:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 75,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3150",
+      "arrivalTime": "20:47:06",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3151",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 77,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3151",
+      "arrivalTime": "20:52:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3151",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 78,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3151",
+      "arrivalTime": "20:59:00",
+      "departureTrainNumber": "03151",
+      "departurePlatform": "4",
+      "departureTrack": "3"
+    }
+  ]
+}

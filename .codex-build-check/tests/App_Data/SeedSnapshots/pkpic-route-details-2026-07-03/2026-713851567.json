@@ -1,0 +1,236 @@
+{
+  "scheduleId": 2026,
+  "orderId": 713851567,
+  "trainOrderId": 649283810,
+  "name": "SWAROŻYC",
+  "carrierCode": "IC",
+  "nationalNumber": "68153",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 60103,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "2",
+      "departureTrack": "4",
+      "departureTime": "04:43:00"
+    },
+    {
+      "stationId": 53009,
+      "orderNumber": 13,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "05:21:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "4",
+      "departureTrack": "9",
+      "departureTime": "05:22:00"
+    },
+    {
+      "stationId": 53280,
+      "orderNumber": 16,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "05:37:12",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "05:42:00"
+    },
+    {
+      "stationId": 42200,
+      "orderNumber": 22,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "06:09:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "2",
+      "departureTrack": "4",
+      "departureTime": "06:11:00"
+    },
+    {
+      "stationId": 42002,
+      "orderNumber": 27,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "06:30:54",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "06:31:54"
+    },
+    {
+      "stationId": 27805,
+      "orderNumber": 30,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "06:46:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "07:07:00"
+    },
+    {
+      "stationId": 25809,
+      "orderNumber": 39,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "07:50:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "5",
+      "departureTrack": "32",
+      "departureTime": "07:52:00"
+    },
+    {
+      "stationId": 13003,
+      "orderNumber": 47,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "08:15:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "3",
+      "departureTrack": "1r",
+      "departureTime": "08:18:00"
+    },
+    {
+      "stationId": 13417,
+      "orderNumber": 51,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "08:34:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "08:35:00"
+    },
+    {
+      "stationId": 13334,
+      "orderNumber": 53,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "08:49:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "08:50:00"
+    },
+    {
+      "stationId": 851,
+      "orderNumber": 57,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "09:11:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "09:13:00"
+    },
+    {
+      "stationId": 273,
+      "orderNumber": 64,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "09:30:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68152",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "09:52:00"
+    },
+    {
+      "stationId": 1107,
+      "orderNumber": 70,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68152",
+      "arrivalTime": "10:04:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "10:07:00"
+    },
+    {
+      "stationId": 1404,
+      "orderNumber": 75,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "10:23:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "10:24:00"
+    },
+    {
+      "stationId": 1560,
+      "orderNumber": 79,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "10:41:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "10:42:00"
+    },
+    {
+      "stationId": 1024,
+      "orderNumber": 84,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "11:03:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "11:05:00"
+    },
+    {
+      "stationId": 1008,
+      "orderNumber": 87,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "68153",
+      "arrivalTime": "11:18:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "68153",
+      "departurePlatform": "2",
+      "departureTrack": "2"
+    }
+  ],
+  "connections": [
+    {
+      "id": "1956",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "11,12,13,14",
+      "train1OrderId": 713851567,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 361707817,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-01",
+        "2026-07-02",
+        "2026-07-03"
+      ]
+    }
+  ]
+}

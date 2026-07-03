@@ -1,0 +1,4131 @@
+{
+  "generatedAtUtc": "2026-07-03T17:39:24Z",
+  "phase": "phase-4-route-shape-seed-snapshot",
+  "operatingDate": "2026-07-03",
+  "usableServiceRecordCount": 544,
+  "errorRecordCount": 19,
+  "stationCount": 535,
+  "routeShapeCount": 412,
+  "manifest": [
+    {
+      "routeCode": "PLK-38653-138923-018464D5",
+      "routeFingerprint": "PLK:38653|33605|33506|48959|64899|75309|74583|74658|73312|73700|68205|68403|67900|179223|127420|127436|127265|127482|127662|127718|127295|127178|243509|157114|155861|157133|157172|138997|212258|139006|138931|138923",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 285406429,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Rijeka",
+      "stationCount": 32,
+      "estimatedDurationMinutes": 1139
+    },
+    {
+      "routeCode": "PLK-33605-60103-01D09567",
+      "routeFingerprint": "PLK:33605|33506|34207|47001|47258|46409|46565|46581|46649|19430|19489|45245|45906|44008|59675|59543|59576|59105|58651|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 129945731,
+      "departureName": "Warszawa Centralna",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 269
+    },
+    {
+      "routeCode": "PLK-24000-46458-01FEB9DD",
+      "routeFingerprint": "PLK:24000|279919|24539|24638|24737|38307|37911|37507|36343|38653|33605|33506|34207|47001|47258|46409|46458",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 565190633,
+      "departureName": "Białystok",
+      "arrivalName": "Łódź Fabryczna",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 195
+    },
+    {
+      "routeCode": "PLK-4952-84400-0213CB95",
+      "routeFingerprint": "PLK:4952|4705|5108|4408|3905|3004|16402|14407|16188|16139|29645|30601|43406|42606|44305|44420|58784|60103|58271|62109|60608|61705|69708|69823|73106|73312|73502|73908|77503|77701|80416|79905|79657|79806|80630|81208|81232|81265|82669|83022|83105|83261|84301|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 963884507,
+      "departureName": "Ustka",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 45,
+      "estimatedDurationMinutes": 747
+    },
+    {
+      "routeCode": "PLK-5900-248058-03428F5A",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|18408|18705|30809|30601|26104|28100|25809|179212|248058",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 438717259,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Berlin Gesundbrunnen",
+      "stationCount": 15,
+      "estimatedDurationMinutes": 371
+    },
+    {
+      "routeCode": "PLK-4101-80416-034724B7",
+      "routeFingerprint": "PLK:4101|4408|4705|5256|5900|5942|7583|7534|7500|38653|33605|33506|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 748154805,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 13,
+      "estimatedDurationMinutes": 512
+    },
+    {
+      "routeCode": "PLK-38653-18408-0386815A",
+      "routeFingerprint": "PLK:38653|33605|33506|21600|19703|16717|18374|18408",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 834597533,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Bydgoszcz Główna",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 178
+    },
+    {
+      "routeCode": "PLK-5900-46458-04341D73",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7302|7112|8474|17202|18408|18374|16717|19844|19703|21501|21600|32201|32524|32540|46805|46789|46706|46565|46409|46458",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 176099340,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Łódź Fabryczna",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 344
+    },
+    {
+      "routeCode": "PLK-80416-273-045A2A1E",
+      "routeFingerprint": "PLK:80416|79467|64899|48959|47605|46409|46565|46706|46789|46805|32540|32524|32201|33191|33100|30122|30007|28472|30601|28803|28969|29108|29181|29405|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 364589342,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 27,
+      "estimatedDurationMinutes": 531
+    },
+    {
+      "routeCode": "PLK-5900-46458-06A5E245",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|7872|22905|21808|22442|37226|36939|36459|36509|38653|33605|33506|34207|47001|47258|46409|46458",
+      "serviceRecordCount": 4,
+      "representativeOrderId": 351049289,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Łódź Fabryczna",
+      "stationCount": 22,
+      "estimatedDurationMinutes": 305
+    },
+    {
+      "routeCode": "PLK-5355-33506-06BEE2B2",
+      "routeFingerprint": "PLK:5355|5256|6304|6098|5900|5942|7583|7534|7500|7112|7872|21808|22442|37226|36939|36459|36509|38653|33605|33506",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 326943870,
+      "departureName": "Łeba",
+      "arrivalName": "Warszawa Zachodnia",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 361
+    },
+    {
+      "routeCode": "PLK-80416-9209-06EB4580",
+      "routeFingerprint": "PLK:80416|79467|64303|64451|63552|33506|33605|38653|36509|36459|36939|37226|22442|22202|9456|9233|9209",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 266078882,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Olsztyn Główny",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 421
+    },
+    {
+      "routeCode": "PLK-13904-26104-07723017",
+      "routeFingerprint": "PLK:13904|26500|26708|26104",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 100028872,
+      "departureName": "Gorzów Wielkopolski",
+      "arrivalName": "Zbąszynek",
+      "stationCount": 4,
+      "estimatedDurationMinutes": 67
+    },
+    {
+      "routeCode": "PLK-38653-55806-07FDF17B",
+      "routeFingerprint": "PLK:38653|33605|33506|34207|47001|47258|47704|47886|62653|62802|71407|60608|62109|58271|60103|54403|54528|54551|55103|55632|55806",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 394762245,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Jelenia Góra",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 393
+    },
+    {
+      "routeCode": "PLK-6791-80416-083DC890",
+      "routeFingerprint": "PLK:6791|6759|6775|6767|6734|6742|6700|5900|5942|7583|7534|7500|38653|33605|33506|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 706403696,
+      "departureName": "Hel",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 16,
+      "estimatedDurationMinutes": 511
+    },
+    {
+      "routeCode": "PLK-84400-80416-0ACF207E",
+      "routeFingerprint": "PLK:84400|84434|83261|83105|83022|82669|81208|80630|79657|79905|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 546202783,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 11,
+      "estimatedDurationMinutes": 141
+    },
+    {
+      "routeCode": "PLK-80416-30601-0AFEC54C",
+      "routeFingerprint": "PLK:80416|77701|77503|73908|74500|75309|75424|62802|71407|71555|61200|61341|45401|45476|45906|44842|44701|30205|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 315065806,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 290
+    },
+    {
+      "routeCode": "PLK-79020-5900-0C53CFE7",
+      "routeFingerprint": "PLK:79020|78980|78907|265251|78535|80416|79467|64303|64451|63552|48009|48355|48504|33902|33506|33605|38653|36509|36459|36939|37226|22442|21808|22905|7872|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 986741979,
+      "departureName": "Zakopane",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 31,
+      "estimatedDurationMinutes": 635
+    },
+    {
+      "routeCode": "PLK-129059-80416-0D63A3D6",
+      "routeFingerprint": "PLK:129059|129083|128006|128071|128166|127651|127419|127265|127436|127420|179223|75507|76000|77107|77834|77503|77701|80416",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 376747028,
+      "departureName": "Praha Hlavni Nadrazi",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 366
+    },
+    {
+      "routeCode": "PLK-51847-38653-0E66B17D",
+      "routeFingerprint": "PLK:51847|51862|51946|51805|53850|54007|53009|60103|58271|62109|60608|71407|62802|62653|47886|47704|47258|47001|34207|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 137797614,
+      "departureName": "Zgorzelec",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 22,
+      "estimatedDurationMinutes": 369
+    },
+    {
+      "routeCode": "PLK-79020-30601-0E86E2D8",
+      "routeFingerprint": "PLK:79020|78980|78907|265251|78535|258708|78345|78204|76273|76232|76109|76000|69203|68205|68882|67009|67066|61903|60608|62109|58271|60103|58651|58784|44420|44305|42606|43406|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 816137027,
+      "departureName": "Zakopane",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 525
+    },
+    {
+      "routeCode": "PLK-273-38653-0F1B6845",
+      "routeFingerprint": "PLK:273|1107|2204|29108|30601|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 354864675,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 272
+    },
+    {
+      "routeCode": "PLK-27805-5900-0F2CA8F1",
+      "routeFingerprint": "PLK:27805|27300|26161|26104|26146|26211|27201|30601|30809|32003|18705|18408|17202|8474|7112|7302|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 413200106,
+      "departureName": "Zielona Góra Główna",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 319
+    },
+    {
+      "routeCode": "PLK-33506-5256-0FD0986A",
+      "routeFingerprint": "PLK:33506|33605|38653|36939|22442|9209|8151|7872|7500|5942|5900|5256",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 164335321,
+      "departureName": "Warszawa Zachodnia",
+      "arrivalName": "Lębork",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 501
+    },
+    {
+      "routeCode": "PLK-24000-5900-106563F6",
+      "routeFingerprint": "PLK:24000|279919|24133|24158|12252|11809|12609|10405|10009|9209|9233|10900|10934|8151|7872|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 219019113,
+      "departureName": "Białystok",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 342
+    },
+    {
+      "routeCode": "PLK-50500-66134-10EB3A03",
+      "routeFingerprint": "PLK:50500|50484|51177|254539|66050|65904|258467|258468|66142|66134",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 591042674,
+      "departureName": "Lublin Główny",
+      "arrivalName": "Hrubieszów Miasto",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 187
+    },
+    {
+      "routeCode": "PLK-60103-1008-11110AEC",
+      "routeFingerprint": "PLK:60103|53009|53280|42200|42002|27805|25809|13003|13417|13334|851|273|1107|1404|1560|1024|1008",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 713851567,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Świnoujście",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 395
+    },
+    {
+      "routeCode": "PLK-80416-12609-125076A8",
+      "routeFingerprint": "PLK:80416|63552|48009|48355|48504|33902|33563|33506|33605|38653|36343|37507|37911|38307|24737|24638|24539|279919|24000|279919|24133|24158|12252|11809|12609",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 618077831,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Giżycko",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 531
+    },
+    {
+      "routeCode": "PLK-84400-129059-1286CA0E",
+      "routeFingerprint": "PLK:84400|84434|83261|83105|83022|82669|81208|80630|79657|79905|80416|77701|77503|77834|77107|76000|75507|179223|127420|127436|127265|127419|127651|128166|128071|128006|129083|129059",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 908597584,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Praha Hlavni Nadrazi",
+      "stationCount": 28,
+      "estimatedDurationMinutes": 567
+    },
+    {
+      "routeCode": "PLK-248058-84400-13309DE4",
+      "routeFingerprint": "PLK:248058|179212|25809|27805|42200|53280|53009|60103|60608|67009|69708|69823|73312|80416|79905|79657|80630|81208|82669|83022|83105|83261|84434|84400",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 790866324,
+      "departureName": "Berlin Gesundbrunnen",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 604
+    },
+    {
+      "routeCode": "PLK-6791-33506-133872E5",
+      "routeFingerprint": "PLK:6791|6759|6775|6767|6734|6742|6700|5900|5942|7583|7534|7500|7112|7872|21808|38653|33605|33506",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 559418303,
+      "departureName": "Hel",
+      "arrivalName": "Warszawa Zachodnia",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 334
+    },
+    {
+      "routeCode": "PLK-60103-79905-13C4C1D0",
+      "routeFingerprint": "PLK:60103|60608|61903|67066|67009|68205|69203|76000|77107|79905",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 897231561,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Kraków Płaszów",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 243
+    },
+    {
+      "routeCode": "PLK-38653-56184-149BEA62",
+      "routeFingerprint": "PLK:38653|33605|33506|34207|47001|47258|46409|46565|46581|46649|19430|19489|45245|45906|44008|59675|59576|59105|60103|54403|54528|54551|55103|55632|55806|56093|56143|56168|56176|56184",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 386865088,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Szklarska Poręba Górna",
+      "stationCount": 30,
+      "estimatedDurationMinutes": 477
+    },
+    {
+      "routeCode": "PLK-79020-5900-14D77D28",
+      "routeFingerprint": "PLK:79020|78980|78907|265251|78535|258708|78345|80416|77701|77503|73908|74500|75309|75424|62802|33506|33605|38653|36509|36459|36939|37226|22442|21808|22905|7872|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 998215691,
+      "departureName": "Zakopane",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 32,
+      "estimatedDurationMinutes": 688
+    },
+    {
+      "routeCode": "PLK-80416-4101-1555699D",
+      "routeFingerprint": "PLK:80416|33506|33605|38653|7500|7534|7583|5942|5900|5256|4705|5108|4408|4135|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 681033398,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 15,
+      "estimatedDurationMinutes": 544
+    },
+    {
+      "routeCode": "PLK-9209-273-15841932",
+      "routeFingerprint": "PLK:9209|9233|10900|10934|8151|7872|7112|7500|7534|7583|5942|5900|6098|6304|5256|4705|5108|4408|3905|3632|3509|3467|3517|2204|1107|273",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 409742176,
+      "departureName": "Olsztyn Główny",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 26,
+      "estimatedDurationMinutes": 491
+    },
+    {
+      "routeCode": "PLK-82669-273-17022C9E",
+      "routeFingerprint": "PLK:82669|83022|83220|83246|65144|65094|65029|65003|65243|51508|50500|262848|50104|50021|49809|39206|38653|33605|33506|34603|32904|32201|21600|21501|19703|19844|16717|18374|18408|18200|14514|14407|14704|14761|15008|2477|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 569544093,
+      "departureName": "Rzeszów Główny",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 39,
+      "estimatedDurationMinutes": 765
+    },
+    {
+      "routeCode": "PLK-80416-55806-1787C8A7",
+      "routeFingerprint": "PLK:80416|77701|77503|73908|73502|73312|69823|69708|67009|67462|56903|56606|56697|56713|56408|57703|54908|54817|54403|54528|54551|55103|55632|55806",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 927859756,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Jelenia Góra",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 428
+    },
+    {
+      "routeCode": "PLK-64337-273-17AC4930",
+      "routeFingerprint": "PLK:64337|64899|48959|47605|46409|46565|46706|46789|46805|32540|32524|32201|33191|33100|30122|30007|28472|30601|28803|28969|29108|29181|29405|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 363394231,
+      "departureName": "Kozłów",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 26,
+      "estimatedDurationMinutes": 427
+    },
+    {
+      "routeCode": "PLK-30601-155861-182EC6B8",
+      "routeFingerprint": "PLK:30601|42606|60103|60608|67009|68700|67900|179223|127420|127436|127265|127482|127662|127718|127295|127178|243509|157114|155861",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 156166952,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Wien Westbahnhof",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 441
+    },
+    {
+      "routeCode": "PLK-80416-66134-18C28FD4",
+      "routeFingerprint": "PLK:80416|79905|80630|81208|82669|83220|83246|65144|65094|65029|65003|66407|66449|66589|280397|66050|65904|258467|258468|66142|66134",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 106457839,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Hrubieszów Miasto",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 347
+    },
+    {
+      "routeCode": "PLK-60103-63552-1931D537",
+      "routeFingerprint": "PLK:60103|58271|62109|60608|71407|62802|63073|64808|63552",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 194771573,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Kielce Główne",
+      "stationCount": 9,
+      "estimatedDurationMinutes": 183
+    },
+    {
+      "routeCode": "PLK-32607-73312-1A2FAD31",
+      "routeFingerprint": "PLK:32607|32359|32201|32524|32540|46805|46789|46706|46565|46409|47704|47886|62653|75424|75309|74583|74633|74658|73312",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 429224499,
+      "departureName": "Płock",
+      "arrivalName": "Katowice",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 315
+    },
+    {
+      "routeCode": "PLK-273-84400-1AE932BD",
+      "routeFingerprint": "PLK:273|1107|2204|29405|29181|29108|28969|28803|30601|43406|42606|44305|44420|58784|60103|58271|62109|60608|61705|69708|69823|73312|73502|73908|77503|77701|80416|79905|79657|79806|80630|81208|81232|81265|82669|83022|83105|83261|84301|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 275895810,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 41,
+      "estimatedDurationMinutes": 568
+    },
+    {
+      "routeCode": "PLK-50500-190042-1B28E047",
+      "routeFingerprint": "PLK:50500|190042",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 709091978,
+      "departureName": "Lublin Główny",
+      "arrivalName": "Rawa Ruska",
+      "stationCount": 2,
+      "estimatedDurationMinutes": 303
+    },
+    {
+      "routeCode": "PLK-6791-5900-1C604662",
+      "routeFingerprint": "PLK:6791|6759|6775|6767|6734|6742|6700|5900",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 198654695,
+      "departureName": "Hel",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 87
+    },
+    {
+      "routeCode": "PLK-38653-129059-1CC74494",
+      "routeFingerprint": "PLK:38653|33605|33506|48959|64899|75309|74583|74658|73312|73700|68205|68403|67900|179223|127420|127436|127265|127419|127651|128166|128071|128006|129083|129059",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 208008367,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Praha Hlavni Nadrazi",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 539
+    },
+    {
+      "routeCode": "PLK-5900-13003-1EBB2FF0",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|8607|8995|8961|8979|8904|15602|15529|15354|15537|14407|14548|29223|29108|29215|14308|260653|13904|14043|13003",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 982257359,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Kostrzyn",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 396
+    },
+    {
+      "routeCode": "PLK-30601-4952-1EC93E1F",
+      "routeFingerprint": "PLK:30601|29645|16139|16188|14407|16402|3004|3905|4408|5108|4705|4952",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 721902642,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Ustka",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 240
+    },
+    {
+      "routeCode": "PLK-6791-76109-1F7393B4",
+      "routeFingerprint": "PLK:6791|6759|6775|6767|6734|6742|6700|5900|5942|7583|7534|7500|7112|17202|18408|18705|32003|30809|30601|43406|42606|44305|44420|58784|60103|58271|62109|60608|61903|67066|67009|68882|68205|69203|76000|76109",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 187219295,
+      "departureName": "Hel",
+      "arrivalName": "Bielsko-Biała Główna",
+      "stationCount": 36,
+      "estimatedDurationMinutes": 598
+    },
+    {
+      "routeCode": "PLK-79020-4101-20309FEA",
+      "routeFingerprint": "PLK:79020|78907|80416|33506|33605|38653|21808|7872|7112|7500|7534|7583|5942|5900|5256|4705|4408|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 810573944,
+      "departureName": "Zakopane",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 656
+    },
+    {
+      "routeCode": "PLK-4101-80416-22C3FE10",
+      "routeFingerprint": "PLK:4101|3905|3004|16402|14407|14514|18200|18408|18374|16717|19844|19703|21501|21600|32201|32524|32540|46805|46789|46706|46581|46649|19406|62802|75424|75309|74500|73908|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 468265422,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 31,
+      "estimatedDurationMinutes": 620
+    },
+    {
+      "routeCode": "PLK-50906-125806-2353E7E4",
+      "routeFingerprint": "PLK:50906|125159|125182|124879|125585|209839|125508|209910|125806",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 552117772,
+      "departureName": "Chełm",
+      "arrivalName": "Dnipro-Holovnyi",
+      "stationCount": 9,
+      "estimatedDurationMinutes": 1158
+    },
+    {
+      "routeCode": "PLK-9209-68700-2386A1FB",
+      "routeFingerprint": "PLK:9209|9233|9456|22202|22442|37226|36939|36459|36509|38653|33605|33506|62653|75424|75309|74583|74633|74658|73312|69823|69708|67009|68882|68700",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 815530697,
+      "departureName": "Olsztyn Główny",
+      "arrivalName": "Racibórz",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 469
+    },
+    {
+      "routeCode": "PLK-5900-82669-249C969C",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|7872|21808|38653|33605|33506|80416|79905|79657|80630|81208|82669",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 666363949,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Rzeszów Główny",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 446
+    },
+    {
+      "routeCode": "PLK-84400-125711-24DC01C4",
+      "routeFingerprint": "PLK:84400|125266|124879|124876|125662|125653|125780|125787|125797|125711",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 806355074,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Kharkiv-Pasazhyrskyi",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 1161
+    },
+    {
+      "routeCode": "PLK-84400-4101-26DC1F8F",
+      "routeFingerprint": "PLK:84400|84434|84301|83261|83105|83022|82669|81265|81232|81208|80630|79806|79657|79905|80416|77701|77503|73908|73502|72306|69708|61705|60608|62109|58271|60103|58784|44420|44305|42606|43406|30601|29645|16139|16188|14407|16402|3004|3905|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 435507375,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 40,
+      "estimatedDurationMinutes": 681
+    },
+    {
+      "routeCode": "PLK-1008-38653-27ADA2B2",
+      "routeFingerprint": "PLK:1008|1024|1560|1404|1107|273|1107|2204|29405|29181|29108|28969|28803|30601|28472|30007|30122|33100|33191|32201|32904|34603|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 379818529,
+      "departureName": "Świnoujście",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 405
+    },
+    {
+      "routeCode": "PLK-84400-124879-283346FC",
+      "routeFingerprint": "PLK:84400|125266|125208|124979|125013|124879",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 229389973,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Kyiv-Pasazhyrskyi",
+      "stationCount": 6,
+      "estimatedDurationMinutes": 617
+    },
+    {
+      "routeCode": "PLK-273-84400-28A5471B",
+      "routeFingerprint": "PLK:273|851|13334|13417|13003|25809|27805|42002|42200|53280|53009|60103|60608|67009|69708|69823|73312|80416|79905|79657|80630|81208|82669|83022|83105|83261|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 404055963,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 28,
+      "estimatedDurationMinutes": 598
+    },
+    {
+      "routeCode": "PLK-82669-14407-28F50E2C",
+      "routeFingerprint": "PLK:82669|83022|83220|83246|65144|65094|65029|65003|65243|51508|50500|262848|50104|50021|49809|39206|38653|33605|33506|34603|32904|32201|21600|21501|19703|19844|16717|18374|18408|18200|14514|14407",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 364025986,
+      "departureName": "Rzeszów Główny",
+      "arrivalName": "Piła Główna",
+      "stationCount": 32,
+      "estimatedDurationMinutes": 557
+    },
+    {
+      "routeCode": "PLK-80416-6791-290F0332",
+      "routeFingerprint": "PLK:80416|33506|33605|38653|7500|7534|7583|5942|5900|6700|6742|6734|6767|6775|6759|6791",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 933478940,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Hel",
+      "stationCount": 16,
+      "estimatedDurationMinutes": 509
+    },
+    {
+      "routeCode": "PLK-65300-82669-29327DFE",
+      "routeFingerprint": "PLK:65300|65466|65532|82974|82669",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 178157520,
+      "departureName": "Sandomierz",
+      "arrivalName": "Rzeszów Główny",
+      "stationCount": 5,
+      "estimatedDurationMinutes": 123
+    },
+    {
+      "routeCode": "PLK-30601-79020-29B693F0",
+      "routeFingerprint": "PLK:30601|43406|42606|44305|44420|58784|58651|60103|58271|62109|60608|61903|67066|67009|68882|68205|69203|76000|76109|76232|76273|78204|78345|258708|78535|265251|78907|78980|79020",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 931050501,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Zakopane",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 511
+    },
+    {
+      "routeCode": "PLK-63552-69708-2A03F7C1",
+      "routeFingerprint": "PLK:63552|64808|75309|74583|74633|74658|73312|69823|69708",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 140530803,
+      "departureName": "Kielce Główne",
+      "arrivalName": "Gliwice",
+      "stationCount": 9,
+      "estimatedDurationMinutes": 162
+    },
+    {
+      "routeCode": "PLK-27805-84400-2A8BE90F",
+      "routeFingerprint": "PLK:27805|42002|42200|53280|53009|60103|60608|67009|69708|69823|73312|80416|79905|79657|80630|81208|82669|83022|83105|83261|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 304293548,
+      "departureName": "Zielona Góra Główna",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 22,
+      "estimatedDurationMinutes": 464
+    },
+    {
+      "routeCode": "PLK-24000-38653-2AD9889D",
+      "routeFingerprint": "PLK:24000|279919|24430|25403|25205|25353|25387|39776|39743|39404|39875|39008|38653",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 225076613,
+      "departureName": "Białystok",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 13,
+      "estimatedDurationMinutes": 197
+    },
+    {
+      "routeCode": "PLK-4952-80416-2C25F7B2",
+      "routeFingerprint": "PLK:4952|4705|5108|4408|3905|3004|16402|14407|16188|16139|29645|30601|43406|42606|44305|44420|58784|58651|60103|58271|62109|60608|61705|69708|69823|73312|73502|73908|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 777869603,
+      "departureName": "Ustka",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 31,
+      "estimatedDurationMinutes": 588
+    },
+    {
+      "routeCode": "PLK-60103-24000-2C8BEB19",
+      "routeFingerprint": "PLK:60103|58651|59105|59576|59543|59675|44008|45906|45245|19489|19430|46649|46581|46565|46409|47258|47001|34207|33506|33605|38653|36343|37507|37911|38307|24737|24638|24539|279919|24000",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 848204214,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Białystok",
+      "stationCount": 30,
+      "estimatedDurationMinutes": 408
+    },
+    {
+      "routeCode": "PLK-9209-80416-2D72A77B",
+      "routeFingerprint": "PLK:9209|9233|22004|21808|22442|37226|36939|36459|36509|38653|33605|33506|34165|48959|64899|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 164219297,
+      "departureName": "Olsztyn Główny",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 16,
+      "estimatedDurationMinutes": 346
+    },
+    {
+      "routeCode": "PLK-80416-5900-2DFEDF08",
+      "routeFingerprint": "PLK:80416|33506|33605|38653|21808|7872|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 140510009,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 370
+    },
+    {
+      "routeCode": "PLK-60103-38653-2E886BD2",
+      "routeFingerprint": "PLK:60103|58271|62109|60608|61572|71407|62802|62653|47886|47704|47258|47001|34207|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 785651051,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 16,
+      "estimatedDurationMinutes": 273
+    },
+    {
+      "routeCode": "PLK-60103-84400-2EC6E951",
+      "routeFingerprint": "PLK:60103|60608|67009|69708|69823|73106|73312|80416|79905|79657|80630|81208|82669|83022|83105|83261|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 747708374,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 331
+    },
+    {
+      "routeCode": "PLK-18408-5900-2F8C5EC6",
+      "routeFingerprint": "PLK:18408|17202|8474|8409|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 229240967,
+      "departureName": "Bydgoszcz Główna",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 112
+    },
+    {
+      "routeCode": "PLK-27805-24000-31A04EB9",
+      "routeFingerprint": "PLK:27805|27300|26161|26104|26146|26211|27201|30601|28472|30007|30122|33100|33191|32201|32904|34603|33506|33605|38653|279919|24000",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 576559478,
+      "departureName": "Zielona Góra Główna",
+      "arrivalName": "Białystok",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 406
+    },
+    {
+      "routeCode": "PLK-32706-20503-31A07F31",
+      "routeFingerprint": "PLK:32706|21428|21204|20909|20503",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 254003161,
+      "departureName": "Sierpc",
+      "arrivalName": "Grudziądz",
+      "stationCount": 5,
+      "estimatedDurationMinutes": 140
+    },
+    {
+      "routeCode": "PLK-24000-30601-31AFD959",
+      "routeFingerprint": "PLK:24000|279919|24133|24158|12252|11809|12609|10405|10009|9209|9233|22004|21808|20909|20743|20719|19901|19794|19703|18705|32003|30809|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 825280941,
+      "departureName": "Białystok",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 23,
+      "estimatedDurationMinutes": 379
+    },
+    {
+      "routeCode": "PLK-60103-24000-32077484",
+      "routeFingerprint": "PLK:60103|58651|59105|59576|59543|44008|45906|45245|19489|19430|46649|46581|46565|46409|47258|47001|34207|33506|33605|38653|36343|37507|37911|38307|24737|24638|24539|279919|24000",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 209555996,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Białystok",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 388
+    },
+    {
+      "routeCode": "PLK-24000-33605-322C001D",
+      "routeFingerprint": "PLK:24000|279919|24539|24638|24737|38307|37911|37507|36343|38653|33605",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 547476784,
+      "departureName": "Białystok",
+      "arrivalName": "Warszawa Centralna",
+      "stationCount": 11,
+      "estimatedDurationMinutes": 108
+    },
+    {
+      "routeCode": "PLK-76109-5900-32300557",
+      "routeFingerprint": "PLK:76109|76000|69203|68205|68882|67009|67066|61903|60608|62109|58271|60103|58784|44420|44305|42606|43406|30601|30809|32003|18705|18408|17202|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 396652716,
+      "departureName": "Bielsko-Biała Główna",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 498
+    },
+    {
+      "routeCode": "PLK-38653-84400-33336A3B",
+      "routeFingerprint": "PLK:38653|33605|33506|33563|33902|48504|48355|48181|49205|65300|65003|65029|65094|65144|83246|83220|83105|83261|84301|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 163841034,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 310
+    },
+    {
+      "routeCode": "PLK-79020-38653-338FDA63",
+      "routeFingerprint": "PLK:79020|78980|78907|265251|78535|258708|78345|80416|79467|64899|48959|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 234137747,
+      "departureName": "Zakopane",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 14,
+      "estimatedDurationMinutes": 358
+    },
+    {
+      "routeCode": "PLK-7500-273-35B7C6A3",
+      "routeFingerprint": "PLK:7500|7534|7583|5942|5900|6098|6304|5256|4705|5108|4408|3905|3632|3509|3467|3517|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 874240989,
+      "departureName": "Gdańsk Główny",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 326
+    },
+    {
+      "routeCode": "PLK-65003-81208-35EFA3A7",
+      "routeFingerprint": "PLK:65003|65466|81505|81208",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 209613508,
+      "departureName": "Stalowa Wola Rozwadów",
+      "arrivalName": "Dębica",
+      "stationCount": 4,
+      "estimatedDurationMinutes": 125
+    },
+    {
+      "routeCode": "PLK-76109-38653-368E2312",
+      "routeFingerprint": "PLK:76109|76000|75903|73700|73312|74658|75309|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 411847133,
+      "departureName": "Bielsko-Biała Główna",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 222
+    },
+    {
+      "routeCode": "PLK-46458-38653-36B0F0F5",
+      "routeFingerprint": "PLK:46458|46409|47258|47001|34207|33506|33605|38653",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 480175252,
+      "departureName": "Łódź Fabryczna",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 85
+    },
+    {
+      "routeCode": "PLK-46458-6791-37606C06",
+      "routeFingerprint": "PLK:46458|46409|47258|47001|34207|33506|33605|38653|36509|36459|36939|37226|22442|21808|22905|7872|7112|7500|7534|7583|5942|5900|6700|6742|6734|6767|6775|6759|6791",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 393933172,
+      "departureName": "Łódź Fabryczna",
+      "arrivalName": "Hel",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 439
+    },
+    {
+      "routeCode": "PLK-38653-273-37D8EF22",
+      "routeFingerprint": "PLK:38653|33605|33506|30601|29108|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 525402980,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 265
+    },
+    {
+      "routeCode": "PLK-46458-33605-38FCE864",
+      "routeFingerprint": "PLK:46458|46409|47258|47001|34207|33506|33605",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 855336172,
+      "departureName": "Łódź Fabryczna",
+      "arrivalName": "Warszawa Centralna",
+      "stationCount": 7,
+      "estimatedDurationMinutes": 80
+    },
+    {
+      "routeCode": "PLK-76604-38653-39032F71",
+      "routeFingerprint": "PLK:76604|76109|76000|75903|73700|73403|74500|75309|75424|62653|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 774501078,
+      "departureName": "Żywiec",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 13,
+      "estimatedDurationMinutes": 342
+    },
+    {
+      "routeCode": "PLK-80416-83758-3A8992E6",
+      "routeFingerprint": "PLK:80416|79905|80630|80986|81067|81703|81786|83410|83501|83725|83600|83758",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 213119527,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Zagórz",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 276
+    },
+    {
+      "routeCode": "PLK-80416-50500-3BEE5587",
+      "routeFingerprint": "PLK:80416|280603|79327|79335|79343|79350|79368|79376|79384|79426|79434|79459|79467|79483|64626|64337|64352|64303|64451|63552|48355|48736|50021|50104|262848|50500",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 495285623,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Lublin Główny",
+      "stationCount": 26,
+      "estimatedDurationMinutes": 321
+    },
+    {
+      "routeCode": "PLK-38653-24000-3C18D252",
+      "routeFingerprint": "PLK:38653|39008|39875|39404|39743|39776|25387|25353|25205|25403|24430|279919|24000",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 128657113,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Białystok",
+      "stationCount": 13,
+      "estimatedDurationMinutes": 189
+    },
+    {
+      "routeCode": "PLK-248058-84400-3C8034B2",
+      "routeFingerprint": "PLK:248058|179212|25809|28100|26104|26146|26211|27201|30601|43406|42606|44305|44420|58784|60103|62109|60608|67009|69708|69823|73312|73908|77503|77701|80416|79905|79657|79806|80630|81208|82669|83022|83105|83261|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 947059670,
+      "departureName": "Berlin Gesundbrunnen",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 35,
+      "estimatedDurationMinutes": 749
+    },
+    {
+      "routeCode": "PLK-1008-60103-3EE4C409",
+      "routeFingerprint": "PLK:1008|1024|1560|1404|1107|273|1107|2204|29405|29181|29108|28969|28803|30601|43406|42606|44305|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 660112873,
+      "departureName": "Świnoujście",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 323
+    },
+    {
+      "routeCode": "PLK-12807-179200-3F64202B",
+      "routeFingerprint": "PLK:12807|12872|179200",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 375570102,
+      "departureName": "Suwałki",
+      "arrivalName": "Mockava",
+      "stationCount": 3,
+      "estimatedDurationMinutes": 98
+    },
+    {
+      "routeCode": "PLK-80416-38653-3FAAC9D2",
+      "routeFingerprint": "PLK:80416|79467|64303|64451|63552|48009|48355|48504|33902|33563|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 544363974,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 13,
+      "estimatedDurationMinutes": 255
+    },
+    {
+      "routeCode": "PLK-24000-60103-3FEF084D",
+      "routeFingerprint": "PLK:24000|279919|24133|24158|12252|11809|12609|10405|10009|9209|9233|22004|21808|20909|20743|20719|19901|19794|19703|18705|32003|30809|30601|43406|42606|44305|44420|58784|58651|60103",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 357653599,
+      "departureName": "Białystok",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 30,
+      "estimatedDurationMinutes": 501
+    },
+    {
+      "routeCode": "PLK-24000-60103-405B9359",
+      "routeFingerprint": "PLK:24000|279919|24539|24638|24737|38307|37911|37507|36343|38653|33605|33506|34207|47001|47258|46409|46565|46581|46649|19430|19489|45245|45906|44008|59675|59576|59105|58651|60103",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 653558258,
+      "departureName": "Białystok",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 401
+    },
+    {
+      "routeCode": "PLK-50500-38653-40AD1DC5",
+      "routeFingerprint": "PLK:50500|50609|40030|39974|39909|39404|39875|39008|38653",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 943264101,
+      "departureName": "Lublin Główny",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 9,
+      "estimatedDurationMinutes": 151
+    },
+    {
+      "routeCode": "PLK-84400-273-40F928CB",
+      "routeFingerprint": "PLK:84400|84434|84301|83261|83105|83022|82669|81265|81232|81208|80630|79806|79657|79905|80416|77701|77503|73908|73502|73312|69823|69708|61705|60608|62109|58271|60103|58784|44420|44305|42606|43406|30601|28803|28969|29108|29181|29405|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 192611372,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 41,
+      "estimatedDurationMinutes": 591
+    },
+    {
+      "routeCode": "PLK-80416-55806-4178FBFA",
+      "routeFingerprint": "PLK:80416|77701|77503|73908|73502|73312|73106|69823|69708|67009|67462|56903|56606|56697|56713|56408|57307|57463|57307|57943|55145|55103|55632|55806",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 102742624,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Jelenia Góra",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 411
+    },
+    {
+      "routeCode": "PLK-4952-30601-4236747D",
+      "routeFingerprint": "PLK:4952|4705|5108|4408|3905|3004|16402|14407|16188|16139|29645|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 844421505,
+      "departureName": "Ustka",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 248
+    },
+    {
+      "routeCode": "PLK-68700-9209-428A20B9",
+      "routeFingerprint": "PLK:68700|68882|67009|69708|69823|73312|74658|74633|74583|75309|75424|62653|33506|33605|38653|36509|36459|36939|37226|22442|22202|9456|9233|9209",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 808378439,
+      "departureName": "Racibórz",
+      "arrivalName": "Olsztyn Główny",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 458
+    },
+    {
+      "routeCode": "PLK-179200-273-43158A87",
+      "routeFingerprint": "PLK:179200|12872|12807|12963|24893|24802|24000|279919|38653|33605|33506|34603|32904|32201|33191|33100|30122|30007|28472|30601|28803|28969|29108|29181|29405|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 658212991,
+      "departureName": "Mockava",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 28,
+      "estimatedDurationMinutes": 569
+    },
+    {
+      "routeCode": "PLK-80416-1008-447713E0",
+      "routeFingerprint": "PLK:80416|77701|77503|73908|73502|73312|69823|69708|61705|60608|62109|58271|60103|53009|53280|42200|42002|27805|25809|13003|13417|13334|851|273|1107|1404|1560|1024|1008",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 642694807,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Świnoujście",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 659
+    },
+    {
+      "routeCode": "PLK-80416-76109-44BA4130",
+      "routeFingerprint": "PLK:80416|77834|77107|76000|76109",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 122982133,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Bielsko-Biała Główna",
+      "stationCount": 5,
+      "estimatedDurationMinutes": 79
+    },
+    {
+      "routeCode": "PLK-84400-146771-44C0A8ED",
+      "routeFingerprint": "PLK:84400|84434|84301|83261|83105|83022|82669|81265|81232|81208|80630|79806|79657|79905|80416|77701|77503|73908|73502|73312|69823|69708|68700|67900|179223|127420|127178|243509|157114|155886|155921|155936|155955|146599|146771",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 751905180,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Muenchen Hbf",
+      "stationCount": 35,
+      "estimatedDurationMinutes": 1008
+    },
+    {
+      "routeCode": "PLK-60103-1008-44D77120",
+      "routeFingerprint": "PLK:60103|44305|42606|43406|30601|28803|28969|29108|29181|29405|2204|1107|273|1107|1404|1560|1024|1008",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 651073805,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Świnoujście",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 305
+    },
+    {
+      "routeCode": "PLK-80416-5355-453CFA40",
+      "routeFingerprint": "PLK:80416|77701|77503|73908|74500|75309|75424|62802|19406|46649|46581|46706|46805|32540|32524|32201|21600|21501|19703|19901|21808|7872|7112|7500|7534|7583|5942|5900|6098|6304|5256|5355",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 202033180,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Łeba",
+      "stationCount": 32,
+      "estimatedDurationMinutes": 711
+    },
+    {
+      "routeCode": "PLK-33506-5355-461F6AC4",
+      "routeFingerprint": "PLK:33506|33605|38653|36509|36459|36939|37226|22442|21808|7872|7112|7500|7534|7583|5942|5900|6098|6304|5256|5355",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 233240405,
+      "departureName": "Warszawa Zachodnia",
+      "arrivalName": "Łeba",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 343
+    },
+    {
+      "routeCode": "PLK-27805-50906-46528F23",
+      "routeFingerprint": "PLK:27805|27300|26161|26104|26146|26211|27201|30601|30809|32003|18838|19190|19174|32201|32904|34603|33506|33605|38653|39206|49809|50021|50104|262848|50500|50484|50807|50948|50906",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 333421309,
+      "departureName": "Zielona Góra Główna",
+      "arrivalName": "Chełm",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 471
+    },
+    {
+      "routeCode": "PLK-24000-27805-46E97DED",
+      "routeFingerprint": "PLK:24000|279919|38653|33605|33506|34603|32904|32201|33191|33100|30122|30007|28472|30601|27201|26211|26146|26104|26161|27300|27805",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 557180686,
+      "departureName": "Białystok",
+      "arrivalName": "Zielona Góra Główna",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 416
+    },
+    {
+      "routeCode": "PLK-84400-273-47EE6A06",
+      "routeFingerprint": "PLK:84400|84434|83261|83105|83022|82669|81208|80630|79657|79905|80416|73312|73106|69823|69708|67009|60608|60103|53009|53280|42200|42002|27805|25809|13003|13417|13334|851|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 492856746,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 606
+    },
+    {
+      "routeCode": "PLK-80416-4101-4823B548",
+      "routeFingerprint": "PLK:80416|75309|64899|48959|33506|33605|38653|36509|36459|36939|37226|22442|21808|22905|7872|7112|7500|7534|7583|5942|5900|6098|6304|5256|4705|5108|4408|4135|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 447170115,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 600
+    },
+    {
+      "routeCode": "PLK-12609-80416-484C48CF",
+      "routeFingerprint": "PLK:12609|11809|12252|24158|24133|279919|24000|279919|24539|24638|24737|38307|37911|37507|36343|38653|33605|33506|33563|33902|48504|48355|48009|63552|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 299734430,
+      "departureName": "Giżycko",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 521
+    },
+    {
+      "routeCode": "PLK-82487-80416-485FD874",
+      "routeFingerprint": "PLK:82487|82446|82404|82552|82578|82586|82099|82073|82032|81901|81679|81604|81125|81067|80986|80630|79905|80416",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 260392067,
+      "departureName": "Krynica-Zdrój",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 245
+    },
+    {
+      "routeCode": "PLK-125880-84400-487274C1",
+      "routeFingerprint": "PLK:125880|125806|209910|125853|125508|209839|125585|125082|125070|125266|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 885099903,
+      "departureName": "Zaporizhzhia-1",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 11,
+      "estimatedDurationMinutes": 1079
+    },
+    {
+      "routeCode": "PLK-84400-125880-48755422",
+      "routeFingerprint": "PLK:84400|125266|125070|125082|125585|209839|125508|209910|125806|125880",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 260093322,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Zaporizhzhia-1",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 1224
+    },
+    {
+      "routeCode": "PLK-5900-27805-48935FAC",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7302|7112|8474|17202|18408|18705|32003|30809|30601|27201|26211|26146|26104|26161|27300|27805",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 886939982,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Zielona Góra Główna",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 309
+    },
+    {
+      "routeCode": "PLK-1008-60103-4B449A59",
+      "routeFingerprint": "PLK:1008|1024|1560|1404|1107|273|851|13334|13417|13003|25809|27805|42002|42200|53280|53009|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 997195399,
+      "departureName": "Świnoujście",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 402
+    },
+    {
+      "routeCode": "PLK-73312-5900-4BC75B8A",
+      "routeFingerprint": "PLK:73312|74658|74633|74583|75309|75424|62653|47886|47704|46409|46565|46706|46789|46805|32540|32524|32201|21600|21501|19703|19844|16717|18374|18408|17202|8474|7112|7302|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 606142399,
+      "departureName": "Katowice",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 33,
+      "estimatedDurationMinutes": 478
+    },
+    {
+      "routeCode": "PLK-80416-50500-4CE7F9E0",
+      "routeFingerprint": "PLK:80416|79467|64303|64451|63552|48009|48355|48736|50021|50104|262848|50500",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 129035502,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Lublin Główny",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 297
+    },
+    {
+      "routeCode": "PLK-33506-5900-4D26BBC8",
+      "routeFingerprint": "PLK:33506|33605|38653|36509|36459|36939|37226|22442|21808|22905|7872|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 916130677,
+      "departureName": "Warszawa Zachodnia",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 216
+    },
+    {
+      "routeCode": "PLK-80416-157172-4D5A96BD",
+      "routeFingerprint": "PLK:80416|77701|77503|77834|77107|76000|75507|179223|127420|127436|127265|127482|127662|127718|127295|127178|243509|157114|157163|157172",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 387364863,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Graz Hauptbahnhof",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 488
+    },
+    {
+      "routeCode": "PLK-30601-80416-4DFACE8A",
+      "routeFingerprint": "PLK:30601|30205|44701|44842|45906|45476|45401|61341|61200|71555|71407|62802|75424|75309|74500|73908|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 860775694,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 317
+    },
+    {
+      "routeCode": "PLK-50906-125711-4E2C8650",
+      "routeFingerprint": "PLK:50906|125159|125200|125182|124879|125780|125787|125711",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 713638665,
+      "departureName": "Chełm",
+      "arrivalName": "Kharkiv-Pasazhyrskyi",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 1153
+    },
+    {
+      "routeCode": "PLK-80416-4101-4E674BEF",
+      "routeFingerprint": "PLK:80416|77701|77503|73908|74500|75309|75424|62802|71407|71555|61200|61341|45401|45476|45906|44842|44701|30205|30601|29645|16139|16188|14407|16402|3004|3905|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 879513458,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 27,
+      "estimatedDurationMinutes": 538
+    },
+    {
+      "routeCode": "PLK-5900-55806-4EF2ED43",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|17202|18408|18705|32003|30809|30601|43406|42606|44305|44420|58784|60103|54403|54528|54551|55103|55632|55806",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 892317289,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Jelenia Góra",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 455
+    },
+    {
+      "routeCode": "PLK-5900-80416-4F15609B",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|7872|21808|38653|33605|33506|80416",
+      "serviceRecordCount": 4,
+      "representativeOrderId": 246040591,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 356
+    },
+    {
+      "routeCode": "PLK-30601-38653-4F1B0AAD",
+      "routeFingerprint": "PLK:30601|28472|30007|30122|33100|33191|32201|32904|34603|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 194446445,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 179
+    },
+    {
+      "routeCode": "PLK-76109-5900-4F5027F2",
+      "routeFingerprint": "PLK:76109|76000|75903|73700|73312|74658|75309|33506|33605|38653|21808|7872|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 148372985,
+      "departureName": "Bielsko-Biała Główna",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 396
+    },
+    {
+      "routeCode": "PLK-190042-50500-4F8655A6",
+      "routeFingerprint": "PLK:190042|50500",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 636903004,
+      "departureName": "Rawa Ruska",
+      "arrivalName": "Lublin Główny",
+      "stationCount": 2,
+      "estimatedDurationMinutes": 204
+    },
+    {
+      "routeCode": "PLK-73312-32607-502242B8",
+      "routeFingerprint": "PLK:73312|74658|74633|74583|75309|75424|62653|47886|47704|46409|46565|46706|46789|46805|32540|32524|32201|32359|32607",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 159856429,
+      "departureName": "Katowice",
+      "arrivalName": "Płock",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 332
+    },
+    {
+      "routeCode": "PLK-50500-60103-5090BF4B",
+      "routeFingerprint": "PLK:50500|262848|50104|50021|48736|48355|48009|63552|64808|63073|62802|71407|60608|62109|58271|60103",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 177771506,
+      "departureName": "Lublin Główny",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 16,
+      "estimatedDurationMinutes": 358
+    },
+    {
+      "routeCode": "PLK-26104-13904-50C081D0",
+      "routeFingerprint": "PLK:26104|26708|26500|13904",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 100356336,
+      "departureName": "Zbąszynek",
+      "arrivalName": "Gorzów Wielkopolski",
+      "stationCount": 4,
+      "estimatedDurationMinutes": 66
+    },
+    {
+      "routeCode": "PLK-84400-60103-50F86743",
+      "routeFingerprint": "PLK:84400|84434|83261|83105|83022|82669|81208|80630|79657|79905|80416|73312|73106|69823|69708|67009|60608|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 574800455,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 325
+    },
+    {
+      "routeCode": "PLK-5900-33506-51473FB1",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|7872|22905|21808|22442|37226|36939|36459|36509|38653|33605|33506",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 314850874,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Warszawa Zachodnia",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 236
+    },
+    {
+      "routeCode": "PLK-155861-73312-5213D002",
+      "routeFingerprint": "PLK:155861|157114|243509|127178|127295|127718|127662|127482|127265|127436|127420|179223|67900|68403|68205|73700|73312",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 832628798,
+      "departureName": "Wien Westbahnhof",
+      "arrivalName": "Katowice",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 331
+    },
+    {
+      "routeCode": "PLK-38653-50500-5255E9BE",
+      "routeFingerprint": "PLK:38653|39008|39875|39404|39909|39974|40030|50609|50500",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 214876077,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Lublin Główny",
+      "stationCount": 9,
+      "estimatedDurationMinutes": 157
+    },
+    {
+      "routeCode": "PLK-80416-50500-525EFFFD",
+      "routeFingerprint": "PLK:80416|79905|79657|79806|80630|81208|81232|81265|82669|83022|83220|83246|65144|65094|65029|65003|65243|51508|50500",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 394123400,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Lublin Główny",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 268
+    },
+    {
+      "routeCode": "PLK-79020-38653-526F6547",
+      "routeFingerprint": "PLK:79020|78907|80416|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 410756743,
+      "departureName": "Zakopane",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 6,
+      "estimatedDurationMinutes": 306
+    },
+    {
+      "routeCode": "PLK-5900-76109-52A629DE",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7302|7112|8474|17202|18408|18374|16717|19844|19703|21501|21600|32201|32524|32540|46805|46789|46706|46581|46649|19406|62653|75424|75309|74583|74633|74658|73312|73700|75903|76000|76109",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 837472110,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Bielsko-Biała Główna",
+      "stationCount": 36,
+      "estimatedDurationMinutes": 531
+    },
+    {
+      "routeCode": "PLK-30601-80416-52C67D4B",
+      "routeFingerprint": "PLK:30601|30205|44701|44842|45906|45476|45401|61341|61200|71555|71407|71001|72306|73502|73908|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 501705802,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 303
+    },
+    {
+      "routeCode": "PLK-273-46458-5385FCFD",
+      "routeFingerprint": "PLK:273|1107|2204|29405|29181|29108|28969|28803|30601|30205|44701|44842|45245|19489|19430|46649|46581|46565|46409|46458",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 364604187,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Łódź Fabryczna",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 338
+    },
+    {
+      "routeCode": "PLK-124879-50906-53CD408C",
+      "routeFingerprint": "PLK:124879|125159|50906",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 303007492,
+      "departureName": "Kyiv-Pasazhyrskyi",
+      "arrivalName": "Chełm",
+      "stationCount": 3,
+      "estimatedDurationMinutes": 564
+    },
+    {
+      "routeCode": "PLK-80416-38653-54238B63",
+      "routeFingerprint": "PLK:80416|79467|64899|48959|34165|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 700241203,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 191
+    },
+    {
+      "routeCode": "PLK-12369-273-5449623D",
+      "routeFingerprint": "PLK:12369|10827|10603|9209|9233|10900|10934|8151|7872|7112|7500|7534|7583|5942|5900|6098|6304|5256|4705|5108|4408|3905|3632|3509|3467|3517|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 865946451,
+      "departureName": "Pisz",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 572
+    },
+    {
+      "routeCode": "PLK-38653-79020-5612C25E",
+      "routeFingerprint": "PLK:38653|33605|33506|48959|64899|80416|78345|258708|78535|265251|78907|78980|79020",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 375608463,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Zakopane",
+      "stationCount": 13,
+      "estimatedDurationMinutes": 350
+    },
+    {
+      "routeCode": "PLK-273-9209-5716FC68",
+      "routeFingerprint": "PLK:273|1107|2204|3517|3467|3509|3632|3905|4408|5108|4705|5256|6304|6098|5900|5942|7583|7534|7500|7112|7872|8151|10934|10900|9233|9209",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 305091819,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Olsztyn Główny",
+      "stationCount": 26,
+      "estimatedDurationMinutes": 433
+    },
+    {
+      "routeCode": "PLK-30601-80416-57651DAF",
+      "routeFingerprint": "PLK:30601|30205|44701|44842|45245|19489|19430|46649|46581|46565|46409|47704|47886|62653|75424|75309|74500|73908|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 326269667,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 401
+    },
+    {
+      "routeCode": "PLK-13904-5900-5795A8E7",
+      "routeFingerprint": "PLK:13904|260653|14308|29215|29108|29223|14548|14407|15537|15354|15529|15602|8904|8979|8961|8995|8607|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 734069577,
+      "departureName": "Gorzów Wielkopolski",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 23,
+      "estimatedDurationMinutes": 341
+    },
+    {
+      "routeCode": "PLK-50906-124879-585ACF3A",
+      "routeFingerprint": "PLK:50906|125159|125048|125070|124879",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 699189410,
+      "departureName": "Chełm",
+      "arrivalName": "Kyiv-Pasazhyrskyi",
+      "stationCount": 5,
+      "estimatedDurationMinutes": 697
+    },
+    {
+      "routeCode": "PLK-5900-13904-58A4BC57",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|8607|8995|8961|8979|8904|15602|15529|15354|15537|14407|14548|29223|29108|29215|14308|260653|13904",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 105089755,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Gorzów Wielkopolski",
+      "stationCount": 23,
+      "estimatedDurationMinutes": 355
+    },
+    {
+      "routeCode": "PLK-76109-4101-58C99D7B",
+      "routeFingerprint": "PLK:76109|76000|69203|68205|67009|67066|61903|60608|62109|58271|60103|58784|44420|44305|42606|43406|30601|29645|16139|16188|14407|16402|3004|3905|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 979938058,
+      "departureName": "Bielsko-Biała Główna",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 618
+    },
+    {
+      "routeCode": "PLK-60103-50500-58F0F9CD",
+      "routeFingerprint": "PLK:60103|58271|62109|60608|71407|62802|63073|64899|48355|48736|50021|50104|262848|50500",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 133014393,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Lublin Główny",
+      "stationCount": 14,
+      "estimatedDurationMinutes": 306
+    },
+    {
+      "routeCode": "PLK-5900-60103-5A209687",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|18408|18705|30809|30601|42606|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 376135354,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 283
+    },
+    {
+      "routeCode": "PLK-38653-179223-5AA63161",
+      "routeFingerprint": "PLK:38653|33605|33506|48959|64899|75309|74583|74658|73312|73700|68205|68403|67900|179223",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 250758431,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Bohumin",
+      "stationCount": 14,
+      "estimatedDurationMinutes": 272
+    },
+    {
+      "routeCode": "PLK-73312-63552-5B11466E",
+      "routeFingerprint": "PLK:73312|72272|72306|71001|265126|75309|64808|63552",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 238541040,
+      "departureName": "Katowice",
+      "arrivalName": "Kielce Główne",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 133
+    },
+    {
+      "routeCode": "PLK-50500-80416-5BD09651",
+      "routeFingerprint": "PLK:50500|262848|50104|50021|48736|48355|63552|64451|64303|64352|64337|64626|79483|79467|79459|79434|79426|79384|79376|79368|79350|79343|79335|79327|280603|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 673653754,
+      "departureName": "Lublin Główny",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 26,
+      "estimatedDurationMinutes": 325
+    },
+    {
+      "routeCode": "PLK-4101-80416-5C61487A",
+      "routeFingerprint": "PLK:4101|3905|3004|16402|14407|16188|16139|29645|30601|43406|42606|44305|44420|58784|60103|58271|62109|60608|61705|69708|69823|73312|73502|73908|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 831620751,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 27,
+      "estimatedDurationMinutes": 514
+    },
+    {
+      "routeCode": "PLK-4101-14407-5CAA7FAB",
+      "routeFingerprint": "PLK:4101|3905|3004|16402|14407",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 412814842,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Piła Główna",
+      "stationCount": 5,
+      "estimatedDurationMinutes": 120
+    },
+    {
+      "routeCode": "PLK-38653-60103-5D79AFF0",
+      "routeFingerprint": "PLK:38653|33605|33506|34207|47001|47258|47704|47886|62653|62802|71407|61572|60608|62109|58271|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 481142737,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 16,
+      "estimatedDurationMinutes": 268
+    },
+    {
+      "routeCode": "PLK-84400-248058-5D972ABD",
+      "routeFingerprint": "PLK:84400|84434|83261|83105|83022|82669|81208|80630|79657|79905|80416|73312|69823|69708|67009|60608|60103|53009|53280|42200|27805|25809|179212|248058",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 480200406,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Berlin Gesundbrunnen",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 604
+    },
+    {
+      "routeCode": "PLK-124879-33506-5E5D2D32",
+      "routeFingerprint": "PLK:124879|125159|51102|50906|50948|50807|50484|50500|262848|50104|50021|49809|39206|38653|33605|33506",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 958119588,
+      "departureName": "Kyiv-Pasazhyrskyi",
+      "arrivalName": "Warszawa Zachodnia",
+      "stationCount": 16,
+      "estimatedDurationMinutes": 860
+    },
+    {
+      "routeCode": "PLK-80416-38653-5E5E4066",
+      "routeFingerprint": "PLK:80416|33506|33605|38653",
+      "serviceRecordCount": 4,
+      "representativeOrderId": 208451516,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 4,
+      "estimatedDurationMinutes": 192
+    },
+    {
+      "routeCode": "PLK-18408-82669-5EA13463",
+      "routeFingerprint": "PLK:18408|18374|16717|19844|19703|21501|21600|32201|32904|34603|33506|33605|38653|39206|49809|50021|50104|262848|50500|51508|65243|65003|65029|65094|65144|83246|83220|83022|82669",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 227003713,
+      "departureName": "Bydgoszcz Główna",
+      "arrivalName": "Rzeszów Główny",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 484
+    },
+    {
+      "routeCode": "PLK-129059-38653-5EF82448",
+      "routeFingerprint": "PLK:129059|129083|128006|128071|128166|127651|127419|127265|127436|127420|179223|67900|68403|68205|73700|73312|74658|74583|75309|64899|48959|34165|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 843703207,
+      "departureName": "Praha Hlavni Nadrazi",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 555
+    },
+    {
+      "routeCode": "PLK-1008-38653-5F93E754",
+      "routeFingerprint": "PLK:1008|1024|1404|273|1107|2204|29108|30601|33506|33605|38653",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 248102993,
+      "departureName": "Świnoujście",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 11,
+      "estimatedDurationMinutes": 354
+    },
+    {
+      "routeCode": "PLK-155861-38653-6110775B",
+      "routeFingerprint": "PLK:155861|157114|243509|127178|127295|127718|127662|127482|127265|127436|127420|179223|67900|68700|68205|73700|73312|74658|74583|75309|64899|48959|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 304495604,
+      "departureName": "Wien Westbahnhof",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 529
+    },
+    {
+      "routeCode": "PLK-84400-124879-61866B74",
+      "routeFingerprint": "PLK:84400|125266|124879",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 102051548,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Kyiv-Pasazhyrskyi",
+      "stationCount": 3,
+      "estimatedDurationMinutes": 632
+    },
+    {
+      "routeCode": "PLK-80416-9209-6202C75E",
+      "routeFingerprint": "PLK:80416|79467|64303|64451|63552|48009|48355|48504|33902|33563|33506|33605|38653|36509|36459|36939|37226|22442|22202|9456|9233|9209",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 192662979,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Olsztyn Główny",
+      "stationCount": 22,
+      "estimatedDurationMinutes": 406
+    },
+    {
+      "routeCode": "PLK-80416-4101-621A2FDB",
+      "routeFingerprint": "PLK:80416|79467|64303|64451|63552|48009|48355|48504|33902|33563|33506|33605|38653|36509|36459|36939|37226|22442|21808|22905|7872|7112|7500|7534|7583|5942|5900|6098|6304|5256|4705|5108|4408|4135|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 852379194,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 35,
+      "estimatedDurationMinutes": 799
+    },
+    {
+      "routeCode": "PLK-30601-13904-627C405F",
+      "routeFingerprint": "PLK:30601|29108|29215|14308|260653|13904",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 269235072,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Gorzów Wielkopolski",
+      "stationCount": 6,
+      "estimatedDurationMinutes": 93
+    },
+    {
+      "routeCode": "PLK-60103-84400-62891277",
+      "routeFingerprint": "PLK:60103|60608|67009|69708|69823|73312|80416|79905|79657|80630|81208|82669|83022|83105|83261|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 254033801,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 328
+    },
+    {
+      "routeCode": "PLK-38653-60103-6361D8DB",
+      "routeFingerprint": "PLK:38653|33605|33506|32201|33100|30601|42606|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 911953648,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 236
+    },
+    {
+      "routeCode": "PLK-5900-69708-637CEF1E",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|7872|21808|38653|33605|33506|75309|74658|73312|69823|69708",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 686037919,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Gliwice",
+      "stationCount": 16,
+      "estimatedDurationMinutes": 365
+    },
+    {
+      "routeCode": "PLK-84400-273-63846F93",
+      "routeFingerprint": "PLK:84400|84434|83261|83105|83022|82669|81208|80630|79657|79905|80416|73312|69823|69708|67009|60608|60103|53009|53280|42200|42002|27805|25809|13003|13417|13334|851|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 451970418,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 28,
+      "estimatedDurationMinutes": 631
+    },
+    {
+      "routeCode": "PLK-80416-129059-648A6B02",
+      "routeFingerprint": "PLK:80416|77701|77503|77834|77107|76000|75507|179223|127420|127436|127265|127419|127651|128166|128071|128006|129083|129059",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 183363549,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Praha Hlavni Nadrazi",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 376
+    },
+    {
+      "routeCode": "PLK-33506-124879-66140E0E",
+      "routeFingerprint": "PLK:33506|33605|38653|39206|49809|50021|50104|262848|50500|50484|50807|50948|50906|51102|125159|124879",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 140358244,
+      "departureName": "Warszawa Zachodnia",
+      "arrivalName": "Kyiv-Pasazhyrskyi",
+      "stationCount": 16,
+      "estimatedDurationMinutes": 968
+    },
+    {
+      "routeCode": "PLK-82669-5900-6633F3F2",
+      "routeFingerprint": "PLK:82669|81208|80630|79657|79905|80416|33506|33605|38653|21808|7872|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 258946073,
+      "departureName": "Rzeszów Główny",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 441
+    },
+    {
+      "routeCode": "PLK-46458-4101-66AFE3D9",
+      "routeFingerprint": "PLK:46458|46409|47258|47001|34207|33506|33605|38653|36509|36459|36939|37226|22442|21808|22905|7872|7112|7500|7534|7583|5942|5900|6098|6304|5256|4705|5108|4408|4135|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 553234200,
+      "departureName": "Łódź Fabryczna",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 30,
+      "estimatedDurationMinutes": 513
+    },
+    {
+      "routeCode": "PLK-69708-24000-67E1B753",
+      "routeFingerprint": "PLK:69708|69823|73312|74658|74633|74583|75309|75424|62653|33506|33605|38653|36343|37507|37911|38307|24737|24638|24539|279919|24000",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 859246990,
+      "departureName": "Gliwice",
+      "arrivalName": "Białystok",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 354
+    },
+    {
+      "routeCode": "PLK-63552-73312-687CCCC8",
+      "routeFingerprint": "PLK:63552|64808|75309|265126|71001|72306|72272|73312",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 332732626,
+      "departureName": "Kielce Główne",
+      "arrivalName": "Katowice",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 141
+    },
+    {
+      "routeCode": "PLK-27805-50500-68F15D87",
+      "routeFingerprint": "PLK:27805|27300|26161|26104|26146|26211|27201|30601|28472|30007|30122|33100|33191|32201|32904|34603|33506|33605|38653|39206|49809|50021|50104|262848|50500",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 820582449,
+      "departureName": "Zielona Góra Główna",
+      "arrivalName": "Lublin Główny",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 425
+    },
+    {
+      "routeCode": "PLK-60103-84400-68F93514",
+      "routeFingerprint": "PLK:60103|58271|62109|60608|67009|69708|72306|73502|73908|77503|77701|80416|79905|79657|79806|80630|81208|81232|81265|82669|83022|83105|83261|84301|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 217617719,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 26,
+      "estimatedDurationMinutes": 351
+    },
+    {
+      "routeCode": "PLK-50500-18408-692C74A4",
+      "routeFingerprint": "PLK:50500|262848|50104|50021|49809|39206|38653|33605|33506|34603|32904|32433|32201|21600|21501|19703|19844|16717|18374|18408",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 934524657,
+      "departureName": "Lublin Główny",
+      "arrivalName": "Bydgoszcz Główna",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 310
+    },
+    {
+      "routeCode": "PLK-50906-124879-6A0CB7F4",
+      "routeFingerprint": "PLK:50906|125159|124879",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 650729914,
+      "departureName": "Chełm",
+      "arrivalName": "Kyiv-Pasazhyrskyi",
+      "stationCount": 3,
+      "estimatedDurationMinutes": 649
+    },
+    {
+      "routeCode": "PLK-76109-80416-6B917390",
+      "routeFingerprint": "PLK:76109|76000|77107|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 316510203,
+      "departureName": "Bielsko-Biała Główna",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 4,
+      "estimatedDurationMinutes": 87
+    },
+    {
+      "routeCode": "PLK-273-80416-6D209905",
+      "routeFingerprint": "PLK:273|1107|2204|29405|29181|29108|28969|28803|30601|28472|30007|30122|33100|33191|32201|32524|32540|46805|46789|46706|46565|46409|47605|48959|64899|80416",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 565792555,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 26,
+      "estimatedDurationMinutes": 512
+    },
+    {
+      "routeCode": "PLK-38653-76604-6DBA7151",
+      "routeFingerprint": "PLK:38653|33605|33506|62653|75424|75309|74500|73403|73700|75903|76000|76109|76604",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 167755329,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Żywiec",
+      "stationCount": 13,
+      "estimatedDurationMinutes": 329
+    },
+    {
+      "routeCode": "PLK-55806-60103-6E38E06F",
+      "routeFingerprint": "PLK:55806|55632|55103|54551|54528|54403|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 144447635,
+      "departureName": "Jelenia Góra",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 7,
+      "estimatedDurationMinutes": 106
+    },
+    {
+      "routeCode": "PLK-155861-30601-6E597043",
+      "routeFingerprint": "PLK:155861|157114|243509|127178|127295|127718|127662|127482|127265|127436|127420|179223|67900|68700|67009|60608|60103|42606|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 578495666,
+      "departureName": "Wien Westbahnhof",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 430
+    },
+    {
+      "routeCode": "PLK-76109-4952-6E969190",
+      "routeFingerprint": "PLK:76109|76000|75903|73700|73312|74658|75309|33506|33605|38653|21808|7872|7112|7500|7534|7583|5942|5900|5256|4705|4952",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 843153374,
+      "departureName": "Bielsko-Biała Główna",
+      "arrivalName": "Ustka",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 513
+    },
+    {
+      "routeCode": "PLK-4101-38653-6FA0C253",
+      "routeFingerprint": "PLK:4101|3905|3004|16402|14407|14514|18200|18408|18374|16717|19844|19703|21501|21600|32201|32904|34603|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 967510264,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 392
+    },
+    {
+      "routeCode": "PLK-1008-80416-70CB401F",
+      "routeFingerprint": "PLK:1008|1024|1560|1404|1107|273|851|13334|13417|13003|25809|27805|42002|42200|60400|60335|60269|60103|60608|67009|69708|69823|73312|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 816610786,
+      "departureName": "Świnoujście",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 552
+    },
+    {
+      "routeCode": "PLK-5355-5256-70D5FB51",
+      "routeFingerprint": "PLK:5355|5256",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 519748508,
+      "departureName": "Łeba",
+      "arrivalName": "Lębork",
+      "stationCount": 2,
+      "estimatedDurationMinutes": 45
+    },
+    {
+      "routeCode": "PLK-4101-80416-7109E70B",
+      "routeFingerprint": "PLK:4101|3905|3004|16402|14407|16188|16139|29645|30601|30205|44701|44842|45906|45476|45401|61341|61200|71555|71407|62802|75424|75309|74500|73908|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 528086326,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 27,
+      "estimatedDurationMinutes": 559
+    },
+    {
+      "routeCode": "PLK-5900-79020-714CA4BF",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|7872|22905|21808|22442|37226|36939|36459|36509|38653|33605|33506|62802|75424|75309|74500|73908|77503|77701|80416|78345|258708|78535|265251|78907|78980|79020",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 296075990,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Zakopane",
+      "stationCount": 32,
+      "estimatedDurationMinutes": 652
+    },
+    {
+      "routeCode": "PLK-55806-5900-715062D4",
+      "routeFingerprint": "PLK:55806|55632|55103|54551|54528|54403|60103|58784|44420|44305|42606|43406|30601|30809|32003|18705|18408|17202|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 252022411,
+      "departureName": "Jelenia Góra",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 422
+    },
+    {
+      "routeCode": "PLK-69708-24000-722B1F6C",
+      "routeFingerprint": "PLK:69708|69823|73106|73312|74658|74633|74583|75309|75424|62653|33506|33605|38653|36343|37507|37911|38307|24737|24638|24539|279919|24000",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 543479546,
+      "departureName": "Gliwice",
+      "arrivalName": "Białystok",
+      "stationCount": 22,
+      "estimatedDurationMinutes": 362
+    },
+    {
+      "routeCode": "PLK-30601-50906-726777A5",
+      "routeFingerprint": "PLK:30601|28472|30007|30122|33100|33191|32201|32904|34603|33506|33605|38653|39206|49809|50021|50104|262848|50500|50484|50807|50948|50906",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 129774710,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Chełm",
+      "stationCount": 22,
+      "estimatedDurationMinutes": 353
+    },
+    {
+      "routeCode": "PLK-129059-5900-73A199D2",
+      "routeFingerprint": "PLK:129059|129083|128006|128071|128154|127986|128002|179228|57208|57414|57463|56408|59808|60103|58784|44420|44305|42606|43406|30601|30809|32003|18705|18408|18374|16717|19844|19703|19794|19901|20719|20743|20909|21808|22905|7872|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 662984971,
+      "departureName": "Praha Hlavni Nadrazi",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 42,
+      "estimatedDurationMinutes": 681
+    },
+    {
+      "routeCode": "PLK-44701-13904-7538579C",
+      "routeFingerprint": "PLK:44701|30205|30601|29108|29215|14308|260653|13904",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 238085960,
+      "departureName": "Jarocin",
+      "arrivalName": "Gorzów Wielkopolski",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 138
+    },
+    {
+      "routeCode": "PLK-18408-79020-75B9AB1D",
+      "routeFingerprint": "PLK:18408|18374|16717|19844|19703|21501|21600|32201|32524|32540|46805|46789|46706|46565|46409|47605|48959|64899|80416|78345|258708|78535|265251|78907|78980|79020",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 561817518,
+      "departureName": "Bydgoszcz Główna",
+      "arrivalName": "Zakopane",
+      "stationCount": 26,
+      "estimatedDurationMinutes": 538
+    },
+    {
+      "routeCode": "PLK-38653-46458-75BA4042",
+      "routeFingerprint": "PLK:38653|33605|33506|46409|46458",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 566054849,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Łódź Fabryczna",
+      "stationCount": 5,
+      "estimatedDurationMinutes": 76
+    },
+    {
+      "routeCode": "PLK-273-179200-769D8422",
+      "routeFingerprint": "PLK:273|1107|2204|29405|29181|29108|28969|28803|30601|28472|30007|30122|33100|33191|32201|32904|34603|33506|33605|38653|279919|24000|24802|24893|12963|12807|12872|179200",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 111924380,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Mockava",
+      "stationCount": 28,
+      "estimatedDurationMinutes": 687
+    },
+    {
+      "routeCode": "PLK-60103-50500-76D96A7C",
+      "routeFingerprint": "PLK:60103|58271|62109|60608|71407|62802|63073|64808|63552|48009|48355|48736|50021|50104|262848|50500",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 488755250,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Lublin Główny",
+      "stationCount": 16,
+      "estimatedDurationMinutes": 347
+    },
+    {
+      "routeCode": "PLK-80416-1008-77D394EC",
+      "routeFingerprint": "PLK:80416|73312|69823|69708|67009|60608|60103|60269|60335|60400|42200|42002|27805|25809|13003|13417|13334|851|273|1107|1404|1560|1024|1008",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 296814779,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Świnoujście",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 542
+    },
+    {
+      "routeCode": "PLK-124879-50906-7816C216",
+      "routeFingerprint": "PLK:124879|125070|125048|125159|50906",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 256295709,
+      "departureName": "Kyiv-Pasazhyrskyi",
+      "arrivalName": "Chełm",
+      "stationCount": 5,
+      "estimatedDurationMinutes": 620
+    },
+    {
+      "routeCode": "PLK-38653-40998-78355EE3",
+      "routeFingerprint": "PLK:38653|39008|39875|39404|39909|40832|40808|40949|251575|40998",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 977342990,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Terespol",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 114
+    },
+    {
+      "routeCode": "PLK-60103-24000-794299A1",
+      "routeFingerprint": "PLK:60103|58651|58784|44420|44305|42606|43406|30601|30809|32003|18705|19703|19794|19901|20719|20743|20909|21808|22004|9233|9209|10009|10405|12609|11809|12252|24158|24133|279919|24000",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 401368444,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Białystok",
+      "stationCount": 30,
+      "estimatedDurationMinutes": 490
+    },
+    {
+      "routeCode": "PLK-24000-60103-7969E59B",
+      "routeFingerprint": "PLK:24000|279919|24539|24638|24737|38307|37911|37507|36343|38653|33605|33506|34207|47001|47258|46409|46565|46581|46649|19430|19489|45245|45906|44008|59543|59576|59105|58651|60103",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 133141257,
+      "departureName": "Białystok",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 402
+    },
+    {
+      "routeCode": "PLK-80416-46458-79AFFDD7",
+      "routeFingerprint": "PLK:80416|77701|77503|73908|74500|75309|75424|62653|47886|47704|46409|46458",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 327344066,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Łódź Fabryczna",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 197
+    },
+    {
+      "routeCode": "PLK-24000-9209-7A0B56C8",
+      "routeFingerprint": "PLK:24000|279919|24539|23804|23465|23309|23416|23432|10603|9209",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 550152005,
+      "departureName": "Białystok",
+      "arrivalName": "Olsztyn Główny",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 253
+    },
+    {
+      "routeCode": "PLK-56184-38653-7AA92FCD",
+      "routeFingerprint": "PLK:56184|56176|56168|56143|56093|55806|55632|55103|54551|54528|54403|60103|58271|62109|60608|71407|62802|62653|47886|47704|47258|47001|34207|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 357085163,
+      "departureName": "Szklarska Poręba Górna",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 26,
+      "estimatedDurationMinutes": 452
+    },
+    {
+      "routeCode": "PLK-60103-55806-7D301A1E",
+      "routeFingerprint": "PLK:60103|54403|54528|54551|55103|55632|55806",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 985257563,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Jelenia Góra",
+      "stationCount": 7,
+      "estimatedDurationMinutes": 118
+    },
+    {
+      "routeCode": "PLK-273-24000-7F291CBB",
+      "routeFingerprint": "PLK:273|1107|2204|3517|3467|3509|3632|3905|4408|5108|4705|5256|6304|6098|5900|5942|7583|7534|7500|7112|7872|8151|10934|10900|9233|9209|10009|10405|12609|11809|12252|24158|24133|279919|24000",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 354759737,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Białystok",
+      "stationCount": 35,
+      "estimatedDurationMinutes": 674
+    },
+    {
+      "routeCode": "PLK-4101-80416-7F37F507",
+      "routeFingerprint": "PLK:4101|4135|4408|5108|4705|5256|6304|6098|5900|5942|7583|7534|7500|7112|7872|22905|21808|22442|37226|36939|36459|36509|38653|33605|33506|48959|64899|75309|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 478400183,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 620
+    },
+    {
+      "routeCode": "PLK-4101-60103-7F3CEFD4",
+      "routeFingerprint": "PLK:4101|3905|3004|16402|14407|16188|16139|29645|30601|43406|42606|44305|44420|58784|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 263270955,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 15,
+      "estimatedDurationMinutes": 291
+    },
+    {
+      "routeCode": "PLK-1008-84400-80C701AC",
+      "routeFingerprint": "PLK:1008|1024|1560|1404|1107|273|851|13334|13417|13003|25809|27805|42002|42200|60400|60335|60269|60103|60608|67009|69708|69823|73312|80416|79905|79657|80630|81208|82669|83022|83105|83261|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 126819551,
+      "departureName": "Świnoujście",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 34,
+      "estimatedDurationMinutes": 709
+    },
+    {
+      "routeCode": "PLK-46458-24000-816A8779",
+      "routeFingerprint": "PLK:46458|46409|47258|47001|34207|33506|33605|38653|36343|37507|37911|38307|24737|24638|24539|279919|24000",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 371422903,
+      "departureName": "Łódź Fabryczna",
+      "arrivalName": "Białystok",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 211
+    },
+    {
+      "routeCode": "PLK-33506-82669-82630317",
+      "routeFingerprint": "PLK:33506|33605|38653|39206|49809|50021|50104|262848|50500|51508|65243|65003|65029|65094|65144|83246|83220|83022|82669",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 578394127,
+      "departureName": "Warszawa Zachodnia",
+      "arrivalName": "Rzeszów Główny",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 310
+    },
+    {
+      "routeCode": "PLK-55806-38653-82A01FC1",
+      "routeFingerprint": "PLK:55806|55632|55103|54551|54528|54403|60103|58271|62109|60608|71407|62802|62653|47886|47704|47258|47001|34207|33506|33605|38653",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 744221158,
+      "departureName": "Jelenia Góra",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 398
+    },
+    {
+      "routeCode": "PLK-30601-84400-82C5E2FE",
+      "routeFingerprint": "PLK:30601|43406|42606|44305|44420|58784|60103|58271|62109|60608|61705|69708|69823|73312|73502|73908|77503|77701|80416|79905|79657|79806|80630|81208|81232|81265|82669|83022|83105|83261|84301|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 252878398,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 33,
+      "estimatedDurationMinutes": 463
+    },
+    {
+      "routeCode": "PLK-4952-84400-8336F829",
+      "routeFingerprint": "PLK:4952|4705|5108|4408|3905|3004|16402|14407|16188|16139|29645|30601|43406|42606|44305|44420|58784|60103|58271|62109|60608|61705|69708|72306|73502|73908|77503|77701|80416|79905|79657|79806|80630|81208|81232|81265|82669|83022|83105|83261|84301|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 682297662,
+      "departureName": "Ustka",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 43,
+      "estimatedDurationMinutes": 731
+    },
+    {
+      "routeCode": "PLK-82669-18408-8457FB74",
+      "routeFingerprint": "PLK:82669|83022|83220|83246|65144|65094|65029|65003|65243|51508|50500|262848|50104|50021|49809|39206|38653|33605|33506|34603|32904|32201|21600|21501|19703|19844|16717|18374|18408",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 174886747,
+      "departureName": "Rzeszów Główny",
+      "arrivalName": "Bydgoszcz Główna",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 498
+    },
+    {
+      "routeCode": "PLK-38653-155861-84D2B09B",
+      "routeFingerprint": "PLK:38653|33605|33506|48959|64899|75309|74500|73502|73312|68205|68700|67900|179223|127420|127436|127265|127482|127662|127718|127295|127178|243509|157114|155861",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 608761516,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Wien Westbahnhof",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 541
+    },
+    {
+      "routeCode": "PLK-56184-38653-86AD778C",
+      "routeFingerprint": "PLK:56184|56176|56168|56143|56093|55806|55632|55103|54551|54528|54403|60103|59105|59576|59675|44008|45906|45245|19489|19430|46649|46581|46706|46565|46409|47605|48959|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 813995367,
+      "departureName": "Szklarska Poręba Górna",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 30,
+      "estimatedDurationMinutes": 588
+    },
+    {
+      "routeCode": "PLK-80416-82487-86C66EDF",
+      "routeFingerprint": "PLK:80416|79905|79657|79806|80630|80986|81067|81125|81604|81679|81901|82032|82073|82099|82586|82578|82552|82404|82446|82487",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 354984839,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Krynica-Zdrój",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 263
+    },
+    {
+      "routeCode": "PLK-248058-5900-8731A4C4",
+      "routeFingerprint": "PLK:248058|179212|25809|28100|26104|30601|30809|18705|18408|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 423648087,
+      "departureName": "Berlin Gesundbrunnen",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 15,
+      "estimatedDurationMinutes": 361
+    },
+    {
+      "routeCode": "PLK-40998-33506-87767E85",
+      "routeFingerprint": "PLK:40998|251575|40949|40808|40832|39909|39404|39875|39008|38653|33605|33506",
+      "serviceRecordCount": 5,
+      "representativeOrderId": 181952356,
+      "departureName": "Terespol",
+      "arrivalName": "Warszawa Zachodnia",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 133
+    },
+    {
+      "routeCode": "PLK-38653-79020-88DAC983",
+      "routeFingerprint": "PLK:38653|33605|33506|80416|78907|79020",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 677419027,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Zakopane",
+      "stationCount": 6,
+      "estimatedDurationMinutes": 310
+    },
+    {
+      "routeCode": "PLK-38653-46458-894C1725",
+      "routeFingerprint": "PLK:38653|33605|33506|47001|46409|46458",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 132286328,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Łódź Fabryczna",
+      "stationCount": 6,
+      "estimatedDurationMinutes": 77
+    },
+    {
+      "routeCode": "PLK-80416-5900-89923FF9",
+      "routeFingerprint": "PLK:80416|33506|33605|38653|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 513506223,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 9,
+      "estimatedDurationMinutes": 352
+    },
+    {
+      "routeCode": "PLK-24000-273-8A0C33F0",
+      "routeFingerprint": "PLK:24000|279919|24133|24158|12252|11809|12609|10405|10009|9209|9233|10900|10934|8151|7872|7112|7500|7534|7583|5942|5900|6098|6304|5256|4705|5108|4408|3905|3632|3509|3467|3517|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 226623658,
+      "departureName": "Białystok",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 35,
+      "estimatedDurationMinutes": 683
+    },
+    {
+      "routeCode": "PLK-5900-6791-8B44959E",
+      "routeFingerprint": "PLK:5900|6700|6742|6734|6767|6775|6759|6791",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 364598837,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Hel",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 79
+    },
+    {
+      "routeCode": "PLK-13904-44701-8B6432F2",
+      "routeFingerprint": "PLK:13904|260653|14308|29215|29108|30601|30205|44701",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 192426195,
+      "departureName": "Gorzów Wielkopolski",
+      "arrivalName": "Jarocin",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 142
+    },
+    {
+      "routeCode": "PLK-5900-24000-8BA84ACF",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|7872|8151|10934|10900|9233|9209|10009|10405|12609|11809|12252|24158|24133|279919|24000",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 234085288,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Białystok",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 338
+    },
+    {
+      "routeCode": "PLK-33506-6791-8D4A8264",
+      "routeFingerprint": "PLK:33506|33605|38653|21808|7872|7112|7500|7534|7583|5942|5900|6700|6742|6734|6767|6775|6759|6791",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 851035363,
+      "departureName": "Warszawa Zachodnia",
+      "arrivalName": "Hel",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 325
+    },
+    {
+      "routeCode": "PLK-30601-24000-8D702664",
+      "routeFingerprint": "PLK:30601|30809|32003|18705|19703|19794|19901|20719|20743|20909|21808|22004|9233|9209|10009|10405|12609|11809|12252|24158|24133|279919|24000",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 977785633,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Białystok",
+      "stationCount": 23,
+      "estimatedDurationMinutes": 389
+    },
+    {
+      "routeCode": "PLK-129059-84400-8F1ADCCC",
+      "routeFingerprint": "PLK:129059|129083|128006|128071|128166|127651|127419|127265|127436|127420|179223|75507|76000|77107|77834|77503|77701|80416|79905|79657|80630|81208|82669|83022|83105|83261|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 409469970,
+      "departureName": "Praha Hlavni Nadrazi",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 28,
+      "estimatedDurationMinutes": 560
+    },
+    {
+      "routeCode": "PLK-50500-80416-8F4ED45C",
+      "routeFingerprint": "PLK:50500|262848|50104|50021|48736|48355|48009|63552|64451|64303|79467|80416",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 142428931,
+      "departureName": "Lublin Główny",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 301
+    },
+    {
+      "routeCode": "PLK-76109-6791-8F69BC06",
+      "routeFingerprint": "PLK:76109|76000|69203|68205|68882|67009|67066|61903|60608|62109|58271|60103|58784|44420|44305|42606|43406|30601|30809|32003|18705|18408|17202|7112|7500|7534|7583|5942|5900|6700|6742|6734|6767|6775|6759|6791",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 800707262,
+      "departureName": "Bielsko-Biała Główna",
+      "arrivalName": "Hel",
+      "stationCount": 36,
+      "estimatedDurationMinutes": 605
+    },
+    {
+      "routeCode": "PLK-5900-76109-8F8B7688",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|17202|18408|18705|32003|30809|30601|43406|42606|44305|44420|58784|60103|58271|62109|60608|61903|67066|67009|68882|68205|69203|76000|76109",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 172411939,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Bielsko-Biała Główna",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 523
+    },
+    {
+      "routeCode": "PLK-80416-4101-8FF4FB49",
+      "routeFingerprint": "PLK:80416|77701|77503|73908|74500|75309|75424|62802|19406|46649|46581|46706|46789|46805|32540|32524|32201|21600|21501|19703|19844|16717|18374|18408|18200|14514|14407|16402|3004|3905|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 462471920,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 31,
+      "estimatedDurationMinutes": 617
+    },
+    {
+      "routeCode": "PLK-80416-84400-9227BE38",
+      "routeFingerprint": "PLK:80416|79905|79657|80630|81208|82669|83022|83105|83261|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 272022829,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 11,
+      "estimatedDurationMinutes": 150
+    },
+    {
+      "routeCode": "PLK-80416-4101-925F8EEA",
+      "routeFingerprint": "PLK:80416|33506|33605|38653|7500|7534|7583|5942|5900|5256|4705|4408|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 148913133,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 13,
+      "estimatedDurationMinutes": 504
+    },
+    {
+      "routeCode": "PLK-155861-80416-928429C3",
+      "routeFingerprint": "PLK:155861|157114|243509|127178|127295|127718|127662|127482|127265|127436|127420|179223|75507|76000|77107|77834|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 679507849,
+      "departureName": "Wien Westbahnhof",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 384
+    },
+    {
+      "routeCode": "PLK-4101-79020-92D83E76",
+      "routeFingerprint": "PLK:4101|4408|4705|5256|5900|5942|7583|7534|7500|7112|7872|21808|38653|33605|33506|80416|78907|79020",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 974097259,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Zakopane",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 644
+    },
+    {
+      "routeCode": "PLK-5900-129059-93F02843",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|18408|18705|30809|30601|42606|60103|59808|56408|57463|57414|57208|179228|128002|127986|128154|128071|128006|129083|129059",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 216248613,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Praha Hlavni Nadrazi",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 549
+    },
+    {
+      "routeCode": "PLK-80416-179200-94DBBE5F",
+      "routeFingerprint": "PLK:80416|64899|48959|33506|33605|38653|279919|24000|24802|24893|12963|12807|12872|179200",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 595741612,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Mockava",
+      "stationCount": 14,
+      "estimatedDurationMinutes": 537
+    },
+    {
+      "routeCode": "PLK-60103-4101-9635654F",
+      "routeFingerprint": "PLK:60103|58784|44420|44305|42606|43406|30601|29645|16139|16188|14407|16402|3004|3905|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 159961269,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 15,
+      "estimatedDurationMinutes": 297
+    },
+    {
+      "routeCode": "PLK-4101-273-96FA890A",
+      "routeFingerprint": "PLK:4101|2147|2170|1958|1859|1404|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 207557314,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 141
+    },
+    {
+      "routeCode": "PLK-157172-80416-98736666",
+      "routeFingerprint": "PLK:157172|157163|157114|243509|127178|127295|127718|127662|127482|127265|127436|127420|179223|75507|76000|77107|77834|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 638198521,
+      "departureName": "Graz Hauptbahnhof",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 475
+    },
+    {
+      "routeCode": "PLK-84400-38653-989682F9",
+      "routeFingerprint": "PLK:84400|84434|84301|83261|83105|83220|83246|65144|65094|65029|65003|65300|49205|48181|48355|48504|33902|33563|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 501731135,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 359
+    },
+    {
+      "routeCode": "PLK-84400-248058-98C8E657",
+      "routeFingerprint": "PLK:84400|83261|83105|83022|82669|81208|80630|79806|79657|79905|80416|77701|77503|73908|73312|69823|69708|67009|60608|62109|60103|58784|44420|44305|42606|43406|30601|27201|26211|26146|26104|28100|25809|179212|248058",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 119151349,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Berlin Gesundbrunnen",
+      "stationCount": 35,
+      "estimatedDurationMinutes": 703
+    },
+    {
+      "routeCode": "PLK-50906-27805-997B1411",
+      "routeFingerprint": "PLK:50906|50948|50807|50484|50500|262848|50104|50021|49809|39206|38653|33605|33506|34603|32904|32201|19174|19190|18838|32003|30809|30601|27201|26211|26146|26104|26161|27300|27805",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 715484053,
+      "departureName": "Chełm",
+      "arrivalName": "Zielona Góra Główna",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 482
+    },
+    {
+      "routeCode": "PLK-38653-60103-9A923DAC",
+      "routeFingerprint": "PLK:38653|33605|33506|34207|47001|47258|46409|46565|46581|46649|19430|19489|45245|45906|44008|59675|59543|59576|59105|58651|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 369769233,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 296
+    },
+    {
+      "routeCode": "PLK-14407-82669-9B19C181",
+      "routeFingerprint": "PLK:14407|14514|18200|18408|18374|16717|19844|19703|21501|21600|32201|32904|34603|33506|33605|38653|39206|49809|50021|50104|262848|50500|51508|65243|65003|65029|65094|65144|83246|83220|83022|82669",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 292370383,
+      "departureName": "Piła Główna",
+      "arrivalName": "Rzeszów Główny",
+      "stationCount": 32,
+      "estimatedDurationMinutes": 555
+    },
+    {
+      "routeCode": "PLK-80416-4101-9B917ED5",
+      "routeFingerprint": "PLK:80416|77701|77503|73908|73502|73312|69823|69708|61705|60608|62109|58271|60103|58784|44420|44305|42606|43406|30601|29645|16139|16188|14407|16402|3004|3905|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 685427524,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 27,
+      "estimatedDurationMinutes": 495
+    },
+    {
+      "routeCode": "PLK-33605-69708-9C7F45FF",
+      "routeFingerprint": "PLK:33605|33506|62653|75424|75309|74500|73502|73312|69823|69708",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 345858689,
+      "departureName": "Warszawa Centralna",
+      "arrivalName": "Gliwice",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 269
+    },
+    {
+      "routeCode": "PLK-5900-129059-9D8AB9A8",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|7872|22905|21808|20909|20743|20719|19901|19794|19703|19844|16717|18374|18408|18705|32003|30809|30601|43406|42606|44305|44420|58784|60103|59808|56408|57463|57414|57208|179228|128002|127986|128154|128071|128006|129083|129059",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 317974982,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Praha Hlavni Nadrazi",
+      "stationCount": 42,
+      "estimatedDurationMinutes": 682
+    },
+    {
+      "routeCode": "PLK-80416-155861-9DB45ECC",
+      "routeFingerprint": "PLK:80416|77701|77503|77834|77107|76000|75507|179223|127420|127436|127265|127482|127662|127718|127295|127178|243509|157114|155861",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 446451330,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Wien Westbahnhof",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 373
+    },
+    {
+      "routeCode": "PLK-66134-80416-9E67C25B",
+      "routeFingerprint": "PLK:66134|66142|258468|258467|65904|66050|280397|66589|66449|66407|65003|65029|65094|65144|83246|83220|82669|81208|80630|79905|80416",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 364377249,
+      "departureName": "Hrubieszów Miasto",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 367
+    },
+    {
+      "routeCode": "PLK-125711-50906-9EB383D3",
+      "routeFingerprint": "PLK:125711|125787|125780|124879|125182|125200|125159|50906",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 319358411,
+      "departureName": "Kharkiv-Pasazhyrskyi",
+      "arrivalName": "Chełm",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 1072
+    },
+    {
+      "routeCode": "PLK-73312-5900-9F778AAE",
+      "routeFingerprint": "PLK:73312|72272|72306|71001|62802|62653|19406|46649|46581|46706|46789|46805|32540|32524|32201|32359|32607|32706|20024|19901|20164|20503|23101|8086|7872|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 339434046,
+      "departureName": "Katowice",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 31,
+      "estimatedDurationMinutes": 657
+    },
+    {
+      "routeCode": "PLK-69708-5900-9F8A2537",
+      "routeFingerprint": "PLK:69708|69823|73312|74658|75309|33506|33605|38653|21808|7872|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 364923975,
+      "departureName": "Gliwice",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 16,
+      "estimatedDurationMinutes": 357
+    },
+    {
+      "routeCode": "PLK-130357-38653-9FDB3BA7",
+      "routeFingerprint": "PLK:130357|130393|130396|130399|131023|131012|130985|130963|127178|127295|127718|127662|127482|127265|127436|127420|179223|67900|68403|68205|73312|74500|75309|64899|48959|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 442950911,
+      "departureName": "Budapest-Nyugati",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 28,
+      "estimatedDurationMinutes": 703
+    },
+    {
+      "routeCode": "PLK-5256-5355-9FE9E84C",
+      "routeFingerprint": "PLK:5256|5355",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 407549088,
+      "departureName": "Lębork",
+      "arrivalName": "Łeba",
+      "stationCount": 2,
+      "estimatedDurationMinutes": 45
+    },
+    {
+      "routeCode": "PLK-81208-65003-A18A2007",
+      "routeFingerprint": "PLK:81208|81505|65466|65003",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 123014946,
+      "departureName": "Dębica",
+      "arrivalName": "Stalowa Wola Rozwadów",
+      "stationCount": 4,
+      "estimatedDurationMinutes": 125
+    },
+    {
+      "routeCode": "PLK-24000-69708-A25E5092",
+      "routeFingerprint": "PLK:24000|279919|24539|24638|24737|38307|37911|37507|36343|38653|33605|33506|62653|75424|75309|74583|74633|74658|73312|69823|69708",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 298435924,
+      "departureName": "Białystok",
+      "arrivalName": "Gliwice",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 350
+    },
+    {
+      "routeCode": "PLK-84400-124879-A2691BEA",
+      "routeFingerprint": "PLK:84400|125266|125208|124979|125013|125072|124879",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 430641704,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Kyiv-Pasazhyrskyi",
+      "stationCount": 7,
+      "estimatedDurationMinutes": 595
+    },
+    {
+      "routeCode": "PLK-46458-273-A2B3ECC5",
+      "routeFingerprint": "PLK:46458|46409|46565|46581|46649|19430|19489|45245|44842|44701|30205|30601|28803|28969|29108|29181|29405|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 286163412,
+      "departureName": "Łódź Fabryczna",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 324
+    },
+    {
+      "routeCode": "PLK-30601-5900-A306FE9E",
+      "routeFingerprint": "PLK:30601|30809|32003|18705|18408|17202|8474|8409|7112|7302|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 840289054,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 15,
+      "estimatedDurationMinutes": 202
+    },
+    {
+      "routeCode": "PLK-4952-76109-A49EF5EE",
+      "routeFingerprint": "PLK:4952|4705|5256|5900|5942|7583|7534|7500|7112|7872|21808|38653|33605|33506|75309|74658|73312|73700|75903|76000|76109",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 104063602,
+      "departureName": "Ustka",
+      "arrivalName": "Bielsko-Biała Główna",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 533
+    },
+    {
+      "routeCode": "PLK-46458-38653-A5882BAF",
+      "routeFingerprint": "PLK:46458|46409|47001|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 236869861,
+      "departureName": "Łódź Fabryczna",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 6,
+      "estimatedDurationMinutes": 79
+    },
+    {
+      "routeCode": "PLK-55806-80416-A59D4173",
+      "routeFingerprint": "PLK:55806|55632|55103|55145|57943|57307|57463|57307|56408|56713|56697|56606|56903|67462|67009|69708|69823|73106|73312|73502|73908|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 530206112,
+      "departureName": "Jelenia Góra",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 422
+    },
+    {
+      "routeCode": "PLK-5355-80416-A5B5C051",
+      "routeFingerprint": "PLK:5355|5256|6304|6098|5900|5942|7583|7534|7500|7112|7872|21808|19901|19703|21501|21600|32201|32524|32540|46805|46706|46581|46649|19406|62802|75424|75309|74500|73908|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 212694171,
+      "departureName": "Łeba",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 32,
+      "estimatedDurationMinutes": 676
+    },
+    {
+      "routeCode": "PLK-18408-50500-A5C64AD0",
+      "routeFingerprint": "PLK:18408|18374|16717|19844|19703|21501|21600|32201|32433|32904|34603|33506|33605|38653|39206|49809|50021|50104|262848|50500",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 352197914,
+      "departureName": "Bydgoszcz Główna",
+      "arrivalName": "Lublin Główny",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 302
+    },
+    {
+      "routeCode": "PLK-79020-1008-A6BDD4EC",
+      "routeFingerprint": "PLK:79020|78980|78907|265251|78535|258708|78345|80416|77701|77503|73908|74500|75309|75424|62802|19406|46649|46581|46706|46805|32540|32524|32201|33191|33100|30122|30007|28472|30601|28803|28969|29108|29181|29405|2204|1107|273|1107|1404|1560|1024|1008",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 131374068,
+      "departureName": "Zakopane",
+      "arrivalName": "Świnoujście",
+      "stationCount": 42,
+      "estimatedDurationMinutes": 805
+    },
+    {
+      "routeCode": "PLK-12807-1008-A6D3BB5D",
+      "routeFingerprint": "PLK:12807|12963|24893|24802|24000|279919|38653|33605|33506|34603|32904|32201|33191|33100|30122|30007|28472|30601|28803|28969|29108|29181|29405|2204|1107|273|1107|1404|1560|1024|1008",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 366682226,
+      "departureName": "Suwałki",
+      "arrivalName": "Świnoujście",
+      "stationCount": 31,
+      "estimatedDurationMinutes": 648
+    },
+    {
+      "routeCode": "PLK-5900-76109-A8660399",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|7872|21808|38653|33605|33506|75309|74658|73312|73700|75903|76000|76109",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 540737416,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Bielsko-Biała Główna",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 396
+    },
+    {
+      "routeCode": "PLK-80416-4952-A8847F9F",
+      "routeFingerprint": "PLK:80416|77701|77503|73908|73502|73312|69823|69708|61705|60608|62109|58271|60103|58651|58784|44420|44305|42606|43406|30601|29645|16139|16188|14407|16402|3004|3905|4408|5108|4705|4952",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 411544228,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Ustka",
+      "stationCount": 31,
+      "estimatedDurationMinutes": 556
+    },
+    {
+      "routeCode": "PLK-18408-38653-A8B30DE6",
+      "routeFingerprint": "PLK:18408|18374|16717|19703|21600|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 839350874,
+      "departureName": "Bydgoszcz Główna",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 178
+    },
+    {
+      "routeCode": "PLK-5900-79020-A9AAF94F",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|7872|22905|21808|22442|37226|36939|36459|36509|38653|33605|33506|63552|64451|64303|79467|80416|78535|265251|78907|78980|79020",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 464246754,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Zakopane",
+      "stationCount": 27,
+      "estimatedDurationMinutes": 669
+    },
+    {
+      "routeCode": "PLK-80416-38653-AA1E2027",
+      "routeFingerprint": "PLK:80416|79467|64337|64303|64451|63552|48009|48355|48504|33902|33563|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 230988102,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 14,
+      "estimatedDurationMinutes": 279
+    },
+    {
+      "routeCode": "PLK-4101-46458-AA21D68A",
+      "routeFingerprint": "PLK:4101|4135|4408|5108|4705|5256|6304|6098|5900|5942|7583|7534|7500|7112|7872|22905|21808|22442|37226|36939|36459|36509|38653|33605|33506|34207|47001|47258|46409|46458",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 860591137,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Łódź Fabryczna",
+      "stationCount": 30,
+      "estimatedDurationMinutes": 528
+    },
+    {
+      "routeCode": "PLK-129059-5900-AAD27E69",
+      "routeFingerprint": "PLK:129059|129083|128006|128071|128154|127986|128002|179228|57208|57414|57463|56408|59808|60103|42606|30601|30809|18705|18408|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 128512630,
+      "departureName": "Praha Hlavni Nadrazi",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 549
+    },
+    {
+      "routeCode": "PLK-129059-5900-ABCEB0BE",
+      "routeFingerprint": "PLK:129059|129083|128006|128071|128157|127986|128002|179228|57208|57414|57463|56408|59808|60103|42606|30601|30809|18705|18408|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 696028408,
+      "departureName": "Praha Hlavni Nadrazi",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 545
+    },
+    {
+      "routeCode": "PLK-138923-38653-AC0806EB",
+      "routeFingerprint": "PLK:138923|138931|138929|139128|139105|139103|139099|139006|138997|139048|139049|139064|157172|157133|155861|157114|243509|127178|127295|127718|127662|127482|127265|127436|127420|179223|67900|68403|68205|73700|73312|74658|74583|75309|64899|48959|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 150742181,
+      "departureName": "Rijeka",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 39,
+      "estimatedDurationMinutes": 1149
+    },
+    {
+      "routeCode": "PLK-273-79020-ACFD755C",
+      "routeFingerprint": "PLK:273|1107|2204|29405|29181|29108|28969|28803|30601|30205|44701|44842|45906|45476|45401|61341|61200|71555|71407|71001|72306|73502|73908|77503|77701|80416|78345|258708|78535|265251|78907|78980|79020",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 758723303,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Zakopane",
+      "stationCount": 33,
+      "estimatedDurationMinutes": 611
+    },
+    {
+      "routeCode": "PLK-46458-5900-ACFDB962",
+      "routeFingerprint": "PLK:46458|46409|46565|46706|46789|46805|32540|32524|32201|21600|21501|19703|19844|16717|18374|18408|17202|8474|7112|7302|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 360018078,
+      "departureName": "Łódź Fabryczna",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 329
+    },
+    {
+      "routeCode": "PLK-79020-18408-AD2879DF",
+      "routeFingerprint": "PLK:79020|78980|78907|265251|78535|258708|78345|80416|74500|75309|64899|48959|47605|46409|46565|46706|46789|46805|32540|32524|32201|21600|21501|19703|19844|16717|18374|18408",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 457711653,
+      "departureName": "Zakopane",
+      "arrivalName": "Bydgoszcz Główna",
+      "stationCount": 28,
+      "estimatedDurationMinutes": 526
+    },
+    {
+      "routeCode": "PLK-55806-80416-ADD0540B",
+      "routeFingerprint": "PLK:55806|55632|55103|54551|54528|54403|54817|54908|57703|56408|56713|56697|56606|56903|67462|67009|69708|69823|73312|73502|73908|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 175548317,
+      "departureName": "Jelenia Góra",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 420
+    },
+    {
+      "routeCode": "PLK-84400-30601-B0395436",
+      "routeFingerprint": "PLK:84400|84434|84301|83261|83105|83022|82669|81265|81232|81208|80630|79806|79657|79905|80416|77701|77503|73908|73502|73312|69823|69708|67009|60608|62109|58271|60103|58784|44420|44305|42606|43406|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 761037288,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 33,
+      "estimatedDurationMinutes": 468
+    },
+    {
+      "routeCode": "PLK-79020-5900-B26185F1",
+      "routeFingerprint": "PLK:79020|78907|80416|33506|33605|38653|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 457953645,
+      "departureName": "Zakopane",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 11,
+      "estimatedDurationMinutes": 487
+    },
+    {
+      "routeCode": "PLK-146771-84400-B35AE5AE",
+      "routeFingerprint": "PLK:146771|146659|146599|155955|155936|155921|155886|157114|243509|127178|127420|179223|67900|68700|69708|69823|73312|73502|73908|77503|77701|80416|79905|79657|79806|80630|81208|81232|81265|82669|83022|83105|83261|84301|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 695690318,
+      "departureName": "Muenchen Hbf",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 36,
+      "estimatedDurationMinutes": 944
+    },
+    {
+      "routeCode": "PLK-6791-46458-B3FF40A9",
+      "routeFingerprint": "PLK:6791|6759|6775|6767|6734|6742|6700|5900|5942|7583|7534|7500|7112|7872|22905|21808|22442|37226|36939|36459|36509|38653|33605|33506|34207|47001|47258|46409|46458",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 724363907,
+      "departureName": "Hel",
+      "arrivalName": "Łódź Fabryczna",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 471
+    },
+    {
+      "routeCode": "PLK-4101-80416-B51A87FF",
+      "routeFingerprint": "PLK:4101|4135|4408|5108|4705|5256|5900|5942|7583|7534|7500|38653|33605|33506|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 666269649,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 15,
+      "estimatedDurationMinutes": 559
+    },
+    {
+      "routeCode": "PLK-38653-80416-B6231E84",
+      "routeFingerprint": "PLK:38653|33605|33506|80416",
+      "serviceRecordCount": 4,
+      "representativeOrderId": 386448034,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 4,
+      "estimatedDurationMinutes": 184
+    },
+    {
+      "routeCode": "PLK-84400-60103-B6552136",
+      "routeFingerprint": "PLK:84400|84434|84301|83261|83105|83022|82669|81265|81232|81208|80630|79806|79657|79905|80416|77701|77503|73908|73502|73312|69823|69708|61705|60608|62109|58271|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 156251010,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 27,
+      "estimatedDurationMinutes": 372
+    },
+    {
+      "routeCode": "PLK-20503-32706-B6BB1FF2",
+      "routeFingerprint": "PLK:20503|20909|21204|21428|32706",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 176367387,
+      "departureName": "Grudziądz",
+      "arrivalName": "Sierpc",
+      "stationCount": 5,
+      "estimatedDurationMinutes": 140
+    },
+    {
+      "routeCode": "PLK-5900-79020-B72D69A9",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|38653|33605|33506|80416|78907|79020",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 222698055,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Zakopane",
+      "stationCount": 11,
+      "estimatedDurationMinutes": 503
+    },
+    {
+      "routeCode": "PLK-60103-38653-B79B3BBE",
+      "routeFingerprint": "PLK:60103|60608|71407|62802|33506|33605|38653",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 210225873,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 7,
+      "estimatedDurationMinutes": 223
+    },
+    {
+      "routeCode": "PLK-76109-5900-B8262906",
+      "routeFingerprint": "PLK:76109|76000|75903|73700|73312|74658|74633|74583|75309|75424|62653|47886|47704|46409|46565|46706|46789|46805|32540|32524|32201|21600|21501|19703|19844|16717|18374|18408|17202|8474|7112|7302|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 114845064,
+      "departureName": "Bielsko-Biała Główna",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 37,
+      "estimatedDurationMinutes": 548
+    },
+    {
+      "routeCode": "PLK-83758-80416-B8472179",
+      "routeFingerprint": "PLK:83758|83600|83725|83501|83410|81786|81703|81067|80986|80630|79905|80416",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 401168388,
+      "departureName": "Zagórz",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 311
+    },
+    {
+      "routeCode": "PLK-84400-4952-B87D360D",
+      "routeFingerprint": "PLK:84400|84434|84301|83261|83105|83022|82669|81265|81232|81208|80630|79806|79657|79905|80416|77701|77503|73908|73502|72306|69708|61705|60608|62109|58271|60103|58784|44420|44305|42606|43406|30601|29645|16139|16188|14407|16402|3004|3905|4408|5108|4705|4952",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 597332381,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Ustka",
+      "stationCount": 43,
+      "estimatedDurationMinutes": 739
+    },
+    {
+      "routeCode": "PLK-60103-148445-B8D30ABC",
+      "routeFingerprint": "PLK:60103|53009|54007|53850|51805|140707|140685|148445",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 801386196,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Leipzig Hbf",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 219
+    },
+    {
+      "routeCode": "PLK-18408-50500-BB75E7E4",
+      "routeFingerprint": "PLK:18408|18374|16717|19844|19703|21501|21600|32201|32904|34603|33506|33605|38653|39206|49809|50021|50104|262848|50500",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 405182134,
+      "departureName": "Bydgoszcz Główna",
+      "arrivalName": "Lublin Główny",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 307
+    },
+    {
+      "routeCode": "PLK-248058-80416-BD7A9C32",
+      "routeFingerprint": "PLK:248058|179212|25809|27805|42200|53280|53009|60103|60608|67009|69708|69823|73312|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 794216903,
+      "departureName": "Berlin Gesundbrunnen",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 14,
+      "estimatedDurationMinutes": 422
+    },
+    {
+      "routeCode": "PLK-84400-60103-BDFDDAAB",
+      "routeFingerprint": "PLK:84400|84434|83261|83105|83022|82669|81208|80630|79657|79905|80416|73312|69823|69708|67009|60608|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 184734045,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 346
+    },
+    {
+      "routeCode": "PLK-38653-1008-BDFE50CD",
+      "routeFingerprint": "PLK:38653|33605|33506|30601|29108|2204|1107|273|1404|1024|1008",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 368176237,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Świnoujście",
+      "stationCount": 11,
+      "estimatedDurationMinutes": 348
+    },
+    {
+      "routeCode": "PLK-13904-30601-BECAE881",
+      "routeFingerprint": "PLK:13904|260653|14308|29215|29108|30601",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 257375024,
+      "departureName": "Gorzów Wielkopolski",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 6,
+      "estimatedDurationMinutes": 92
+    },
+    {
+      "routeCode": "PLK-50906-30601-BFF3F964",
+      "routeFingerprint": "PLK:50906|50948|50807|50484|50500|262848|50104|50021|49809|39206|38653|33605|33506|34603|32904|32201|33191|33100|30122|30007|28472|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 365056448,
+      "departureName": "Chełm",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 22,
+      "estimatedDurationMinutes": 345
+    },
+    {
+      "routeCode": "PLK-50906-273-C0240E56",
+      "routeFingerprint": "PLK:50906|50948|50807|50484|50500|262848|50104|50021|49809|39206|38653|33605|33506|34603|32904|32201|33191|33100|30122|30007|28472|30601|28803|28969|29108|29181|29405|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 688770721,
+      "departureName": "Chełm",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 30,
+      "estimatedDurationMinutes": 486
+    },
+    {
+      "routeCode": "PLK-66134-50500-C0763654",
+      "routeFingerprint": "PLK:66134|66142|258468|258467|65904|66050|254539|51177|50484|50500",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 251002769,
+      "departureName": "Hrubieszów Miasto",
+      "arrivalName": "Lublin Główny",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 187
+    },
+    {
+      "routeCode": "PLK-38653-80416-C09A9F4C",
+      "routeFingerprint": "PLK:38653|33605|33506|33563|33902|48504|48355|48009|63552|64451|64303|79467|80416",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 232069243,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 13,
+      "estimatedDurationMinutes": 270
+    },
+    {
+      "routeCode": "PLK-5900-73312-C262ED43",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|7872|8086|23101|20503|20164|19901|20024|32706|32607|32359|32201|32524|32540|46805|46789|46706|46581|46649|19406|62653|62802|71001|72306|72272|73106|73312",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 406871088,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Katowice",
+      "stationCount": 32,
+      "estimatedDurationMinutes": 671
+    },
+    {
+      "routeCode": "PLK-80416-76109-C2F3080E",
+      "routeFingerprint": "PLK:80416|77107|76000|76109",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 482621167,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Bielsko-Biała Główna",
+      "stationCount": 4,
+      "estimatedDurationMinutes": 102
+    },
+    {
+      "routeCode": "PLK-38653-76109-C3859E3A",
+      "routeFingerprint": "PLK:38653|33605|33506|75309|74658|73312|73700|75903|76000|76109",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 599232512,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Bielsko-Biała Główna",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 230
+    },
+    {
+      "routeCode": "PLK-50500-273-C51F5AF0",
+      "routeFingerprint": "PLK:50500|262848|50104|50021|48736|48355|48801|48827|47605|46409|46565|46581|46649|19430|19489|45245|44842|44701|30205|30601|28803|28969|29108|29181|29405|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 549698007,
+      "departureName": "Lublin Główny",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 28,
+      "estimatedDurationMinutes": 474
+    },
+    {
+      "routeCode": "PLK-60103-5900-C6173AC4",
+      "routeFingerprint": "PLK:60103|58784|44420|44305|42606|43406|30601|30809|32003|18705|18408|17202|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 114020143,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 291
+    },
+    {
+      "routeCode": "PLK-124879-84400-C631B4A0",
+      "routeFingerprint": "PLK:124879|125072|125013|124979|125205|125266|84400",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 247262206,
+      "departureName": "Kyiv-Pasazhyrskyi",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 7,
+      "estimatedDurationMinutes": 482
+    },
+    {
+      "routeCode": "PLK-179200-12807-C6BBBEEB",
+      "routeFingerprint": "PLK:179200|12872|12807",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 524865891,
+      "departureName": "Mockava",
+      "arrivalName": "Suwałki",
+      "stationCount": 3,
+      "estimatedDurationMinutes": 1426
+    },
+    {
+      "routeCode": "PLK-80416-82487-C7691F90",
+      "routeFingerprint": "PLK:80416|79905|80630|80986|81067|81125|81604|81679|81901|82032|82073|82099|82586|82578|82552|82404|82446|82487",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 367238035,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Krynica-Zdrój",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 239
+    },
+    {
+      "routeCode": "PLK-30601-27805-C951C79E",
+      "routeFingerprint": "PLK:30601|27201|26211|26146|26104|26161|27300|27805",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 130639518,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Zielona Góra Główna",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 85
+    },
+    {
+      "routeCode": "PLK-24000-33605-C998CFAE",
+      "routeFingerprint": "PLK:24000|279919|38653|33605",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 215243438,
+      "departureName": "Białystok",
+      "arrivalName": "Warszawa Centralna",
+      "stationCount": 4,
+      "estimatedDurationMinutes": 90
+    },
+    {
+      "routeCode": "PLK-146771-38653-C9B9D0A2",
+      "routeFingerprint": "PLK:146771|146659|146599|155955|155936|155921|155886|157114|243509|127178|127420|179223|67900|68205|73312|74658|74583|75309|64899|48959|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 820266355,
+      "departureName": "Muenchen Hbf",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 23,
+      "estimatedDurationMinutes": 828
+    },
+    {
+      "routeCode": "PLK-76109-80416-CA3AA915",
+      "routeFingerprint": "PLK:76109|76000|77107|77834|80416",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 198145752,
+      "departureName": "Bielsko-Biała Główna",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 5,
+      "estimatedDurationMinutes": 77
+    },
+    {
+      "routeCode": "PLK-84400-1008-CB38814A",
+      "routeFingerprint": "PLK:84400|84434|83261|83105|83022|82669|81208|80630|79657|79905|80416|73312|69823|69708|67009|60608|60103|60269|60335|60400|42200|42002|27805|25809|13003|13417|13334|851|273|1107|1404|1560|1024|1008",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 526443442,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Świnoujście",
+      "stationCount": 34,
+      "estimatedDurationMinutes": 704
+    },
+    {
+      "routeCode": "PLK-4101-80416-CB82E657",
+      "routeFingerprint": "PLK:4101|4135|4408|5108|4705|5256|6304|6098|5900|5942|7583|7534|7500|7112|7872|22905|21808|22442|37226|36939|36459|36509|38653|33605|33506|33563|33902|48504|48355|48009|63552|64451|64303|79467|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 413940081,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 35,
+      "estimatedDurationMinutes": 739
+    },
+    {
+      "routeCode": "PLK-79020-30601-CBC8070F",
+      "routeFingerprint": "PLK:79020|78980|78907|265251|78535|258708|78345|80416|77701|77503|73908|74500|75309|75424|62802|71860|45682|45617|45401|45476|45906|44842|44701|30205|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 244263045,
+      "departureName": "Zakopane",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 555
+    },
+    {
+      "routeCode": "PLK-79905-60103-CC22E065",
+      "routeFingerprint": "PLK:79905|77107|76000|69203|68205|67009|67066|61903|60608|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 554127157,
+      "departureName": "Kraków Płaszów",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 255
+    },
+    {
+      "routeCode": "PLK-5900-60103-CD3F0211",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|17202|18408|18705|32003|30809|30601|43406|42606|44305|44420|58784|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 984059408,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 294
+    },
+    {
+      "routeCode": "PLK-50500-80416-CD8F2C0C",
+      "routeFingerprint": "PLK:50500|51508|65243|65003|65029|65094|65144|83246|83220|83022|82669|81265|81232|81208|80630|79806|79657|79905|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 297075555,
+      "departureName": "Lublin Główny",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 269
+    },
+    {
+      "routeCode": "PLK-60103-157172-CECAD3E7",
+      "routeFingerprint": "PLK:60103|60608|67009|68700|67900|179223|127420|127436|127265|127482|127662|127718|127295|127178|243509|157114|157163|157172",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 969440799,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Graz Hauptbahnhof",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 483
+    },
+    {
+      "routeCode": "PLK-82487-80416-CEDF74A4",
+      "routeFingerprint": "PLK:82487|82446|82404|82552|82578|82586|82099|82073|82032|81901|81679|81604|81125|81067|80986|80630|79806|79657|79905|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 217750120,
+      "departureName": "Krynica-Zdrój",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 230
+    },
+    {
+      "routeCode": "PLK-129059-38653-CFAC4151",
+      "routeFingerprint": "PLK:129059|129083|128006|128071|128166|127651|127419|127265|127436|127420|179223|67900|68403|68205|73700|73312|74658|74583|75309|64899|48959|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 790882627,
+      "departureName": "Praha Hlavni Nadrazi",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 519
+    },
+    {
+      "routeCode": "PLK-9209-24000-D01D0DF3",
+      "routeFingerprint": "PLK:9209|10603|23432|23416|23309|23465|23804|24539|279919|24000",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 680916790,
+      "departureName": "Olsztyn Główny",
+      "arrivalName": "Białystok",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 241
+    },
+    {
+      "routeCode": "PLK-80416-30601-D078211F",
+      "routeFingerprint": "PLK:80416|77701|77503|73908|73502|72306|71001|71407|71555|61200|61341|45401|45476|45906|44842|44701|30205|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 521616422,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 312
+    },
+    {
+      "routeCode": "PLK-60103-38653-D1ACCB1F",
+      "routeFingerprint": "PLK:60103|58651|59105|59576|59543|59675|44008|45906|45245|19489|19430|46649|46581|46565|46409|47258|47001|34207|33506|33605|38653",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 210020831,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 300
+    },
+    {
+      "routeCode": "PLK-79020-273-D2C2EA67",
+      "routeFingerprint": "PLK:79020|78980|78907|265251|78535|258708|78345|80416|77701|77503|73908|73502|73312|72272|72306|71001|71407|71555|61200|61341|45401|45476|45906|44842|44701|30205|30601|28803|28969|29108|29181|29405|2204|1107|273",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 661682617,
+      "departureName": "Zakopane",
+      "arrivalName": "Szczecin Główny",
+      "stationCount": 35,
+      "estimatedDurationMinutes": 602
+    },
+    {
+      "routeCode": "PLK-60103-38653-D3AC2A26",
+      "routeFingerprint": "PLK:60103|42606|30601|33100|32201|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 499275951,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 240
+    },
+    {
+      "routeCode": "PLK-38653-51847-D4775B74",
+      "routeFingerprint": "PLK:38653|33605|33506|34207|47001|47258|47704|47886|62653|62802|71407|60608|62109|58271|60103|53009|54007|53850|51805|51946|51862|51847",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 263771804,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Zgorzelec",
+      "stationCount": 22,
+      "estimatedDurationMinutes": 380
+    },
+    {
+      "routeCode": "PLK-125806-50906-D5D65B23",
+      "routeFingerprint": "PLK:125806|209910|125508|209839|125585|124879|125182|125159|50906",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 290137950,
+      "departureName": "Dnipro-Holovnyi",
+      "arrivalName": "Chełm",
+      "stationCount": 9,
+      "estimatedDurationMinutes": 1134
+    },
+    {
+      "routeCode": "PLK-5900-27805-D644A602",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|17202|18408|18705|32003|30809|30601|27201|26211|26146|26104|26161|27300|27805",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 694601686,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Zielona Góra Główna",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 318
+    },
+    {
+      "routeCode": "PLK-4101-84400-D6FE7A31",
+      "routeFingerprint": "PLK:4101|3905|3004|16402|14407|16188|16139|29645|30601|43406|42606|44305|44420|58784|60103|58271|62109|60608|61705|69708|72306|73502|73908|77503|77701|80416|79905|79657|79806|80630|81208|81232|81265|82669|83022|83105|83261|84301|84434|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 776555221,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 40,
+      "estimatedDurationMinutes": 657
+    },
+    {
+      "routeCode": "PLK-50500-27805-D7310183",
+      "routeFingerprint": "PLK:50500|262848|50104|50021|49809|39206|38653|33605|33506|34603|32904|32201|33191|33100|30122|30007|28472|30601|27201|26211|26146|26104|26161|27300|27805",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 249922330,
+      "departureName": "Lublin Główny",
+      "arrivalName": "Zielona Góra Główna",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 415
+    },
+    {
+      "routeCode": "PLK-13003-5900-D8231591",
+      "routeFingerprint": "PLK:13003|14043|13904|260653|14308|29215|29108|29223|14548|14407|15537|15354|15529|15602|8904|8979|8961|8995|8607|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 494596504,
+      "departureName": "Kostrzyn",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 390
+    },
+    {
+      "routeCode": "PLK-273-50500-D8B74576",
+      "routeFingerprint": "PLK:273|1107|2204|29405|29181|29108|28969|28803|30601|30205|44701|44842|45245|19489|19430|46649|46581|46565|46409|47605|48827|48801|48355|48736|50021|50104|262848|50500",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 344656268,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Lublin Główny",
+      "stationCount": 28,
+      "estimatedDurationMinutes": 472
+    },
+    {
+      "routeCode": "PLK-27805-5900-D8F278BC",
+      "routeFingerprint": "PLK:27805|27300|26161|26104|26146|26211|27201|30601|30809|32003|18705|18408|17202|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 213801747,
+      "departureName": "Zielona Góra Główna",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 320
+    },
+    {
+      "routeCode": "PLK-73312-155861-D94D46AE",
+      "routeFingerprint": "PLK:73312|73700|68205|68403|67900|179223|127420|127436|127265|127482|127662|127718|127295|127178|243509|157114|155861",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 784279878,
+      "departureName": "Katowice",
+      "arrivalName": "Wien Westbahnhof",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 352
+    },
+    {
+      "routeCode": "PLK-38653-80416-D9E0332C",
+      "routeFingerprint": "PLK:38653|33605|33506|48959|64899|75309|74500|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 169655914,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 196
+    },
+    {
+      "routeCode": "PLK-155861-79905-DA920C03",
+      "routeFingerprint": "PLK:155861|157114|243509|127178|127295|127718|127662|127482|127265|127436|127420|179223|75507|76000|77107|79905",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 197611585,
+      "departureName": "Wien Westbahnhof",
+      "arrivalName": "Kraków Płaszów",
+      "stationCount": 16,
+      "estimatedDurationMinutes": 374
+    },
+    {
+      "routeCode": "PLK-84400-125634-DAC27705",
+      "routeFingerprint": "PLK:84400|125266|125205|124974|124979|125013|125072|124879|124876|125662|125672|125653|125634",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 257304573,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Kremenchuk",
+      "stationCount": 13,
+      "estimatedDurationMinutes": 1204
+    },
+    {
+      "routeCode": "PLK-40998-30601-DAD56090",
+      "routeFingerprint": "PLK:40998|251575|40949|40808|40832|39909|39404|39875|39008|38653|33605|33506|34603|32904|32201|33191|33100|30122|30007|28472|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 227810857,
+      "departureName": "Terespol",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 21,
+      "estimatedDurationMinutes": 310
+    },
+    {
+      "routeCode": "PLK-46458-38653-DBFB717D",
+      "routeFingerprint": "PLK:46458|46409|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 217721626,
+      "departureName": "Łódź Fabryczna",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 5,
+      "estimatedDurationMinutes": 72
+    },
+    {
+      "routeCode": "PLK-27805-30601-DC89D11D",
+      "routeFingerprint": "PLK:27805|27300|26161|26104|26146|26211|27201|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 946696909,
+      "departureName": "Zielona Góra Główna",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 92
+    },
+    {
+      "routeCode": "PLK-5900-73312-DD18ADB7",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7302|7112|8474|17202|18408|18374|16717|19844|19703|21501|21600|32201|32524|32540|46805|46789|46706|46565|46409|47704|47886|62653|75424|75309|74583|74633|74658|73312",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 975357095,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Katowice",
+      "stationCount": 33,
+      "estimatedDurationMinutes": 492
+    },
+    {
+      "routeCode": "PLK-30601-9209-DDB74CE4",
+      "routeFingerprint": "PLK:30601|30809|32003|18705|19703|19794|19901|20719|20743|20909|21808|22004|9233|9209",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 126047612,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Olsztyn Główny",
+      "stationCount": 14,
+      "estimatedDurationMinutes": 197
+    },
+    {
+      "routeCode": "PLK-5900-18408-DE73E77D",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7112|8409|8474|17202|18408",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 298655127,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Bydgoszcz Główna",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 127
+    },
+    {
+      "routeCode": "PLK-46458-80416-DECCB6C9",
+      "routeFingerprint": "PLK:46458|46409|47704|47886|62653|75424|75309|74500|73908|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 102430022,
+      "departureName": "Łódź Fabryczna",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 245
+    },
+    {
+      "routeCode": "PLK-50906-1008-E0EAD3F4",
+      "routeFingerprint": "PLK:50906|50948|50807|50484|50500|262848|50104|50021|49809|39206|38653|33605|33506|34207|47001|47258|46409|46565|46581|46649|19430|19489|45245|44842|44701|30205|30601|28803|28969|29108|29181|29405|2204|1107|273|1107|1404|1560|1024|1008",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 135337062,
+      "departureName": "Chełm",
+      "arrivalName": "Świnoujście",
+      "stationCount": 40,
+      "estimatedDurationMinutes": 736
+    },
+    {
+      "routeCode": "PLK-30601-79020-E1FC592B",
+      "routeFingerprint": "PLK:30601|30205|44701|44842|45906|45476|45401|45617|45682|71860|62802|75424|75309|74500|73908|77503|77701|80416|78345|258708|78535|265251|78907|78980|79020",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 201828177,
+      "departureName": "Poznań Główny",
+      "arrivalName": "Zakopane",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 508
+    },
+    {
+      "routeCode": "PLK-46458-5900-E215C647",
+      "routeFingerprint": "PLK:46458|46409|47258|47001|34207|33506|33605|38653|36509|36459|36939|37226|22442|21808|22905|7872|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 4,
+      "representativeOrderId": 218632400,
+      "departureName": "Łódź Fabryczna",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 22,
+      "estimatedDurationMinutes": 302
+    },
+    {
+      "routeCode": "PLK-33506-9209-E218B011",
+      "routeFingerprint": "PLK:33506|33605|38653|36509|36459|36939|37226|22442|21808|22004|9233|9209",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 704655245,
+      "departureName": "Warszawa Zachodnia",
+      "arrivalName": "Olsztyn Główny",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 175
+    },
+    {
+      "routeCode": "PLK-9209-80416-E367DC5F",
+      "routeFingerprint": "PLK:9209|9233|9456|22202|22442|37226|36939|36459|36509|38653|33605|33506|33563|33902|48504|48355|48009|63552|64451|64303|79467|80416",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 282143828,
+      "departureName": "Olsztyn Główny",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 22,
+      "estimatedDurationMinutes": 418
+    },
+    {
+      "routeCode": "PLK-5900-79020-E412D1D1",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7302|7112|8474|17202|18408|18374|16717|19844|19703|21501|21600|32201|32524|32540|46805|46789|46706|46565|46409|47605|48959|64899|80416|78345|258708|78535|265251|78907|78980|79020",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 932364065,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Zakopane",
+      "stationCount": 35,
+      "estimatedDurationMinutes": 673
+    },
+    {
+      "routeCode": "PLK-125634-84400-E463FBA1",
+      "routeFingerprint": "PLK:125634|125653|125672|125662|124876|124879|125013|124979|124974|125205|125334|125266|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 211670666,
+      "departureName": "Kremenchuk",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 13,
+      "estimatedDurationMinutes": 1063
+    },
+    {
+      "routeCode": "PLK-9209-60103-E4EC561E",
+      "routeFingerprint": "PLK:9209|10009|10405|12609|11809|12252|24158|24133|279919|24000|279919|24539|24638|24737|38307|37911|37507|36343|38653|33605|33506|34207|47001|47258|46409|46565|46581|46649|19430|19489|45245|45906|44008|59675|59543|59576|59105|58651|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 173530766,
+      "departureName": "Olsztyn Główny",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 39,
+      "estimatedDurationMinutes": 603
+    },
+    {
+      "routeCode": "PLK-38653-146771-E6EA34B1",
+      "routeFingerprint": "PLK:38653|33605|33506|48959|64899|75309|74583|74658|73312|68205|67900|179223|127420|127178|243509|157114|155886|155921|155936|155955|146599|146771",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 690736306,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Muenchen Hbf",
+      "stationCount": 22,
+      "estimatedDurationMinutes": 898
+    },
+    {
+      "routeCode": "PLK-148445-60103-E79F9EA4",
+      "routeFingerprint": "PLK:148445|140685|140707|51805|53850|54007|53009|60103",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 226324399,
+      "departureName": "Leipzig Hbf",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 211
+    },
+    {
+      "routeCode": "PLK-38653-248058-E7EA4911",
+      "routeFingerprint": "PLK:38653|33605|33506|32201|33100|30601|26104|28100|25809|179212|248058",
+      "serviceRecordCount": 7,
+      "representativeOrderId": 286345675,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Berlin Gesundbrunnen",
+      "stationCount": 11,
+      "estimatedDurationMinutes": 336
+    },
+    {
+      "routeCode": "PLK-179223-5355-E82E0D5E",
+      "routeFingerprint": "PLK:179223|67900|68700|68205|73312|74658|74583|75309|75424|62802|19406|18705|18408|17202|7112|7500|7534|7583|5942|5900|6098|6304|5256|5355",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 778683324,
+      "departureName": "Bohumin",
+      "arrivalName": "Łeba",
+      "stationCount": 24,
+      "estimatedDurationMinutes": 711
+    },
+    {
+      "routeCode": "PLK-38653-129059-E8494D4F",
+      "routeFingerprint": "PLK:38653|33605|33506|34165|48959|64899|75309|74583|74658|73312|73700|68205|68403|67900|179223|127420|127436|127265|127419|127651|128166|128071|128006|129083|129059",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 414966241,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Praha Hlavni Nadrazi",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 523
+    },
+    {
+      "routeCode": "PLK-273-50906-E8633DE4",
+      "routeFingerprint": "PLK:273|1107|2204|29405|29181|29108|28969|28803|30601|28472|30007|30122|33100|33191|32201|32904|34603|33506|33605|38653|39206|49809|50021|50104|262848|50500|50484|50807|50948|50906",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 486341280,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Chełm",
+      "stationCount": 30,
+      "estimatedDurationMinutes": 486
+    },
+    {
+      "routeCode": "PLK-157172-60103-E864BC0D",
+      "routeFingerprint": "PLK:157172|157163|157114|243509|127178|127295|127718|127662|127482|127265|127436|127420|179223|67900|68700|67009|60608|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 913991142,
+      "departureName": "Graz Hauptbahnhof",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 18,
+      "estimatedDurationMinutes": 471
+    },
+    {
+      "routeCode": "PLK-14407-4101-E9084525",
+      "routeFingerprint": "PLK:14407|16402|3004|3905|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 348434186,
+      "departureName": "Piła Główna",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 5,
+      "estimatedDurationMinutes": 131
+    },
+    {
+      "routeCode": "PLK-38653-46458-E9740CAA",
+      "routeFingerprint": "PLK:38653|33605|33506|34207|47001|47258|46409|46458",
+      "serviceRecordCount": 5,
+      "representativeOrderId": 219048936,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Łódź Fabryczna",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 101
+    },
+    {
+      "routeCode": "PLK-60103-5900-EA995B11",
+      "routeFingerprint": "PLK:60103|42606|30601|30809|18705|18408|7112|7500|7534|7583|5942|5900",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 296065855,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Gdynia Główna",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 285
+    },
+    {
+      "routeCode": "PLK-1008-50906-EBBFF277",
+      "routeFingerprint": "PLK:1008|1024|1560|1404|1107|273|1107|2204|29405|29181|29108|28969|28803|30601|30205|44701|44842|45245|19489|19430|46649|46581|46565|46409|47258|47001|34207|33506|33605|38653|39206|49809|50021|50104|262848|50500|50484|50807|50948|50906",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 930803976,
+      "departureName": "Świnoujście",
+      "arrivalName": "Chełm",
+      "stationCount": 40,
+      "estimatedDurationMinutes": 718
+    },
+    {
+      "routeCode": "PLK-9209-46458-EBE0E2F7",
+      "routeFingerprint": "PLK:9209|9233|9456|22202|22442|37226|36939|36459|36509|38653|33605|33506|34207|47001|47258|46409|46458",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 228739806,
+      "departureName": "Olsztyn Główny",
+      "arrivalName": "Łódź Fabryczna",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 233
+    },
+    {
+      "routeCode": "PLK-179200-80416-ED42ADBF",
+      "routeFingerprint": "PLK:179200|12872|12807|12963|24893|24802|24000|279919|38653|33605|33506|48959|64899|79467|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 653996131,
+      "departureName": "Mockava",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 15,
+      "estimatedDurationMinutes": 404
+    },
+    {
+      "routeCode": "PLK-248058-38653-EDEACF5B",
+      "routeFingerprint": "PLK:248058|179212|25809|28100|26104|30601|33100|32201|33506|33605|38653",
+      "serviceRecordCount": 6,
+      "representativeOrderId": 166665852,
+      "departureName": "Berlin Gesundbrunnen",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 11,
+      "estimatedDurationMinutes": 331
+    },
+    {
+      "routeCode": "PLK-124879-84400-EE432DD5",
+      "routeFingerprint": "PLK:124879|125266|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 517321848,
+      "departureName": "Kyiv-Pasazhyrskyi",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 3,
+      "estimatedDurationMinutes": 507
+    },
+    {
+      "routeCode": "PLK-80416-30601-EE79D3B7",
+      "routeFingerprint": "PLK:80416|77701|77503|73908|74500|75309|64899|48959|47605|46409|46565|46581|46649|19430|19489|45245|44842|44701|30205|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 879013099,
+      "departureName": "Kraków Główny",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 371
+    },
+    {
+      "routeCode": "PLK-50500-18408-EF3B2C5D",
+      "routeFingerprint": "PLK:50500|262848|50104|50021|49809|39206|38653|33605|33506|34603|32904|32201|21600|21501|19703|19844|16717|18374|18408",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 220038836,
+      "departureName": "Lublin Główny",
+      "arrivalName": "Bydgoszcz Główna",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 303
+    },
+    {
+      "routeCode": "PLK-273-4101-EF67A767",
+      "routeFingerprint": "PLK:273|1107|1404|1859|1958|2170|2147|4101",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 361707817,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Kołobrzeg",
+      "stationCount": 8,
+      "estimatedDurationMinutes": 137
+    },
+    {
+      "routeCode": "PLK-4101-76109-F04B0B94",
+      "routeFingerprint": "PLK:4101|3905|3004|16402|14407|16188|16139|29645|30601|43406|42606|44305|44420|58784|60103|58271|62109|60608|61903|67066|67009|68205|69203|76000|76109",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 174406492,
+      "departureName": "Kołobrzeg",
+      "arrivalName": "Bielsko-Biała Główna",
+      "stationCount": 25,
+      "estimatedDurationMinutes": 560
+    },
+    {
+      "routeCode": "PLK-9209-30601-F09730FA",
+      "routeFingerprint": "PLK:9209|9233|22004|21808|20909|20743|20719|19901|19794|19703|18705|32003|30809|30601",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 138608130,
+      "departureName": "Olsztyn Główny",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 14,
+      "estimatedDurationMinutes": 195
+    },
+    {
+      "routeCode": "PLK-33605-24000-F18C7C84",
+      "routeFingerprint": "PLK:33605|38653|279919|24000",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 636001669,
+      "departureName": "Warszawa Centralna",
+      "arrivalName": "Białystok",
+      "stationCount": 4,
+      "estimatedDurationMinutes": 90
+    },
+    {
+      "routeCode": "PLK-84400-4952-F1958EA4",
+      "routeFingerprint": "PLK:84400|84434|84301|83261|83105|83022|82669|81265|81232|81208|80630|79806|79657|79905|80416|77701|77503|73908|73502|73312|69823|69708|61705|60608|62109|58271|60103|58784|44420|44305|42606|43406|30601|29645|16139|16188|14407|16402|3004|3905|4408|5108|4705|4952",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 137347972,
+      "departureName": "Przemyśl Główny",
+      "arrivalName": "Ustka",
+      "stationCount": 44,
+      "estimatedDurationMinutes": 731
+    },
+    {
+      "routeCode": "PLK-60103-24000-F33395EE",
+      "routeFingerprint": "PLK:60103|58651|59105|59576|59675|44008|45906|45245|19489|19430|46649|46581|46565|46409|47258|47001|34207|33506|33605|38653|36343|37507|37911|38307|24737|24638|24539|279919|24000",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 626301637,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Białystok",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 396
+    },
+    {
+      "routeCode": "PLK-38653-60103-F51CA34E",
+      "routeFingerprint": "PLK:38653|33605|33506|30601|42606|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 466679079,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 6,
+      "estimatedDurationMinutes": 229
+    },
+    {
+      "routeCode": "PLK-38653-60103-F5592BE8",
+      "routeFingerprint": "PLK:38653|33605|33506|34207|47001|47258|46409|46565|46581|46649|19430|19489|45245|45906|44008|59543|59576|59105|58651|60103",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 278068991,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 20,
+      "estimatedDurationMinutes": 304
+    },
+    {
+      "routeCode": "PLK-69708-63552-F5FF50F0",
+      "routeFingerprint": "PLK:69708|69823|73106|73312|74658|74633|74583|75309|64808|63552",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 980248747,
+      "departureName": "Gliwice",
+      "arrivalName": "Kielce Główne",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 146
+    },
+    {
+      "routeCode": "PLK-82669-65300-F60F4509",
+      "routeFingerprint": "PLK:82669|82974|65532|65466|65300",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 579066678,
+      "departureName": "Rzeszów Główny",
+      "arrivalName": "Sandomierz",
+      "stationCount": 5,
+      "estimatedDurationMinutes": 123
+    },
+    {
+      "routeCode": "PLK-125711-84400-F7302288",
+      "routeFingerprint": "PLK:125711|125797|125787|125780|125653|125662|124876|124879|125266|84400",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 876586628,
+      "departureName": "Kharkiv-Pasazhyrskyi",
+      "arrivalName": "Przemyśl Główny",
+      "stationCount": 10,
+      "estimatedDurationMinutes": 1087
+    },
+    {
+      "routeCode": "PLK-179223-38653-F7F1F336",
+      "routeFingerprint": "PLK:179223|67900|68403|68205|73700|73502|74500|75309|64899|48959|33506|33605|38653",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 360752440,
+      "departureName": "Bohumin",
+      "arrivalName": "Warszawa Wschodnia",
+      "stationCount": 13,
+      "estimatedDurationMinutes": 273
+    },
+    {
+      "routeCode": "PLK-1008-79020-F8D498AC",
+      "routeFingerprint": "PLK:1008|1024|1560|1404|1107|273|1107|2204|29405|29181|29108|28969|28803|30601|28472|30007|30122|33100|33191|32201|32524|32540|46805|46706|46581|46649|19406|62802|75424|75309|74500|73908|77503|77701|80416|78345|258708|78535|265251|78907|78980|79020",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 409842560,
+      "departureName": "Świnoujście",
+      "arrivalName": "Zakopane",
+      "stationCount": 42,
+      "estimatedDurationMinutes": 827
+    },
+    {
+      "routeCode": "PLK-33506-40998-F8DA0C64",
+      "routeFingerprint": "PLK:33506|33605|38653|39008|39875|39404|39909|40832|40808|40949|251575|40998",
+      "serviceRecordCount": 5,
+      "representativeOrderId": 380153104,
+      "departureName": "Warszawa Zachodnia",
+      "arrivalName": "Terespol",
+      "stationCount": 12,
+      "estimatedDurationMinutes": 138
+    },
+    {
+      "routeCode": "PLK-60103-9209-FA7B1732",
+      "routeFingerprint": "PLK:60103|58651|59105|59576|59543|44008|45906|45245|19489|19430|46649|46581|46565|46409|47258|47001|34207|33506|33605|38653|36343|37507|37911|38307|24737|24638|24539|279919|24000|279919|24133|24158|12252|11809|12609|10405|10009|9209",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 877568254,
+      "departureName": "Wrocław Główny",
+      "arrivalName": "Olsztyn Główny",
+      "stationCount": 38,
+      "estimatedDurationMinutes": 602
+    },
+    {
+      "routeCode": "PLK-1008-12807-FB37D0DD",
+      "routeFingerprint": "PLK:1008|1024|1560|1404|1107|273|1107|2204|29405|29181|29108|28969|28803|30601|28472|30007|30122|33100|33191|32201|32904|34603|33506|33605|38653|279919|24000|24232|24802|24893|12963|12807",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 619184018,
+      "departureName": "Świnoujście",
+      "arrivalName": "Suwałki",
+      "stationCount": 32,
+      "estimatedDurationMinutes": 638
+    },
+    {
+      "routeCode": "PLK-46458-9209-FB3AA49E",
+      "routeFingerprint": "PLK:46458|46409|47258|47001|34207|33506|33605|38653|36509|36459|36939|37226|22442|22202|9456|9233|9209",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 140261076,
+      "departureName": "Łódź Fabryczna",
+      "arrivalName": "Olsztyn Główny",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 231
+    },
+    {
+      "routeCode": "PLK-38653-56184-FBA43D72",
+      "routeFingerprint": "PLK:38653|33605|33506|34207|47001|47258|47704|47886|62653|62802|71407|60608|62109|58271|60103|54403|54528|54551|55103|55632|55806|56093|56143|56168|56176|56184",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 894436376,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Szklarska Poręba Górna",
+      "stationCount": 26,
+      "estimatedDurationMinutes": 455
+    },
+    {
+      "routeCode": "PLK-5900-30601-FC9D6D24",
+      "routeFingerprint": "PLK:5900|5942|7583|7534|7500|7302|7112|8409|8474|17202|18408|18705|32003|30809|30601",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 970341410,
+      "departureName": "Gdynia Główna",
+      "arrivalName": "Poznań Główny",
+      "stationCount": 15,
+      "estimatedDurationMinutes": 201
+    },
+    {
+      "routeCode": "PLK-38653-60103-FCF8531A",
+      "routeFingerprint": "PLK:38653|33605|33506|62802|71407|60608|60103",
+      "serviceRecordCount": 3,
+      "representativeOrderId": 194855431,
+      "departureName": "Warszawa Wschodnia",
+      "arrivalName": "Wrocław Główny",
+      "stationCount": 7,
+      "estimatedDurationMinutes": 220
+    },
+    {
+      "routeCode": "PLK-273-7500-FD0AB5CB",
+      "routeFingerprint": "PLK:273|1107|2204|3517|3467|3509|3632|3905|4408|5108|4705|5256|6304|6098|5900|5942|7583|7534|7500",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 240984065,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Gdańsk Główny",
+      "stationCount": 19,
+      "estimatedDurationMinutes": 308
+    },
+    {
+      "routeCode": "PLK-273-12369-FE0D54F7",
+      "routeFingerprint": "PLK:273|1107|2204|3517|3467|3509|3632|3905|4408|5108|4705|5256|6304|6098|5900|5942|7583|7534|7500|7112|7872|8151|10934|10900|9233|9209|10603|10827|12369",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 821101057,
+      "departureName": "Szczecin Główny",
+      "arrivalName": "Pisz",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 635
+    },
+    {
+      "routeCode": "PLK-9209-80416-FE677802",
+      "routeFingerprint": "PLK:9209|9233|9456|22202|22442|37226|36939|36459|36509|38653|33605|33506|63552|64451|64303|79467|80416",
+      "serviceRecordCount": 2,
+      "representativeOrderId": 393715957,
+      "departureName": "Olsztyn Główny",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 17,
+      "estimatedDurationMinutes": 399
+    },
+    {
+      "routeCode": "PLK-1008-80416-FE6C4D1B",
+      "routeFingerprint": "PLK:1008|1024|1560|1404|1107|273|851|13334|13417|13003|25809|27805|42002|42200|53280|53009|60103|58271|62109|60608|61705|69708|72306|73312|73502|73908|77503|77701|80416",
+      "serviceRecordCount": 1,
+      "representativeOrderId": 354305540,
+      "departureName": "Świnoujście",
+      "arrivalName": "Kraków Główny",
+      "stationCount": 29,
+      "estimatedDurationMinutes": 682
+    }
+  ]
+}

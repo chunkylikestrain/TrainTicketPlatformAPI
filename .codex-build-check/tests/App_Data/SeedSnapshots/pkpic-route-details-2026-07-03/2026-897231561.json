@@ -1,0 +1,130 @@
+{
+  "scheduleId": 2026,
+  "orderId": 897231561,
+  "trainOrderId": 246471635,
+  "name": "PLANTY",
+  "carrierCode": "IC",
+  "nationalNumber": "63100",
+  "commercialCategorySymbol": "TLK",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 60103,
+      "orderNumber": 1,
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "63100",
+      "departurePlatform": "2",
+      "departureTrack": "4",
+      "departureTime": "05:47:00"
+    },
+    {
+      "stationId": 60608,
+      "orderNumber": 11,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "63100",
+      "arrivalTime": "06:32:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "63100",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "06:35:00"
+    },
+    {
+      "stationId": 61903,
+      "orderNumber": 16,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "63100",
+      "arrivalTime": "06:47:30",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "63100",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "06:48:30"
+    },
+    {
+      "stationId": 67066,
+      "orderNumber": 18,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "63100",
+      "arrivalTime": "06:56:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "63100",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "06:57:00"
+    },
+    {
+      "stationId": 67009,
+      "orderNumber": 21,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "63100",
+      "arrivalTime": "07:04:30",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "63101",
+      "departurePlatform": "4",
+      "departureTrack": "8",
+      "departureTime": "07:05:30"
+    },
+    {
+      "stationId": 68205,
+      "orderNumber": 39,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "63100",
+      "arrivalTime": "07:41:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "63100",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "07:46:00"
+    },
+    {
+      "stationId": 69203,
+      "orderNumber": 42,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "63100",
+      "arrivalTime": "07:56:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "63101",
+      "departurePlatform": "2",
+      "departureTrack": "5",
+      "departureTime": "07:58:00"
+    },
+    {
+      "stationId": 76000,
+      "orderNumber": 56,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "63100",
+      "arrivalTime": "08:32:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "63100",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "08:35:00"
+    },
+    {
+      "stationId": 77107,
+      "orderNumber": 61,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "63100",
+      "arrivalTime": "08:50:30",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "63100",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "08:51:30"
+    },
+    {
+      "stationId": 79905,
+      "orderNumber": 76,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "63100",
+      "arrivalTime": "09:50:12",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "63100",
+      "departurePlatform": "1",
+      "departureTrack": "7"
+    }
+  ]
+}

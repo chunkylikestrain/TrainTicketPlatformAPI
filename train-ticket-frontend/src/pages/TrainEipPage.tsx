@@ -6,7 +6,6 @@ import ed250SecondClassOne from "../../../docs/NotMyTrainImages/ED2502ndClassInt
 import ed250SecondClassTwo from "../../../docs/NotMyTrainImages/ED2502ndClassInterior2(Wkicommons).jpg";
 import ed250SecondClassThree from "../../../docs/NotMyTrainImages/ED2502ndClassInterior3(Wkicommons).jpg";
 import ed250DriverCab from "../../../docs/NotMyTrainImages/ED250DriverCab(Wikicommons).jpg";
-import eipLogo from "../../../docs/NotMyTrainImages/EICLogo(Wikicommons).svg";
 
 const technicalSpecs = [
   ["Length", "187.4 m"],
@@ -169,7 +168,9 @@ function TrainEipPage() {
         </section>
 
         <section className="eip-logo-panel" aria-label="Express InterCity Premium logo">
-          <img src={eipLogo} alt="EIP Express InterCity Premium logo" />
+          <div className="eip-wordmark" aria-label="EIP Express InterCity Premium">
+            EIP
+          </div>
         </section>
       </article>
     </main>

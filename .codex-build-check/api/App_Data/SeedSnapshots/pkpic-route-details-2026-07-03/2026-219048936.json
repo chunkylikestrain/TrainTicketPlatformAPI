@@ -1,0 +1,108 @@
+{
+  "scheduleId": 2026,
+  "orderId": 219048936,
+  "trainOrderId": 113497799,
+  "name": "KORCZAK",
+  "carrierCode": "IC",
+  "nationalNumber": "19132",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-03",
+    "2026-07-10",
+    "2026-07-17",
+    "2026-07-24"
+  ],
+  "stations": [
+    {
+      "stationId": 38653,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "019132",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "19132",
+      "departurePlatform": "1",
+      "departureTrack": "10",
+      "departureTime": "15:37:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "19132",
+      "arrivalTime": "15:43:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "19132",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "15:48:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 7,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "19132",
+      "arrivalTime": "15:52:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "19133",
+      "departurePlatform": "7",
+      "departureTrack": "3",
+      "departureTime": "15:53:30"
+    },
+    {
+      "stationId": 34207,
+      "orderNumber": 12,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "19133",
+      "arrivalTime": "16:16:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "19133",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "16:17:30"
+    },
+    {
+      "stationId": 47001,
+      "orderNumber": 16,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "19133",
+      "arrivalTime": "16:31:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "19133",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "16:32:30"
+    },
+    {
+      "stationId": 47258,
+      "orderNumber": 22,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "19133",
+      "arrivalTime": "16:54:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "19132",
+      "departurePlatform": "1",
+      "departureTrack": "5",
+      "departureTime": "16:55:00"
+    },
+    {
+      "stationId": 46409,
+      "orderNumber": 26,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "19132",
+      "arrivalTime": "17:10:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "19132",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 46458,
+      "orderNumber": 29,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "19132",
+      "arrivalTime": "17:18:00",
+      "departureTrainNumber": "019133",
+      "departurePlatform": "4",
+      "departureTrack": "9"
+    }
+  ]
+}

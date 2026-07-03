@@ -1,0 +1,147 @@
+{
+  "scheduleId": 2026,
+  "orderId": 515206113,
+  "trainOrderId": 172923178,
+  "name": "BERLIN-WARSZAWA-EXPRESS",
+  "carrierCode": "IC",
+  "nationalNumber": "17010",
+  "internationalDepartureNumber": "42",
+  "commercialCategorySymbol": "EC/EIC",
+  "operatingDates": [
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09"
+  ],
+  "stations": [
+    {
+      "stationId": 38653,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "017010",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "17010",
+      "departurePlatform": "1",
+      "departureTrack": "10",
+      "departureTime": "14:49:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "17010",
+      "arrivalTime": "14:55:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "17010",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "15:00:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 7,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "17010",
+      "arrivalTime": "15:03:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "17011",
+      "departurePlatform": "7",
+      "departureTrack": "3",
+      "departureTime": "15:05:00"
+    },
+    {
+      "stationId": 32201,
+      "orderNumber": 23,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "17011",
+      "arrivalTime": "16:00:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "17011",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "16:01:30"
+    },
+    {
+      "stationId": 33100,
+      "orderNumber": 32,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "17011",
+      "arrivalTime": "16:36:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "17011",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "16:37:30"
+    },
+    {
+      "stationId": 30601,
+      "orderNumber": 43,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "17011",
+      "arrivalTime": "17:24:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "17011",
+      "departurePlatform": "5",
+      "departureTrack": "1",
+      "departureTime": "17:27:00"
+    },
+    {
+      "stationId": 26104,
+      "orderNumber": 53,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "17011",
+      "arrivalTime": "18:10:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "17011",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "18:11:00"
+    },
+    {
+      "stationId": 28100,
+      "orderNumber": 56,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "17011",
+      "arrivalTime": "18:23:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "17011",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "18:24:00"
+    },
+    {
+      "stationId": 25809,
+      "orderNumber": 60,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "17011",
+      "arrivalTime": "18:47:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "42",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "18:50:00"
+    },
+    {
+      "stationId": 179212,
+      "orderNumber": 69,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "42",
+      "arrivalTime": "19:09:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "42",
+      "departureTime": "19:12:00"
+    },
+    {
+      "stationId": 248058,
+      "orderNumber": 1020,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "42",
+      "arrivalTime": "20:25:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "42",
+      "departureTime": "20:25:00"
+    }
+  ]
+}

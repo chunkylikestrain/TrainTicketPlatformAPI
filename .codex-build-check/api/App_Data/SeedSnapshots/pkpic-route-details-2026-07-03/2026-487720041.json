@@ -1,0 +1,92 @@
+{
+  "scheduleId": 2026,
+  "orderId": 487720041,
+  "trainOrderId": 177802776,
+  "name": "DĘBOWIEC",
+  "carrierCode": "IC",
+  "nationalNumber": "3403",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17",
+    "2026-08-03",
+    "2026-08-06",
+    "2026-08-07",
+    "2026-08-10",
+    "2026-08-13",
+    "2026-08-14",
+    "2026-08-17"
+  ],
+  "stations": [
+    {
+      "stationId": 80416,
+      "orderNumber": 3,
+      "arrivalTrainNumber": "03402",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "3403",
+      "departurePlatform": "4",
+      "departureTrack": "6",
+      "departureTime": "09:59:00"
+    },
+    {
+      "stationId": 77834,
+      "orderNumber": 15,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "3403",
+      "arrivalTime": "10:30:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "3403",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "10:33:00"
+    },
+    {
+      "stationId": 77107,
+      "orderNumber": 21,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "3403",
+      "arrivalTime": "10:46:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "3403",
+      "departurePlatform": "3",
+      "departureTrack": "1",
+      "departureTime": "10:49:00"
+    },
+    {
+      "stationId": 76000,
+      "orderNumber": 25,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "3403",
+      "arrivalTime": "11:03:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "3403",
+      "departurePlatform": "2",
+      "departureTrack": "7",
+      "departureTime": "11:15:00"
+    },
+    {
+      "stationId": 76109,
+      "orderNumber": 28,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "3403",
+      "arrivalTime": "11:24:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "3403",
+      "departurePlatform": "1a",
+      "departureTrack": "3"
+    }
+  ]
+}

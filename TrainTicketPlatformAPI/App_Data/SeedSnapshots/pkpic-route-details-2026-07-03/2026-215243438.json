@@ -1,0 +1,68 @@
+{
+  "scheduleId": 2026,
+  "orderId": 215243438,
+  "trainOrderId": 391823616,
+  "name": "ZAMENHOF",
+  "carrierCode": "IC",
+  "nationalNumber": "1102",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-06-14",
+    "2026-06-19",
+    "2026-06-21",
+    "2026-06-26",
+    "2026-06-28",
+    "2026-07-03",
+    "2026-07-05",
+    "2026-07-10",
+    "2026-07-12",
+    "2026-07-17",
+    "2026-07-19",
+    "2026-07-24"
+  ],
+  "stations": [
+    {
+      "stationId": 24000,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1102",
+      "departurePlatform": "3",
+      "departureTrack": "3",
+      "departureTime": "19:33:00"
+    },
+    {
+      "stationId": 279919,
+      "orderNumber": 2,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1102",
+      "arrivalTime": "19:36:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1102",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "19:37:00"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 24,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1102",
+      "arrivalTime": "20:56:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1102",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 25,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1102",
+      "arrivalTime": "21:03:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1102",
+      "departurePlatform": "4",
+      "departureTrack": "8"
+    }
+  ]
+}

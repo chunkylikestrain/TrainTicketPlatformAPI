@@ -1,0 +1,140 @@
+{
+  "scheduleId": 2026,
+  "orderId": 457953645,
+  "trainOrderId": 768467673,
+  "name": "KASZUB",
+  "carrierCode": "IC",
+  "nationalNumber": "3550",
+  "commercialCategorySymbol": "EIC",
+  "operatingDates": [
+    "2026-07-10",
+    "2026-07-17",
+    "2026-07-24",
+    "2026-07-31"
+  ],
+  "stations": [
+    {
+      "stationId": 79020,
+      "orderNumber": 1,
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3550",
+      "departurePlatform": "2",
+      "departureTrack": "3",
+      "departureTime": "13:17:00"
+    },
+    {
+      "stationId": 78907,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3550",
+      "arrivalTime": "13:31:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3550",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "13:32:30"
+    },
+    {
+      "stationId": 80416,
+      "orderNumber": 36,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3550",
+      "arrivalTime": "15:28:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3550",
+      "departurePlatform": "3",
+      "departureTrack": "1",
+      "departureTime": "15:35:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 75,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3550",
+      "arrivalTime": "18:19:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3551",
+      "departurePlatform": "5",
+      "departureTrack": "4",
+      "departureTime": "18:20:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 77,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3551",
+      "arrivalTime": "18:24:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3551",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "18:29:00"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 78,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3551",
+      "arrivalTime": "18:35:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3551",
+      "departurePlatform": "4",
+      "departureTrack": "1",
+      "departureTime": "18:36:00"
+    },
+    {
+      "stationId": 7500,
+      "orderNumber": 121,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3551",
+      "arrivalTime": "20:58:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3551",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 7534,
+      "orderNumber": 122,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3551",
+      "arrivalTime": "21:06:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3551",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 7583,
+      "orderNumber": 124,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3551",
+      "arrivalTime": "21:10:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3551",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 5942,
+      "orderNumber": 126,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3551",
+      "arrivalTime": "21:15:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "3551",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 5900,
+      "orderNumber": 128,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "3551",
+      "arrivalTime": "21:24:00",
+      "departureTrainNumber": "03551",
+      "departurePlatform": "3",
+      "departureTrack": "5"
+    }
+  ]
+}

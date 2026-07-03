@@ -1,0 +1,171 @@
+{
+  "scheduleId": 2026,
+  "orderId": 774501078,
+  "trainOrderId": 988119656,
+  "name": "PILECKI",
+  "carrierCode": "IC",
+  "nationalNumber": "4128",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10"
+  ],
+  "stations": [
+    {
+      "stationId": 76604,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4128",
+      "departurePlatform": "3",
+      "departureTrack": "1",
+      "departureTime": "06:37:00"
+    },
+    {
+      "stationId": 76109,
+      "orderNumber": 6,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "4128",
+      "arrivalTime": "06:56:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4128",
+      "departurePlatform": "2",
+      "departureTrack": "4",
+      "departureTime": "07:12:00"
+    },
+    {
+      "stationId": 76000,
+      "orderNumber": 9,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "4128",
+      "arrivalTime": "07:21:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4128",
+      "departurePlatform": "2",
+      "departureTrack": "7",
+      "departureTime": "07:30:00"
+    },
+    {
+      "stationId": 75903,
+      "orderNumber": 11,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "4128",
+      "arrivalTime": "07:37:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4128",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "07:41:30"
+    },
+    {
+      "stationId": 73700,
+      "orderNumber": 13,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "4128",
+      "arrivalTime": "08:00:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4128",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "08:01:30"
+    },
+    {
+      "stationId": 73403,
+      "orderNumber": 23,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "4128",
+      "arrivalTime": "08:35:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4128",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "08:41:00"
+    },
+    {
+      "stationId": 74500,
+      "orderNumber": 29,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "4128",
+      "arrivalTime": "08:57:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4128",
+      "departurePlatform": "3",
+      "departureTrack": "8",
+      "departureTime": "08:57:30"
+    },
+    {
+      "stationId": 75309,
+      "orderNumber": 36,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "4128",
+      "arrivalTime": "09:08:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4128",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "09:09:30"
+    },
+    {
+      "stationId": 75424,
+      "orderNumber": 38,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "4128",
+      "arrivalTime": "09:16:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4128",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "09:17:30"
+    },
+    {
+      "stationId": 62653,
+      "orderNumber": 42,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "4128",
+      "arrivalTime": "09:34:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4128",
+      "departurePlatform": "2",
+      "departureTrack": "3",
+      "departureTime": "09:44:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 71,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "4128",
+      "arrivalTime": "11:50:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4129",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 74,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "4129",
+      "arrivalTime": "11:56:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4129",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 75,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "4129",
+      "arrivalTime": "12:19:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "4129",
+      "departurePlatform": "3",
+      "departureTrack": "2"
+    }
+  ]
+}

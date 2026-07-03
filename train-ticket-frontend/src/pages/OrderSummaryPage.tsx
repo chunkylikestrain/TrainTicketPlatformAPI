@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useParams, useSearchParams } from "react-router-dom";
+import PassengerLegalFooter from "../components/PassengerLegalFooter";
 import { getBookingOrder } from "../api/bookingApi";
 import { getTripById } from "../api/tripApi";
 import type { BookingOrder, BookingOrderSegment } from "../types/booking";
@@ -212,23 +213,7 @@ function OrderSummaryPage() {
         <div className="connection-train" />
       </section>
 
-      <section className="summary-legal">
-        <div>
-          <h2>Technological break.</h2>
-          <p>
-            Please remember about scheduled technical breaks in the online sales system. You cannot buy tickets
-            during this break.
-          </p>
-          <a href="#accessibility">Declaration of Accessibility</a>
-        </div>
-        <div>
-          <p>
-            The prices presented are indicative and published for informational purposes. The final prices are
-            available in this purchase summary before payment.
-          </p>
-          <strong>RailWay ticket platform</strong>
-        </div>
-      </section>
+      <PassengerLegalFooter />
     </main>
   );
 }

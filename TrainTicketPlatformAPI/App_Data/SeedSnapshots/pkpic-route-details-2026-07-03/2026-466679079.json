@@ -1,0 +1,83 @@
+{
+  "scheduleId": 2026,
+  "orderId": 466679079,
+  "trainOrderId": 359775579,
+  "name": "VIADRINA",
+  "carrierCode": "IC",
+  "nationalNumber": "1610",
+  "commercialCategorySymbol": "EIC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 38653,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "01610",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1610",
+      "departurePlatform": "1",
+      "departureTrack": "12",
+      "departureTime": "05:49:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1610",
+      "arrivalTime": "05:55:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1610",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "06:00:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 7,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1610",
+      "arrivalTime": "06:03:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1611",
+      "departurePlatform": "7",
+      "departureTrack": "3",
+      "departureTime": "06:05:00"
+    },
+    {
+      "stationId": 30601,
+      "orderNumber": 43,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1611",
+      "arrivalTime": "08:18:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1610",
+      "departurePlatform": "11",
+      "departureTrack": "58",
+      "departureTime": "08:21:00"
+    },
+    {
+      "stationId": 42606,
+      "orderNumber": 54,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1610",
+      "arrivalTime": "08:53:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1610",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "08:54:00"
+    },
+    {
+      "stationId": 60103,
+      "orderNumber": 67,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "1610",
+      "arrivalTime": "09:38:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "1610",
+      "departurePlatform": "1",
+      "departureTrack": "2"
+    }
+  ]
+}

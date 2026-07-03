@@ -47,11 +47,24 @@ type CarriageSeatMapProps = {
   coach: string;
   selectedClass: string;
   selectedSeat: TripSeatAvailability | null;
+  selectedSeats?: TripSeatAvailability[];
   seats: TripSeatAvailability[];
   template: CarriageTemplate;
   isSeatSelectable?: (seat: TripSeatAvailability) => boolean;
   onSelectSeat: (seat: TripSeatAvailability) => void;
 };
+
+function isSeatSelected(
+  seat: TripSeatAvailability | null,
+  selectedSeat: TripSeatAvailability | null,
+  selectedSeats: TripSeatAvailability[],
+) {
+  return Boolean(
+    seat &&
+      (selectedSeat?.seatId === seat.seatId ||
+        selectedSeats.some((selected) => selected.seatId === seat.seatId)),
+  );
+}
 
 type GraphicSeatSlot = {
   number: string;
@@ -780,6 +793,7 @@ function CarriageSeatMap({
   coach,
   selectedClass,
   selectedSeat,
+  selectedSeats = [],
   seats,
   template,
   isSeatSelectable,
@@ -791,6 +805,7 @@ function CarriageSeatMap({
         coach={coach}
         selectedClass={selectedClass}
         selectedSeat={selectedSeat}
+        selectedSeats={selectedSeats}
         seats={seats}
         template={template}
         isSeatSelectable={isSeatSelectable}
@@ -806,7 +821,7 @@ function CarriageSeatMap({
       <div className="coach-shell">
         {rows.map((row, rowIndex) => (
           <div className="coach-plan-row" key={`${template}-${rowIndex}`}>
-            {row.map((slot, slotIndex) => renderSlot(slot, coach, slotIndex, selectedSeat, isSeatSelectable, onSelectSeat))}
+            {row.map((slot, slotIndex) => renderSlot(slot, coach, slotIndex, selectedSeat, selectedSeats, isSeatSelectable, onSelectSeat))}
           </div>
         ))}
       </div>
@@ -821,6 +836,7 @@ function GraphicFamilyOpenCoach({
   coach,
   selectedClass,
   selectedSeat,
+  selectedSeats = [],
   seats,
   template,
   isSeatSelectable,
@@ -869,6 +885,7 @@ function GraphicFamilyOpenCoach({
               seatsByNumber.get(slot.number) ?? null,
               slot,
               selectedSeat,
+              selectedSeats,
               isSeatSelectable,
               onSelectSeat,
               `${coach}-graphic-seat-${slot.number}`,
@@ -888,11 +905,12 @@ function renderSlot(
   coach: string,
   slotIndex: number,
   selectedSeat: TripSeatAvailability | null,
+  selectedSeats: TripSeatAvailability[],
   isSeatSelectable: ((seat: TripSeatAvailability) => boolean) | undefined,
   onSelectSeat: (seat: TripSeatAvailability) => void,
 ) {
   if (slot.type === "seat") {
-    return renderSeatCell(slot.seat, selectedSeat, isSeatSelectable, onSelectSeat, `${coach}-seat-${slot.seat?.seatId ?? slotIndex}`);
+    return renderSeatCell(slot.seat, selectedSeat, selectedSeats, isSeatSelectable, onSelectSeat, `${coach}-seat-${slot.seat?.seatId ?? slotIndex}`);
   }
 
   if (slot.type === "compartment") {
@@ -902,6 +920,7 @@ function renderSlot(
           renderSeatCell(
             seat,
             selectedSeat,
+            selectedSeats,
             isSeatSelectable,
             onSelectSeat,
             `${coach}-compartment-${slotIndex}-seat-${seat?.seatId ?? seatIndex}`,
@@ -963,20 +982,22 @@ function renderGraphicSeatCell(
   seat: TripSeatAvailability | null,
   slot: GraphicSeatSlot,
   selectedSeat: TripSeatAvailability | null,
+  selectedSeats: TripSeatAvailability[],
   isSeatSelectable: ((seat: TripSeatAvailability) => boolean) | undefined,
   onSelectSeat: (seat: TripSeatAvailability) => void,
   key: string,
 ) {
-  const isSelected = Boolean(seat && selectedSeat?.seatId === seat.seatId);
+  const isSelected = isSeatSelected(seat, selectedSeat, selectedSeats);
   const canSelect = Boolean(seat?.isAvailable && (!isSeatSelectable || isSeatSelectable(seat)));
+  const canClick = canSelect || isSelected;
 
   return (
     <button
       type="button"
       className={`graphic-seat-cell seat-cell ${canSelect ? "seat-available" : "seat-unavailable"} ${isSelected ? "seat-selected" : ""}`}
       style={{ left: slot.x, top: slot.y }}
-      disabled={!canSelect}
-      onClick={() => canSelect && seat && onSelectSeat(seat)}
+      disabled={!canClick}
+      onClick={() => canClick && seat && onSelectSeat(seat)}
       key={key}
     >
       {seat?.number ?? slot.number}
@@ -987,19 +1008,21 @@ function renderGraphicSeatCell(
 function renderSeatCell(
   seat: TripSeatAvailability | null,
   selectedSeat: TripSeatAvailability | null,
+  selectedSeats: TripSeatAvailability[],
   isSeatSelectable: ((seat: TripSeatAvailability) => boolean) | undefined,
   onSelectSeat: (seat: TripSeatAvailability) => void,
   key: string,
 ) {
-  const isSelected = Boolean(seat && selectedSeat?.seatId === seat.seatId);
+  const isSelected = isSeatSelected(seat, selectedSeat, selectedSeats);
   const canSelect = Boolean(seat?.isAvailable && (!isSeatSelectable || isSeatSelectable(seat)));
+  const canClick = canSelect || isSelected;
 
   return (
     <button
       type="button"
       className={`seat-cell ${canSelect ? "seat-available" : "seat-unavailable"} ${isSelected ? "seat-selected" : ""}`}
-      disabled={!canSelect}
-      onClick={() => canSelect && seat && onSelectSeat(seat)}
+      disabled={!canClick}
+      onClick={() => canClick && seat && onSelectSeat(seat)}
       key={key}
     >
       {seat?.number ?? "X"}

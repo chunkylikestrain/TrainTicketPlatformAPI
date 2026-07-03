@@ -1,0 +1,178 @@
+{
+  "scheduleId": 2026,
+  "orderId": 138608130,
+  "trainOrderId": 501491243,
+  "name": "POJEZIERZE",
+  "carrierCode": "IC",
+  "nationalNumber": "5710",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 9209,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "09:44:00"
+    },
+    {
+      "stationId": 9233,
+      "orderNumber": 2,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5710",
+      "arrivalTime": "09:47:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "09:48:00"
+    },
+    {
+      "stationId": 22004,
+      "orderNumber": 8,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5710",
+      "arrivalTime": "10:10:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "10:11:30"
+    },
+    {
+      "stationId": 21808,
+      "orderNumber": 11,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5710",
+      "arrivalTime": "10:29:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "2",
+      "departureTrack": "4",
+      "departureTime": "10:30:00"
+    },
+    {
+      "stationId": 20909,
+      "orderNumber": 15,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5710",
+      "arrivalTime": "10:50:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "3",
+      "departureTrack": "6",
+      "departureTime": "10:51:00"
+    },
+    {
+      "stationId": 20743,
+      "orderNumber": 17,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5710",
+      "arrivalTime": "11:02:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "11:03:30"
+    },
+    {
+      "stationId": 20719,
+      "orderNumber": 18,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5710",
+      "arrivalTime": "11:11:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "11:12:30"
+    },
+    {
+      "stationId": 19901,
+      "orderNumber": 21,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5710",
+      "arrivalTime": "11:26:18",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "11:27:18"
+    },
+    {
+      "stationId": 19794,
+      "orderNumber": 22,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5710",
+      "arrivalTime": "11:30:06",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "11:31:06"
+    },
+    {
+      "stationId": 19703,
+      "orderNumber": 23,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5710",
+      "arrivalTime": "11:34:06",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "4",
+      "departureTrack": "7",
+      "departureTime": "11:36:00"
+    },
+    {
+      "stationId": 18705,
+      "orderNumber": 30,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5710",
+      "arrivalTime": "11:59:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "3",
+      "departureTrack": "1",
+      "departureTime": "12:00:30"
+    },
+    {
+      "stationId": 32003,
+      "orderNumber": 35,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5710",
+      "arrivalTime": "12:15:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "12:16:30"
+    },
+    {
+      "stationId": 30809,
+      "orderNumber": 42,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5710",
+      "arrivalTime": "12:31:12",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5710",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "12:32:12"
+    },
+    {
+      "stationId": 30601,
+      "orderNumber": 51,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5711",
+      "arrivalTime": "12:59:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5711",
+      "departurePlatform": "1",
+      "departureTrack": "16"
+    }
+  ]
+}

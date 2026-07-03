@@ -14,6 +14,7 @@ function DataRequestPage() {
   const [marketingConsent, setMarketingConsent] = useState(false);
   const [electronicInfoConsent, setElectronicInfoConsent] = useState(false);
   const [showError, setShowError] = useState(false);
+  const [showControllerDetails, setShowControllerDetails] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [apiError, setApiError] = useState("");
   const bookingId = searchParams.get("bookingId") ?? "";
@@ -135,17 +136,15 @@ function DataRequestPage() {
 
         <p className="required-note">* Required field</p>
 
-        <div className="consent-row">
-          <button
-            type="button"
-            className={`consent-switch ${
-              acceptedTerms && marketingConsent && electronicInfoConsent ? "consent-switch-on" : ""
-            }`}
-            onClick={handleAllConsents}
-            aria-pressed={acceptedTerms && marketingConsent && electronicInfoConsent}
+        <label className="consent-row">
+          <input
+            checked={acceptedTerms && marketingConsent && electronicInfoConsent}
+            onChange={handleAllConsents}
+            type="checkbox"
           />
+          <span className="consent-check" aria-hidden="true" />
           <strong>Select all consents</strong>
-        </div>
+        </label>
 
         <label className="consent-row">
           <input
@@ -153,7 +152,7 @@ function DataRequestPage() {
             onChange={(event) => setAcceptedTerms(event.target.checked)}
             type="checkbox"
           />
-          <span className={acceptedTerms ? "consent-switch consent-switch-on" : "consent-switch"} aria-hidden="true" />
+          <span className="consent-check" aria-hidden="true" />
           <strong>
             * I declare that I am familiar with the <a href="#terms">ticket regulations</a>, and I accept their
             conditions.
@@ -165,7 +164,26 @@ function DataRequestPage() {
             The controller of your personal data provided for this guest purchase is RailWay Ticket Platform.
             We use this email address to send ticket confirmation and travel documents.
           </p>
-          <button type="button">Details</button>
+          {showControllerDetails && (
+            <div className="data-controller-details">
+              <p>
+                Your data is used only to create the booking, send ticket documents, handle payment confirmation,
+                and support any later refund or passenger-service request linked to this purchase.
+              </p>
+              <p>
+                Mandatory consent is required to complete the ticket contract. Optional marketing and profiling
+                consents can be left unchecked.
+              </p>
+            </div>
+          )}
+          <button
+            type="button"
+            className={showControllerDetails ? "data-controller-details-open" : ""}
+            onClick={() => setShowControllerDetails((current) => !current)}
+            aria-expanded={showControllerDetails}
+          >
+            Details
+          </button>
         </section>
 
         <label className="consent-row">
@@ -174,7 +192,7 @@ function DataRequestPage() {
             onChange={(event) => setMarketingConsent(event.target.checked)}
             type="checkbox"
           />
-          <span className={marketingConsent ? "consent-switch consent-switch-on" : "consent-switch"} aria-hidden="true" />
+          <span className="consent-check" aria-hidden="true" />
           <strong>
             I consent to profiling purchase data in order to optimize the commercial offer.
           </strong>
@@ -186,10 +204,7 @@ function DataRequestPage() {
             onChange={(event) => setElectronicInfoConsent(event.target.checked)}
             type="checkbox"
           />
-          <span
-            className={electronicInfoConsent ? "consent-switch consent-switch-on" : "consent-switch"}
-            aria-hidden="true"
-          />
+          <span className="consent-check" aria-hidden="true" />
           <strong>
             I consent to sending information electronically to the e-mail address provided.
           </strong>

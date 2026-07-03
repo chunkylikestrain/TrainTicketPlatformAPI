@@ -1,0 +1,149 @@
+{
+  "scheduleId": 2026,
+  "orderId": 923871205,
+  "trainOrderId": 824160746,
+  "name": "WETLINA",
+  "carrierCode": "IC",
+  "nationalNumber": "33110",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 83758,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "33110",
+      "departurePlatform": "BUS",
+      "departureTime": "04:52:00"
+    },
+    {
+      "stationId": 83600,
+      "orderNumber": 3,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "33110",
+      "arrivalTime": "05:01:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "33110",
+      "departurePlatform": "BUS",
+      "departureTime": "05:02:00"
+    },
+    {
+      "stationId": 83725,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "33110",
+      "arrivalTime": "05:20:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "33110",
+      "departurePlatform": "BUS",
+      "departureTime": "05:21:00"
+    },
+    {
+      "stationId": 83501,
+      "orderNumber": 8,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "33110",
+      "arrivalTime": "05:57:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "33110",
+      "departurePlatform": "BUS",
+      "departureTime": "05:58:00"
+    },
+    {
+      "stationId": 83410,
+      "orderNumber": 12,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "33110",
+      "arrivalPlatform": "BUS",
+      "arrivalTime": "06:30:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "33110",
+      "departurePlatform": "2",
+      "departureTrack": "3",
+      "departureTime": "06:40:00"
+    },
+    {
+      "stationId": 81786,
+      "orderNumber": 15,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "33110",
+      "arrivalTime": "07:02:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "33110",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "07:03:00"
+    },
+    {
+      "stationId": 81703,
+      "orderNumber": 16,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "33110",
+      "arrivalTime": "07:12:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "33110",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "07:13:30"
+    },
+    {
+      "stationId": 81067,
+      "orderNumber": 25,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "33110",
+      "arrivalTime": "07:53:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "33110",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "07:54:00"
+    },
+    {
+      "stationId": 80986,
+      "orderNumber": 28,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "33110",
+      "arrivalTime": "08:07:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "33110",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "08:08:30"
+    },
+    {
+      "stationId": 80630,
+      "orderNumber": 34,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "33110",
+      "arrivalTime": "08:28:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "33110",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "08:33:00"
+    },
+    {
+      "stationId": 79905,
+      "orderNumber": 46,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "33110",
+      "arrivalTime": "09:10:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "33110",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 80416,
+      "orderNumber": 48,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "33110",
+      "arrivalTime": "09:16:00",
+      "departureTrainNumber": "033111",
+      "departurePlatform": "5",
+      "departureTrack": "12"
+    }
+  ]
+}

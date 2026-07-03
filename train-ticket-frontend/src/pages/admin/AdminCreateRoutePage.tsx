@@ -75,6 +75,14 @@ function AdminCreateRoutePage() {
   const to = toStation?.name ?? "Destination station";
   const code = fromStation && toStation ? `${fromStation.code}-${toStation.code}` : "";
   const routeName = fromStation && toStation ? `${fromStation.name} to ${toStation.name}` : "";
+  const routeFingerprint = fromStation && toStation
+    ? [fromStation, ...intermediateStops, toStation].map((station) => station.code.toUpperCase()).join(">")
+    : "";
+  const adminDisplayName = fromStation && toStation
+    ? intermediateStops.length > 0
+      ? `${fromStation.name} to ${toStation.name} via ${intermediateStops.slice(0, 3).map((station) => station.name).join(", ")}`
+      : routeName
+    : "";
   const stopOptions = stations.filter((station) =>
     station.id !== Number(fromId) &&
     station.id !== Number(toId) &&
@@ -88,6 +96,8 @@ function AdminCreateRoutePage() {
     const routePayload = {
       code,
       name: routeName,
+      adminDisplayName,
+      routeFingerprint,
       departureStationId: Number(fromId),
       arrivalStationId: Number(toId),
       distanceKm: Number(distance),
@@ -242,7 +252,8 @@ function AdminCreateRoutePage() {
           <span className="admin-preview-icon"><ShareAltOutlined /></span>
           <small>Preview</small>
           <h2>{code || "Route code"}</h2>
-          <p>{from} to {to}</p>
+          <p>{adminDisplayName || `${from} to ${to}`}</p>
+          {routeFingerprint && <small>{routeFingerprint}</small>}
           {intermediateStops.length > 0 && (
             <ol className="admin-preview-stops">
               {intermediateStops.map((station) => <li key={station.id}>{station.name}</li>)}

@@ -1,0 +1,142 @@
+{
+  "scheduleId": 2026,
+  "orderId": 547476784,
+  "trainOrderId": 705690686,
+  "name": "DASZYŃSKI",
+  "carrierCode": "IC",
+  "nationalNumber": "9902",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 24000,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9902",
+      "departurePlatform": "3",
+      "departureTrack": "3",
+      "departureTime": "05:15:00"
+    },
+    {
+      "stationId": 279919,
+      "orderNumber": 2,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9902",
+      "arrivalTime": "05:18:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9902",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "05:19:00"
+    },
+    {
+      "stationId": 24539,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9902",
+      "arrivalTime": "05:29:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9902",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "05:30:00"
+    },
+    {
+      "stationId": 24638,
+      "orderNumber": 7,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9902",
+      "arrivalTime": "05:42:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9902",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "05:43:30"
+    },
+    {
+      "stationId": 24737,
+      "orderNumber": 9,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9902",
+      "arrivalTime": "05:51:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9902",
+      "departurePlatform": "2",
+      "departureTrack": "2a",
+      "departureTime": "05:52:30"
+    },
+    {
+      "stationId": 38307,
+      "orderNumber": 11,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9902",
+      "arrivalTime": "06:04:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9902",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "06:05:00"
+    },
+    {
+      "stationId": 37911,
+      "orderNumber": 13,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9902",
+      "arrivalTime": "06:18:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9902",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "06:18:30"
+    },
+    {
+      "stationId": 37507,
+      "orderNumber": 14,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9902",
+      "arrivalTime": "06:28:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9902",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "06:28:30"
+    },
+    {
+      "stationId": 36343,
+      "orderNumber": 16,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9902",
+      "arrivalTime": "06:36:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9902",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "06:37:00"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 24,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9902",
+      "arrivalTime": "06:55:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9902",
+      "departurePlatform": "1",
+      "departureTrack": "12",
+      "departureTime": "06:57:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 25,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9902",
+      "arrivalTime": "07:03:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9902",
+      "departurePlatform": "4",
+      "departureTrack": "8"
+    }
+  ]
+}

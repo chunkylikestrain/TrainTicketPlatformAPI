@@ -67,7 +67,7 @@ function StudentOfferPage() {
                 <span>From</span>
                 <span>To</span>
                 <span>Date</span>
-                <button type="button" tabIndex={-1}>Search</button>
+                <span className="phone-screen-action">Search</span>
               </div>
             </div>
 

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Reflection;
 using System.Text.Json;
 using TrainTicketPlatformAPI.Data;
+using TrainTicketPlatformAPI.Models;
 
 namespace TrainTicketPlatformAPI.Tests
 {
@@ -80,6 +81,57 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.That(unresolvedValues, Is.Empty);
         }
 
+        [Test]
+        public async Task SnapshotStationLookup_MatchesExistingReferenceStationByName()
+        {
+            await using var db = TestHelpers.GetInMemoryDb("SnapshotStationLookup_ByName");
+            var existing = new Station
+            {
+                Code = "KRK",
+                NormalizedCode = "KRK",
+                Name = "Kraków Główny",
+                NormalizedName = "KRAKÓW GŁÓWNY",
+                City = "Kraków"
+            };
+            db.Stations.Add(existing);
+            await db.SaveChangesAsync();
+
+            var method = typeof(DevelopmentSeedData).GetMethod(
+                "FindSnapshotStationAsync",
+                BindingFlags.NonPublic | BindingFlags.Static)
+                ?? throw new MissingMethodException(nameof(DevelopmentSeedData), "FindSnapshotStationAsync");
+
+            var task = (Task<Station?>)method.Invoke(
+                null,
+                [
+                    db,
+                    "PLK",
+                    80416,
+                    "KRAKOW80416",
+                    "Kraków Główny",
+                    CancellationToken.None
+                ])!;
+            var station = await task;
+
+            Assert.That(station, Is.Not.Null);
+            Assert.That(station!.Id, Is.EqualTo(existing.Id));
+        }
+
+        [Test]
+        public void CleanStationDisplays_KeepAccentedNamesForSqlServerCollation()
+        {
+            var displays = GetSeedRecords("CleanStationDisplays")
+                .ToDictionary(seed => GetString(seed, "Code"), seed => GetString(seed, "Name"));
+
+            Assert.Multiple(() =>
+            {
+                Assert.That(displays["POZ"], Is.EqualTo("Poznań Główny"));
+                Assert.That(displays["KRK"], Is.EqualTo("Kraków Główny"));
+                Assert.That(displays["WRO"], Is.EqualTo("Wrocław Główny"));
+                Assert.That(displays["GDN"], Is.EqualTo("Gdańsk Główny"));
+            });
+        }
+
         private static IReadOnlyList<object> GetSeedRecords(string fieldName)
         {
             var field = typeof(DevelopmentSeedData).GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Static)
@@ -98,26 +150,36 @@ namespace TrainTicketPlatformAPI.Tests
 
         private static JsonDocument LoadEnrichedStationSnapshot()
         {
-            var directory = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
+            var candidate = Path.Combine(
+                FindSeedSnapshotDirectory(),
+                "ic-station-candidates-locality-enriched-2026-07-03.json");
 
+            if (File.Exists(candidate))
+            {
+                return JsonDocument.Parse(File.ReadAllText(candidate));
+            }
+
+            throw new FileNotFoundException("Could not find enriched station candidate snapshot.");
+        }
+
+        private static string FindSeedSnapshotDirectory()
+        {
+            var directory = new DirectoryInfo(TestContext.CurrentContext.TestDirectory);
             while (directory is not null)
             {
                 var candidate = Path.Combine(
                     directory.FullName,
                     "TrainTicketPlatformAPI",
                     "App_Data",
-                    "SeedSnapshots",
-                    "ic-station-candidates-locality-enriched-2026-07-03.json");
+                    "SeedSnapshots");
 
-                if (File.Exists(candidate))
-                {
-                    return JsonDocument.Parse(File.ReadAllText(candidate));
-                }
+                if (Directory.Exists(candidate))
+                    return candidate;
 
                 directory = directory.Parent;
             }
 
-            throw new FileNotFoundException("Could not find enriched station candidate snapshot.");
+            throw new DirectoryNotFoundException("Could not find seed snapshot directory.");
         }
     }
 }

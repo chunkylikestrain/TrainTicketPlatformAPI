@@ -1,0 +1,212 @@
+{
+  "scheduleId": 2026,
+  "orderId": 254033801,
+  "trainOrderId": 138459597,
+  "name": "GROTTGER",
+  "carrierCode": "IC",
+  "nationalNumber": "6304",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 60103,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6304",
+      "departurePlatform": "2",
+      "departureTrack": "4",
+      "departureTime": "05:10:00"
+    },
+    {
+      "stationId": 60608,
+      "orderNumber": 11,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6304",
+      "arrivalTime": "05:48:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6304",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "05:50:30"
+    },
+    {
+      "stationId": 67009,
+      "orderNumber": 21,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6304",
+      "arrivalTime": "06:11:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6304",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "06:15:00"
+    },
+    {
+      "stationId": 69708,
+      "orderNumber": 29,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6304",
+      "arrivalTime": "06:43:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6304",
+      "departurePlatform": "2",
+      "departureTrack": "5",
+      "departureTime": "06:52:00"
+    },
+    {
+      "stationId": 69823,
+      "orderNumber": 30,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6304",
+      "arrivalTime": "06:58:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6304",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "06:59:00"
+    },
+    {
+      "stationId": 73312,
+      "orderNumber": 34,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6304",
+      "arrivalTime": "07:13:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6304",
+      "departurePlatform": "2",
+      "departureTrack": "3",
+      "departureTime": "07:16:00"
+    },
+    {
+      "stationId": 80416,
+      "orderNumber": 53,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6304",
+      "arrivalTime": "08:10:06",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6305",
+      "departurePlatform": "2",
+      "departureTrack": "3",
+      "departureTime": "08:15:00"
+    },
+    {
+      "stationId": 79905,
+      "orderNumber": 55,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6305",
+      "arrivalTime": "08:19:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6305",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "08:21:00"
+    },
+    {
+      "stationId": 79657,
+      "orderNumber": 61,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6305",
+      "arrivalTime": "08:38:06",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6305",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "08:39:06"
+    },
+    {
+      "stationId": 80630,
+      "orderNumber": 67,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6305",
+      "arrivalTime": "08:56:36",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6305",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "08:58:00"
+    },
+    {
+      "stationId": 81208,
+      "orderNumber": 71,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6305",
+      "arrivalTime": "09:13:18",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6305",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "09:14:18"
+    },
+    {
+      "stationId": 82669,
+      "orderNumber": 76,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6305",
+      "arrivalTime": "09:36:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6305",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "09:39:00"
+    },
+    {
+      "stationId": 83022,
+      "orderNumber": 78,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6305",
+      "arrivalTime": "09:49:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6305",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "09:50:30"
+    },
+    {
+      "stationId": 83105,
+      "orderNumber": 81,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6305",
+      "arrivalTime": "10:03:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6305",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "10:04:00"
+    },
+    {
+      "stationId": 83261,
+      "orderNumber": 83,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6305",
+      "arrivalTime": "10:13:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6305",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "10:14:00"
+    },
+    {
+      "stationId": 84434,
+      "orderNumber": 89,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6305",
+      "arrivalTime": "10:34:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "6305",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 84400,
+      "orderNumber": 91,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "6305",
+      "arrivalTime": "10:38:00",
+      "departureTrainNumber": "06305",
+      "departurePlatform": "1",
+      "departureTrack": "3"
+    }
+  ]
+}

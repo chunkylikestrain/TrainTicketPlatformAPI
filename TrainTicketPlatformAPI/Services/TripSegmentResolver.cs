@@ -45,13 +45,27 @@ namespace TrainTicketPlatformAPI.Services
 
         public static List<RouteSearchStop> BuildOrderedRouteStations(TrainRoute route)
         {
+            var orderedRouteStops = route.RouteStops
+                .OrderBy(stop => stop.StopOrder)
+                .ToList();
+            if (orderedRouteStops.Count > 0 &&
+                orderedRouteStops.First().StationId == route.DepartureStationId)
+            {
+                orderedRouteStops.RemoveAt(0);
+            }
+
+            if (orderedRouteStops.Count > 0 &&
+                orderedRouteStops.Last().StationId == route.ArrivalStationId)
+            {
+                orderedRouteStops.RemoveAt(orderedRouteStops.Count - 1);
+            }
+
             var stops = new List<RouteSearchStop>
             {
                 new(0, route.DepartureStationId, route.DepartureStation)
             };
 
-            stops.AddRange(route.RouteStops
-                .OrderBy(stop => stop.StopOrder)
+            stops.AddRange(orderedRouteStops
                 .Select((stop, index) => new RouteSearchStop(index + 1, stop.StationId, stop.Station, stop)));
 
             stops.Add(new RouteSearchStop(stops.Count, route.ArrivalStationId, route.ArrivalStation));

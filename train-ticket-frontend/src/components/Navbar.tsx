@@ -92,6 +92,7 @@ function Navbar() {
             className="nav-dropdown-trigger"
             aria-haspopup="true"
             aria-expanded={isPassengerMenuOpen}
+            onClick={() => setIsPassengerMenuOpen((current) => !current)}
           >
             For Passengers <span aria-hidden="true">v</span>
           </button>

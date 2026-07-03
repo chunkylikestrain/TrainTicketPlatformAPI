@@ -1,0 +1,73 @@
+{
+  "scheduleId": 2026,
+  "orderId": 870809815,
+  "trainOrderId": 563776350,
+  "carrierCode": "IC",
+  "nationalNumber": "1300",
+  "commercialCategorySymbol": "EIP",
+  "operatingDates": [
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-04",
+    "2026-07-05",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-11"
+  ],
+  "stations": [
+    {
+      "stationId": 38653,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "01300",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1300",
+      "departurePlatform": "1",
+      "departureTrack": "10",
+      "departureDay": 1,
+      "departureTime": "05:41:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "1300",
+      "arrivalDay": 1,
+      "arrivalTime": "05:47:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1300",
+      "departurePlatform": "4",
+      "departureTrack": "8",
+      "departureDay": 1,
+      "departureTime": "05:52:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 7,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "1300",
+      "arrivalDay": 1,
+      "arrivalTime": "05:56:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1301",
+      "departurePlatform": "7",
+      "departureTrack": "3",
+      "departureDay": 1,
+      "departureTime": "05:57:00"
+    },
+    {
+      "stationId": 80416,
+      "orderNumber": 45,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "1301",
+      "arrivalDay": 1,
+      "arrivalTime": "08:56:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1301",
+      "departurePlatform": "3",
+      "departureTrack": "1"
+    }
+  ]
+}

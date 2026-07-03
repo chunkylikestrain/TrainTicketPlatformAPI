@@ -109,9 +109,9 @@ function TripCard({ trip, rank = 0, isExpanded = false, purchaseQuery = "", onSe
       {isExpanded && (
         <div className="connection-expanded-panel">
           <div className="connection-details">
-            <button type="button" className="details-toggle">
+            <span className="details-toggle">
               Show connection details
-            </button>
+            </span>
 
             <div className="route-timeline">
               {(trip.callingPattern.length > 0
@@ -188,7 +188,6 @@ function TripCard({ trip, rank = 0, isExpanded = false, purchaseQuery = "", onSe
       )}
 
       <div className="connection-card-footer">
-        <button type="button">Check seat availability</button>
         {!isExpanded && (
           <button type="button" className="trip-action" onClick={onSelect}>
             Buy a ticket

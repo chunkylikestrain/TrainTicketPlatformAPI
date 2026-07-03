@@ -378,6 +378,8 @@ function resolveStationInput(value: string, stations: Station[]) {
 function normalizeSearchText(value: string) {
   return value
     .trim()
+    .replace(/[Łł]/g, "l")
+    .replace(/[Đđ]/g, "d")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();

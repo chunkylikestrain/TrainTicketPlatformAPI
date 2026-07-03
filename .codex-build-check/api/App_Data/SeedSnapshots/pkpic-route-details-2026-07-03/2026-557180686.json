@@ -1,0 +1,280 @@
+{
+  "scheduleId": 2026,
+  "orderId": 557180686,
+  "trainOrderId": 217318980,
+  "name": "LUBUSZANIN",
+  "carrierCode": "IC",
+  "nationalNumber": "1760",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 24000,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1760",
+      "departurePlatform": "3",
+      "departureTrack": "3",
+      "departureTime": "15:29:00"
+    },
+    {
+      "stationId": 279919,
+      "orderNumber": 2,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1760",
+      "arrivalTime": "15:32:12",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1760",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "15:33:12"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 24,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1760",
+      "arrivalTime": "16:56:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1760",
+      "departurePlatform": "1",
+      "departureTrack": "10",
+      "departureTime": "17:05:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 25,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1760",
+      "arrivalTime": "17:11:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1760",
+      "departurePlatform": "4",
+      "departureTrack": "6",
+      "departureTime": "17:32:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 27,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1760",
+      "arrivalTime": "17:35:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "7",
+      "departureTrack": "3",
+      "departureTime": "17:36:30"
+    },
+    {
+      "stationId": 34603,
+      "orderNumber": 35,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "18:02:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "18:03:30"
+    },
+    {
+      "stationId": 32904,
+      "orderNumber": 39,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "18:16:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "18:17:30"
+    },
+    {
+      "stationId": 32201,
+      "orderNumber": 43,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "18:37:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "18:38:30"
+    },
+    {
+      "stationId": 33191,
+      "orderNumber": 50,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "19:01:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "19:02:00"
+    },
+    {
+      "stationId": 33100,
+      "orderNumber": 52,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "19:16:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "19:17:30"
+    },
+    {
+      "stationId": 30122,
+      "orderNumber": 55,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "19:30:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "19:31:30"
+    },
+    {
+      "stationId": 30007,
+      "orderNumber": 60,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "19:44:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "2",
+      "departureTrack": "7",
+      "departureTime": "19:45:00"
+    },
+    {
+      "stationId": 28472,
+      "orderNumber": 66,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "20:03:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "20:04:30"
+    },
+    {
+      "stationId": 30601,
+      "orderNumber": 68,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "20:14:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "20:40:00"
+    },
+    {
+      "stationId": 27201,
+      "orderNumber": 72,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "21:00:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "21:01:30"
+    },
+    {
+      "stationId": 26211,
+      "orderNumber": 73,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "21:13:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "21:14:30"
+    },
+    {
+      "stationId": 26146,
+      "orderNumber": 75,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "21:23:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "21:24:00"
+    },
+    {
+      "stationId": 26104,
+      "orderNumber": 78,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "21:28:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "1",
+      "departureTrack": "7",
+      "departureTime": "21:49:00"
+    },
+    {
+      "stationId": 26161,
+      "orderNumber": 82,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "21:55:18",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "21:56:18"
+    },
+    {
+      "stationId": 27300,
+      "orderNumber": 83,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1761",
+      "arrivalTime": "22:06:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1761",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "22:07:30"
+    },
+    {
+      "stationId": 27805,
+      "orderNumber": 88,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1760",
+      "arrivalTime": "22:25:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1760",
+      "departurePlatform": "2",
+      "departureTrack": "2"
+    }
+  ],
+  "connections": [
+    {
+      "id": "3632",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "21,22,23",
+      "train1OrderId": 557180686,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 442737856,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-03"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,580 @@
+{
+  "generatedAtUtc": "2026-07-03T07:18:08Z",
+  "sourceRouteIndexFile": "pkpic-route-index-2026-07-03.json",
+  "operatingDate": "2026-07-03",
+  "phase": "phase-2-local-baseline",
+  "apiCallsSpent": 0,
+  "notes": [
+    "OpenRailway route index does not include endpoints or ordered stops, so exact missing route-shape comparison requires phase 3 route-detail cache.",
+    "This artifact captures current RailBook route fingerprints and endpoint-pair coverage for later comparison."
+  ],
+  "pkpicRouteRecordCount": 563,
+  "pkpicDistinctTrainNameCount": 237,
+  "pkpicUnnamedRouteRecordCount": 57,
+  "pkpicDistinctOrderIdCount": 563,
+  "pkpicDistinctTrainOrderIdCount": 563,
+  "seededRouteShapeCount": 14,
+  "seededDirectedEndpointPairCount": 14,
+  "seededUndirectedEndpointPairCount": 9,
+  "seededEndpointPairsWithMultipleVariants": [],
+  "seededUndirectedPairsWithBothDirectionsOrVariants": [
+    {
+      "endpointPair": "GDN>WAW",
+      "routeCount": 2
+    },
+    {
+      "endpointPair": "KRK>WAW",
+      "routeCount": 2
+    },
+    {
+      "endpointPair": "POZ>WAW",
+      "routeCount": 2
+    },
+    {
+      "endpointPair": "RZE>WAW",
+      "routeCount": 2
+    },
+    {
+      "endpointPair": "WAW>WRO",
+      "routeCount": 2
+    }
+  ],
+  "topPkpicTrainNamesInIndex": [
+    {
+      "name": "(unnamed)",
+      "routeRecordCount": 57
+    },
+    {
+      "name": "BERLIN-WARSZAWA-EXPRESS",
+      "routeRecordCount": 14
+    },
+    {
+      "name": "BALTIC EXPRESS",
+      "routeRecordCount": 8
+    },
+    {
+      "name": "SILESIA",
+      "routeRecordCount": 6
+    },
+    {
+      "name": "LUBUSZANIN",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "STRZELECKI",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "GÓRSKI",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "JADWIGA",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "HEWELIUSZ",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "DANUBIUS",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "BYSTRZYCA",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "KORSARZ",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "SWAROŻYC",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "KARPATY",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "MALINOWSKI",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "SZTYGAR",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "WYDMY",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "PRZEMYŚLANIN",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "MORCINEK",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "ZAMOYSKI",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "MAŁOPOLSKA",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "PORTA MORAVICA",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "WISŁOK",
+      "routeRecordCount": 4
+    },
+    {
+      "name": "DASZYŃSKI",
+      "routeRecordCount": 3
+    },
+    {
+      "name": "REYMONT",
+      "routeRecordCount": 2
+    },
+    {
+      "name": "SZCZELINIEC",
+      "routeRecordCount": 2
+    },
+    {
+      "name": "KRAJNA",
+      "routeRecordCount": 2
+    },
+    {
+      "name": "KASZTELAN",
+      "routeRecordCount": 2
+    },
+    {
+      "name": "WIGRY",
+      "routeRecordCount": 2
+    },
+    {
+      "name": "LEDNICA",
+      "routeRecordCount": 2
+    }
+  ],
+  "seededRoutes": [
+    {
+      "routeCode": "KRK-GDY",
+      "originCode": "KRK",
+      "originName": "Kraków Główny",
+      "destinationCode": "GDY",
+      "destinationName": "Gdynia Główna",
+      "distanceKm": 600.0,
+      "durationMinutes": 360,
+      "intermediateStopCount": 9,
+      "stopCodes": [
+        "KRK",
+        "WAWZ",
+        "WAW",
+        "WAWW",
+        "ILA",
+        "MAL",
+        "TCZ",
+        "GDN",
+        "GDW",
+        "SOP",
+        "GDY"
+      ],
+      "stopNames": [
+        "Kraków Główny",
+        "Warszawa Zachodnia",
+        "Warszawa Centralna",
+        "Warszawa Wschodnia",
+        "Iława Główna",
+        "Malbork",
+        "Tczew",
+        "Gdańsk Główny",
+        "Gdańsk Wrzeszcz",
+        "Sopot",
+        "Gdynia Główna"
+      ],
+      "routeFingerprint": "KRK>WAWZ>WAW>WAWW>ILA>MAL>TCZ>GDN>GDW>SOP>GDY",
+      "adminDisplayName": "Kraków Główny to Gdynia Główna via Warszawa Zachodnia, Warszawa Centralna, Warszawa Wschodnia"
+    },
+    {
+      "routeCode": "KRP-GDY",
+      "originCode": "KRP",
+      "originName": "Kraków Płaszów",
+      "destinationCode": "GDY",
+      "destinationName": "Gdynia Główna",
+      "distanceKm": 650.0,
+      "durationMinutes": 360,
+      "intermediateStopCount": 10,
+      "stopCodes": [
+        "KRP",
+        "KRK",
+        "WAWZ",
+        "WAW",
+        "WAWW",
+        "ILA",
+        "MAL",
+        "TCZ",
+        "GDN",
+        "GDW",
+        "SOP",
+        "GDY"
+      ],
+      "stopNames": [
+        "Kraków Płaszów",
+        "Kraków Główny",
+        "Warszawa Zachodnia",
+        "Warszawa Centralna",
+        "Warszawa Wschodnia",
+        "Iława Główna",
+        "Malbork",
+        "Tczew",
+        "Gdańsk Główny",
+        "Gdańsk Wrzeszcz",
+        "Sopot",
+        "Gdynia Główna"
+      ],
+      "routeFingerprint": "KRP>KRK>WAWZ>WAW>WAWW>ILA>MAL>TCZ>GDN>GDW>SOP>GDY",
+      "adminDisplayName": "Kraków Płaszów to Gdynia Główna via Kraków Główny, Warszawa Zachodnia, Warszawa Centralna"
+    },
+    {
+      "routeCode": "WAW-KRK",
+      "originCode": "WAW",
+      "originName": "Warszawa Centralna",
+      "destinationCode": "KRK",
+      "destinationName": "Kraków Główny",
+      "distanceKm": 293.0,
+      "durationMinutes": 160,
+      "intermediateStopCount": 2,
+      "stopCodes": [
+        "WAW",
+        "WAWZ",
+        "KRZ",
+        "KRK"
+      ],
+      "stopNames": [
+        "Warszawa Centralna",
+        "Warszawa Zachodnia",
+        "Krzeszowice",
+        "Kraków Główny"
+      ],
+      "routeFingerprint": "WAW>WAWZ>KRZ>KRK",
+      "adminDisplayName": "Warszawa Centralna to Kraków Główny via Warszawa Zachodnia, Krzeszowice"
+    },
+    {
+      "routeCode": "KRK-WAW",
+      "originCode": "KRK",
+      "originName": "Kraków Główny",
+      "destinationCode": "WAW",
+      "destinationName": "Warszawa Centralna",
+      "distanceKm": 293.0,
+      "durationMinutes": 160,
+      "intermediateStopCount": 2,
+      "stopCodes": [
+        "KRK",
+        "KRZ",
+        "WAWZ",
+        "WAW"
+      ],
+      "stopNames": [
+        "Kraków Główny",
+        "Krzeszowice",
+        "Warszawa Zachodnia",
+        "Warszawa Centralna"
+      ],
+      "routeFingerprint": "KRK>KRZ>WAWZ>WAW",
+      "adminDisplayName": "Kraków Główny to Warszawa Centralna via Krzeszowice, Warszawa Zachodnia"
+    },
+    {
+      "routeCode": "WAW-GDN",
+      "originCode": "WAW",
+      "originName": "Warszawa Centralna",
+      "destinationCode": "GDN",
+      "destinationName": "Gdańsk Główny",
+      "distanceKm": 340.0,
+      "durationMinutes": 175,
+      "intermediateStopCount": 4,
+      "stopCodes": [
+        "WAW",
+        "WAWW",
+        "ILA",
+        "MAL",
+        "TCZ",
+        "GDN"
+      ],
+      "stopNames": [
+        "Warszawa Centralna",
+        "Warszawa Wschodnia",
+        "Iława Główna",
+        "Malbork",
+        "Tczew",
+        "Gdańsk Główny"
+      ],
+      "routeFingerprint": "WAW>WAWW>ILA>MAL>TCZ>GDN",
+      "adminDisplayName": "Warszawa Centralna to Gdańsk Główny via Warszawa Wschodnia, Iława Główna, Malbork"
+    },
+    {
+      "routeCode": "GDN-WAW",
+      "originCode": "GDN",
+      "originName": "Gdańsk Główny",
+      "destinationCode": "WAW",
+      "destinationName": "Warszawa Centralna",
+      "distanceKm": 340.0,
+      "durationMinutes": 175,
+      "intermediateStopCount": 4,
+      "stopCodes": [
+        "GDN",
+        "TCZ",
+        "MAL",
+        "ILA",
+        "WAWW",
+        "WAW"
+      ],
+      "stopNames": [
+        "Gdańsk Główny",
+        "Tczew",
+        "Malbork",
+        "Iława Główna",
+        "Warszawa Wschodnia",
+        "Warszawa Centralna"
+      ],
+      "routeFingerprint": "GDN>TCZ>MAL>ILA>WAWW>WAW",
+      "adminDisplayName": "Gdańsk Główny to Warszawa Centralna via Tczew, Malbork, Iława Główna"
+    },
+    {
+      "routeCode": "RZE-WAW",
+      "originCode": "RZE",
+      "originName": "Rzeszów Główny",
+      "destinationCode": "WAW",
+      "destinationName": "Warszawa Centralna",
+      "distanceKm": 330.0,
+      "durationMinutes": 250,
+      "intermediateStopCount": 4,
+      "stopCodes": [
+        "RZE",
+        "TAR",
+        "KRK",
+        "KRZ",
+        "WAWZ",
+        "WAW"
+      ],
+      "stopNames": [
+        "Rzeszów Główny",
+        "Tarnów",
+        "Kraków Główny",
+        "Krzeszowice",
+        "Warszawa Zachodnia",
+        "Warszawa Centralna"
+      ],
+      "routeFingerprint": "RZE>TAR>KRK>KRZ>WAWZ>WAW",
+      "adminDisplayName": "Rzeszów Główny to Warszawa Centralna via Tarnów, Kraków Główny, Krzeszowice"
+    },
+    {
+      "routeCode": "WAW-RZE",
+      "originCode": "WAW",
+      "originName": "Warszawa Centralna",
+      "destinationCode": "RZE",
+      "destinationName": "Rzeszów Główny",
+      "distanceKm": 330.0,
+      "durationMinutes": 250,
+      "intermediateStopCount": 4,
+      "stopCodes": [
+        "WAW",
+        "WAWZ",
+        "KRZ",
+        "KRK",
+        "TAR",
+        "RZE"
+      ],
+      "stopNames": [
+        "Warszawa Centralna",
+        "Warszawa Zachodnia",
+        "Krzeszowice",
+        "Kraków Główny",
+        "Tarnów",
+        "Rzeszów Główny"
+      ],
+      "routeFingerprint": "WAW>WAWZ>KRZ>KRK>TAR>RZE",
+      "adminDisplayName": "Warszawa Centralna to Rzeszów Główny via Warszawa Zachodnia, Krzeszowice, Kraków Główny"
+    },
+    {
+      "routeCode": "WRO-WAW",
+      "originCode": "WRO",
+      "originName": "Wrocław Główny",
+      "destinationCode": "WAW",
+      "destinationName": "Warszawa Centralna",
+      "distanceKm": 350.0,
+      "durationMinutes": 245,
+      "intermediateStopCount": 3,
+      "stopCodes": [
+        "WRO",
+        "OPO",
+        "CZE",
+        "WAWZ",
+        "WAW"
+      ],
+      "stopNames": [
+        "Wrocław Główny",
+        "Opole Główne",
+        "Częstochowa",
+        "Warszawa Zachodnia",
+        "Warszawa Centralna"
+      ],
+      "routeFingerprint": "WRO>OPO>CZE>WAWZ>WAW",
+      "adminDisplayName": "Wrocław Główny to Warszawa Centralna via Opole Główne, Częstochowa, Warszawa Zachodnia"
+    },
+    {
+      "routeCode": "WAW-WRO",
+      "originCode": "WAW",
+      "originName": "Warszawa Centralna",
+      "destinationCode": "WRO",
+      "destinationName": "Wrocław Główny",
+      "distanceKm": 350.0,
+      "durationMinutes": 245,
+      "intermediateStopCount": 3,
+      "stopCodes": [
+        "WAW",
+        "WAWZ",
+        "CZE",
+        "OPO",
+        "WRO"
+      ],
+      "stopNames": [
+        "Warszawa Centralna",
+        "Warszawa Zachodnia",
+        "Częstochowa",
+        "Opole Główne",
+        "Wrocław Główny"
+      ],
+      "routeFingerprint": "WAW>WAWZ>CZE>OPO>WRO",
+      "adminDisplayName": "Warszawa Centralna to Wrocław Główny via Warszawa Zachodnia, Częstochowa, Opole Główne"
+    },
+    {
+      "routeCode": "POZ-WAW",
+      "originCode": "POZ",
+      "originName": "Poznań Główny",
+      "destinationCode": "WAW",
+      "destinationName": "Warszawa Centralna",
+      "distanceKm": 305.0,
+      "durationMinutes": 170,
+      "intermediateStopCount": 3,
+      "stopCodes": [
+        "POZ",
+        "KON",
+        "KUT",
+        "WAWZ",
+        "WAW"
+      ],
+      "stopNames": [
+        "Poznań Główny",
+        "Konin",
+        "Kutno",
+        "Warszawa Zachodnia",
+        "Warszawa Centralna"
+      ],
+      "routeFingerprint": "POZ>KON>KUT>WAWZ>WAW",
+      "adminDisplayName": "Poznań Główny to Warszawa Centralna via Konin, Kutno, Warszawa Zachodnia"
+    },
+    {
+      "routeCode": "WAW-POZ",
+      "originCode": "WAW",
+      "originName": "Warszawa Centralna",
+      "destinationCode": "POZ",
+      "destinationName": "Poznań Główny",
+      "distanceKm": 305.0,
+      "durationMinutes": 170,
+      "intermediateStopCount": 3,
+      "stopCodes": [
+        "WAW",
+        "WAWZ",
+        "KUT",
+        "KON",
+        "POZ"
+      ],
+      "stopNames": [
+        "Warszawa Centralna",
+        "Warszawa Zachodnia",
+        "Kutno",
+        "Konin",
+        "Poznań Główny"
+      ],
+      "routeFingerprint": "WAW>WAWZ>KUT>KON>POZ",
+      "adminDisplayName": "Warszawa Centralna to Poznań Główny via Warszawa Zachodnia, Kutno, Konin"
+    },
+    {
+      "routeCode": "SZZ-WAW",
+      "originCode": "SZZ",
+      "originName": "Szczecin Główny",
+      "destinationCode": "WAW",
+      "destinationName": "Warszawa Centralna",
+      "distanceKm": 565.0,
+      "durationMinutes": 330,
+      "intermediateStopCount": 5,
+      "stopCodes": [
+        "SZZ",
+        "STG",
+        "POZ",
+        "KON",
+        "KUT",
+        "WAWZ",
+        "WAW"
+      ],
+      "stopNames": [
+        "Szczecin Główny",
+        "Stargard",
+        "Poznań Główny",
+        "Konin",
+        "Kutno",
+        "Warszawa Zachodnia",
+        "Warszawa Centralna"
+      ],
+      "routeFingerprint": "SZZ>STG>POZ>KON>KUT>WAWZ>WAW",
+      "adminDisplayName": "Szczecin Główny to Warszawa Centralna via Stargard, Poznań Główny, Konin"
+    },
+    {
+      "routeCode": "PRZ-KOL",
+      "originCode": "PRZ",
+      "originName": "Przemyśl Główny",
+      "destinationCode": "KOL",
+      "destinationName": "Kołobrzeg",
+      "distanceKm": 950.0,
+      "durationMinutes": 710,
+      "intermediateStopCount": 11,
+      "stopCodes": [
+        "PRZ",
+        "RZE",
+        "TAR",
+        "KRK",
+        "KRP",
+        "KTW",
+        "GLI",
+        "OPO",
+        "WRO",
+        "POZ",
+        "PILA",
+        "KOS",
+        "KOL"
+      ],
+      "stopNames": [
+        "Przemyśl Główny",
+        "Rzeszów Główny",
+        "Tarnów",
+        "Kraków Główny",
+        "Kraków Płaszów",
+        "Katowice",
+        "Gliwice",
+        "Opole Główne",
+        "Wrocław Główny",
+        "Poznań Główny",
+        "Piła Główna",
+        "Koszalin",
+        "Kołobrzeg"
+      ],
+      "routeFingerprint": "PRZ>RZE>TAR>KRK>KRP>KTW>GLI>OPO>WRO>POZ>PILA>KOS>KOL",
+      "adminDisplayName": "Przemyśl Główny to Kołobrzeg via Rzeszów Główny, Tarnów, Kraków Główny"
+    }
+  ]
+}

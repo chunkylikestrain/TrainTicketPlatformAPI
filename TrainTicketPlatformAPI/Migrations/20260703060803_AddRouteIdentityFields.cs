@@ -26,20 +26,56 @@ namespace TrainTicketPlatformAPI.Migrations
                 nullable: false,
                 defaultValue: "");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_TrainRoutes_RouteFingerprint",
-                table: "TrainRoutes",
-                column: "RouteFingerprint",
-                filter: "[RouteFingerprint] <> ''");
+            migrationBuilder.Sql(
+                """
+                UPDATE route
+                SET
+                    RouteFingerprint = LEFT(CONCAT(
+                        departureStation.Code,
+                        CASE
+                            WHEN stopCodes.Value IS NULL OR stopCodes.Value = '' THEN ''
+                            ELSE CONCAT('>', stopCodes.Value)
+                        END,
+                        '>',
+                        arrivalStation.Code), 1200),
+                    AdminDisplayName = LEFT(CASE
+                        WHEN keyStops.Value IS NULL OR keyStops.Value = ''
+                            THEN CONCAT(departureStation.Name, ' to ', arrivalStation.Name)
+                        ELSE CONCAT(departureStation.Name, ' to ', arrivalStation.Name, ' via ', keyStops.Value)
+                    END, 300)
+                FROM TrainRoutes route
+                INNER JOIN Stations departureStation ON departureStation.Id = route.DepartureStationId
+                INNER JOIN Stations arrivalStation ON arrivalStation.Id = route.ArrivalStationId
+                OUTER APPLY
+                (
+                    SELECT STRING_AGG(CONVERT(nvarchar(max), orderedStops.Code), '>') WITHIN GROUP (ORDER BY orderedStops.StopOrder) AS Value
+                    FROM
+                    (
+                        SELECT routeStop.StopOrder, stopStation.Code
+                        FROM TrainRouteStops routeStop
+                        INNER JOIN Stations stopStation ON stopStation.Id = routeStop.StationId
+                        WHERE routeStop.TrainRouteId = route.Id
+                    ) orderedStops
+                ) stopCodes
+                OUTER APPLY
+                (
+                    SELECT STRING_AGG(CONVERT(nvarchar(max), keyStopNames.Name), ', ') WITHIN GROUP (ORDER BY keyStopNames.StopOrder) AS Value
+                    FROM
+                    (
+                        SELECT TOP (3) routeStop.StopOrder, stopStation.Name
+                        FROM TrainRouteStops routeStop
+                        INNER JOIN Stations stopStation ON stopStation.Id = routeStop.StationId
+                        WHERE routeStop.TrainRouteId = route.Id
+                        ORDER BY routeStop.StopOrder
+                    ) keyStopNames
+                ) keyStops
+                WHERE route.RouteFingerprint = '' OR route.AdminDisplayName = '';
+                """);
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropIndex(
-                name: "IX_TrainRoutes_RouteFingerprint",
-                table: "TrainRoutes");
-
             migrationBuilder.DropColumn(
                 name: "AdminDisplayName",
                 table: "TrainRoutes");

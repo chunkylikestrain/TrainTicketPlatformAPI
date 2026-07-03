@@ -1,0 +1,171 @@
+{
+  "scheduleId": 2026,
+  "orderId": 360752440,
+  "trainOrderId": 774238059,
+  "name": "SILESIA",
+  "carrierCode": "IC",
+  "nationalNumber": "41008",
+  "internationalArrivalNumber": "111",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-01",
+    "2026-07-03",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17"
+  ],
+  "stations": [
+    {
+      "stationId": 179223,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "111",
+      "departureTime": "06:22:00"
+    },
+    {
+      "stationId": 67900,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "111",
+      "arrivalTime": "06:28:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "41008",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "06:29:00"
+    },
+    {
+      "stationId": 68403,
+      "orderNumber": 9,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "41008",
+      "arrivalTime": "06:44:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "41008",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "06:45:30"
+    },
+    {
+      "stationId": 68205,
+      "orderNumber": 14,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "41008",
+      "arrivalTime": "06:59:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "41008",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "07:02:00"
+    },
+    {
+      "stationId": 73700,
+      "orderNumber": 22,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "41008",
+      "arrivalTime": "07:36:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "41008",
+      "departurePlatform": "3",
+      "departureTrack": "9",
+      "departureTime": "07:39:00"
+    },
+    {
+      "stationId": 73502,
+      "orderNumber": 37,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "41008",
+      "arrivalTime": "08:13:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "41008",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "08:14:00"
+    },
+    {
+      "stationId": 74500,
+      "orderNumber": 45,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "41008",
+      "arrivalTime": "08:33:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "41008",
+      "departurePlatform": "3",
+      "departureTrack": "8",
+      "departureTime": "08:37:00"
+    },
+    {
+      "stationId": 75309,
+      "orderNumber": 51,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "41008",
+      "arrivalTime": "08:49:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "41008",
+      "departurePlatform": "1",
+      "departureTrack": "4",
+      "departureTime": "08:50:00"
+    },
+    {
+      "stationId": 64899,
+      "orderNumber": 55,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "41008",
+      "arrivalTime": "09:23:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "41008",
+      "departurePlatform": "1",
+      "departureTrack": "4",
+      "departureTime": "09:24:00"
+    },
+    {
+      "stationId": 48959,
+      "orderNumber": 58,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "41008",
+      "arrivalTime": "09:49:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "41008",
+      "departurePlatform": "2",
+      "departureTrack": "4",
+      "departureTime": "09:50:30"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 69,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "41008",
+      "arrivalTime": "10:41:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "41009",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 71,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "41009",
+      "arrivalTime": "10:48:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "41009",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 72,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "41009",
+      "arrivalTime": "10:55:00",
+      "departureTrainNumber": "041009",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    }
+  ]
+}

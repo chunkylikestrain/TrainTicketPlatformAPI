@@ -11,6 +11,9 @@ namespace TrainTicketPlatformAPI.Services
         private static readonly TimeSpan MaximumTransferTime = TimeSpan.FromHours(3);
         private const int MaximumItinerarySegments = 3;
         private const int MaximumItineraryResults = 60;
+        private const int MaximumStartSegmentsPerStarterTrain = 8;
+        private const int MaximumItineraryPathsPerStartSegment = 8;
+        private const int MaximumItineraryResultsPerStarterTrain = 1;
 
         private readonly TrainTicketDbContext _db;
 
@@ -32,9 +35,12 @@ namespace TrainTicketPlatformAPI.Services
             var arrival = TripSegmentResolver.NormalizeSearchText(to);
             var travelDate = date.Date;
             var notBefore = BuildNotBefore(travelDate, time);
+            var searchWindowStart = travelDate.AddDays(-1);
+            var searchWindowEnd = travelDate.AddDays(1);
 
             var trips = await _db.Trips
                 .AsNoTracking()
+                .AsSplitQuery()
                 .Include(t => t.Train)
                 .Include(t => t.TrainRoute)
                     .ThenInclude(r => r.DepartureStation)
@@ -49,7 +55,8 @@ namespace TrainTicketPlatformAPI.Services
                 .Include(t => t.Fares)
                 .Where(t =>
                     t.TrainRoute.IsActive &&
-                    t.DepartureTime.Date == travelDate)
+                    t.DepartureTime < searchWindowEnd &&
+                    t.ArrivalTime >= searchWindowStart)
                 .OrderBy(t => t.DepartureTime)
                 .ToListAsync();
 
@@ -57,6 +64,7 @@ namespace TrainTicketPlatformAPI.Services
                 .Select(trip => TryBuildSearchResult(trip, departure, arrival))
                 .Where(result => result != null)
                 .Select(result => result!)
+                .Where(result => result.DepartureTime.Date == travelDate)
                 .Where(result => !notBefore.HasValue || result.DepartureTime >= notBefore.Value)
                 .OrderBy(result => result.DepartureTime);
         }
@@ -74,9 +82,12 @@ namespace TrainTicketPlatformAPI.Services
             var arrival = TripSegmentResolver.NormalizeSearchText(to);
             var travelDate = date.Date;
             var notBefore = BuildNotBefore(travelDate, time);
+            var searchWindowStart = travelDate.AddDays(-1);
+            var searchWindowEnd = travelDate.AddDays(1);
 
             var trips = await _db.Trips
                 .AsNoTracking()
+                .AsSplitQuery()
                 .Include(t => t.Train)
                 .Include(t => t.TrainRoute)
                     .ThenInclude(r => r.DepartureStation)
@@ -91,29 +102,37 @@ namespace TrainTicketPlatformAPI.Services
                 .Include(t => t.Fares)
                 .Where(t =>
                     t.TrainRoute.IsActive &&
-                    t.DepartureTime.Date == travelDate)
+                    t.DepartureTime < searchWindowEnd &&
+                    t.ArrivalTime >= searchWindowStart)
                 .OrderBy(t => t.DepartureTime)
                 .ToListAsync();
 
-            var candidates = trips
-                .SelectMany(BuildSegmentCandidates)
+            var contexts = trips
+                .Select(BuildItineraryTripContext)
+                .Where(context => context.RouteStations.Count > 1)
+                .ToList();
+
+            var startSegments = BuildCandidatesFromQuery(contexts, departure)
+                .Where(segment => TripSegmentResolver.StationMatches(segment.DepartureStation, departure))
+                .Where(segment => segment.DepartureTime.Date == travelDate)
+                .Where(segment => !notBefore.HasValue || segment.DepartureTime >= notBefore.Value)
                 .OrderBy(segment => segment.DepartureTime)
                 .ThenBy(segment => segment.ArrivalTime)
                 .ToList();
-
-            var startSegments = candidates
-                .Where(segment => TripSegmentResolver.StationMatches(segment.DepartureStation, departure))
-                .Where(segment => !notBefore.HasValue || segment.DepartureTime >= notBefore.Value)
-                .ToList();
+            startSegments = LimitStartSegmentVariants(startSegments, arrival).ToList();
             var itineraries = new List<List<ItinerarySegmentCandidate>>();
 
             foreach (var start in startSegments)
-                BuildItineraryPaths(start, candidates, arrival, [start], itineraries);
+            {
+                var startItineraries = new List<List<ItinerarySegmentCandidate>>();
+                BuildItineraryPaths(start, contexts, arrival, [start], startItineraries);
+                itineraries.AddRange(startItineraries.Take(MaximumItineraryPathsPerStartSegment));
+            }
 
             var deduplicatedItineraries = DeduplicatePracticalItineraries(
                 itineraries.Select(ToItineraryDto));
 
-            return deduplicatedItineraries
+            return LimitStarterTrainVariants(deduplicatedItineraries)
                 .OrderBy(itinerary => itinerary.DepartureTime)
                 .ThenBy(itinerary => itinerary.ArrivalTime)
                 .ThenBy(itinerary => itinerary.TransferCount)
@@ -192,6 +211,18 @@ namespace TrainTicketPlatformAPI.Services
                 .ThenBy(s => s.Number)
                 .ToListAsync();
 
+            if (seats.Count == 0)
+            {
+                await EnsureSeatsForTrainAsync(trip.TrainId, carriages.Values);
+
+                seats = await _db.Seats
+                    .AsNoTracking()
+                    .Where(s => s.TrainId == trip.TrainId)
+                    .OrderBy(s => s.Coach)
+                    .ThenBy(s => s.Number)
+                    .ToListAsync();
+            }
+
             return seats
                 .OrderBy(s => GetCarriagePosition(s.Coach, carriages))
                 .ThenBy(s => ParseSeatNumber(s.Number))
@@ -221,6 +252,126 @@ namespace TrainTicketPlatformAPI.Services
                 })
                 .ToList();
         }
+
+        private async Task EnsureSeatsForTrainAsync(
+            int trainId,
+            IEnumerable<TrainCarriage> carriages)
+        {
+            if (await _db.Seats.AnyAsync(s => s.TrainId == trainId))
+                return;
+
+            var carriageList = carriages
+                .Where(c => c.SeatCount > 0)
+                .OrderBy(c => c.Position)
+                .ToList();
+
+            var seats = new List<Seat>();
+            foreach (var carriage in carriageList)
+            {
+                foreach (var number in GetSeatNumbersForCarriage(carriage))
+                {
+                    seats.Add(new Seat
+                    {
+                        TrainId = trainId,
+                        Coach = carriage.Coach,
+                        Number = number,
+                        ClassType = GetSeatClassType(carriage, int.Parse(number)),
+                        IsAvailable = true
+                    });
+                }
+            }
+
+            if (seats.Count == 0)
+                return;
+
+            _db.Seats.AddRange(seats);
+            await _db.SaveChangesAsync();
+        }
+
+        private static string GetSeatClassType(TrainCarriage carriage, int seatNumber)
+        {
+            if (carriage.LayoutType.Equals("InternationalSleeper", StringComparison.OrdinalIgnoreCase) ||
+                carriage.LayoutType.Equals("Sleeper", StringComparison.OrdinalIgnoreCase))
+                return "Sleeper";
+
+            if (carriage.LayoutType.Equals("Couchette", StringComparison.OrdinalIgnoreCase) ||
+                carriage.LayoutType.Equals("SixBerthCouchette", StringComparison.OrdinalIgnoreCase))
+                return "Couchette";
+
+            if (carriage.ClassType.Equals("Class 1/2", StringComparison.OrdinalIgnoreCase))
+                return seatNumber <= Math.Max(1, carriage.SeatCount / 3) ? "Class 1" : "Class 2";
+
+            return carriage.ClassType;
+        }
+
+        private static IReadOnlyList<string> GetSeatNumbersForCarriage(TrainCarriage carriage)
+        {
+            if (carriage.LayoutType.Equals("InternationalSleeper", StringComparison.OrdinalIgnoreCase))
+                return InternationalSleeperBerths;
+
+            if (carriage.LayoutType.Equals("Sleeper", StringComparison.OrdinalIgnoreCase))
+                return DomesticSleeperBerths;
+
+            if (carriage.LayoutType.Equals("Couchette", StringComparison.OrdinalIgnoreCase))
+                return FourBerthCouchetteBerths;
+
+            if (carriage.LayoutType.Equals("SixBerthCouchette", StringComparison.OrdinalIgnoreCase))
+                return SixBerthCouchetteBerths;
+
+            return Enumerable.Range(1, carriage.SeatCount)
+                .Select(number => number.ToString())
+                .ToArray();
+        }
+
+        private static readonly string[] InternationalSleeperBerths =
+        [
+            "11", "13", "15",
+            "21", "23", "25",
+            "31", "33", "35",
+            "41", "45",
+            "51", "55",
+            "61", "63", "65",
+            "71", "73", "75",
+            "81", "83", "85"
+        ];
+
+        private static readonly string[] DomesticSleeperBerths =
+        [
+            "11", "13", "15",
+            "21", "23", "25",
+            "31", "33", "35",
+            "41", "43", "45",
+            "51", "53", "55",
+            "61", "63", "65",
+            "71", "73", "75",
+            "81", "83", "85",
+            "91", "93", "95",
+            "101", "103", "105"
+        ];
+
+        private static readonly string[] FourBerthCouchetteBerths =
+        [
+            "11", "15",
+            "21", "22", "25", "26",
+            "31", "32", "35", "36",
+            "41", "42", "45", "46",
+            "51", "52", "55", "56",
+            "61", "62", "65", "66",
+            "71", "72", "75", "76",
+            "81", "82", "85", "86"
+        ];
+
+        private static readonly string[] SixBerthCouchetteBerths =
+        [
+            "11", "15",
+            "21", "22", "23", "24", "25", "26",
+            "31", "32", "33", "34", "35", "36",
+            "41", "42", "43", "44", "45", "46",
+            "51", "52", "53", "54", "55", "56",
+            "61", "62", "63", "64", "65", "66",
+            "71", "72", "73", "74", "75", "76",
+            "81", "82", "83", "84", "85", "86"
+        ];
 
         private static int GetCarriagePosition(string coach, IReadOnlyDictionary<string, TrainCarriage> carriages)
         {
@@ -349,9 +500,159 @@ namespace TrainTicketPlatformAPI.Services
             }
         }
 
+        private static ItineraryTripContext BuildItineraryTripContext(Trip trip)
+            => new(
+                trip,
+                TripSegmentResolver.BuildOrderedRouteStations(trip.TrainRoute),
+                TripTimetablePlanner.Build(trip));
+
+        private static IEnumerable<ItinerarySegmentCandidate> BuildCandidatesFromQuery(
+            IReadOnlyList<ItineraryTripContext> contexts,
+            string departure)
+        {
+            foreach (var context in contexts)
+            {
+                for (var departureIndex = 0; departureIndex < context.RouteStations.Count - 1; departureIndex++)
+                {
+                    var departureStop = context.RouteStations[departureIndex];
+                    if (!TripSegmentResolver.StationMatches(departureStop.Station, departure))
+                        continue;
+
+                    for (var arrivalIndex = departureIndex + 1; arrivalIndex < context.RouteStations.Count; arrivalIndex++)
+                    {
+                        var candidate = BuildSegmentCandidate(context, departureIndex, arrivalIndex);
+                        if (candidate != null)
+                            yield return candidate;
+                    }
+                }
+            }
+        }
+
+        private static IEnumerable<ItinerarySegmentCandidate> BuildCandidatesFromStation(
+            IReadOnlyList<ItineraryTripContext> contexts,
+            int departureStationId,
+            DateTime previousArrival,
+            IReadOnlyList<ItinerarySegmentCandidate> path,
+            string destination)
+        {
+            var usedTripIds = path.Select(segment => segment.Trip.Id).ToHashSet();
+            var visitedDepartureStationIds = path.Select(segment => segment.DepartureStation.Id).ToHashSet();
+
+            foreach (var context in contexts)
+            {
+                if (usedTripIds.Contains(context.Trip.Id))
+                    continue;
+
+                for (var departureIndex = 0; departureIndex < context.RouteStations.Count - 1; departureIndex++)
+                {
+                    var departureStop = context.RouteStations[departureIndex];
+                    if (departureStop.StationId != departureStationId)
+                        continue;
+
+                    var plannedDeparture = context.CallingPattern.Single(stop => stop.StopOrder == departureStop.Order);
+                    var departureTime = plannedDeparture.DepartureTime ?? plannedDeparture.ArrivalTime ?? context.Trip.DepartureTime;
+                    var transferTime = departureTime - previousArrival;
+                    if (transferTime < MinimumTransferTime || transferTime > MaximumTransferTime)
+                        continue;
+
+                    for (var arrivalIndex = departureIndex + 1; arrivalIndex < context.RouteStations.Count; arrivalIndex++)
+                    {
+                        var arrivalStop = context.RouteStations[arrivalIndex];
+                        if (visitedDepartureStationIds.Contains(arrivalStop.StationId))
+                            continue;
+
+                        if (IsSameLocalityTransfer(departureStop.Station, arrivalStop.Station) &&
+                            !TripSegmentResolver.StationMatches(arrivalStop.Station, destination))
+                        {
+                            continue;
+                        }
+
+                        var candidate = BuildSegmentCandidate(context, departureIndex, arrivalIndex);
+                        if (candidate != null)
+                            yield return candidate;
+                    }
+                }
+            }
+        }
+
+        private static ItinerarySegmentCandidate? BuildSegmentCandidate(
+            ItineraryTripContext context,
+            int departureIndex,
+            int arrivalIndex)
+        {
+            var departureStop = context.RouteStations[departureIndex];
+            var arrivalStop = context.RouteStations[arrivalIndex];
+            var plannedDeparture = context.CallingPattern.Single(stop => stop.StopOrder == departureStop.Order);
+            var plannedArrival = context.CallingPattern.Single(stop => stop.StopOrder == arrivalStop.Order);
+            var departureTime = plannedDeparture.DepartureTime ?? plannedDeparture.ArrivalTime ?? context.Trip.DepartureTime;
+            var arrivalTime = plannedArrival.ArrivalTime ?? plannedArrival.DepartureTime ?? context.Trip.ArrivalTime;
+            if (arrivalTime <= departureTime)
+                return null;
+
+            return new ItinerarySegmentCandidate(
+                context.Trip,
+                departureStop.Station,
+                arrivalStop.Station,
+                departureStop.Order,
+                arrivalStop.Order,
+                departureTime,
+                arrivalTime,
+                TripTimetablePlanner.ToDto(context.CallingPattern, departureStop.Order, arrivalStop.Order).ToList());
+        }
+
+        private static IEnumerable<ItinerarySegmentCandidate> LimitStartSegmentVariants(
+            IEnumerable<ItinerarySegmentCandidate> startSegments,
+            string destination)
+        {
+            return startSegments
+                .GroupBy(segment => $"{segment.Trip.Id}|{segment.Trip.TrainId}|{segment.DepartureStation.Id}|{segment.DepartureTime:O}")
+                .SelectMany(group =>
+                {
+                    var directSegments = group
+                        .Where(segment => TripSegmentResolver.StationMatches(segment.ArrivalStation, destination))
+                        .OrderBy(segment => segment.ArrivalTime)
+                        .ToList();
+                    var directKeys = directSegments
+                        .Select(segment => $"{segment.ArrivalStation.Id}|{segment.ArrivalTime:O}")
+                        .ToHashSet(StringComparer.Ordinal);
+                    var transferSegments = group
+                        .Where(segment => !directKeys.Contains($"{segment.ArrivalStation.Id}|{segment.ArrivalTime:O}"))
+                        .OrderBy(segment => GetTransferStationPriority(segment.ArrivalStation))
+                        .ThenBy(segment => segment.ArrivalTime)
+                        .ThenBy(segment => segment.ArrivalStopOrder)
+                        .Take(MaximumStartSegmentsPerStarterTrain);
+
+                    return directSegments.Concat(transferSegments);
+                });
+        }
+
+        private static int GetTransferStationPriority(Station station)
+        {
+            var text = TripSegmentResolver.NormalizeSearchText($"{station.Name} {station.City} {station.Code}");
+            if (text.Contains("glowny") ||
+                text.Contains("central") ||
+                text.Contains("wschodni") ||
+                text.Contains("zachodni") ||
+                text.Contains("warszawa") ||
+                text.Contains("krakow") ||
+                text.Contains("poznan") ||
+                text.Contains("wroclaw") ||
+                text.Contains("gdansk") ||
+                text.Contains("gdynia") ||
+                text.Contains("katowice") ||
+                text.Contains("szczecin") ||
+                text.Contains("rzeszow") ||
+                text.Contains("koszalin"))
+            {
+                return 0;
+            }
+
+            return 1;
+        }
+
         private static void BuildItineraryPaths(
             ItinerarySegmentCandidate current,
-            IReadOnlyList<ItinerarySegmentCandidate> candidates,
+            IReadOnlyList<ItineraryTripContext> contexts,
             string destination,
             List<ItinerarySegmentCandidate> path,
             List<List<ItinerarySegmentCandidate>> results)
@@ -365,19 +666,42 @@ namespace TrainTicketPlatformAPI.Services
             if (path.Count >= MaximumItinerarySegments)
                 return;
 
-            var nextSegments = candidates.Where(next =>
-                next.DepartureStation.Id == current.ArrivalStation.Id &&
-                !path.Any(segment => segment.Trip.Id == next.Trip.Id) &&
-                !path.Any(segment => segment.DepartureStation.Id == next.ArrivalStation.Id) &&
-                next.DepartureTime - current.ArrivalTime >= MinimumTransferTime &&
-                next.DepartureTime - current.ArrivalTime <= MaximumTransferTime);
+            var nextSegments = BuildCandidatesFromStation(
+                    contexts,
+                    current.ArrivalStation.Id,
+                    current.ArrivalTime,
+                    path,
+                    destination)
+                .OrderBy(segment => segment.DepartureTime)
+                .ThenBy(segment => segment.ArrivalTime);
 
             foreach (var next in nextSegments)
             {
+                if (results.Count >= MaximumItineraryPathsPerStartSegment)
+                    return;
+
                 path.Add(next);
-                BuildItineraryPaths(next, candidates, destination, path, results);
+                BuildItineraryPaths(next, contexts, destination, path, results);
                 path.RemoveAt(path.Count - 1);
             }
+        }
+
+        private static bool IsSameLocalityTransfer(Station departure, Station arrival)
+        {
+            if (departure.Id == arrival.Id)
+                return true;
+
+            if (departure.LocalityId.HasValue &&
+                arrival.LocalityId.HasValue &&
+                departure.LocalityId.Value == arrival.LocalityId.Value)
+            {
+                return true;
+            }
+
+            var departureCity = TripSegmentResolver.NormalizeSearchText(departure.City);
+            var arrivalCity = TripSegmentResolver.NormalizeSearchText(arrival.City);
+            return !string.IsNullOrWhiteSpace(departureCity) &&
+                departureCity == arrivalCity;
         }
 
         private static DateTime? BuildNotBefore(DateTime travelDate, TimeSpan? time)
@@ -483,6 +807,34 @@ namespace TrainTicketPlatformAPI.Services
                 .ThenBy(itinerary => itinerary.LowestFare ?? decimal.MaxValue)
                 .ThenBy(itinerary => itinerary.ItineraryId)
                 .First();
+        }
+
+        private static IEnumerable<TripItinerarySearchResultDto> LimitStarterTrainVariants(
+            IEnumerable<TripItinerarySearchResultDto> itineraries)
+        {
+            return itineraries
+                .GroupBy(BuildStarterTrainVariantKey)
+                .SelectMany(group => group
+                    .OrderBy(itinerary => itinerary.TotalDurationMinutes)
+                    .ThenBy(itinerary => itinerary.TransferCount)
+                    .ThenBy(itinerary => itinerary.ArrivalTime)
+                    .ThenBy(itinerary => itinerary.LowestFare ?? decimal.MaxValue)
+                    .ThenByDescending(itinerary => itinerary.TotalTransferMinutes)
+                    .ThenBy(itinerary => itinerary.ItineraryId)
+                    .Take(MaximumItineraryResultsPerStarterTrain));
+        }
+
+        private static string BuildStarterTrainVariantKey(TripItinerarySearchResultDto itinerary)
+        {
+            var first = itinerary.Segments.First();
+            var last = itinerary.Segments.Last();
+
+            return string.Join("|",
+                first.DepartureStationId,
+                last.ArrivalStationId,
+                first.TripId,
+                first.TrainId,
+                first.DepartureTime.ToString("O"));
         }
 
         private static TripDetailsDto ToDetails(Trip trip)
@@ -603,5 +955,10 @@ namespace TrainTicketPlatformAPI.Services
         {
             public Fare? LowestFare => Trip.Fares.OrderBy(fare => fare.Price).FirstOrDefault();
         }
+
+        private sealed record ItineraryTripContext(
+            Trip Trip,
+            IReadOnlyList<TripSegmentResolver.RouteSearchStop> RouteStations,
+            IReadOnlyList<PlannedTripStop> CallingPattern);
     }
 }

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
+import PassengerLegalFooter from "../components/PassengerLegalFooter";
 import { updateBookingExtras, updateBookingOrderExtras } from "../api/bookingApi";
 import { getUserEmail, hasAuthToken } from "../api/authSession";
 import { getTripById } from "../api/tripApi";
@@ -198,12 +199,12 @@ function SummaryPage() {
           <fieldset className="summary-option-card">
             <legend>Seat selection preferences</legend>
             <div className="seat-preference-icons" aria-label="Seat preference options">
-              <button type="button" aria-label="Standard seat" />
-              <button type="button" aria-label="Window seat" />
-              <button type="button" aria-label="Table seat" />
-              <button type="button" aria-label="Accessible space" />
-              <button type="button" aria-label="Bicycle space" />
-              <button type="button" aria-label="Quiet coach" />
+              <span aria-label="Standard seat" />
+              <span aria-label="Window seat" />
+              <span aria-label="Table seat" />
+              <span aria-label="Accessible space" />
+              <span aria-label="Bicycle space" />
+              <span aria-label="Quiet coach" />
             </div>
             <div className={`summary-outline-button ${selectedSeat || selectedSeatList.length > 0 ? "summary-seat-selected" : "summary-seat-empty"}`}>
               {selectedSeat || selectedSeatList.length > 0 ? (
@@ -289,23 +290,7 @@ function SummaryPage() {
         <div className="connection-train" />
       </section>
 
-      <section className="summary-legal">
-        <div>
-          <h2>Technological break.</h2>
-          <p>
-            Please remember about scheduled technical breaks in the online sales system. You cannot buy tickets
-            during this break.
-          </p>
-          <a href="#accessibility">Declaration of Accessibility</a>
-        </div>
-        <div>
-          <p>
-            The prices presented are indicative and published for informational purposes. The final price is
-            available in the purchase summary before payment.
-          </p>
-          <strong>RailWay ticket platform</strong>
-        </div>
-      </section>
+      <PassengerLegalFooter />
 
       {isAccountPromptOpen && (
         <div className="account-modal-backdrop" role="presentation">
@@ -363,23 +348,23 @@ function SummaryPage() {
             </button>
             <h2 id="addon-confirmation-title">Confirmation</h2>
             {extraConfirmation === "dog" ? (
-              <>
-                <p>You selected a seat for a person traveling with a dog.</p>
-                <p>
+              <div className="addon-confirmation-copy">
+                <p className="addon-confirmation-lead">You selected a seat for a person traveling with a dog.</p>
+                <p className="addon-confirmation-note">
                   Additional fee will be charged for traveling with a dog.
                   <Link to="/help/passenger-rights"> You can check the fees and rules of transportation.</Link>
                 </p>
-                <p>Do you confirm that you will travel with a dog?</p>
-              </>
+                <p className="addon-confirmation-question">Do you confirm that you will travel with a dog?</p>
+              </div>
             ) : (
-              <>
-                <p>A seat has been selected for a traveler with large luggage.</p>
-                <p>
+              <div className="addon-confirmation-copy">
+                <p className="addon-confirmation-lead">A seat has been selected for a traveler with large luggage.</p>
+                <p className="addon-confirmation-note">
                   Additional fee will be charged for transporting the luggage.
                   <Link to="/help/passenger-rights"> You can check the fees and rules of transportation.</Link>
                 </p>
-                <p>Please confirm that you will travel with the luggage.</p>
-              </>
+                <p className="addon-confirmation-question">Please confirm that you will travel with the luggage.</p>
+              </div>
             )}
             <div className="addon-confirmation-actions">
               <button type="button" onClick={() => setExtraConfirmation(null)}>Resign</button>

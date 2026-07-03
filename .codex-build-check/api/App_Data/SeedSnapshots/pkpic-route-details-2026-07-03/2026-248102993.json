@@ -1,0 +1,142 @@
+{
+  "scheduleId": 2026,
+  "orderId": 248102993,
+  "trainOrderId": 297958842,
+  "name": "BŁĘKITNA FALA",
+  "carrierCode": "IC",
+  "nationalNumber": "8154",
+  "commercialCategorySymbol": "EIC",
+  "operatingDates": [
+    "2026-06-27",
+    "2026-06-28",
+    "2026-07-02",
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 1008,
+      "orderNumber": 1,
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8154",
+      "departurePlatform": "2",
+      "departureTrack": "4",
+      "departureTime": "14:21:00"
+    },
+    {
+      "stationId": 1024,
+      "orderNumber": 4,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8154",
+      "arrivalTime": "14:32:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8154",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "14:34:00"
+    },
+    {
+      "stationId": 1404,
+      "orderNumber": 13,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8154",
+      "arrivalTime": "15:12:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8154",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "15:13:00"
+    },
+    {
+      "stationId": 273,
+      "orderNumber": 28,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8155",
+      "arrivalTime": "15:39:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8154",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "15:43:00"
+    },
+    {
+      "stationId": 1107,
+      "orderNumber": 33,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8154",
+      "arrivalTime": "15:54:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8154",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "15:55:30"
+    },
+    {
+      "stationId": 2204,
+      "orderNumber": 37,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8154",
+      "arrivalTime": "16:08:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8154",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "16:09:00"
+    },
+    {
+      "stationId": 29108,
+      "orderNumber": 45,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8154",
+      "arrivalTime": "16:48:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8154",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "16:49:00"
+    },
+    {
+      "stationId": 30601,
+      "orderNumber": 56,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8154",
+      "arrivalTime": "17:28:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8154",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "17:40:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 91,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8154",
+      "arrivalTime": "19:54:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8155",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 94,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8155",
+      "arrivalTime": "19:59:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8155",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 95,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8155",
+      "arrivalTime": "20:15:00",
+      "departureTrainNumber": "08155",
+      "departurePlatform": "4",
+      "departureTrack": "1"
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "generatedAtUtc": "2026-07-03T17:50:33Z",
+  "phase": "phase-5-train-trip-seed-snapshot",
+  "operatingDate": "2026-07-03",
+  "usableServiceRecordCount": 544,
+  "errorRecordCount": 19,
+  "stationCount": 535,
+  "routeShapeCount": 412,
+  "trainCount": 544,
+  "tripCount": 544,
+  "skippedServiceRecordCount": 0,
+  "skipped": [],
+  "categoryCounts": {
+    "EIC": 24,
+    "EIP": 34,
+    "IC": 433,
+    "TLK": 53
+  }
+}

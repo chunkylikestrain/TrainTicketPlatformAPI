@@ -1,0 +1,143 @@
+{
+  "scheduleId": 2026,
+  "orderId": 222698055,
+  "trainOrderId": 645294512,
+  "name": "KASZUB",
+  "carrierCode": "IC",
+  "nationalNumber": "5350",
+  "commercialCategorySymbol": "EIC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 5900,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "05350",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "5350",
+      "departurePlatform": "4",
+      "departureTrack": "7",
+      "departureTime": "06:33:00"
+    },
+    {
+      "stationId": 5942,
+      "orderNumber": 6,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "5350",
+      "arrivalTime": "06:41:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "5350",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "06:42:30"
+    },
+    {
+      "stationId": 7583,
+      "orderNumber": 8,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "5350",
+      "arrivalTime": "06:46:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "5350",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "06:47:30"
+    },
+    {
+      "stationId": 7534,
+      "orderNumber": 10,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "5350",
+      "arrivalTime": "06:51:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "5350",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "06:52:00"
+    },
+    {
+      "stationId": 7500,
+      "orderNumber": 11,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "5350",
+      "arrivalTime": "06:56:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "5350",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "06:58:00"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 55,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "5350",
+      "arrivalTime": "09:24:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "5350",
+      "departurePlatform": "2",
+      "departureTrack": "6",
+      "departureTime": "09:25:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 56,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "5350",
+      "arrivalTime": "09:31:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "5350",
+      "departurePlatform": "4",
+      "departureTrack": "6",
+      "departureTime": "09:40:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 58,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "5350",
+      "arrivalTime": "09:44:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "5351",
+      "departurePlatform": "7",
+      "departureTrack": "3",
+      "departureTime": "09:45:30"
+    },
+    {
+      "stationId": 80416,
+      "orderNumber": 96,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "5351",
+      "arrivalTime": "12:29:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "5351",
+      "departurePlatform": "2",
+      "departureTrack": "5",
+      "departureTime": "12:35:00"
+    },
+    {
+      "stationId": 78907,
+      "orderNumber": 127,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "5351",
+      "arrivalTime": "14:30:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "5351",
+      "departurePlatform": "2",
+      "departureTrack": "3",
+      "departureTime": "14:35:30"
+    },
+    {
+      "stationId": 79020,
+      "orderNumber": 131,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "5351",
+      "arrivalTime": "14:56:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "5351",
+      "departurePlatform": "2",
+      "departureTrack": "3"
+    }
+  ]
+}

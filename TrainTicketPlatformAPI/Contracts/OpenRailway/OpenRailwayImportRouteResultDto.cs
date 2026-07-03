@@ -11,6 +11,7 @@ namespace TrainTicketPlatformAPI.Contracts.OpenRailway
         public int TripId { get; set; }
         public bool TrainCreated { get; set; }
         public bool RouteCreated { get; set; }
+        public bool RouteReused { get; set; }
         public bool TripCreated { get; set; }
         public bool DefaultConsistApplied { get; set; }
         public int StationsCreated { get; set; }
@@ -20,5 +21,7 @@ namespace TrainTicketPlatformAPI.Contracts.OpenRailway
         public string TrainCode { get; set; } = string.Empty;
         public string RouteCode { get; set; } = string.Empty;
         public string RouteName { get; set; } = string.Empty;
+        public string AdminDisplayName { get; set; } = string.Empty;
+        public string RouteFingerprint { get; set; } = string.Empty;
     }
 }

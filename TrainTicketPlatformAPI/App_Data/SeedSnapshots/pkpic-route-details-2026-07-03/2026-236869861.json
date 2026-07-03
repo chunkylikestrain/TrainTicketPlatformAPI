@@ -1,0 +1,96 @@
+{
+  "scheduleId": 2026,
+  "orderId": 236869861,
+  "trainOrderId": 182343559,
+  "name": "USZATEK",
+  "carrierCode": "IC",
+  "nationalNumber": "9109",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-03",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17",
+    "2026-07-21",
+    "2026-07-22",
+    "2026-07-23",
+    "2026-07-24",
+    "2026-07-28",
+    "2026-07-29",
+    "2026-07-30",
+    "2026-07-31"
+  ],
+  "stations": [
+    {
+      "stationId": 46458,
+      "orderNumber": 14,
+      "arrivalTrainNumber": "09108",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9109",
+      "departurePlatform": "4",
+      "departureTrack": "7",
+      "departureTime": "08:08:30"
+    },
+    {
+      "stationId": 46409,
+      "orderNumber": 16,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9109",
+      "arrivalTime": "08:13:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9109",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "08:14:00"
+    },
+    {
+      "stationId": 47001,
+      "orderNumber": 26,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9108",
+      "arrivalTime": "08:42:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9108",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "08:43:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 35,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9108",
+      "arrivalTime": "09:10:36",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9109",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 37,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9109",
+      "arrivalTime": "09:15:12",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "9109",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 38,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "9109",
+      "arrivalTime": "09:27:00",
+      "departureTrainNumber": "09109",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    }
+  ]
+}

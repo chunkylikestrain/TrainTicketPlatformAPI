@@ -1,0 +1,139 @@
+{
+  "scheduleId": 2026,
+  "orderId": 298655127,
+  "trainOrderId": 569811627,
+  "name": "POWIŚLE",
+  "carrierCode": "IC",
+  "nationalNumber": "5500",
+  "commercialCategorySymbol": "TLK",
+  "operatingDates": [
+    "2026-07-03",
+    "2026-07-10",
+    "2026-07-17",
+    "2026-07-24",
+    "2026-07-31",
+    "2026-08-07",
+    "2026-08-14",
+    "2026-08-21",
+    "2026-08-28"
+  ],
+  "stations": [
+    {
+      "stationId": 5900,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "05500",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "5500",
+      "departurePlatform": "4",
+      "departureTrack": "6",
+      "departureTime": "20:25:00"
+    },
+    {
+      "stationId": 5942,
+      "orderNumber": 6,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "5500",
+      "arrivalTime": "20:32:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "5500",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "20:33:00"
+    },
+    {
+      "stationId": 7583,
+      "orderNumber": 8,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "5500",
+      "arrivalTime": "20:36:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "5500",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "20:37:00"
+    },
+    {
+      "stationId": 7534,
+      "orderNumber": 10,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "5500",
+      "arrivalTime": "20:40:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "5500",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "20:41:00"
+    },
+    {
+      "stationId": 7500,
+      "orderNumber": 11,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "5500",
+      "arrivalTime": "20:45:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "5500",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "20:49:00"
+    },
+    {
+      "stationId": 7112,
+      "orderNumber": 18,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "5500",
+      "arrivalTime": "21:05:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "5500",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "21:10:00"
+    },
+    {
+      "stationId": 8409,
+      "orderNumber": 22,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "5500",
+      "arrivalTime": "21:21:30",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "5500",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "21:22:30"
+    },
+    {
+      "stationId": 8474,
+      "orderNumber": 24,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "5500",
+      "arrivalTime": "21:34:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "5500",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "21:35:00"
+    },
+    {
+      "stationId": 17202,
+      "orderNumber": 27,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "5500",
+      "arrivalTime": "21:51:30",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "5500",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "21:52:30"
+    },
+    {
+      "stationId": 18408,
+      "orderNumber": 34,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "5500",
+      "arrivalTime": "22:32:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "5500",
+      "departurePlatform": "5",
+      "departureTrack": "21"
+    }
+  ]
+}

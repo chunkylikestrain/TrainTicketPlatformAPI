@@ -1,0 +1,139 @@
+{
+  "scheduleId": 2026,
+  "orderId": 834017929,
+  "trainOrderId": 287237496,
+  "name": "BERLIN-WARSZAWA-EXPRESS",
+  "carrierCode": "IC",
+  "nationalNumber": "71000",
+  "internationalArrivalNumber": "249",
+  "commercialCategorySymbol": "EC/EIC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 248058,
+      "orderNumber": -20,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "249",
+      "arrivalTime": "17:44:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "249",
+      "departureTime": "17:44:00"
+    },
+    {
+      "stationId": 179212,
+      "orderNumber": 1,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "249/71000",
+      "arrivalTime": "18:47:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "249",
+      "departureTime": "18:50:00"
+    },
+    {
+      "stationId": 25809,
+      "orderNumber": 11,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "249",
+      "arrivalTime": "19:07:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71000",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "19:12:00"
+    },
+    {
+      "stationId": 28100,
+      "orderNumber": 15,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71000",
+      "arrivalTime": "19:37:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71000",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "19:38:00"
+    },
+    {
+      "stationId": 26104,
+      "orderNumber": 18,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71000",
+      "arrivalTime": "19:50:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71000",
+      "departurePlatform": "2a",
+      "departureTrack": "2",
+      "departureTime": "19:51:00"
+    },
+    {
+      "stationId": 30601,
+      "orderNumber": 27,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71000",
+      "arrivalTime": "20:33:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71000",
+      "departurePlatform": "5",
+      "departureTrack": "1",
+      "departureTime": "20:36:00"
+    },
+    {
+      "stationId": 33100,
+      "orderNumber": 38,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71000",
+      "arrivalTime": "21:24:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71000",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "21:25:00"
+    },
+    {
+      "stationId": 32201,
+      "orderNumber": 47,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71000",
+      "arrivalTime": "21:59:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71000",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "22:00:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 62,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71000",
+      "arrivalTime": "22:58:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71001",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 65,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71001",
+      "arrivalTime": "23:04:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71001",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 66,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71001",
+      "arrivalTime": "23:15:00",
+      "departureTrainNumber": "071001",
+      "departurePlatform": "5",
+      "departureTrack": "5"
+    }
+  ]
+}

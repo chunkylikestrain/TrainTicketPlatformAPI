@@ -1,0 +1,293 @@
+{
+  "scheduleId": 2026,
+  "orderId": 578394127,
+  "trainOrderId": 337646950,
+  "name": "WISŁOK",
+  "carrierCode": "IC",
+  "nationalNumber": "1339",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-07-01",
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 33506,
+      "orderNumber": 16,
+      "arrivalTrainNumber": "01338",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "5",
+      "departureTrack": "6",
+      "departureTime": "05:31:30"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 19,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "05:36:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "05:41:00"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 20,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "05:47:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "5",
+      "departureTrack": "5",
+      "departureTime": "05:50:00"
+    },
+    {
+      "stationId": 39206,
+      "orderNumber": 36,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "06:28:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "06:29:30"
+    },
+    {
+      "stationId": 49809,
+      "orderNumber": 41,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "06:52:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "06:53:30"
+    },
+    {
+      "stationId": 50021,
+      "orderNumber": 46,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "07:05:36",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "07:06:36"
+    },
+    {
+      "stationId": 50104,
+      "orderNumber": 49,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "07:16:42",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "07:17:42"
+    },
+    {
+      "stationId": 262848,
+      "orderNumber": 52,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "07:29:18",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "07:30:18"
+    },
+    {
+      "stationId": 50500,
+      "orderNumber": 55,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "07:35:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "2",
+      "departureTrack": "53",
+      "departureTime": "07:50:00"
+    },
+    {
+      "stationId": 51508,
+      "orderNumber": 61,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "08:24:54",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "08:25:54"
+    },
+    {
+      "stationId": 65243,
+      "orderNumber": 64,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "08:47:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "08:48:00"
+    },
+    {
+      "stationId": 65003,
+      "orderNumber": 67,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "09:05:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "09:06:00"
+    },
+    {
+      "stationId": 65029,
+      "orderNumber": 68,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "09:08:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "09:09:30"
+    },
+    {
+      "stationId": 65094,
+      "orderNumber": 70,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "09:20:06",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "09:21:06"
+    },
+    {
+      "stationId": 65144,
+      "orderNumber": 71,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "09:29:24",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "09:30:24"
+    },
+    {
+      "stationId": 83246,
+      "orderNumber": 73,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "09:41:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "09:42:00"
+    },
+    {
+      "stationId": 83220,
+      "orderNumber": 74,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1339",
+      "arrivalTime": "09:48:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1339",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "09:49:00"
+    },
+    {
+      "stationId": 83022,
+      "orderNumber": 82,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1338",
+      "arrivalTime": "10:29:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1338",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "10:30:00"
+    },
+    {
+      "stationId": 82669,
+      "orderNumber": 84,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "1338",
+      "arrivalTime": "10:41:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "1338",
+      "departurePlatform": "3",
+      "departureTrack": "6"
+    }
+  ],
+  "connections": [
+    {
+      "id": "10146",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "22,23,24",
+      "train1OrderId": 578394127,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 960077077,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-01",
+        "2026-07-03"
+      ]
+    },
+    {
+      "id": "10147",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "22,23,24",
+      "train1OrderId": 578394127,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 180214902,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-01",
+        "2026-07-03"
+      ]
+    },
+    {
+      "id": "10148",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "22,23,24",
+      "train1OrderId": 578394127,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 709091978,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-01",
+        "2026-07-03"
+      ]
+    }
+  ]
+}

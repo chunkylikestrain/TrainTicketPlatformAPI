@@ -1,0 +1,122 @@
+{
+  "scheduleId": 2026,
+  "orderId": 839350874,
+  "trainOrderId": 132209335,
+  "name": "BRDA",
+  "carrierCode": "IC",
+  "nationalNumber": "5130",
+  "commercialCategorySymbol": "IC",
+  "operatingDates": [
+    "2026-06-22",
+    "2026-06-23",
+    "2026-06-24",
+    "2026-06-25",
+    "2026-06-26",
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17"
+  ],
+  "stations": [
+    {
+      "stationId": 18408,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5130",
+      "departurePlatform": "1",
+      "departureTrack": "6",
+      "departureTime": "07:29:00"
+    },
+    {
+      "stationId": 18374,
+      "orderNumber": 2,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5130",
+      "arrivalTime": "07:33:12",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5130",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "07:33:42"
+    },
+    {
+      "stationId": 16717,
+      "orderNumber": 4,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5130",
+      "arrivalTime": "07:37:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5130",
+      "departurePlatform": "2",
+      "departureTrack": "202",
+      "departureTime": "07:37:30"
+    },
+    {
+      "stationId": 19703,
+      "orderNumber": 12,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5130",
+      "arrivalTime": "08:10:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5130",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "08:16:00"
+    },
+    {
+      "stationId": 21600,
+      "orderNumber": 21,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5130",
+      "arrivalTime": "08:45:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5130",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "08:46:30"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 43,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5130",
+      "arrivalTime": "10:11:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5131",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 46,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5131",
+      "arrivalTime": "10:16:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "5131",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 47,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "5131",
+      "arrivalTime": "10:27:00",
+      "departureTrainNumber": "05131",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    }
+  ]
+}

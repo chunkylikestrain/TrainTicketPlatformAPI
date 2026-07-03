@@ -1,0 +1,134 @@
+{
+  "scheduleId": 2026,
+  "orderId": 599232512,
+  "trainOrderId": 789347056,
+  "carrierCode": "IC",
+  "nationalNumber": "1400",
+  "commercialCategorySymbol": "EIP",
+  "operatingDates": [
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 38653,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "01400",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1400",
+      "departurePlatform": "1",
+      "departureTrack": "12",
+      "departureTime": "07:25:00"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "1400",
+      "arrivalTime": "07:31:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1400",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "07:36:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 7,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "1400",
+      "arrivalTime": "07:40:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1401",
+      "departurePlatform": "7",
+      "departureTrack": "5",
+      "departureTime": "07:41:00"
+    },
+    {
+      "stationId": 75309,
+      "orderNumber": 25,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "1401",
+      "arrivalTime": "09:26:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1401",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "09:26:30"
+    },
+    {
+      "stationId": 74658,
+      "orderNumber": 34,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "1401",
+      "arrivalTime": "09:52:36",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1401",
+      "departurePlatform": "3",
+      "departureTrack": "3",
+      "departureTime": "09:53:48"
+    },
+    {
+      "stationId": 73312,
+      "orderNumber": 38,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "1401",
+      "arrivalTime": "10:06:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1401",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "10:09:00"
+    },
+    {
+      "stationId": 73700,
+      "orderNumber": 42,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "1401",
+      "arrivalTime": "10:28:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1401",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "10:36:00"
+    },
+    {
+      "stationId": 75903,
+      "orderNumber": 44,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "1401",
+      "arrivalTime": "10:54:30",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1401",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "10:55:00"
+    },
+    {
+      "stationId": 76000,
+      "orderNumber": 46,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "1401",
+      "arrivalTime": "11:02:30",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1401",
+      "departurePlatform": "2",
+      "departureTrack": "5",
+      "departureTime": "11:05:00"
+    },
+    {
+      "stationId": 76109,
+      "orderNumber": 49,
+      "arrivalCommercialCategory": "EIP",
+      "arrivalTrainNumber": "1401",
+      "arrivalTime": "11:15:00",
+      "departureCommercialCategory": "EIP",
+      "departureTrainNumber": "1401",
+      "departurePlatform": "2",
+      "departureTrack": "4"
+    }
+  ]
+}

@@ -1,0 +1,166 @@
+{
+  "scheduleId": 2026,
+  "orderId": 735455438,
+  "trainOrderId": 374406135,
+  "name": "BOCIAN",
+  "carrierCode": "IC",
+  "nationalNumber": "1013",
+  "commercialCategorySymbol": "TLK",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 38653,
+      "orderNumber": 4,
+      "arrivalTrainNumber": "01012",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1013",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "10:24:00"
+    },
+    {
+      "stationId": 39008,
+      "orderNumber": 12,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "1013",
+      "arrivalTime": "10:51:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1013",
+      "departurePlatform": "3",
+      "departureTrack": "1",
+      "departureTime": "10:52:00"
+    },
+    {
+      "stationId": 39875,
+      "orderNumber": 13,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "1013",
+      "arrivalTime": "11:01:42",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1013",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "11:02:42"
+    },
+    {
+      "stationId": 39404,
+      "orderNumber": 16,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "1013",
+      "arrivalTime": "11:18:30",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1013",
+      "departurePlatform": "3",
+      "departureTrack": "1",
+      "departureTime": "11:19:30"
+    },
+    {
+      "stationId": 39743,
+      "orderNumber": 19,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "1013",
+      "arrivalTime": "11:39:30",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1013",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "11:40:30"
+    },
+    {
+      "stationId": 39776,
+      "orderNumber": 21,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "1013",
+      "arrivalTime": "11:51:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1013",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "11:52:00"
+    },
+    {
+      "stationId": 25387,
+      "orderNumber": 22,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "1013",
+      "arrivalTime": "11:58:30",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1013",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "11:59:30"
+    },
+    {
+      "stationId": 25353,
+      "orderNumber": 23,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "1013",
+      "arrivalTime": "12:09:12",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1013",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "12:10:12"
+    },
+    {
+      "stationId": 25205,
+      "orderNumber": 24,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "1013",
+      "arrivalTime": "12:22:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1013",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "12:23:00"
+    },
+    {
+      "stationId": 25403,
+      "orderNumber": 27,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "1013",
+      "arrivalTime": "12:41:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1012",
+      "departurePlatform": "4",
+      "departureTrack": "10",
+      "departureTime": "12:42:00"
+    },
+    {
+      "stationId": 24430,
+      "orderNumber": 31,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "1013",
+      "arrivalTime": "13:02:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1013",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "13:03:00"
+    },
+    {
+      "stationId": 279919,
+      "orderNumber": 36,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "1013",
+      "arrivalTime": "13:29:30",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1013",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 24000,
+      "orderNumber": 37,
+      "arrivalCommercialCategory": "TLK",
+      "arrivalTrainNumber": "1013",
+      "arrivalTime": "13:34:00",
+      "departureCommercialCategory": "TLK",
+      "departureTrainNumber": "1013",
+      "departurePlatform": "1",
+      "departureTrack": "4"
+    }
+  ]
+}

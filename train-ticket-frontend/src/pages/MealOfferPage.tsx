@@ -1,5 +1,22 @@
 import { Link } from "react-router-dom";
+import warsDiningCarTwo from "../../../docs/MyTrainImages/WARdiningcar2.jpg";
 import warsDiningCar from "../../../docs/MyTrainImages/WARSdiningcar.jpg";
+import warsDiningCarThree from "../../../docs/MyTrainImages/WARSdiningcar3.jpg";
+
+const warsImages = [
+  {
+    src: warsDiningCar,
+    alt: "WARS dining car interior on a train",
+  },
+  {
+    src: warsDiningCarTwo,
+    alt: "WARS restaurant car counter and dining area",
+  },
+  {
+    src: warsDiningCarThree,
+    alt: "WARS dining car seating area",
+  },
+];
 
 function MealOfferPage() {
   return (
@@ -46,11 +63,11 @@ function MealOfferPage() {
             </p>
           </section>
 
-          <img
-            className="meal-offer-image"
-            src={warsDiningCar}
-            alt="WARS dining car interior on a train"
-          />
+          <section className="meal-offer-gallery" aria-label="WARS dining car gallery">
+            {warsImages.map((image) => (
+              <img key={image.src} src={image.src} alt={image.alt} />
+            ))}
+          </section>
 
           <section className="meal-offer-section">
             <h2>Offer for the youngest generation</h2>

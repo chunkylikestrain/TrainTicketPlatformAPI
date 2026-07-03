@@ -1,0 +1,104 @@
+{
+  "scheduleId": 2026,
+  "orderId": 354864675,
+  "trainOrderId": 275418590,
+  "name": "CHROBRY",
+  "carrierCode": "IC",
+  "nationalNumber": "8100",
+  "commercialCategorySymbol": "EIC",
+  "operatingDates": [
+    "2026-07-03"
+  ],
+  "stations": [
+    {
+      "stationId": 273,
+      "orderNumber": 3,
+      "arrivalTrainNumber": "08101",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8100",
+      "departurePlatform": "3",
+      "departureTrack": "4",
+      "departureTime": "05:43:00"
+    },
+    {
+      "stationId": 1107,
+      "orderNumber": 8,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8100",
+      "arrivalTime": "05:54:12",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8100",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "05:55:12"
+    },
+    {
+      "stationId": 2204,
+      "orderNumber": 12,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8100",
+      "arrivalTime": "06:07:12",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8100",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "06:08:12"
+    },
+    {
+      "stationId": 29108,
+      "orderNumber": 20,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8100",
+      "arrivalTime": "06:48:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8100",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "06:49:00"
+    },
+    {
+      "stationId": 30601,
+      "orderNumber": 31,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8100",
+      "arrivalTime": "07:28:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8100",
+      "departurePlatform": "10",
+      "departureTrack": "52",
+      "departureTime": "07:40:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 66,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8100",
+      "arrivalTime": "09:54:30",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8101",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 69,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8101",
+      "arrivalTime": "09:59:36",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "8101",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 70,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "8101",
+      "arrivalTime": "10:15:00",
+      "departureTrainNumber": "08101",
+      "departurePlatform": "5",
+      "departureTrack": "5"
+    }
+  ]
+}

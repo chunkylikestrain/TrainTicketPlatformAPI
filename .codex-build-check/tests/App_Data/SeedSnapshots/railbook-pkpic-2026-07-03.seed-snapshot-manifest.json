@@ -1,0 +1,11 @@
+{
+  "generatedAtUtc": "2026-07-03T17:53:28Z",
+  "phase": "phase-7-export-seed-snapshot",
+  "sourcePath": "TrainTicketPlatformAPI/App_Data/SeedSnapshots/pkpic-train-trip-seed-snapshot-2026-07-03.json",
+  "outputPath": "TrainTicketPlatformAPI/App_Data/SeedSnapshots/railbook-pkpic-2026-07-03.seed-snapshot.json",
+  "operatingDate": "2026-07-03",
+  "stationCount": 535,
+  "routeCount": 412,
+  "trainCount": 544,
+  "tripCount": 544
+}

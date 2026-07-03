@@ -54,6 +54,8 @@ export type AdminRoute = {
   id: number;
   code: string;
   name: string;
+  adminDisplayName: string;
+  routeFingerprint: string;
   departureStationId: number;
   arrivalStationId: number;
   departureStationName: string;
@@ -251,6 +253,7 @@ export type OpenRailwayImportRouteResult = {
   tripId: number;
   trainCreated: boolean;
   routeCreated: boolean;
+  routeReused: boolean;
   tripCreated: boolean;
   defaultConsistApplied: boolean;
   stationsCreated: number;
@@ -260,6 +263,8 @@ export type OpenRailwayImportRouteResult = {
   trainCode: string;
   routeCode: string;
   routeName: string;
+  adminDisplayName: string;
+  routeFingerprint: string;
 };
 
 export type OpenRailwayImportDateRequest = {

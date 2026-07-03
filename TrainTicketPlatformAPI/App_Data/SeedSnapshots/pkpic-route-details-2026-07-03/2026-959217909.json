@@ -1,0 +1,656 @@
+{
+  "scheduleId": 2026,
+  "orderId": 959217909,
+  "trainOrderId": 384267862,
+  "name": "VIA REGIA",
+  "carrierCode": "IC",
+  "nationalNumber": "60009",
+  "internationalDepartureNumber": "134",
+  "commercialCategorySymbol": "EC/IC",
+  "operatingDates": [
+    "2026-06-14",
+    "2026-06-15",
+    "2026-06-16",
+    "2026-06-17",
+    "2026-06-18",
+    "2026-06-19",
+    "2026-06-20",
+    "2026-06-21",
+    "2026-06-22",
+    "2026-06-23",
+    "2026-06-24",
+    "2026-06-25",
+    "2026-06-26",
+    "2026-06-27",
+    "2026-06-28",
+    "2026-06-29",
+    "2026-06-30",
+    "2026-07-01",
+    "2026-07-02",
+    "2026-07-03",
+    "2026-07-04",
+    "2026-07-05",
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10",
+    "2026-07-11",
+    "2026-07-12",
+    "2026-07-13",
+    "2026-07-14",
+    "2026-07-15",
+    "2026-07-16",
+    "2026-07-17",
+    "2026-07-18",
+    "2026-07-19",
+    "2026-07-20",
+    "2026-07-21",
+    "2026-07-22",
+    "2026-07-23",
+    "2026-07-24"
+  ],
+  "stations": [
+    {
+      "stationId": 60103,
+      "orderNumber": 1,
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "60009",
+      "departurePlatform": "3",
+      "departureTrack": "5",
+      "departureTime": "13:30:00"
+    },
+    {
+      "stationId": 53009,
+      "orderNumber": 13,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "60009",
+      "arrivalTime": "14:03:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "60009",
+      "departurePlatform": "4",
+      "departureTrack": "9",
+      "departureTime": "14:04:00"
+    },
+    {
+      "stationId": 54007,
+      "orderNumber": 17,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "60009",
+      "arrivalTime": "14:14:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "60009",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "14:15:30"
+    },
+    {
+      "stationId": 53850,
+      "orderNumber": 19,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "60009",
+      "arrivalTime": "14:28:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "60009",
+      "departurePlatform": "2",
+      "departureTrack": "1",
+      "departureTime": "14:29:00"
+    },
+    {
+      "stationId": 51805,
+      "orderNumber": 22,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "60009",
+      "arrivalTime": "14:41:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "134",
+      "departurePlatform": "1",
+      "departureTrack": "1",
+      "departureTime": "14:45:00"
+    },
+    {
+      "stationId": 140707,
+      "orderNumber": 1010,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "134",
+      "arrivalTime": "15:24:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "134",
+      "departureTime": "15:26:00"
+    },
+    {
+      "stationId": 140685,
+      "orderNumber": 1020,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "134",
+      "arrivalTime": "15:43:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "134",
+      "departureTime": "15:45:00"
+    },
+    {
+      "stationId": 148445,
+      "orderNumber": 1050,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "134",
+      "arrivalTime": "17:17:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "134",
+      "departureTime": "17:17:00"
+    }
+  ],
+  "connections": [
+    {
+      "id": "2650",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 913109235,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-20"
+      ]
+    },
+    {
+      "id": "6200",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 496190630,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-14",
+        "2026-06-15"
+      ]
+    },
+    {
+      "id": "6203",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 177673473,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-16"
+      ]
+    },
+    {
+      "id": "7420",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 207341957,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-17",
+        "2026-06-18"
+      ]
+    },
+    {
+      "id": "7579",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 216194044,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-25"
+      ]
+    },
+    {
+      "id": "8651",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 986047715,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-19"
+      ]
+    },
+    {
+      "id": "8654",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 251049349,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-21"
+      ]
+    },
+    {
+      "id": "8657",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 128105855,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-22"
+      ]
+    },
+    {
+      "id": "8660",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 340547155,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-23"
+      ]
+    },
+    {
+      "id": "9428",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 274407513,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-29"
+      ]
+    },
+    {
+      "id": "9431",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 277678638,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-07",
+        "2026-07-08",
+        "2026-07-09",
+        "2026-08-23",
+        "2026-08-24",
+        "2026-08-25",
+        "2026-08-26",
+        "2026-08-27",
+        "2026-08-28"
+      ]
+    },
+    {
+      "id": "9434",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 675173321,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-26"
+      ]
+    },
+    {
+      "id": "9437",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 888163636,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-13"
+      ]
+    },
+    {
+      "id": "9440",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 435430111,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-27",
+        "2026-06-28"
+      ]
+    },
+    {
+      "id": "9443",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 495005097,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-08-17",
+        "2026-08-18",
+        "2026-08-19",
+        "2026-08-20",
+        "2026-08-21",
+        "2026-08-22"
+      ]
+    },
+    {
+      "id": "9446",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 327149769,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-08-10",
+        "2026-08-11",
+        "2026-08-12",
+        "2026-08-13",
+        "2026-08-14",
+        "2026-08-15",
+        "2026-08-16"
+      ]
+    },
+    {
+      "id": "9449",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 134853632,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-11",
+        "2026-07-12"
+      ]
+    },
+    {
+      "id": "9452",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 491508227,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-08-29"
+      ]
+    },
+    {
+      "id": "9455",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 756895612,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-04",
+        "2026-07-05",
+        "2026-07-06"
+      ]
+    },
+    {
+      "id": "9458",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 526443442,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-03"
+      ]
+    },
+    {
+      "id": "9461",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 882634220,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-31",
+        "2026-08-01",
+        "2026-08-02",
+        "2026-08-03",
+        "2026-08-04",
+        "2026-08-05",
+        "2026-08-06",
+        "2026-08-07",
+        "2026-08-08",
+        "2026-08-09"
+      ]
+    },
+    {
+      "id": "9464",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 343459729,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-14",
+        "2026-07-15",
+        "2026-07-16",
+        "2026-07-17"
+      ]
+    },
+    {
+      "id": "9467",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 306893138,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-27",
+        "2026-07-28",
+        "2026-07-29",
+        "2026-07-30"
+      ]
+    },
+    {
+      "id": "9470",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 717118667,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-20",
+        "2026-07-21",
+        "2026-07-22",
+        "2026-07-23",
+        "2026-07-24"
+      ]
+    },
+    {
+      "id": "9473",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 662021574,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-18",
+        "2026-07-19"
+      ]
+    },
+    {
+      "id": "9476",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 132702609,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-25",
+        "2026-07-26"
+      ]
+    },
+    {
+      "id": "9479",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 148713545,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-24"
+      ]
+    },
+    {
+      "id": "9482",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 324710711,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-06-30",
+        "2026-07-01",
+        "2026-07-02"
+      ]
+    },
+    {
+      "id": "9485",
+      "typeCode": "WYMWA",
+      "typeName": "Wymiana wagonów",
+      "stationId": 0,
+      "wagonNumbers": "267,268,269,270,272",
+      "train1OrderId": 351516135,
+      "train1StationOrder": 0,
+      "train1DayOffset": 0,
+      "train2OrderId": 959217909,
+      "train2StationOrder": 0,
+      "train2DayOffset": 0,
+      "operatingDates": [
+        "2026-07-10"
+      ]
+    }
+  ]
+}

@@ -120,7 +120,7 @@ function SleeperOfferPage() {
         </section>
 
         <section className="sleeper-routes-section" aria-labelledby="night-routes-title">
-          <h2 id="night-routes-title">Available round-trip connections</h2>
+          <h2 id="night-routes-title">Available sleeper train connections</h2>
           <div className="sleeper-routes-panel">
             {overnightRoutes.map((column, index) => (
               <ul key={`overnight-route-column-${index}`}>

@@ -1,0 +1,7 @@
+{
+  "scheduleId": 2026,
+  "orderId": 542298831,
+  "status": 404,
+  "reason": "Not Found",
+  "body": "{\"error\":\"NotFound\",\"message\":\"Trasa 2026/542298831 nie została znaleziona\",\"timestamp\":\"2026-07-03T10:42:52.9471745Z\",\"path\":\"/api/v1/schedules/route/2026/542298831\",\"traceId\":\"8001a22e-0000-fe00-b63f-84710c7967bb\"}"
+}

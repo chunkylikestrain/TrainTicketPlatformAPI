@@ -46,6 +46,8 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             {
                 Code = BuildRouteCode(request, departureStation, arrivalStation),
                 Name = BuildRouteName(request, departureStation, arrivalStation),
+                AdminDisplayName = BuildAdminDisplayName(request, departureStation, arrivalStation, stations),
+                RouteFingerprint = BuildRouteFingerprint(request, departureStation, arrivalStation, stations),
                 DepartureStationId = request.DepartureStationId,
                 ArrivalStationId = request.ArrivalStationId,
                 DistanceKm = request.DistanceKm,
@@ -85,6 +87,8 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
 
             route.Code = BuildRouteCode(request, departureStation, arrivalStation);
             route.Name = BuildRouteName(request, departureStation, arrivalStation);
+            route.AdminDisplayName = BuildAdminDisplayName(request, departureStation, arrivalStation, stations);
+            route.RouteFingerprint = BuildRouteFingerprint(request, departureStation, arrivalStation, stations);
             route.DepartureStationId = request.DepartureStationId;
             route.ArrivalStationId = request.ArrivalStationId;
             route.DistanceKm = request.DistanceKm;
@@ -166,6 +170,10 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             Id = route.Id,
             Code = route.Code,
             Name = route.Name,
+            AdminDisplayName = string.IsNullOrWhiteSpace(route.AdminDisplayName)
+                ? route.Name
+                : route.AdminDisplayName,
+            RouteFingerprint = route.RouteFingerprint,
             DepartureStationId = route.DepartureStationId,
             ArrivalStationId = route.ArrivalStationId,
             DepartureStationName = route.DepartureStation.Name,
@@ -210,6 +218,41 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             return string.IsNullOrWhiteSpace(requestedName)
                 ? $"{departureStation.Name} to {arrivalStation.Name}"
                 : requestedName;
+        }
+
+        private static string BuildRouteFingerprint(
+            AdminRouteDto request,
+            Station departureStation,
+            Station arrivalStation,
+            IReadOnlyDictionary<int, Station> stations)
+        {
+            var orderedStationCodes = request.IntermediateStopStationIds
+                .Select(id => stations[id].Code)
+                .Prepend(departureStation.Code)
+                .Append(arrivalStation.Code)
+                .Select(code => code.Trim().ToUpperInvariant());
+
+            return string.Join(">", orderedStationCodes);
+        }
+
+        private static string BuildAdminDisplayName(
+            AdminRouteDto request,
+            Station departureStation,
+            Station arrivalStation,
+            IReadOnlyDictionary<int, Station> stations)
+        {
+            var requestedName = request.AdminDisplayName.Trim();
+            if (!string.IsNullOrWhiteSpace(requestedName))
+                return requestedName;
+
+            var keyStops = request.IntermediateStopStationIds
+                .Select(id => stations[id].Name)
+                .Take(3)
+                .ToList();
+
+            return keyStops.Count == 0
+                ? $"{departureStation.Name} to {arrivalStation.Name}"
+                : $"{departureStation.Name} to {arrivalStation.Name} via {string.Join(", ", keyStops)}";
         }
 
         private static string BuildIntermediateStopsText(AdminRouteDto request, Dictionary<int, Station> stations)

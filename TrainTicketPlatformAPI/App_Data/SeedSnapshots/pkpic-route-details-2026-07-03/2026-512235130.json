@@ -1,0 +1,142 @@
+{
+  "scheduleId": 2026,
+  "orderId": 512235130,
+  "trainOrderId": 617270891,
+  "name": "BERLIN-WARSZAWA-EXPRESS",
+  "carrierCode": "IC",
+  "nationalNumber": "71008",
+  "internationalArrivalNumber": "45",
+  "commercialCategorySymbol": "EC/EIC",
+  "operatingDates": [
+    "2026-06-20",
+    "2026-06-21",
+    "2026-06-23",
+    "2026-06-29"
+  ],
+  "stations": [
+    {
+      "stationId": 248058,
+      "orderNumber": -10,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "45",
+      "arrivalTime": "09:44:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "45",
+      "departureTime": "09:44:00"
+    },
+    {
+      "stationId": 179212,
+      "orderNumber": 1,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "45/71008",
+      "arrivalTime": "10:47:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "45",
+      "departureTime": "10:50:00"
+    },
+    {
+      "stationId": 25809,
+      "orderNumber": 11,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "45",
+      "arrivalTime": "11:07:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71008",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "11:12:00"
+    },
+    {
+      "stationId": 28100,
+      "orderNumber": 15,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71008",
+      "arrivalTime": "11:37:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71008",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "11:38:00"
+    },
+    {
+      "stationId": 26104,
+      "orderNumber": 18,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71008",
+      "arrivalTime": "11:50:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71008",
+      "departurePlatform": "2a",
+      "departureTrack": "2",
+      "departureTime": "11:51:00"
+    },
+    {
+      "stationId": 30601,
+      "orderNumber": 27,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71008",
+      "arrivalTime": "12:33:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71008",
+      "departurePlatform": "5",
+      "departureTrack": "1",
+      "departureTime": "12:36:00"
+    },
+    {
+      "stationId": 33100,
+      "orderNumber": 38,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71008",
+      "arrivalTime": "13:24:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71008",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "13:25:00"
+    },
+    {
+      "stationId": 32201,
+      "orderNumber": 47,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71008",
+      "arrivalTime": "13:59:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71008",
+      "departurePlatform": "3",
+      "departureTrack": "2",
+      "departureTime": "14:00:00"
+    },
+    {
+      "stationId": 33506,
+      "orderNumber": 62,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71008",
+      "arrivalTime": "14:57:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71009",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 33605,
+      "orderNumber": 65,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71009",
+      "arrivalTime": "15:04:00",
+      "departureCommercialCategory": "EIC",
+      "departureTrainNumber": "71009",
+      "stopTypeId": 2,
+      "stopTypeName": "tylko dla wysiadających"
+    },
+    {
+      "stationId": 38653,
+      "orderNumber": 66,
+      "arrivalCommercialCategory": "EIC",
+      "arrivalTrainNumber": "71009",
+      "arrivalTime": "15:15:00",
+      "departureTrainNumber": "071009",
+      "departurePlatform": "4",
+      "departureTrack": "1"
+    }
+  ]
+}

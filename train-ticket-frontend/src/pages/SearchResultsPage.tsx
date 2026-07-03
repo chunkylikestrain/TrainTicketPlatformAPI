@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import ItineraryCard from "../components/ItineraryCard";
+import PassengerLegalFooter from "../components/PassengerLegalFooter";
 import { searchItineraries } from "../api/tripApi";
 import type { TripItinerarySearchResult } from "../types/trip";
 import {
@@ -500,23 +501,7 @@ function SearchResultsPage() {
           Go back to the search engine
         </Link>
 
-        <section className="results-footer-note">
-          <div>
-            <h2>Technological break</h2>
-            <p>
-              Online ticket sales may pause briefly for maintenance. During that time, searching remains
-              available but buying a ticket can be temporarily disabled.
-            </p>
-            <a href="#accessibility">Declaration of Accessibility</a>
-          </div>
-          <div>
-            <p>
-              The prices presented are indicative and shown for information purposes. Final prices and seat
-              availability are confirmed in the purchase summary.
-            </p>
-            <strong>RailWay ticket platform</strong>
-          </div>
-        </section>
+        <PassengerLegalFooter className="results-footer-note" />
       </section>
     </main>
   );
@@ -587,6 +572,8 @@ function itineraryMatchesSearch(
 function normalizeSearchValue(value: string | null | undefined) {
   return (value ?? "")
     .trim()
+    .replace(/[Łł]/g, "l")
+    .replace(/[Đđ]/g, "d")
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();

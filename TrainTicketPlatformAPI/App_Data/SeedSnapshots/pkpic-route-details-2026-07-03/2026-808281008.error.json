@@ -1,0 +1,7 @@
+{
+  "scheduleId": 2026,
+  "orderId": 808281008,
+  "status": 429,
+  "reason": "Too Many Requests",
+  "body": "Rate limit exceeded. Please try again later."
+}

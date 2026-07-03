@@ -51,7 +51,7 @@ const tlkCarriages = [
   { label: "Second class coach", image: tlkSecondClass },
   { label: "Second class compartment", image: tlkSecondClassInterior },
   { label: "Sleeper coach", image: tlkSleeper },
-  { label: "Sleeper corridor", image: tlkSleeperInteriorOne },
+  { label: "Sleeper Single Compartment", image: tlkSleeperInteriorOne },
   { label: "Sleeper compartment", image: tlkSleeperInteriorTwo },
 ];
 
@@ -104,7 +104,7 @@ function TrainTlkPage() {
         <section className="ic-fleet-section">
           <div className="ic-section-heading">
             <p className="eyebrow">Electric locomotive-hauled TLK</p>
-            <h2>Mostly the 07 family</h2>
+            <h2> The 07 family</h2>
             <p>
               On electrified routes, TLK is usually a classic coach train. EP07 and EU07 family locomotives are a
               natural fit: dependable, familiar, and able to work the wide mix of TLK carriages used around the country.

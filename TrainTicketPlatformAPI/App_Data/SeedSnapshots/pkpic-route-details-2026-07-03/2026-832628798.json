@@ -1,0 +1,197 @@
+{
+  "scheduleId": 2026,
+  "orderId": 832628798,
+  "trainOrderId": 191042068,
+  "name": "MORAVIA",
+  "carrierCode": "IC",
+  "nationalNumber": "44000",
+  "internationalArrivalNumber": "100",
+  "commercialCategorySymbol": "EC/IC",
+  "operatingDates": [
+    "2026-07-06",
+    "2026-07-07",
+    "2026-07-08",
+    "2026-07-09",
+    "2026-07-10"
+  ],
+  "stations": [
+    {
+      "stationId": 155861,
+      "orderNumber": -120,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100",
+      "arrivalTime": "17:30:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "100",
+      "departureTime": "17:30:00"
+    },
+    {
+      "stationId": 157114,
+      "orderNumber": -110,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100",
+      "arrivalTime": "17:51:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "100",
+      "departureTime": "17:53:00"
+    },
+    {
+      "stationId": 243509,
+      "orderNumber": -100,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100",
+      "arrivalTime": "17:58:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "100",
+      "departureTime": "18:10:00"
+    },
+    {
+      "stationId": 127178,
+      "orderNumber": -90,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100",
+      "arrivalTime": "19:04:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "100",
+      "departureTime": "19:15:00"
+    },
+    {
+      "stationId": 127295,
+      "orderNumber": -80,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100",
+      "arrivalTime": "19:26:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "100",
+      "departureTime": "19:28:00"
+    },
+    {
+      "stationId": 127718,
+      "orderNumber": -70,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100",
+      "arrivalTime": "19:44:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "100",
+      "departureTime": "19:46:00"
+    },
+    {
+      "stationId": 127662,
+      "orderNumber": -60,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100",
+      "arrivalTime": "19:55:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "100",
+      "departureTime": "19:57:00"
+    },
+    {
+      "stationId": 127482,
+      "orderNumber": -50,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100",
+      "arrivalTime": "20:13:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "100",
+      "departureTime": "20:15:00"
+    },
+    {
+      "stationId": 127265,
+      "orderNumber": -40,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100",
+      "arrivalTime": "20:36:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "100",
+      "departureTime": "20:38:00"
+    },
+    {
+      "stationId": 127436,
+      "orderNumber": -30,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100",
+      "arrivalTime": "21:06:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "100",
+      "departureTime": "21:08:00"
+    },
+    {
+      "stationId": 127420,
+      "orderNumber": -20,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100",
+      "arrivalTime": "21:13:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "100",
+      "departureTime": "21:16:00"
+    },
+    {
+      "stationId": 179223,
+      "orderNumber": 1,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100/44000",
+      "arrivalTime": "21:23:00",
+      "departureCommercialCategory": "EC",
+      "departureTrainNumber": "100",
+      "departureTime": "21:38:00"
+    },
+    {
+      "stationId": 67900,
+      "orderNumber": 5,
+      "arrivalCommercialCategory": "EC",
+      "arrivalTrainNumber": "100",
+      "arrivalTime": "21:44:00",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "44000",
+      "departurePlatform": "1",
+      "departureTrack": "2",
+      "departureTime": "21:45:00"
+    },
+    {
+      "stationId": 68403,
+      "orderNumber": 9,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "44000",
+      "arrivalTime": "22:00:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "44000",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "22:01:30"
+    },
+    {
+      "stationId": 68205,
+      "orderNumber": 14,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "44000",
+      "arrivalTime": "22:13:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "44000",
+      "departurePlatform": "2",
+      "departureTrack": "2",
+      "departureTime": "22:15:00"
+    },
+    {
+      "stationId": 73700,
+      "orderNumber": 21,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "44000",
+      "arrivalTime": "22:43:30",
+      "departureCommercialCategory": "IC",
+      "departureTrainNumber": "44000",
+      "departurePlatform": "3",
+      "departureTrack": "9",
+      "departureTime": "22:44:30"
+    },
+    {
+      "stationId": 73312,
+      "orderNumber": 26,
+      "arrivalCommercialCategory": "IC",
+      "arrivalTrainNumber": "44000",
+      "arrivalTime": "23:01:00",
+      "departureTrainNumber": "044000",
+      "departurePlatform": "3",
+      "departureTrack": "2"
+    }
+  ]
+}
