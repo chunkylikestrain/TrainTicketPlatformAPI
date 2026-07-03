@@ -322,7 +322,7 @@ namespace TrainTicketPlatformAPI.Data
         private static readonly DemoTrainSeed[] DemoTrains =
         [
             new("EIP-3508", "EIP 3508", "Express InterCity Premium", 7, 98),
-            new("EIP-3510", "EIP 3510", "Express InterCity Premium", 7, 98),
+            new("EIP-3510", "EIP 3510", "Express InterCity Premium", 7, 98),     
             new("EIC-1602", "EIC 1602 Kaszub", "Express InterCity", 7, 72),
             new("IC-56", "IC 56 Wawel", "InterCity", 6, 72),
             new("IC-3806", "IC 3806 Zefir", "InterCity", 5, 72),
@@ -733,40 +733,55 @@ namespace TrainTicketPlatformAPI.Data
                 return station;
             }
 
-            var normalizedName = name.Trim().ToUpperInvariant();
+            var normalizedName = stationName.Trim().ToUpperInvariant();
+            var normalizedCode = stationCode.Trim().ToUpperInvariant();
 
-        station = db.Stations.Local.FirstOrDefault(s =>
-            string.Equals(s.Name?.Trim(), name, StringComparison.OrdinalIgnoreCase));
+            // Check local tracker first (case-insensitive name match)
+            station = db.Stations.Local.FirstOrDefault(s =>
+                string.Equals(s.Name?.Trim(), stationName, StringComparison.OrdinalIgnoreCase));
 
-        if (station != null)
-        {
-            return station;
-        }
+            if (station != null)
+            {
+                return station;
+            }
 
-        station = await db.Stations
-            .FirstOrDefaultAsync(s => s.NormalizedName == normalizedName, cancellationToken);
+            // Check DB by normalized name
+            station = await db.Stations
+                .FirstOrDefaultAsync(s => s.NormalizedName == normalizedName, cancellationToken);
 
-        if (station != null)
-        {
-            return station;
-        }
+            if (station != null)
+            {
+                return station;
+            }
 
-        station = new Station
+            station = new Station
             {
                 Code = stationCode,
+                NormalizedCode = normalizedCode,
                 Name = stationName,
+                NormalizedName = normalizedName,
                 City = stationCity,
                 CountryId = country.Id,
                 StateRegionId = region.Id,
                 LocalityId = locality.Id
             };
+
             db.Stations.Add(station);
+
             try
             {
                 await db.SaveChangesAsync(cancellationToken);
             }
             catch (DbUpdateException ex)
             {
+                // Possible unique constraint race or existing DB row; try re-querying by normalized name
+                var existing = await db.Stations
+                    .FirstOrDefaultAsync(s => s.NormalizedName == normalizedName, cancellationToken);
+                if (existing != null)
+                {
+                    return existing;
+                }
+
                 throw new InvalidOperationException(
                     $"Could not seed station '{stationName}' with code '{stationCode}' and city '{stationCity}'.",
                     ex);

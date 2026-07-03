@@ -634,7 +634,8 @@ namespace TrainTicketPlatformAPI.Data
                 .IsUnique();
 
             modelBuilder.Entity<Station>()
-                .HasIndex(s => s.NormalizedName);
+                .HasIndex(s => s.NormalizedName)
+                .IsUnique();
 
             modelBuilder.Entity<Station>()
                 .HasIndex(s => new { s.ExternalSource, s.ExternalStationId })
@@ -652,7 +653,7 @@ namespace TrainTicketPlatformAPI.Data
 
             modelBuilder.Entity<Station>()
                 .Property(s => s.Name)
-                .HasMaxLength(200);
+                .HasMaxLength(256);
 
             modelBuilder.Entity<Station>()
                 .Property(s => s.ExternalSource)
@@ -661,7 +662,7 @@ namespace TrainTicketPlatformAPI.Data
 
             modelBuilder.Entity<Station>()
                 .Property(s => s.NormalizedName)
-                .HasMaxLength(200)
+                .HasMaxLength(256)
                 .HasComputedColumnSql("UPPER(LTRIM(RTRIM([Name])))", stored: true);
 
             modelBuilder.Entity<Station>()

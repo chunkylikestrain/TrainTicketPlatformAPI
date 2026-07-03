@@ -110,10 +110,10 @@ namespace TrainTicketPlatformAPI.Services
             foreach (var start in startSegments)
                 BuildItineraryPaths(start, candidates, arrival, [start], itineraries);
 
-            return itineraries
-                .Select(ToItineraryDto)
-                .GroupBy(itinerary => itinerary.ItineraryId)
-                .Select(group => group.First())
+            var deduplicatedItineraries = DeduplicatePracticalItineraries(
+                itineraries.Select(ToItineraryDto));
+
+            return deduplicatedItineraries
                 .OrderBy(itinerary => itinerary.DepartureTime)
                 .ThenBy(itinerary => itinerary.ArrivalTime)
                 .ThenBy(itinerary => itinerary.TransferCount)
@@ -447,6 +447,42 @@ namespace TrainTicketPlatformAPI.Services
                 Currency = currency,
                 Segments = segments
             };
+        }
+
+        private static IEnumerable<TripItinerarySearchResultDto> DeduplicatePracticalItineraries(
+            IEnumerable<TripItinerarySearchResultDto> itineraries)
+        {
+            return itineraries
+                .GroupBy(BuildPracticalItineraryKey)
+                .Select(ChooseBestItineraryVariant);
+        }
+
+        private static string BuildPracticalItineraryKey(TripItinerarySearchResultDto itinerary)
+        {
+            var first = itinerary.Segments.First();
+            var last = itinerary.Segments.Last();
+            var trainSequence = string.Join(">",
+                itinerary.Segments.Select(segment => $"{segment.TripId}:{segment.TrainId}:{segment.TrainName}"));
+
+            return string.Join("|",
+                first.DepartureStationId,
+                last.ArrivalStationId,
+                itinerary.DepartureTime.ToString("O"),
+                itinerary.ArrivalTime.ToString("O"),
+                itinerary.TransferCount,
+                trainSequence,
+                itinerary.LowestFare?.ToString("0.00") ?? "fare-unavailable",
+                itinerary.Currency);
+        }
+
+        private static TripItinerarySearchResultDto ChooseBestItineraryVariant(
+            IGrouping<string, TripItinerarySearchResultDto> duplicateGroup)
+        {
+            return duplicateGroup
+                .OrderByDescending(itinerary => itinerary.TotalTransferMinutes)
+                .ThenBy(itinerary => itinerary.LowestFare ?? decimal.MaxValue)
+                .ThenBy(itinerary => itinerary.ItineraryId)
+                .First();
         }
 
         private static TripDetailsDto ToDetails(Trip trip)

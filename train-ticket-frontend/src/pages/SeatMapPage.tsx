@@ -44,11 +44,33 @@ function decodeItinerarySegments(value: string | null): TripItinerarySegment[] {
   }
 }
 
-function getStoredItinerary(key: string) {
+type StoredRoundTripItinerary = {
+  searchKey: string;
+  itinerary: TripItinerarySearchResult;
+};
+
+function getStoredItinerary(storageKey: string, searchKey: string, searchParams: URLSearchParams, direction: "Outbound" | "Return") {
   try {
-    const raw = window.sessionStorage.getItem(key);
-    return raw ? JSON.parse(raw) as TripItinerarySearchResult : null;
+    const raw = window.sessionStorage.getItem(storageKey);
+
+    if (!raw) {
+      return null;
+    }
+
+    const stored = JSON.parse(raw) as Partial<StoredRoundTripItinerary>;
+
+    if (
+      stored.searchKey !== searchKey ||
+      !stored.itinerary ||
+      !itineraryMatchesSearch(stored.itinerary, searchParams, direction)
+    ) {
+      window.sessionStorage.removeItem(storageKey);
+      return null;
+    }
+
+    return stored.itinerary;
   } catch {
+    window.sessionStorage.removeItem(storageKey);
     return null;
   }
 }
@@ -65,8 +87,15 @@ function SeatMapPage() {
   const passengerCounts = getPassengerCounts(searchParams);
   const passengerTotal = getPassengerTotal(passengerCounts);
   const discountCodes = getDiscountCodes(searchParams, passengerCounts);
-  const storedOutboundItinerary = useMemo(() => getStoredItinerary("railbook-round-trip-outbound"), []);
-  const storedReturnItinerary = useMemo(() => getStoredItinerary("railbook-round-trip-return"), []);
+  const roundTripSearchKey = buildRoundTripSearchKey(searchParams);
+  const storedOutboundItinerary = useMemo(
+    () => getStoredItinerary("railbook-round-trip-outbound", roundTripSearchKey, searchParams, "Outbound"),
+    [roundTripSearchKey, searchParams],
+  );
+  const storedReturnItinerary = useMemo(
+    () => getStoredItinerary("railbook-round-trip-return", roundTripSearchKey, searchParams, "Return"),
+    [roundTripSearchKey, searchParams],
+  );
   const isRoundTripMode = searchParams.get("tripType") === "roundTrip" &&
     storedOutboundItinerary != null &&
     storedReturnItinerary != null;
@@ -894,6 +923,69 @@ function getCarBadge(
   }
 
   return "2";
+}
+
+function buildRoundTripSearchKey(searchParams: URLSearchParams) {
+  const keyParams = new URLSearchParams();
+  const keys = [
+    "departureStation",
+    "arrivalStation",
+    "date",
+    "time",
+    "tripType",
+    "returnDate",
+    "returnTime",
+    "adults",
+    "children",
+    "discounts",
+    "filters",
+  ];
+
+  keys.forEach((key) => {
+    const values = searchParams.getAll(key);
+
+    values.forEach((value) => {
+      keyParams.append(key, value.trim());
+    });
+  });
+
+  keyParams.sort();
+  return keyParams.toString();
+}
+
+function itineraryMatchesSearch(
+  itinerary: TripItinerarySearchResult,
+  searchParams: URLSearchParams,
+  direction: "Outbound" | "Return",
+) {
+  const firstSegment = itinerary.segments[0];
+  const lastSegment = itinerary.segments[itinerary.segments.length - 1];
+
+  if (!firstSegment || !lastSegment) {
+    return false;
+  }
+
+  const expectedDeparture = direction === "Outbound"
+    ? searchParams.get("departureStation")
+    : searchParams.get("arrivalStation");
+  const expectedArrival = direction === "Outbound"
+    ? searchParams.get("arrivalStation")
+    : searchParams.get("departureStation");
+  const expectedDate = direction === "Outbound"
+    ? searchParams.get("date")
+    : searchParams.get("returnDate");
+
+  return normalizeSearchValue(firstSegment.departureStationName) === normalizeSearchValue(expectedDeparture) &&
+    normalizeSearchValue(lastSegment.arrivalStationName) === normalizeSearchValue(expectedArrival) &&
+    firstSegment.departureTime.slice(0, 10) === expectedDate;
+}
+
+function normalizeSearchValue(value: string | null | undefined) {
+  return (value ?? "")
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase();
 }
 
 export default SeatMapPage;

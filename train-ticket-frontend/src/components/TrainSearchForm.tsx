@@ -128,6 +128,8 @@ function TrainSearchForm({ compact = false }: TrainSearchFormProps) {
     }
     writePurchasePreferenceParams(query, counts, visibleDiscounts, filters);
 
+    window.sessionStorage.removeItem("railbook-round-trip-outbound");
+    window.sessionStorage.removeItem("railbook-round-trip-return");
     navigate(`/search?${query.toString()}`);
   }
 

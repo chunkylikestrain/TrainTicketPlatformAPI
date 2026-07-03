@@ -1,0 +1,2 @@
+patched_migration=D:\CSharpProjects\TrainTicketPlatformAPI\TrainTicketPlatformAPI\Migrations\20260702153659_WidenStationNameColumns.cs
+patched_seed=D:\CSharpProjects\TrainTicketPlatformAPI\TrainTicketPlatformAPI\Data\DevelopmentSeedData.cs

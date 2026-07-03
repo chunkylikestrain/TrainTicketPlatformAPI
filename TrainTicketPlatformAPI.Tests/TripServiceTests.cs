@@ -286,6 +286,141 @@ namespace TrainTicketPlatformAPI.Tests
         }
 
         [Test]
+        public async Task SearchItinerariesAsync_DeduplicatesSameTrainSequenceWithDifferentTransferStations()
+        {
+            var db = NewDb("Trips_ItineraryDuplicateTrainSequence");
+            var origin = new Station { Id = 10, Code = "KRK", Name = "Krakow Glowny", City = "Krakow" };
+            var firstTransfer = new Station { Id = 11, Code = "WAC", Name = "Warszawa Centralna", City = "Warsaw" };
+            var secondTransfer = new Station { Id = 12, Code = "WAZ", Name = "Warszawa Zachodnia", City = "Warsaw" };
+            var destination = new Station { Id = 13, Code = "GDY", Name = "Gdynia Glowna", City = "Gdynia" };
+
+            var firstTrain = new Train
+            {
+                Id = 10,
+                Name = "EIP 3508",
+                DepartureStation = origin.Name,
+                ArrivalStation = secondTransfer.Name,
+                DepartureTime = new DateTime(2026, 7, 1, 8, 0, 0),
+                ArrivalTime = new DateTime(2026, 7, 1, 9, 30, 0)
+            };
+            var secondTrain = new Train
+            {
+                Id = 11,
+                Name = "IC 56 Wawel",
+                DepartureStation = firstTransfer.Name,
+                ArrivalStation = destination.Name,
+                DepartureTime = new DateTime(2026, 7, 1, 9, 30, 0),
+                ArrivalTime = new DateTime(2026, 7, 1, 12, 40, 0)
+            };
+
+            var firstRoute = new TrainRoute
+            {
+                Id = 10,
+                DepartureStationId = origin.Id,
+                DepartureStation = origin,
+                ArrivalStationId = secondTransfer.Id,
+                ArrivalStation = secondTransfer,
+                DistanceKm = 300m,
+                IsActive = true,
+                RouteStops =
+                [
+                    new TrainRouteStop
+                    {
+                        Id = 10,
+                        StationId = firstTransfer.Id,
+                        Station = firstTransfer,
+                        StopOrder = 1,
+                        ArrivalOffsetMinutes = 60,
+                        DepartureOffsetMinutes = 62
+                    }
+                ]
+            };
+            var secondRoute = new TrainRoute
+            {
+                Id = 11,
+                DepartureStationId = firstTransfer.Id,
+                DepartureStation = firstTransfer,
+                ArrivalStationId = destination.Id,
+                ArrivalStation = destination,
+                DistanceKm = 420m,
+                IsActive = true,
+                RouteStops =
+                [
+                    new TrainRouteStop
+                    {
+                        Id = 11,
+                        StationId = secondTransfer.Id,
+                        Station = secondTransfer,
+                        StopOrder = 1,
+                        ArrivalOffsetMinutes = 30,
+                        DepartureOffsetMinutes = 32
+                    }
+                ]
+            };
+            var firstTrip = new Trip
+            {
+                Id = 10,
+                TrainId = firstTrain.Id,
+                Train = firstTrain,
+                TrainRouteId = firstRoute.Id,
+                TrainRoute = firstRoute,
+                DepartureTime = firstTrain.DepartureTime,
+                ArrivalTime = firstTrain.ArrivalTime,
+                Status = "Scheduled"
+            };
+            var secondTrip = new Trip
+            {
+                Id = 11,
+                TrainId = secondTrain.Id,
+                Train = secondTrain,
+                TrainRouteId = secondRoute.Id,
+                TrainRoute = secondRoute,
+                DepartureTime = secondTrain.DepartureTime,
+                ArrivalTime = secondTrain.ArrivalTime,
+                Status = "Scheduled"
+            };
+
+            db.Stations.AddRange(origin, firstTransfer, secondTransfer, destination);
+            db.Trains.AddRange(firstTrain, secondTrain);
+            db.TrainRoutes.AddRange(firstRoute, secondRoute);
+            db.Trips.AddRange(firstTrip, secondTrip);
+            db.Fares.AddRange(
+                new Fare
+                {
+                    Id = 10,
+                    TripId = firstTrip.Id,
+                    Trip = firstTrip,
+                    ClassType = "Economy",
+                    Price = 90m,
+                    Currency = "PLN"
+                },
+                new Fare
+                {
+                    Id = 11,
+                    TripId = secondTrip.Id,
+                    Trip = secondTrip,
+                    ClassType = "Economy",
+                    Price = 47m,
+                    Currency = "PLN"
+                });
+            await db.SaveChangesAsync();
+            var svc = new TripService(db);
+
+            var results = (await svc.SearchItinerariesAsync(
+                "Krakow",
+                "Gdynia",
+                new DateTime(2026, 7, 1))).ToList();
+
+            Assert.That(results.Count, Is.EqualTo(1));
+            var result = results.Single();
+            Assert.That(result.TransferCount, Is.EqualTo(1));
+            Assert.That(result.Segments.Select(segment => segment.TrainName), Is.EqualTo(new[] { "EIP 3508", "IC 56 Wawel" }));
+            Assert.That(result.Segments.First().ArrivalStationCode, Is.EqualTo("WAZ"));
+            Assert.That(result.Segments.Last().DepartureStationCode, Is.EqualTo("WAZ"));
+            Assert.That(result.TotalTransferMinutes, Is.EqualTo(32));
+        }
+
+        [Test]
         public async Task SearchItinerariesAsync_ExcludesTooTightTransfers()
         {
             var db = NewDb("Trips_ItineraryTightTransfer");
