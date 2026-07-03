@@ -452,6 +452,8 @@ namespace TrainTicketPlatformAPI.Services
                     {
                         Code = route.Code,
                         Name = route.Name,
+                        AdminDisplayName = route.AdminDisplayName,
+                        RouteFingerprint = route.RouteFingerprint,
                         DistanceKm = route.DistanceKm,
                         EstimatedDurationMinutes = route.EstimatedDurationMinutes,
                         OperatingDays = route.OperatingDays,

@@ -57,6 +57,8 @@ namespace TrainTicketPlatformAPI.Contracts.OpenRailway
     {
         public string Code { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+        public string AdminDisplayName { get; set; } = string.Empty;
+        public string RouteFingerprint { get; set; } = string.Empty;
         public decimal DistanceKm { get; set; }
         public int EstimatedDurationMinutes { get; set; }
         public string OperatingDays { get; set; } = "Imported";

@@ -7,6 +7,8 @@ namespace TrainTicketPlatformAPI.Models
         public int Id { get; set; }
         public string Code { get; set; } = string.Empty;
         public string Name { get; set; } = string.Empty;
+        public string AdminDisplayName { get; set; } = string.Empty;
+        public string RouteFingerprint { get; set; } = string.Empty;
         public int DepartureStationId { get; set; }
         public int ArrivalStationId { get; set; }
 

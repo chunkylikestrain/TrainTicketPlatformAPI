@@ -803,6 +803,20 @@ namespace TrainTicketPlatformAPI.Data
                 .HasDefaultValue("");
 
             modelBuilder.Entity<TrainRoute>()
+                .Property(r => r.AdminDisplayName)
+                .HasMaxLength(300)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TrainRoute>()
+                .Property(r => r.RouteFingerprint)
+                .HasMaxLength(1200)
+                .HasDefaultValue("");
+
+            modelBuilder.Entity<TrainRoute>()
+                .HasIndex(r => r.RouteFingerprint)
+                .HasFilter("[RouteFingerprint] <> ''");
+
+            modelBuilder.Entity<TrainRoute>()
                 .Property(r => r.OperatingDays)
                 .HasMaxLength(80)
                 .HasDefaultValue("Daily");

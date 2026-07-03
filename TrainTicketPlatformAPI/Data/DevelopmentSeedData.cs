@@ -149,6 +149,7 @@ namespace TrainTicketPlatformAPI.Data
             new("DE", "BE", "Berlin"),
             new("DE", "BB", "Brandenburg"),
             new("CZ", "PR", "Prague"),
+            new("CZ", "PA", "Pardubice"),
             new("CZ", "MS", "Moravian-Silesian"),
             new("SK", "BA", "Bratislava"),
             new("LT", "VL", "Vilnius"),
@@ -186,6 +187,58 @@ namespace TrainTicketPlatformAPI.Data
             }
 
             return builder.ToString().Trim('_');
+        }
+
+        private static string BuildRouteFingerprint(params string[] stationCodes)
+        {
+            return string.Join(
+                ">",
+                stationCodes
+                    .Where(code => !string.IsNullOrWhiteSpace(code))
+                    .Select(code => code.Trim().ToUpperInvariant()));
+        }
+
+        private static string BuildRouteFingerprint(string originCode, IEnumerable<string> intermediateStopCodes, string destinationCode)
+            => BuildRouteFingerprint(
+                [originCode, .. intermediateStopCodes, destinationCode]);
+
+        private static string BuildRouteFingerprintFromStopCodes(
+            string originCode,
+            IEnumerable<string> routeStopCodes,
+            string destinationCode)
+        {
+            var orderedStopCodes = routeStopCodes
+                .Where(code => !string.IsNullOrWhiteSpace(code))
+                .Select(code => code.Trim())
+                .ToList();
+
+            if (orderedStopCodes.Count > 0 &&
+                string.Equals(orderedStopCodes[0], originCode, StringComparison.OrdinalIgnoreCase) &&
+                string.Equals(orderedStopCodes[^1], destinationCode, StringComparison.OrdinalIgnoreCase))
+            {
+                return BuildRouteFingerprint(orderedStopCodes.ToArray());
+            }
+
+            return BuildRouteFingerprint(originCode, orderedStopCodes, destinationCode);
+        }
+
+        private static string BuildAdminRouteDisplayName(
+            string originName,
+            string destinationName,
+            IEnumerable<string> intermediateStopNames)
+        {
+            var keyStops = intermediateStopNames
+                .Where(stop => !string.IsNullOrWhiteSpace(stop))
+                .Select(stop => stop.Trim())
+                .Where(stop =>
+                    !string.Equals(stop, originName, StringComparison.OrdinalIgnoreCase) &&
+                    !string.Equals(stop, destinationName, StringComparison.OrdinalIgnoreCase))
+                .Take(3)
+                .ToList();
+
+            return keyStops.Count == 0
+                ? $"{originName} to {destinationName}"
+                : $"{originName} to {destinationName} via {string.Join(", ", keyStops)}";
         }
 
         private static readonly StationSeed[] ReferenceStations =
@@ -298,7 +351,214 @@ namespace TrainTicketPlatformAPI.Data
             new("LT", "VL", "Vilnius", "City", "VNO", "Vilnius", "Vilnius"),
             new("UA", "KV", "Kyiv", "City", "KYV", "Kyiv-Pasazhyrskyi", "Kyiv"),
             new("UA", "LV", "Lviv", "City", "LVI", "Lviv", "Lviv"),
-            new("AT", "WI", "Vienna", "City", "VIE", "Wien Hauptbahnhof", "Vienna")
+            new("AT", "WI", "Vienna", "City", "VIE", "Wien Hauptbahnhof", "Vienna"),
+            new("PL", "LD", "Pabianice", "Town", "PABIA", "Pabianice", "Pabianice"),
+            new("PL", "WP", "Jarocin", "Town", "JAROC", "Jarocin", "Jarocin"),
+            new("PL", "DS", "Kłodzko", "City", "KLMI", "Kłodzko Miasto", "Kłodzko"),
+            new("PL", "ZP", "Wysoka Kamieńska", "Town", "WYKA", "Wysoka Kamieńska", "Wysoka Kamieńska"),
+            new("PL", "DS", "Zgorzelec", "Town", "ZGORZ", "Zgorzelec", "Zgorzelec"),
+            new("PL", "PD", "Bielsk Podlaski", "Town", "BIPO", "Bielsk Podlaski", "Bielsk Podlaski"),
+            new("PL", "DS", "Chojnów", "Town", "CHOJN", "Chojnów", "Chojnów"),
+            new("PL", "PD", "Czyżew", "Town", "CZYZE", "Czyżew", "Czyżew"),
+            new("PL", "DS", "Węgliniec", "Town", "WEGLI", "Węgliniec", "Węgliniec"),
+            new("PL", "SL", "Lubliniec", "Town", "LUBLI", "Lubliniec", "Lubliniec"),
+            new("PL", "LB", "Rejowiec", "Town", "REJOW", "Rejowiec", "Rejowiec"),
+            new("PL", "KP", "Bydgoszcz", "City", "BYWS", "Bydgoszcz Wschód", "Bydgoszcz"),
+            new("PL", "OP", "Nysa", "Town", "NYSA", "Nysa", "Nysa"),
+            new("PL", "LD", "Łowicz", "City", "LOGL", "Łowicz Główny", "Łowicz"),
+            new("CZ", "PA", "Ústi nad Orlicí", "Town", "USNAOR", "Usti nad Orlici", "Ústi nad Orlicí"),
+            new("PL", "DS", "Oleśnica", "Town", "OLRA", "Oleśnica Rataje", "Oleśnica"),
+            new("PL", "ZP", "Choszczno", "Town", "CHOSZ", "Choszczno", "Choszczno"),
+            new("PL", "LD", "Łask", "Town", "LASK", "Łask", "Łask"),
+            new("PL", "PD", "Szepietowo", "Town", "SZEPI", "Szepietowo", "Szepietowo"),
+            new("PL", "MA", "Maków Podhalański", "Town", "MAPO", "Maków Podhalański", "Maków Podhalański"),
+            new("PL", "WP", "Wronki", "Town", "WRONK", "Wronki", "Wronki"),
+            new("PL", "SL", "Sosnowiec", "City", "SOGL", "Sosnowiec Główny", "Sosnowiec"),
+            new("PL", "LD", "Sieradz", "Town", "SIERA", "Sieradz", "Sieradz"),
+            new("PL", "LU", "Gorzów Wielkopolski", "Town", "GOWI", "Gorzów Wielkopolski", "Gorzów Wielkopolski"),
+            new("PL", "WM", "Nidzica", "Town", "NIDZI", "Nidzica", "Nidzica"),
+            new("PL", "MZ", "Sarnaki", "Town", "SARNA", "Sarnaki", "Sarnaki"),
+            new("PL", "PK", "Przemyśl", "City", "PRZA", "Przemyśl Zasanie", "Przemyśl"),
+            new("PL", "LB", "Zawada", "Town", "ZAWAD", "Zawada", "Zawada"),
+            new("PL", "ZP", "Goleniów", "Town", "GOLEN", "Goleniów", "Goleniów"),
+            new("PL", "KP", "Mogilno", "Town", "MOGIL", "Mogilno", "Mogilno"),
+            new("PL", "WP", "Rogoźno Wielkopolskie", "Town", "ROWI", "Rogoźno Wielkopolskie", "Rogoźno Wielkopolskie"),
+            new("PL", "LU", "Nowa Sól", "Town", "NOSO", "Nowa Sól", "Nowa Sól"),
+            new("PL", "DS", "Nowa Ruda", "Town", "NORU", "Nowa Ruda", "Nowa Ruda"),
+            new("PL", "LU", "Świebodzin", "Town", "SWIEB", "Świebodzin", "Świebodzin"),
+            new("PL", "LB", "Hrubieszów", "City", "HRMI", "Hrubieszów Miasto", "Hrubieszów"),
+            new("PL", "PD", "Białystok", "Town", "BIZIWZ", "Białystok Zielone Wzgórza", "Białystok"),
+            new("PL", "LU", "Skwierzyna", "Town", "SKWIE", "Skwierzyna", "Skwierzyna"),
+            new("PL", "SL", "Jaworzno Szczakowa", "Town", "JASZ", "Jaworzno Szczakowa", "Jaworzno Szczakowa"),
+            new("PL", "SK", "Skarżysko-Kamienna", "Town", "SKKA", "Skarżysko-Kamienna", "Skarżysko-Kamienna"),
+            new("PL", "LB", "Werbkowice", "Town", "WERBK", "Werbkowice", "Werbkowice"),
+            new("PL", "DS", "Oborniki Śląskie", "Town", "OBSL", "Oborniki Śląskie", "Oborniki Śląskie"),
+            new("PL", "PK", "Tarnobrzeg", "Town", "TARNO", "Tarnobrzeg", "Tarnobrzeg"),
+            new("PL", "MZ", "Pionki Zachodnie", "Town", "PIZA", "Pionki Zachodnie", "Pionki Zachodnie"),
+            new("PL", "MA", "Miechów", "Town", "MIECH", "Miechów", "Miechów"),
+            new("PL", "ZP", "Międzyzdroje", "Town", "MIEDZ", "Międzyzdroje", "Międzyzdroje"),
+            new("PL", "DS", "Wrocław Mikołajów", "Town", "WRMI", "Wrocław Mikołajów", "Wrocław Mikołajów"),
+            new("PL", "WM", "Olsztyn Zachodni", "Town", "OLZA", "Olsztyn Zachodni", "Olsztyn Zachodni"),
+            new("PL", "PK", "Rudnik nad Sanem", "Town", "RUNASA", "Rudnik nad Sanem", "Rudnik nad Sanem"),
+            new("PL", "DS", "Zgorzelec", "City", "ZGMI", "Zgorzelec Miasto", "Zgorzelec"),
+            new("PL", "DS", "Żmigród", "Town", "ZMIGR", "Żmigród", "Żmigród"),
+            new("PL", "WP", "Swarzędz", "Town", "SWARZ", "Swarzędz", "Swarzędz"),
+            new("PL", "DS", "Pieńsk", "Town", "PIENS", "Pieńsk", "Pieńsk"),
+            new("PL", "WM", "Olsztynek", "Town", "OLSZT", "Olsztynek", "Olsztynek"),
+            new("PL", "WM", "Ostróda", "Town", "OSTRO", "Ostróda", "Ostróda"),
+            new("PL", "ZP", "Kolin", "Town", "KOLIN", "Kolin", "Kolin"),
+            new("PL", "LD", "Zduńska Wola", "Town", "ZDWO", "Zduńska Wola", "Zduńska Wola"),
+            new("PL", "MA", "Nowy Targ", "Town", "NOTA", "Nowy Targ", "Nowy Targ"),
+            new("PL", "PK", "Leżajsk", "Town", "LEZAJ", "Leżajsk", "Leżajsk"),
+            new("PL", "KP", "Kowalewo Pomorskie", "Town", "KOPO", "Kowalewo Pomorskie", "Kowalewo Pomorskie"),
+            new("PL", "WM", "Działdowo", "Town", "DZIAL", "Działdowo", "Działdowo"),
+            new("PL", "LB", "Biłgoraj", "Town", "BILGO", "Biłgoraj", "Biłgoraj"),
+            new("PL", "KP", "Toruń Wschodni", "Town", "TOWS", "Toruń Wschodni", "Toruń Wschodni"),
+            new("PL", "WP", "Pleszew", "Town", "PLESZ", "Pleszew", "Pleszew"),
+            new("PL", "MZ", "Tłuszcz", "Town", "TLUSZ", "Tłuszcz", "Tłuszcz"),
+            new("PL", "SL", "Zabrze", "Town", "ZABRZ", "Zabrze", "Zabrze"),
+            new("PL", "WP", "Koło", "Town", "KOLO", "Koło", "Koło"),
+            new("PL", "DS", "Głogów", "Town", "GLOGO", "Głogów", "Głogów"),
+            new("PL", "DS", "Brzeg Dolny", "Town", "BRDO", "Brzeg Dolny", "Brzeg Dolny"),
+            new("PL", "KP", "Solec Kujawski", "Town", "SOKU", "Solec Kujawski", "Solec Kujawski"),
+            new("PL", "WP", "Krajenka", "Town", "KRAJE", "Krajenka", "Krajenka"),
+            new("PL", "SL", "Dąbrowa Górnicza", "Town", "DAGO", "Dąbrowa Górnicza", "Dąbrowa Górnicza"),
+            new("PL", "WP", "Lipka Krajeńska", "Town", "LIKR", "Lipka Krajeńska", "Lipka Krajeńska"),
+            new("PL", "OP", "Prudnik", "Town", "PRUDN", "Prudnik", "Prudnik"),
+            new("PL", "LD", "Łódź Chojny", "Town", "LOCH", "Łódź Chojny", "Łódź Chojny"),
+            new("PL", "LB", "Tereszpol Biłgorajski", "Town", "TEBI", "Tereszpol Biłgorajski", "Tereszpol Biłgorajski"),
+            new("PL", "OP", "Strzelce Opolskie", "Town", "STOP", "Strzelce Opolskie", "Strzelce Opolskie"),
+            new("PL", "LD", "Łęczyca", "Town", "LECZY", "Łęczyca", "Łęczyca"),
+            new("PL", "MZ", "Niemojki", "Town", "NIEMO", "Niemojki", "Niemojki"),
+            new("PL", "WP", "Krotoszyn", "Town", "KROTO", "Krotoszyn", "Krotoszyn"),
+            new("PL", "MZ", "Mława", "Town", "MLAWA", "Mława", "Mława"),
+            new("PL", "MA", "Brzesko Okocim", "Town", "BROK", "Brzesko Okocim", "Brzesko Okocim"),
+            new("PL", "SL", "Będzin", "City", "BEMI", "Będzin Miasto", "Będzin"),
+            new("PL", "PK", "Sędziszów Małopolski", "Town", "SEMA", "Sędziszów Małopolski", "Sędziszów Małopolski"),
+            new("PL", "LU", "Zwierzyn", "Town", "ZWIER", "Zwierzyn", "Zwierzyn"),
+            new("PL", "DS", "Bystrzyca Kłodzka", "Town", "BYKL", "Bystrzyca Kłodzka", "Bystrzyca Kłodzka"),
+            new("PL", "LB", "Chełm", "City", "CHMI", "Chełm Miasto", "Chełm"),
+            new("PL", "WP", "Jastrowie", "Town", "JASTR", "Jastrowie", "Jastrowie"),
+            new("PL", "WP", "Opalenica", "Town", "OPALE", "Opalenica", "Opalenica"),
+            new("PL", "SL", "Pszczyna", "Town", "PSZCZ", "Pszczyna", "Pszczyna"),
+            new("PL", "KP", "Wąbrzeźno", "Town", "WABRZ", "Wąbrzeźno", "Wąbrzeźno"),
+            new("PL", "PK", "Mielec", "Town", "MIELE", "Mielec", "Mielec"),
+            new("PL", "LD", "Radomsko", "Town", "RADOM", "Radomsko", "Radomsko"),
+            new("PL", "PK", "Nowa Sarzyna", "Town", "NOSA", "Nowa Sarzyna", "Nowa Sarzyna"),
+            new("PL", "DS", "Milicz", "Town", "MILIC", "Milicz", "Milicz"),
+            new("PL", "DS", "Grabowno Wielkie", "Town", "GRWI", "Grabowno Wielkie", "Grabowno Wielkie"),
+            new("CZ", "PA", "Pardubice", "Town", "PAHLNA", "Pardubice Hlavni Nadrazi", "Pardubice"),
+            new("PL", "LB", "Świdnik", "City", "SWMI", "Świdnik Miasto", "Świdnik"),
+            new("PL", "DS", "Sędzisław", "Town", "SEDZI", "Sędzisław", "Sędzisław"),
+            new("PL", "DS", "Ścinawa", "Town", "SCINA", "Ścinawa", "Ścinawa"),
+            new("PL", "DS", "Wrocław Nadodrze", "Town", "WRNA", "Wrocław Nadodrze", "Wrocław Nadodrze"),
+            new("PL", "PM", "Łąg", "Town", "LAG", "Łąg", "Łąg"),
+            new("PL", "WP", "Szamotuły", "Town", "SZAMO", "Szamotuły", "Szamotuły"),
+            new("CZ", "PA", "Lichkov", "Town", "LICHK", "Lichkov", "Lichkov"),
+            new("PL", "PK", "Jarosław", "Town", "JAROS", "Jarosław", "Jarosław"),
+            new("PL", "PK", "Stalowa Wola Rozwadów", "Town", "STWORO", "Stalowa Wola Rozwadów", "Stalowa Wola Rozwadów"),
+            new("PL", "WP", "Nowy Tomyśl", "Town", "NOTO", "Nowy Tomyśl", "Nowy Tomyśl"),
+            new("PL", "MA", "Trzebinia", "Town", "TRZEB", "Trzebinia", "Trzebinia"),
+            new("PL", "LB", "Lublin Zachodni", "Town", "LUZA", "Lublin Zachodni", "Lublin Zachodni"),
+            new("PL", "SL", "Dąbrowa Górnicza Ząbkowice", "Town", "DAGOZA", "Dąbrowa Górnicza Ząbkowice", "Dąbrowa Górnicza Ząbkowice"),
+            new("PL", "PK", "Przeworsk", "Town", "PRZEW", "Przeworsk", "Przeworsk"),
+            new("PL", "WP", "Chodzież", "Town", "CHODZ", "Chodzież", "Chodzież"),
+            new("PL", "MZ", "Nowy Dwór Mazowiecki", "Town", "NODWMA", "Nowy Dwór Mazowiecki", "Nowy Dwór Mazowiecki"),
+            new("PL", "PD", "Nurzec", "Town", "NURZE", "Nurzec", "Nurzec"),
+            new("PL", "LU", "Gorzów Wielkopolski", "Town", "GOWIWS", "Gorzów Wielkopolski Wschodni", "Gorzów Wielkopolski"),
+            new("PL", "PD", "Dąbrowa Białostocka", "Town", "DABI", "Dąbrowa Białostocka", "Dąbrowa Białostocka"),
+            new("PL", "MA", "Kalwaria Zebrzydowska Lanckorona", "Town", "KAZELA", "Kalwaria Zebrzydowska Lanckorona", "Kalwaria Zebrzydowska Lanckorona"),
+            new("PL", "DS", "Strzelin", "Town", "STRZE", "Strzelin", "Strzelin"),
+            new("PL", "ZP", "Mieszkowice", "Town", "MIESZ", "Mieszkowice", "Mieszkowice"),
+            new("PL", "WP", "Środa Wielkopolska", "Town", "SRWI", "Środa Wielkopolska", "Środa Wielkopolska"),
+            new("PL", "WP", "Trzcianka", "Town", "TRZCI", "Trzcianka", "Trzcianka"),
+            new("PL", "WP", "Wieleń", "Town", "WIELE", "Wieleń", "Wieleń"),
+            new("PL", "WP", "Rawicz", "Town", "RAWIC", "Rawicz", "Rawicz"),
+            new("DE", "BB", "Frankfurt (Oder)", "Town", "FROD", "Frankfurt/Oder", "Frankfurt (Oder)"),
+            new("PL", "PK", "Ropczyce", "Town", "ROPCZ", "Ropczyce", "Ropczyce"),
+            new("LT", "VL", "Mockava", "Town", "MOCKA", "Mockava", "Mockava"),
+            new("PL", "PM", "Czarna Woda", "Town", "CZWO", "Czarna Woda", "Czarna Woda"),
+            new("PL", "LU", "Nowe Drezdenko", "Town", "NODR", "Nowe Drezdenko", "Nowe Drezdenko"),
+            new("PL", "ZP", "Chojna", "Town", "CHOJN2", "Chojna", "Chojna"),
+            new("PL", "PD", "Łapy", "Town", "LAPY", "Łapy", "Łapy"),
+            new("PL", "PM", "Pruszcz Gdański", "Town", "PRGD", "Pruszcz Gdański", "Pruszcz Gdański"),
+            new("PL", "PD", "Hajnówka", "Town", "HAJNO", "Hajnówka", "Hajnówka"),
+            new("PL", "SK", "Sędziszów", "Town", "SEDZI2", "Sędziszów", "Sędziszów"),
+            new("PL", "DS", "Bolesławiec", "Town", "BOLES", "Bolesławiec", "Bolesławiec"),
+            new("PL", "KP", "Toruń", "City", "TOMI", "Toruń Miasto", "Toruń"),
+            new("PL", "ZP", "Gryfino", "Town", "GRYFI", "Gryfino", "Gryfino"),
+            new("PL", "LU", "Międzyrzecz", "Town", "MIEDZ2", "Międzyrzecz", "Międzyrzecz"),
+            new("PL", "DS", "Wołów", "Town", "WOLOW", "Wołów", "Wołów"),
+            new("PL", "SL", "Koniecpol", "Town", "KONIE", "Koniecpol", "Koniecpol"),
+            new("CZ", "PA", "Letohrad", "Town", "LETOH", "Letohrad", "Letohrad"),
+            new("PL", "DS", "Jedlina-Zdrój", "Town", "JEZD", "Jedlina-Zdrój", "Jedlina-Zdrój"),
+            new("PL", "DS", "Kłodzko", "City", "KLGL", "Kłodzko Główne", "Kłodzko"),
+            new("PL", "MZ", "Łochów", "Town", "LOCHO", "Łochów", "Łochów"),
+            new("PL", "PK", "Stalowa Wola", "City", "STWOCE", "Stalowa Wola Centrum", "Stalowa Wola"),
+            new("PL", "DS", "Kamieniec Ząbkowicki", "Town", "KAZA", "Kamieniec Ząbkowicki", "Kamieniec Ząbkowicki"),
+            new("PL", "KP", "Aleksandrów Kujawski", "Town", "ALKU", "Aleksandrów Kujawski", "Aleksandrów Kujawski"),
+            new("PL", "LU", "Rzepin", "Town", "RZEPI", "Rzepin", "Rzepin"),
+            new("PL", "SL", "Myszków", "Town", "MYSZK", "Myszków", "Myszków"),
+            new("PL", "PD", "Trakiszki", "Town", "TRAKI", "Trakiszki", "Trakiszki"),
+            new("PL", "PD", "Augustów", "Town", "AUGUS", "Augustów", "Augustów"),
+            new("PL", "PM", "Kaliska", "Town", "KALIS", "Kaliska", "Kaliska"),
+            new("PL", "MA", "Oświęcim", "Town", "OSWIE", "Oświęcim", "Oświęcim"),
+            new("PL", "KP", "Laskowice Pomorskie", "Town", "LAPO", "Laskowice Pomorskie", "Laskowice Pomorskie"),
+            new("PL", "LB", "Dęblin", "Town", "DEBLI", "Dęblin", "Dęblin"),
+            new("PL", "WP", "Słupca", "Town", "SLUPC", "Słupca", "Słupca"),
+            new("PL", "PD", "Siemiatycze", "Town", "SIEMI", "Siemiatycze", "Siemiatycze"),
+            new("PL", "OP", "Brzeg", "Town", "BRZEG", "Brzeg", "Brzeg"),
+            new("PL", "ZP", "Szczecin Dąbie", "Town", "SZDA", "Szczecin Dąbie", "Szczecin Dąbie"),
+            new("PL", "LB", "Szczebrzeszyn", "Town", "SZCZE", "Szczebrzeszyn", "Szczebrzeszyn"),
+            new("PL", "MZ", "Małkinia", "Town", "MALKI", "Małkinia", "Małkinia"),
+            new("PL", "PK", "Nisko", "Town", "NISKO", "Nisko", "Nisko"),
+            new("PL", "MA", "Sucha Beskidzka", "Town", "SUBEZA", "Sucha Beskidzka Zamek", "Sucha Beskidzka"),
+            new("PL", "LD", "Łódź Żabieniec", "Town", "LOZA", "Łódź Żabieniec", "Łódź Żabieniec"),
+            new("PL", "LB", "Nałęczów", "Town", "NALEC", "Nałęczów", "Nałęczów"),
+            new("PL", "MA", "Chrzanów", "Town", "CHSR", "Chrzanów Śródmieście", "Chrzanów"),
+            new("PL", "LD", "Zgierz", "Town", "ZGIER", "Zgierz", "Zgierz"),
+            new("PL", "PM", "Gdańsk Oliwa", "Town", "GDOL", "Gdańsk Oliwa", "Gdańsk Oliwa"),
+            new("PL", "SK", "Włoszczowa Północ", "Town", "WLPO", "Włoszczowa Północ", "Włoszczowa Północ"),
+            new("CZ", "PA", "Jablonné nad Orlicí", "Town", "JANAOR", "Jablonne nad Orlici", "Jablonné nad Orlicí"),
+            new("PL", "OP", "Paczków", "Town", "PACZK", "Paczków", "Paczków"),
+            new("PL", "MZ", "Mrozy", "Town", "MROZY", "Mrozy", "Mrozy"),
+            new("PL", "KP", "Jabłonowo Pomorskie", "Town", "JAPO", "Jabłonowo Pomorskie", "Jabłonowo Pomorskie"),
+            new("PL", "LD", "Zduńska Wola Karsznice", "Town", "ZDWOKA", "Zduńska Wola Karsznice", "Zduńska Wola Karsznice"),
+            new("PL", "PM", "Ustka", "Town", "USTKA", "Ustka", "Ustka"),
+            new("PL", "LB", "Zwierzyniec", "Town", "ZWIER2", "Zwierzyniec", "Zwierzyniec"),
+            new("CZ", "PR", "Praha", "Town", "PRLI", "Praha-Liben", "Praha"),
+            new("DE", "BE", "Berlin", "Town", "BEGE", "Berlin Gesundbrunnen", "Berlin"),
+            new("PL", "SL", "Mysłowice", "Town", "MYSLO", "Mysłowice", "Mysłowice"),
+            new("PL", "OP", "Otmuchów", "Town", "OTMUC", "Otmuchów", "Otmuchów"),
+            new("PL", "PD", "Sokółka", "Town", "SOKOL", "Sokółka", "Sokółka"),
+            new("PL", "OP", "Głogówek", "Town", "GLOGO2", "Głogówek", "Głogówek"),
+            new("PL", "SK", "Jędrzejów", "Town", "JEDRZ", "Jędrzejów", "Jędrzejów"),
+            new("PL", "WP", "Krzyż", "Town", "KRZYZ", "Krzyż", "Krzyż"),
+            new("PL", "PK", "Radymno", "Town", "RADYM", "Radymno", "Radymno"),
+            new("PL", "LB", "Zamość", "Town", "ZAST", "Zamość Starówka", "Zamość"),
+            new("PL", "LU", "Babimost", "Town", "BABIM", "Babimost", "Babimost"),
+            new("PL", "LB", "Zamość", "City", "ZAWS", "Zamość Wschód", "Zamość"),
+            new("PL", "LD", "Łódź", "City", "LOWI", "Łódź Widzew", "Łódź"),
+            new("PL", "LU", "Sulechów", "Town", "SULEC", "Sulechów", "Sulechów"),
+            new("PL", "PD", "Czeremcha", "Town", "CZERE", "Czeremcha", "Czeremcha"),
+            new("PL", "MA", "Chabówka", "Town", "CHST", "Chabówka Stadion", "Chabówka"),
+            new("PL", "DS", "Międzylesie", "Town", "MIEDZ3", "Międzylesie", "Międzylesie"),
+            new("PL", "SL", "Częstochowa", "City", "CZST", "Częstochowa Stradom", "Częstochowa"),
+            new("PL", "LU", "Dobiegniew", "Town", "DOBIE", "Dobiegniew", "Dobiegniew"),
+            new("PL", "MZ", "Wołomin", "Town", "WOLOM", "Wołomin", "Wołomin"),
+            new("PL", "WP", "Września", "Town", "WRZES", "Września", "Września"),
+            new("PL", "SL", "Chorzów Batory", "Town", "CHBA", "Chorzów Batory", "Chorzów Batory"),
+            new("PL", "PK", "Łańcut", "Town", "LANCU", "Łańcut", "Łańcut"),
+            new("PL", "WP", "Złotów", "Town", "ZLOTO", "Złotów", "Złotów"),
+            new("PL", "MA", "Poronin", "Town", "PORON", "Poronin", "Poronin"),
+            new("PL", "LD", "Ozorków", "Town", "OZORK", "Ozorków", "Ozorków"),
+            new("PL", "PM", "Starogard Gdański", "Town", "STGD", "Starogard Gdański", "Starogard Gdański"),
+            new("PL", "PM", "Czersk", "Town", "CZERS", "Czersk", "Czersk"),
+            new("PL", "LD", "Koluszki", "Town", "KOLUS", "Koluszki", "Koluszki"),
+            new("PL", "WP", "Zbąszyń", "Town", "ZBASZ", "Zbąszyń", "Zbąszyń"),
+            new("PL", "PM", "Smętowo", "Town", "SMETO", "Smętowo", "Smętowo"),
+            new("PL", "KP", "Bydgoszcz", "City", "BYLE", "Bydgoszcz Leśna", "Bydgoszcz"),
+            new("PL", "ZP", "Sławno", "Town", "SLAWN", "Sławno", "Sławno")
         ];
 
         private static readonly DemoRouteSeed[] DemoRoutes =
@@ -1234,6 +1494,16 @@ namespace TrainTicketPlatformAPI.Data
                 if (origin == null || destination == null || string.IsNullOrWhiteSpace(routeSeed.Code))
                     continue;
 
+                var orderedStopSeeds = routeSeed.Stops
+                    .OrderBy(stop => stop.StopOrder)
+                    .ToList();
+                var routeFingerprint = string.IsNullOrWhiteSpace(routeSeed.RouteFingerprint)
+                    ? BuildRouteFingerprintFromStopCodes(
+                        origin.Code,
+                        orderedStopSeeds.Select(stop => stop.StationCode),
+                        destination.Code)
+                    : routeSeed.RouteFingerprint.Trim();
+
                 var route = await db.TrainRoutes
                     .Include(item => item.RouteStops)
                     .FirstOrDefaultAsync(
@@ -1261,6 +1531,18 @@ namespace TrainTicketPlatformAPI.Data
                 route.Name = string.IsNullOrWhiteSpace(routeSeed.Name)
                     ? $"{origin.Name} to {destination.Name}"
                     : routeSeed.Name.Trim();
+                route.RouteFingerprint = routeFingerprint;
+                route.AdminDisplayName = string.IsNullOrWhiteSpace(routeSeed.AdminDisplayName)
+                    ? BuildAdminRouteDisplayName(
+                        origin.Name,
+                        destination.Name,
+                        orderedStopSeeds
+                            .Select(stop => ResolveSnapshotStation(
+                                stationsByExternalId,
+                                stationsByCode,
+                                stop.ExternalStationId,
+                                stop.StationCode)?.Name ?? string.Empty))
+                    : routeSeed.AdminDisplayName.Trim();
                 route.DepartureStationId = origin.Id;
                 route.ArrivalStationId = destination.Id;
                 route.DistanceKm = routeSeed.DistanceKm;
@@ -1279,7 +1561,7 @@ namespace TrainTicketPlatformAPI.Data
                 if (route.RouteStops.Count > 0)
                     db.TrainRouteStops.RemoveRange(route.RouteStops);
 
-                foreach (var stopSeed in routeSeed.Stops.OrderBy(stop => stop.StopOrder))
+                foreach (var stopSeed in orderedStopSeeds)
                 {
                     var station = ResolveSnapshotStation(
                         stationsByExternalId,
@@ -1685,12 +1967,18 @@ namespace TrainTicketPlatformAPI.Data
         {
             var origin = await GetStationByCodeAsync(db, seed.OriginCode, cancellationToken);
             var destination = await GetStationByCodeAsync(db, seed.DestinationCode, cancellationToken);
+            var routeFingerprint = BuildRouteFingerprint(seed.OriginCode, seed.StopCodes, seed.DestinationCode);
+            var intermediateStopStations = new List<Station>();
+            foreach (var stopCode in seed.StopCodes)
+            {
+                intermediateStopStations.Add(await GetStationByCodeAsync(db, stopCode, cancellationToken));
+            }
 
             var route = await db.TrainRoutes
                 .Include(r => r.RouteStops)
                 .FirstOrDefaultAsync(r =>
-                    r.DepartureStationId == origin.Id &&
-                    r.ArrivalStationId == destination.Id,
+                    r.Code == seed.Code ||
+                    r.RouteFingerprint == routeFingerprint,
                     cancellationToken);
 
             if (route == null)
@@ -1706,6 +1994,11 @@ namespace TrainTicketPlatformAPI.Data
 
             route.Code = seed.Code;
             route.Name = $"{origin.Name} to {destination.Name}";
+            route.RouteFingerprint = routeFingerprint;
+            route.AdminDisplayName = BuildAdminRouteDisplayName(
+                origin.Name,
+                destination.Name,
+                intermediateStopStations.Select(station => station.Name));
             route.DistanceKm = seed.DistanceKm;
             route.EstimatedDurationMinutes = seed.DurationMinutes;
             route.OperatingDays = "Daily";
@@ -1713,12 +2006,11 @@ namespace TrainTicketPlatformAPI.Data
 
             if (route.RouteStops.Count == 0)
             {
-                for (var index = 0; index < seed.StopCodes.Length; index++)
+                for (var index = 0; index < intermediateStopStations.Count; index++)
                 {
-                    var station = await GetStationByCodeAsync(db, seed.StopCodes[index], cancellationToken);
                     route.RouteStops.Add(new TrainRouteStop
                     {
-                        StationId = station.Id,
+                        StationId = intermediateStopStations[index].Id,
                         StopOrder = index + 1
                     });
                 }
