@@ -5872,6 +5872,11 @@
   color: var(--navy);
 }
 
+.ticket-tab-unavailable {
+  cursor: default;
+  opacity: 0.58;
+}
+
 .ticket-search {
   position: relative;
   display: block;

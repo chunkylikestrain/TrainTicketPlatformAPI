@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,33 @@ namespace TrainTicketPlatformAPI.Data
             decimal Class2Price,
             string Platform,
             string Track);
+        private sealed record ImportedScheduleMaterializationOptions(
+            DateOnly TemplateOperatingDate,
+            bool MaterializeDaily,
+            int DaysBefore,
+            int DaysAhead)
+        {
+            public IEnumerable<DateOnly> GetTargetOperatingDates(DateOnly anchorDate)
+            {
+                var start = anchorDate.AddDays(-Math.Max(0, DaysBefore));
+                var end = anchorDate.AddDays(Math.Max(0, DaysAhead));
+
+                for (var date = start; date <= end; date = date.AddDays(1))
+                    yield return date;
+            }
+        }
+        private sealed record ImportedTripTemplate(
+            OpenRailwaySeedTripDto Seed,
+            Train Train,
+            TrainRoute Route,
+            DateOnly TemplateOperatingDate);
+        private sealed record ImportedTripTemplateKey(
+            int? ExternalScheduleId,
+            int? ExternalOrderId,
+            int? ExternalTrainOrderId,
+            string TrainCode,
+            string RouteCode,
+            DateTime DepartureTime);
         private sealed record DemoCarriageSeed(
             string TrainCode,
             string Coach,
@@ -699,47 +727,91 @@ namespace TrainTicketPlatformAPI.Data
             TrainTicketDbContext db,
             IConfiguration configuration,
             CancellationToken cancellationToken = default,
-            string? contentRootPath = null)
+            string? contentRootPath = null,
+            ILogger? logger = null)
         {
             if (!configuration.GetValue("SeedData:UseDevelopmentSeedData", true))
                 return;
 
-            await EnsureReferenceLocationsAsync(db, cancellationToken);
-            await EnsureCleanStationDisplaysAsync(db, cancellationToken);
-            await CleanupLegacyPrototypeSeedDataAsync(db, cancellationToken);
-            await EnsureRollingStockOptionsAsync(db, cancellationToken);
+            await LogSeedTimedAsync(logger, "reference locations", () => EnsureReferenceLocationsAsync(db, cancellationToken));
+            await LogSeedTimedAsync(logger, "station display cleanup", () => EnsureCleanStationDisplaysAsync(db, cancellationToken));
+            await LogSeedTimedAsync(logger, "legacy prototype cleanup", () => CleanupLegacyPrototypeSeedDataAsync(db, cancellationToken));
+            await LogSeedTimedAsync(logger, "rolling stock options", () => EnsureRollingStockOptionsAsync(db, cancellationToken));
 
-            var loadedOpenRailwaySnapshots = await EnsureOpenRailwaySeedSnapshotsAsync(
-                db,
-                configuration,
-                contentRootPath,
-                cancellationToken);
+            var loadedOpenRailwaySnapshots = await LogSeedTimedAsync(
+                logger,
+                "OpenRailway seed snapshots",
+                () => EnsureOpenRailwaySeedSnapshotsAsync(
+                    db,
+                    configuration,
+                    contentRootPath,
+                    cancellationToken));
             var useHandWrittenSchedules = configuration.GetValue("SeedData:UseHandWrittenDemoSchedules", false);
             var useHandWrittenFallback = configuration.GetValue("SeedData:UseHandWrittenDemoScheduleFallback", true);
 
             if (useHandWrittenSchedules || (!loadedOpenRailwaySnapshots && useHandWrittenFallback))
             {
-                await EnsureDemoSchedulesAsync(db, cancellationToken);
+                await LogSeedTimedAsync(logger, "handwritten demo schedules", () => EnsureDemoSchedulesAsync(db, cancellationToken));
             }
-            await EnsureRouteIdentityFieldsAsync(db, cancellationToken);
-            await EnsureDiscountRulesAsync(db, cancellationToken);
+            await LogSeedTimedAsync(logger, "route identity fields", () => EnsureRouteIdentityFieldsAsync(db, cancellationToken));
+            await LogSeedTimedAsync(logger, "discount rules", () => EnsureDiscountRulesAsync(db, cancellationToken));
 
-            await EnsureUserAsync(db, configuration, "SeedData:AdminPassword", AdminEmail, "Admin", cancellationToken);
-            await EnsureUserAsync(db, configuration, "SeedData:PassengerPassword", PassengerEmail, "Passenger", cancellationToken);
+            await LogSeedTimedAsync(logger, "admin user", () => EnsureUserAsync(db, configuration, "SeedData:AdminPassword", AdminEmail, "Admin", cancellationToken));
+            await LogSeedTimedAsync(logger, "passenger user", () => EnsureUserAsync(db, configuration, "SeedData:PassengerPassword", PassengerEmail, "Passenger", cancellationToken));
 
-            await db.SaveChangesAsync(cancellationToken);
+            await LogSeedTimedAsync(logger, "final seed save", () => db.SaveChangesAsync(cancellationToken));
+        }
+
+        private static async Task LogSeedTimedAsync(ILogger? logger, string operation, Func<Task> action)
+        {
+            if (logger == null)
+            {
+                await action();
+                return;
+            }
+
+            var stopwatch = Stopwatch.StartNew();
+            logger.LogInformation("Starting seed step {SeedStep}", operation);
+            await action();
+            stopwatch.Stop();
+            logger.LogInformation("Finished seed step {SeedStep} in {ElapsedMilliseconds} ms", operation, stopwatch.ElapsedMilliseconds);
+        }
+
+        private static async Task<T> LogSeedTimedAsync<T>(ILogger? logger, string operation, Func<Task<T>> action)
+        {
+            if (logger == null)
+                return await action();
+
+            var stopwatch = Stopwatch.StartNew();
+            logger.LogInformation("Starting seed step {SeedStep}", operation);
+            var result = await action();
+            stopwatch.Stop();
+            logger.LogInformation("Finished seed step {SeedStep} in {ElapsedMilliseconds} ms", operation, stopwatch.ElapsedMilliseconds);
+            return result;
         }
 
         private static async Task EnsureRouteIdentityFieldsAsync(
             TrainTicketDbContext db,
             CancellationToken cancellationToken)
         {
+            var hasRoutesMissingIdentity = await db.TrainRoutes
+                .AsNoTracking()
+                .AnyAsync(
+                    route => route.RouteFingerprint == string.Empty ||
+                        route.AdminDisplayName == string.Empty,
+                    cancellationToken);
+
+            if (!hasRoutesMissingIdentity)
+                return;
+
             var routes = await db.TrainRoutes
                 .AsSplitQuery()
                 .Include(route => route.DepartureStation)
                 .Include(route => route.ArrivalStation)
                 .Include(route => route.RouteStops)
                     .ThenInclude(stop => stop.Station)
+                .Where(route => route.RouteFingerprint == string.Empty ||
+                    route.AdminDisplayName == string.Empty)
                 .ToListAsync(cancellationToken);
 
             foreach (var route in routes)
@@ -1392,6 +1464,7 @@ namespace TrainTicketPlatformAPI.Data
             string? contentRootPath,
             CancellationToken cancellationToken)
         {
+            var materializationOptions = GetImportedScheduleMaterializationOptions(configuration);
             var configuredDirectory = configuration["SeedData:OpenRailwaySnapshotDirectory"];
             var snapshotDirectory = string.IsNullOrWhiteSpace(configuredDirectory)
                 ? Path.Combine("App_Data", "SeedSnapshots")
@@ -1432,18 +1505,133 @@ namespace TrainTicketPlatformAPI.Data
                 if (snapshot == null)
                     continue;
 
-                await EnsureOpenRailwaySeedSnapshotAsync(db, snapshot, cancellationToken);
+                if (await SnapshotScheduleWindowIsCurrentAsync(
+                    db,
+                    snapshot,
+                    materializationOptions,
+                    cancellationToken))
+                {
+                    loadedAny = true;
+                    continue;
+                }
+
+                await EnsureOpenRailwaySeedSnapshotAsync(db, snapshot, materializationOptions, cancellationToken);
                 loadedAny = true;
             }
 
             return loadedAny;
         }
 
+        private static async Task<bool> SnapshotScheduleWindowIsCurrentAsync(
+            TrainTicketDbContext db,
+            OpenRailwaySeedSnapshotDto snapshot,
+            ImportedScheduleMaterializationOptions materializationOptions,
+            CancellationToken cancellationToken)
+        {
+            if (snapshot.Trips.Count == 0)
+                return false;
+
+            var externalSource = string.IsNullOrWhiteSpace(snapshot.ExternalSource)
+                ? "PLK"
+                : snapshot.ExternalSource.Trim();
+            var snapshotExportedAtUtc = snapshot.ExportedAtUtc == default
+                ? DateTime.UtcNow
+                : snapshot.ExportedAtUtc;
+            var templateOperatingDate = ResolveTemplateOperatingDate(snapshot, materializationOptions);
+            var expectedTripCount = snapshot.Trips
+                .Select(trip => new
+                {
+                    trip.ExternalScheduleId,
+                    trip.ExternalOrderId,
+                    trip.ExternalTrainOrderId,
+                    trip.TrainCode,
+                    trip.RouteCode,
+                    trip.DepartureTime
+                })
+                .Distinct()
+                .Count();
+            var targetDates = materializationOptions.MaterializeDaily
+                ? materializationOptions
+                    .GetTargetOperatingDates(DateOnly.FromDateTime(DateTime.Today))
+                    .Append(templateOperatingDate)
+                    .Distinct()
+                    .ToList()
+                : [templateOperatingDate];
+
+            var currentCounts = await db.Trips
+                .AsNoTracking()
+                .Where(trip =>
+                    trip.ExternalSource == externalSource &&
+                    trip.ExternalImportedAtUtc == snapshotExportedAtUtc &&
+                    trip.ExternalOperatingDate.HasValue &&
+                    targetDates.Contains(trip.ExternalOperatingDate.Value))
+                .GroupBy(trip => trip.ExternalOperatingDate!.Value)
+                .Select(group => new
+                {
+                    OperatingDate = group.Key,
+                    TripCount = group.Count()
+                })
+                .ToListAsync(cancellationToken);
+            var currentCountsByDate = currentCounts.ToDictionary(item => item.OperatingDate, item => item.TripCount);
+
+            return targetDates.All(date =>
+                currentCountsByDate.TryGetValue(date, out var tripCount) &&
+                tripCount >= expectedTripCount);
+        }
+
+        private static ImportedScheduleMaterializationOptions GetImportedScheduleMaterializationOptions(
+            IConfiguration configuration)
+        {
+            var configuredTemplateDate = configuration["SeedData:ImportedScheduleTemplateOperatingDate"];
+            var templateOperatingDate = DateOnly.TryParseExact(
+                configuredTemplateDate,
+                "yyyy-MM-dd",
+                CultureInfo.InvariantCulture,
+                DateTimeStyles.None,
+                out var parsedTemplateDate)
+                ? parsedTemplateDate
+                : new DateOnly(2026, 7, 3);
+
+            return new ImportedScheduleMaterializationOptions(
+                templateOperatingDate,
+                configuration.GetValue("SeedData:MaterializeImportedTripsDaily", true),
+                configuration.GetValue("SeedData:MaterializeScheduleDaysBefore", 1),
+                configuration.GetValue("SeedData:MaterializeScheduleDaysAhead", 14));
+        }
+
+        private static DateOnly ResolveTemplateOperatingDate(
+            OpenRailwaySeedSnapshotDto snapshot,
+            ImportedScheduleMaterializationOptions materializationOptions)
+        {
+            var snapshotOperatingDate = snapshot.Trips
+                .Select(trip => trip.ExternalOperatingDate)
+                .Where(date => date.HasValue)
+                .Select(date => date!.Value)
+                .Distinct()
+                .OrderBy(date => date)
+                .SingleOrDefault();
+
+            return snapshotOperatingDate == default
+                ? materializationOptions.TemplateOperatingDate
+                : snapshotOperatingDate;
+        }
+
+        private static DateTime ShiftSnapshotDateTime(
+            DateTime value,
+            DateOnly templateOperatingDate,
+            DateOnly targetOperatingDate)
+        {
+            var dayDelta = targetOperatingDate.DayNumber - templateOperatingDate.DayNumber;
+            return value.AddDays(dayDelta);
+        }
+
         private static async Task EnsureOpenRailwaySeedSnapshotAsync(
             TrainTicketDbContext db,
             OpenRailwaySeedSnapshotDto snapshot,
+            ImportedScheduleMaterializationOptions materializationOptions,
             CancellationToken cancellationToken)
         {
+            var templateOperatingDate = ResolveTemplateOperatingDate(snapshot, materializationOptions);
             var externalSource = string.IsNullOrWhiteSpace(snapshot.ExternalSource)
                 ? "PLK"
                 : snapshot.ExternalSource.Trim();
@@ -1663,7 +1851,215 @@ namespace TrainTicketPlatformAPI.Data
                 routesByCode[route.Code] = route;
             }
 
-            foreach (var tripSeed in snapshot.Trips)
+            var tripTemplates = BuildImportedTripTemplates(
+                snapshot.Trips,
+                trainsByCode,
+                routesByCode,
+                templateOperatingDate);
+
+            foreach (var template in tripTemplates)
+            {
+                await EnsureSnapshotTripAsync(
+                    db,
+                    template,
+                    externalSource,
+                    snapshot.ExportedAtUtc,
+                    template.Seed.ExternalOperatingDate ?? template.TemplateOperatingDate,
+                    template.Seed.DepartureTime,
+                    template.Seed.ArrivalTime,
+                    cancellationToken);
+            }
+
+            if (materializationOptions.MaterializeDaily)
+            {
+                await EnsureMaterializedSnapshotTripsAsync(
+                    db,
+                    tripTemplates,
+                    materializationOptions,
+                    externalSource,
+                    snapshot.ExportedAtUtc,
+                    cancellationToken);
+            }
+
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static async Task EnsureMaterializedSnapshotTripsAsync(
+            TrainTicketDbContext db,
+            IReadOnlyCollection<ImportedTripTemplate> templates,
+            ImportedScheduleMaterializationOptions materializationOptions,
+            string externalSource,
+            DateTime snapshotExportedAtUtc,
+            CancellationToken cancellationToken)
+        {
+            var anchorDate = DateOnly.FromDateTime(DateTime.Today);
+            var targetOperatingDates = materializationOptions
+                .GetTargetOperatingDates(anchorDate)
+                .Distinct()
+                .OrderBy(date => date)
+                .ToList();
+
+            foreach (var targetOperatingDate in targetOperatingDates)
+            {
+                if (targetOperatingDate != materializationOptions.TemplateOperatingDate &&
+                    await MaterializedSnapshotDateIsCurrentAsync(
+                        db,
+                        templates,
+                        externalSource,
+                        snapshotExportedAtUtc,
+                        targetOperatingDate,
+                        cancellationToken))
+                {
+                    continue;
+                }
+
+                await EnsureMaterializedSnapshotDateAsync(
+                    db,
+                    templates,
+                    externalSource,
+                    snapshotExportedAtUtc,
+                    targetOperatingDate,
+                    cancellationToken);
+            }
+        }
+
+        private static async Task EnsureMaterializedSnapshotDateAsync(
+            TrainTicketDbContext db,
+            IReadOnlyCollection<ImportedTripTemplate> templates,
+            string externalSource,
+            DateTime snapshotExportedAtUtc,
+            DateOnly targetOperatingDate,
+            CancellationToken cancellationToken)
+        {
+            var existingTrips = await db.Trips
+                .Include(trip => trip.Train)
+                .Include(trip => trip.TrainRoute)
+                .Include(trip => trip.Fares)
+                .Where(trip =>
+                    trip.ExternalSource == externalSource &&
+                    trip.ExternalOperatingDate == targetOperatingDate)
+                .ToListAsync(cancellationToken);
+            var existingTripsByKey = existingTrips
+                .GroupBy(BuildImportedTripKey)
+                .ToDictionary(group => group.Key, group => group.First());
+            var existingTripIds = existingTrips
+                .Select(trip => trip.Id)
+                .Where(id => id > 0)
+                .ToList();
+            var bookedTripIds = existingTripIds.Count == 0
+                ? new HashSet<int>()
+                : (await db.Bookings
+                    .Where(booking => booking.TripId.HasValue && existingTripIds.Contains(booking.TripId.Value))
+                    .Select(booking => booking.TripId!.Value)
+                    .Distinct()
+                    .ToListAsync(cancellationToken))
+                    .ToHashSet();
+            var tripsToRefresh = new List<(Trip Trip, ImportedTripTemplate Template)>();
+
+            foreach (var template in templates.Where(template => template.TemplateOperatingDate != targetOperatingDate))
+            {
+                var key = BuildImportedTripTemplateKey(template, targetOperatingDate);
+                var departureTime = ShiftSnapshotDateTime(
+                    template.Seed.DepartureTime,
+                    template.TemplateOperatingDate,
+                    targetOperatingDate);
+                var arrivalTime = ShiftSnapshotDateTime(
+                    template.Seed.ArrivalTime,
+                    template.TemplateOperatingDate,
+                    targetOperatingDate);
+
+                if (!existingTripsByKey.TryGetValue(key, out var trip))
+                {
+                    trip = new Trip();
+                    db.Trips.Add(trip);
+                    existingTripsByKey[key] = trip;
+                }
+                else if (bookedTripIds.Contains(trip.Id))
+                {
+                    continue;
+                }
+
+                ApplySnapshotTripValues(
+                    trip,
+                    template,
+                    externalSource,
+                    snapshotExportedAtUtc,
+                    targetOperatingDate,
+                    departureTime,
+                    arrivalTime);
+                tripsToRefresh.Add((trip, template));
+            }
+
+            if (tripsToRefresh.Count == 0)
+                return;
+
+            await db.SaveChangesAsync(cancellationToken);
+
+            foreach (var (trip, template) in tripsToRefresh)
+            {
+                EnsureSnapshotFaresInMemory(trip, template.Train, template.Route, template.Seed.Fares);
+            }
+
+            await db.SaveChangesAsync(cancellationToken);
+        }
+
+        private static async Task<bool> MaterializedSnapshotDateIsCurrentAsync(
+            TrainTicketDbContext db,
+            IReadOnlyCollection<ImportedTripTemplate> templates,
+            string externalSource,
+            DateTime snapshotExportedAtUtc,
+            DateOnly targetOperatingDate,
+            CancellationToken cancellationToken)
+        {
+            if (templates.Count == 0)
+                return true;
+
+            var expectedKeys = templates
+                .Select(template => BuildImportedTripTemplateKey(template, targetOperatingDate))
+                .ToHashSet();
+            var expectedTripCount = expectedKeys.Count;
+
+            var existingTrips = await db.Trips
+                .AsNoTracking()
+                .Where(trip =>
+                    trip.ExternalSource == externalSource &&
+                    trip.ExternalOperatingDate == targetOperatingDate &&
+                    trip.ExternalImportedAtUtc == snapshotExportedAtUtc)
+                .Select(trip => new
+                {
+                    trip.ExternalScheduleId,
+                    trip.ExternalOrderId,
+                    trip.ExternalTrainOrderId,
+                    TrainCode = trip.Train.Code,
+                    RouteCode = trip.TrainRoute.Code,
+                    trip.DepartureTime
+                })
+                .ToListAsync(cancellationToken);
+
+            if (existingTrips.Count < expectedTripCount)
+                return false;
+
+            var existingKeys = existingTrips
+                .Select(trip => new ImportedTripTemplateKey(
+                    trip.ExternalScheduleId,
+                    trip.ExternalOrderId,
+                    trip.ExternalTrainOrderId,
+                    trip.TrainCode,
+                    trip.RouteCode,
+                    trip.DepartureTime))
+                .ToHashSet();
+
+            return expectedKeys.IsSubsetOf(existingKeys);
+        }
+
+        private static List<ImportedTripTemplate> BuildImportedTripTemplates(
+            IEnumerable<OpenRailwaySeedTripDto> tripSeeds,
+            IReadOnlyDictionary<string, Train> trainsByCode,
+            IReadOnlyDictionary<string, TrainRoute> routesByCode,
+            DateOnly templateOperatingDate)
+        {
+            var templates = new List<ImportedTripTemplate>();
+            foreach (var tripSeed in tripSeeds)
             {
                 if (!trainsByCode.TryGetValue(tripSeed.TrainCode, out var train) ||
                     !routesByCode.TryGetValue(tripSeed.RouteCode, out var route))
@@ -1671,61 +2067,135 @@ namespace TrainTicketPlatformAPI.Data
                     continue;
                 }
 
-                var trip = await db.Trips
-                    .FirstOrDefaultAsync(
-                        item =>
-                            item.ExternalSource == externalSource &&
-                            item.ExternalScheduleId == tripSeed.ExternalScheduleId &&
-                            item.ExternalOrderId == tripSeed.ExternalOrderId &&
-                            item.ExternalOperatingDate == tripSeed.ExternalOperatingDate,
-                        cancellationToken);
-
-                if (trip == null)
-                {
-                    trip = await db.Trips
-                        .FirstOrDefaultAsync(
-                            item => item.TrainId == train.Id &&
-                                item.TrainRouteId == route.Id &&
-                                item.DepartureTime == tripSeed.DepartureTime,
-                            cancellationToken);
-                }
-
-                if (trip == null)
-                {
-                    trip = new Trip
-                    {
-                        TrainId = train.Id,
-                        TrainRouteId = route.Id
-                    };
-                    db.Trips.Add(trip);
-                }
-
-                trip.TrainId = train.Id;
-                trip.TrainRouteId = route.Id;
-                trip.DepartureTime = tripSeed.DepartureTime;
-                trip.ArrivalTime = tripSeed.ArrivalTime;
-                trip.Platform = tripSeed.Platform;
-                trip.Track = tripSeed.Track;
-                trip.Status = string.IsNullOrWhiteSpace(tripSeed.Status) ? "Scheduled" : tripSeed.Status;
-                trip.DelayMinutes = tripSeed.DelayMinutes;
-                trip.CancellationReason = tripSeed.CancellationReason;
-                trip.OriginalPlatform = tripSeed.OriginalPlatform;
-                trip.OriginalTrack = tripSeed.OriginalTrack;
-                trip.DisruptionMessage = tripSeed.DisruptionMessage;
-                trip.DisruptionSeverity = tripSeed.DisruptionSeverity;
-                trip.ExternalSource = externalSource;
-                trip.ExternalScheduleId = tripSeed.ExternalScheduleId;
-                trip.ExternalOrderId = tripSeed.ExternalOrderId;
-                trip.ExternalTrainOrderId = tripSeed.ExternalTrainOrderId;
-                trip.ExternalOperatingDate = tripSeed.ExternalOperatingDate;
-                trip.ExternalImportedAtUtc = snapshot.ExportedAtUtc == default ? DateTime.UtcNow : snapshot.ExportedAtUtc;
-                trip.ExternalRawVersion = Truncate(tripSeed.ExternalRawVersion, 80);
-
-                await db.SaveChangesAsync(cancellationToken);
-                await EnsureSnapshotFaresAsync(db, trip, train, route, tripSeed.Fares, cancellationToken);
+                templates.Add(new ImportedTripTemplate(
+                    tripSeed,
+                    train,
+                    route,
+                    tripSeed.ExternalOperatingDate ?? templateOperatingDate));
             }
 
+            return templates;
+        }
+
+        private static ImportedTripTemplateKey BuildImportedTripTemplateKey(
+            ImportedTripTemplate template,
+            DateOnly targetOperatingDate)
+        {
+            var tripSeed = template.Seed;
+            return new ImportedTripTemplateKey(
+                tripSeed.ExternalScheduleId,
+                tripSeed.ExternalOrderId,
+                tripSeed.ExternalTrainOrderId,
+                tripSeed.TrainCode,
+                tripSeed.RouteCode,
+                ShiftSnapshotDateTime(
+                    tripSeed.DepartureTime,
+                    template.TemplateOperatingDate,
+                    targetOperatingDate));
+        }
+
+        private static ImportedTripTemplateKey BuildImportedTripKey(Trip trip)
+            => new(
+                trip.ExternalScheduleId,
+                trip.ExternalOrderId,
+                trip.ExternalTrainOrderId,
+                trip.Train.Code,
+                trip.TrainRoute.Code,
+                trip.DepartureTime);
+
+        private static async Task EnsureSnapshotTripAsync(
+            TrainTicketDbContext db,
+            ImportedTripTemplate template,
+            string externalSource,
+            DateTime snapshotExportedAtUtc,
+            DateOnly externalOperatingDate,
+            DateTime departureTime,
+            DateTime arrivalTime,
+            CancellationToken cancellationToken)
+        {
+            var tripSeed = template.Seed;
+            var train = template.Train;
+            var route = template.Route;
+
+            var trip = await db.Trips
+                .FirstOrDefaultAsync(
+                    item =>
+                        item.ExternalSource == externalSource &&
+                        item.ExternalScheduleId == tripSeed.ExternalScheduleId &&
+                        item.ExternalOrderId == tripSeed.ExternalOrderId &&
+                        item.ExternalOperatingDate == externalOperatingDate,
+                    cancellationToken);
+
+            if (trip == null)
+            {
+                trip = await db.Trips
+                    .FirstOrDefaultAsync(
+                        item => item.TrainId == train.Id &&
+                            item.TrainRouteId == route.Id &&
+                            item.DepartureTime == departureTime,
+                        cancellationToken);
+            }
+
+            if (trip != null &&
+                await db.Bookings.AnyAsync(booking => booking.TripId == trip.Id, cancellationToken))
+            {
+                return;
+            }
+
+            if (trip == null)
+            {
+                trip = new Trip
+                {
+                    TrainId = train.Id,
+                    TrainRouteId = route.Id
+                };
+                db.Trips.Add(trip);
+            }
+
+            ApplySnapshotTripValues(
+                trip,
+                template,
+                externalSource,
+                snapshotExportedAtUtc,
+                externalOperatingDate,
+                departureTime,
+                arrivalTime);
+
             await db.SaveChangesAsync(cancellationToken);
+            await EnsureSnapshotFaresAsync(db, trip, train, route, tripSeed.Fares, cancellationToken);
+        }
+
+        private static void ApplySnapshotTripValues(
+            Trip trip,
+            ImportedTripTemplate template,
+            string externalSource,
+            DateTime snapshotExportedAtUtc,
+            DateOnly externalOperatingDate,
+            DateTime departureTime,
+            DateTime arrivalTime)
+        {
+            var tripSeed = template.Seed;
+
+            trip.TrainId = template.Train.Id;
+            trip.TrainRouteId = template.Route.Id;
+            trip.DepartureTime = departureTime;
+            trip.ArrivalTime = arrivalTime;
+            trip.Platform = tripSeed.Platform;
+            trip.Track = tripSeed.Track;
+            trip.Status = string.IsNullOrWhiteSpace(tripSeed.Status) ? "Scheduled" : tripSeed.Status;
+            trip.DelayMinutes = tripSeed.DelayMinutes;
+            trip.CancellationReason = tripSeed.CancellationReason;
+            trip.OriginalPlatform = tripSeed.OriginalPlatform;
+            trip.OriginalTrack = tripSeed.OriginalTrack;
+            trip.DisruptionMessage = tripSeed.DisruptionMessage;
+            trip.DisruptionSeverity = tripSeed.DisruptionSeverity;
+            trip.ExternalSource = externalSource;
+            trip.ExternalScheduleId = tripSeed.ExternalScheduleId;
+            trip.ExternalOrderId = tripSeed.ExternalOrderId;
+            trip.ExternalTrainOrderId = tripSeed.ExternalTrainOrderId;
+            trip.ExternalOperatingDate = externalOperatingDate;
+            trip.ExternalImportedAtUtc = snapshotExportedAtUtc == default ? DateTime.UtcNow : snapshotExportedAtUtc;
+            trip.ExternalRawVersion = Truncate(tripSeed.ExternalRawVersion, 80);
         }
 
         private static async Task<Station?> FindSnapshotStationAsync(
@@ -1897,6 +2367,56 @@ namespace TrainTicketPlatformAPI.Data
             }
 
             await UpsertFareAsync(db, trip, "Class 2", class2Price, cancellationToken);
+        }
+
+        private static void EnsureSnapshotFaresInMemory(
+            Trip trip,
+            Train train,
+            TrainRoute route,
+            IReadOnlyCollection<OpenRailwaySeedFareDto> fareSeeds)
+        {
+            if (fareSeeds.Count > 0)
+            {
+                foreach (var fareSeed in fareSeeds.Where(fare => !string.IsNullOrWhiteSpace(fare.ClassType)))
+                {
+                    UpsertFareInMemory(
+                        trip,
+                        fareSeed.ClassType,
+                        fareSeed.Price,
+                        fareSeed.Currency);
+                }
+
+                return;
+            }
+
+            var (class1Price, class2Price) = EstimateSnapshotFares(train, route);
+            if (ShouldCreateFirstClassFare(train))
+            {
+                UpsertFareInMemory(trip, "Class 1", class1Price, "PLN");
+            }
+
+            UpsertFareInMemory(trip, "Class 2", class2Price, "PLN");
+        }
+
+        private static void UpsertFareInMemory(
+            Trip trip,
+            string classType,
+            decimal price,
+            string currency = "PLN")
+        {
+            var fare = trip.Fares.FirstOrDefault(item => item.ClassType == classType);
+            if (fare == null)
+            {
+                fare = new Fare
+                {
+                    Trip = trip,
+                    ClassType = classType
+                };
+                trip.Fares.Add(fare);
+            }
+
+            fare.Price = price;
+            fare.Currency = string.IsNullOrWhiteSpace(currency) ? "PLN" : currency;
         }
 
         private static (decimal Class1Price, decimal Class2Price) EstimateSnapshotFares(

@@ -52,6 +52,7 @@ export type TripItinerarySegment = {
   tripId: number;
   trainId: number;
   trainName: string;
+  serviceType: string;
   departureStationId: number;
   departureStationCode: string;
   departureStationName: string;

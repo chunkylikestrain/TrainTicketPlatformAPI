@@ -6,6 +6,7 @@ namespace TrainTicketPlatformAPI.Contracts.Trips
         public int TripId { get; set; }
         public int TrainId { get; set; }
         public string TrainName { get; set; } = string.Empty;
+        public string ServiceType { get; set; } = string.Empty;
         public int DepartureStationId { get; set; }
         public string DepartureStationCode { get; set; } = string.Empty;
         public string DepartureStationName { get; set; } = string.Empty;

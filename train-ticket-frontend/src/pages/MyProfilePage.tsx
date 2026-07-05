@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import PassengerLegalFooter from "../components/PassengerLegalFooter";
@@ -25,7 +25,6 @@ const accountMenuItems = [
 
 const ticketSections = [
   { key: "tickets", label: "Tickets", empty: "You currently have no active tickets. Proceed to purchase tickets." },
-  { key: "season", label: "Season tickets", empty: "You currently have no season tickets." },
   { key: "history", label: "Travel history", empty: "Your completed trips will appear here after arrival." },
   { key: "returned", label: "Returned", empty: "Your returned tickets will appear here." },
 ] as const;
@@ -88,13 +87,6 @@ function MyProfilePage() {
   useEffect(() => {
     if (!currentUser || activeAccountSection !== "tickets") {
       setTickets([]);
-      return;
-    }
-
-    if (activeTicketSection === "season") {
-      setTickets([]);
-      setTicketError("");
-      setIsTicketsLoading(false);
       return;
     }
 
@@ -326,14 +318,27 @@ function MyProfilePage() {
               <h2>My tickets</h2>
               <div className="ticket-tabs" role="tablist" aria-label="Ticket sections">
                 {ticketSections.map((section) => (
-                  <button
-                    className={activeTicketSection === section.key ? "ticket-tab ticket-tab-active" : "ticket-tab"}
-                    key={section.key}
-                    onClick={() => setActiveTicketSection(section.key)}
-                    type="button"
-                  >
-                    {section.label}
-                  </button>
+                  section.key === "history" ? (
+                    <Fragment key={section.key}>
+                      <span className="ticket-tab ticket-tab-unavailable">Season tickets</span>
+                      <button
+                        className={activeTicketSection === section.key ? "ticket-tab ticket-tab-active" : "ticket-tab"}
+                        onClick={() => setActiveTicketSection(section.key)}
+                        type="button"
+                      >
+                        {section.label}
+                      </button>
+                    </Fragment>
+                  ) : (
+                    <button
+                      className={activeTicketSection === section.key ? "ticket-tab ticket-tab-active" : "ticket-tab"}
+                      key={section.key}
+                      onClick={() => setActiveTicketSection(section.key)}
+                      type="button"
+                    >
+                      {section.label}
+                    </button>
+                  )
                 ))}
               </div>
 

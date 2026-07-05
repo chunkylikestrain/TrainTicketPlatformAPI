@@ -216,7 +216,7 @@ function SearchResultsPage() {
       departureStation: activeDepartureStation,
       arrivalStation: activeArrivalStation,
       date: activeDate,
-      time: "00:00",
+      time: activeTime || "00:00",
     })
       .then((results) => {
         const sameDayConnections = getSameDayConnections(results, activeDate);

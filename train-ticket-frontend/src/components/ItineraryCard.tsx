@@ -62,6 +62,10 @@ function formatJourneySummary(itinerary: TripItinerarySearchResult) {
   return `${itinerary.transferCount} ${transferLabel}, ${intermediateStops} ${stopLabel}`;
 }
 
+function hasSleeperSegment(itinerary: TripItinerarySearchResult) {
+  return itinerary.segments.some((segment) => segment.serviceType.toLowerCase() === "sleeper train");
+}
+
 function encodeItinerarySegments(itinerary: TripItinerarySearchResult) {
   return window.btoa(
     encodeURIComponent(JSON.stringify(itinerary.segments)),
@@ -79,6 +83,7 @@ function ItineraryCard({
 }: ItineraryCardProps) {
   const isFast = rank < 2;
   const isDirect = itinerary.transferCount === 0;
+  const isSleeperConnection = hasSleeperSegment(itinerary);
   const firstSegment = itinerary.segments[0];
   const lastSegment = itinerary.segments[itinerary.segments.length - 1];
   const classOnePrice = formatPrice(itinerary.lowestFare, 44, itinerary.currency);
@@ -113,6 +118,7 @@ function ItineraryCard({
     <article className={`trip-card ${isExpanded ? "trip-card-expanded" : ""}`}>
       <div className="connection-badges">
         <span>{isDirect ? "Direct" : `${itinerary.transferCount} transfer${itinerary.transferCount === 1 ? "" : "s"}`}</span>
+        {isSleeperConnection && <span>Sleeper train</span>}
         {isFast && <span>Fastest</span>}
       </div>
 
@@ -176,7 +182,7 @@ function ItineraryCard({
                     <span className="timeline-dot" />
                     <div>
                       <b>{segment.departureStationName}</b>
-                      <small>{segment.trainName}</small>
+                      <small>{segment.serviceType ? `${segment.trainName} - ${segment.serviceType}` : segment.trainName}</small>
                     </div>
                     <span>{formatPlatform(segment)}</span>
                   </div>

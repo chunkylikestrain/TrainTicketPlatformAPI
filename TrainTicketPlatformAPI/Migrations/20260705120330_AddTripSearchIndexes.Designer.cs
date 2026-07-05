@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TrainTicketPlatformAPI.Data;
 
@@ -11,9 +12,11 @@ using TrainTicketPlatformAPI.Data;
 namespace TrainTicketPlatformAPI.Migrations
 {
     [DbContext(typeof(TrainTicketDbContext))]
-    partial class TrainTicketDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260705120330_AddTripSearchIndexes")]
+    partial class AddTripSearchIndexes
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1585,13 +1588,9 @@ namespace TrainTicketPlatformAPI.Migrations
 
                     b.HasIndex("TrainId");
 
-                    b.HasIndex("DepartureTime", "ArrivalTime");
-
                     b.HasIndex("ExternalSource", "ExternalTrainOrderId");
 
                     b.HasIndex("TrainRouteId", "DepartureTime");
-
-                    b.HasIndex("ExternalOperatingDate", "DepartureTime", "ArrivalTime");
 
                     b.HasIndex("ExternalSource", "ExternalScheduleId", "ExternalOrderId", "ExternalOperatingDate")
                         .IsUnique()

@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
+using System.Diagnostics;
 using TrainTicketPlatformAPI.Services;
 using TrainTicketPlatformAPI.Data;
 using TrainTicketPlatformAPI.Middleware;
@@ -133,6 +134,7 @@ builder.Services.AddHttpClient<IOpenRailwayClient, OpenRailwayClient>((servicePr
     client.Timeout = TimeSpan.FromSeconds(30);
 });
 
+builder.Services.AddMemoryCache();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IBookingHoldExpiryService, BookingHoldExpiryService>();
 builder.Services.AddHostedService<BookingHoldExpiryHostedService>();
@@ -189,8 +191,13 @@ if (app.Environment.IsDevelopment())
 
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<TrainTicketDbContext>();
-    await db.Database.MigrateAsync();
-    await DevelopmentSeedData.SeedAsync(db, app.Configuration, contentRootPath: app.Environment.ContentRootPath);
+    var startupLogger = scope.ServiceProvider.GetRequiredService<ILoggerFactory>().CreateLogger("Startup");
+    await LogTimedAsync(startupLogger, "EF migrations", () => db.Database.MigrateAsync());
+    await DevelopmentSeedData.SeedAsync(
+        db,
+        app.Configuration,
+        logger: startupLogger,
+        contentRootPath: app.Environment.ContentRootPath);
 }
 
 app.UseHttpsRedirection();
@@ -205,5 +212,14 @@ app.MapControllers();
 app.MapHealthChecks("/health");
 
 app.Run();
+
+static async Task LogTimedAsync(ILogger logger, string operation, Func<Task> action)
+{
+    var stopwatch = Stopwatch.StartNew();
+    logger.LogInformation("Starting {Operation}", operation);
+    await action();
+    stopwatch.Stop();
+    logger.LogInformation("Finished {Operation} in {ElapsedMilliseconds} ms", operation, stopwatch.ElapsedMilliseconds);
+}
 
 public partial class Program { }

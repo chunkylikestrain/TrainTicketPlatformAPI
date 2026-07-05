@@ -842,6 +842,21 @@ namespace TrainTicketPlatformAPI.Data
                 .HasIndex(t => new { t.TrainRouteId, t.DepartureTime });
 
             modelBuilder.Entity<Trip>()
+                .HasIndex(t => t.DepartureTime);
+
+            modelBuilder.Entity<Trip>()
+                .HasIndex(t => t.ArrivalTime);
+
+            modelBuilder.Entity<Trip>()
+                .HasIndex(t => t.ExternalOperatingDate);
+
+            modelBuilder.Entity<Trip>()
+                .HasIndex(t => new { t.ExternalOperatingDate, t.DepartureTime, t.ArrivalTime });
+
+            modelBuilder.Entity<Trip>()
+                .HasIndex(t => new { t.DepartureTime, t.ArrivalTime });
+
+            modelBuilder.Entity<Trip>()
                 .HasIndex(t => new
                 {
                     t.ExternalSource,
