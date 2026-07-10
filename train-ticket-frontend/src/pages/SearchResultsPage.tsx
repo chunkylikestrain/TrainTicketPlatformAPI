@@ -58,6 +58,17 @@ function formatTime(value: string) {
   }).format(new Date(value));
 }
 
+function formatClockTime(value: string) {
+  if (!value) {
+    return "";
+  }
+
+  return new Intl.DateTimeFormat("en", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(`2000-01-01T${value}:00`));
+}
+
 function getDateTimeValue(value: string) {
   const dateTime = new Date(value).getTime();
   return Number.isNaN(dateTime) ? 0 : dateTime;
@@ -150,6 +161,7 @@ function SearchResultsPage() {
   const [expandedItineraryId, setExpandedItineraryId] = useState<string | null>(null);
   const [visibleConnectionStart, setVisibleConnectionStart] = useState(0);
   const [visibleConnectionEnd, setVisibleConnectionEnd] = useState(INITIAL_CONNECTION_COUNT);
+  const [earlierLoadedSearchKey, setEarlierLoadedSearchKey] = useState("");
 
   const departureStation = searchParams.get("departureStation") ?? "";
   const arrivalStation = searchParams.get("arrivalStation") ?? "";
@@ -178,6 +190,9 @@ function SearchResultsPage() {
   const returnSearchSignature = [roundTripSearchKey, returnDate, returnTime].join("|");
   const previousOutboundSearchSignature = useRef(roundTripSearchKey);
   const previousReturnSearchSignature = useRef(returnSearchSignature);
+  const showEarlierAfterLoad = useRef(false);
+  const activeSearchKey = [activeDepartureStation, activeArrivalStation, activeDate, activeTime].join("|");
+  const hasLoadedEarlierConnections = earlierLoadedSearchKey === activeSearchKey;
 
   useEffect(() => {
     if (previousOutboundSearchSignature.current === roundTripSearchKey) {
@@ -212,19 +227,29 @@ function SearchResultsPage() {
     setVisibleConnectionStart(0);
     setVisibleConnectionEnd(INITIAL_CONNECTION_COUNT);
 
+    const requestIncludesEarlier = hasLoadedEarlierConnections;
+
     searchItineraries({
       departureStation: activeDepartureStation,
       arrivalStation: activeArrivalStation,
       date: activeDate,
-      time: activeTime || "00:00",
+      time: requestIncludesEarlier ? "00:00" : activeTime || "00:00",
     })
       .then((results) => {
         const sameDayConnections = getSameDayConnections(results, activeDate);
         const firstVisibleIndex = getInitialConnectionStart(sameDayConnections, activeDate, activeTime);
+        const shouldShowEarlier = requestIncludesEarlier && showEarlierAfterLoad.current;
+        const nextStart = shouldShowEarlier
+          ? Math.max(firstVisibleIndex - CONNECTION_INCREMENT, 0)
+          : firstVisibleIndex;
+        const nextEnd = shouldShowEarlier && firstVisibleIndex > nextStart
+          ? firstVisibleIndex
+          : Math.min(nextStart + INITIAL_CONNECTION_COUNT, sameDayConnections.length);
 
         setItineraries(sameDayConnections);
-        setVisibleConnectionStart(firstVisibleIndex);
-        setVisibleConnectionEnd(Math.min(firstVisibleIndex + INITIAL_CONNECTION_COUNT, sameDayConnections.length));
+        setVisibleConnectionStart(nextStart);
+        setVisibleConnectionEnd(nextEnd);
+        showEarlierAfterLoad.current = false;
       })
       .catch(() => {
         setItineraries([]);
@@ -233,26 +258,40 @@ function SearchResultsPage() {
         setError("Connections could not be loaded from the API. Check that the backend is running and your search date has schedules.");
       })
       .finally(() => setIsLoading(false));
-  }, [activeArrivalStation, activeDate, activeDepartureStation, activeTime]);
+  }, [activeArrivalStation, activeDate, activeDepartureStation, activeTime, hasLoadedEarlierConnections]);
 
   const visibleItineraries = itineraries.slice(visibleConnectionStart, visibleConnectionEnd);
   const hasVisibleConnections = visibleItineraries.length > 0;
+  const fastestDurationMinutes = itineraries.length > 0
+    ? Math.min(...itineraries.map((itinerary) => itinerary.totalDurationMinutes))
+    : null;
   const hasEarlierConnections = visibleConnectionStart > 0;
   const hasLaterConnections = visibleConnectionEnd < itineraries.length;
   const firstVisibleItinerary = visibleItineraries[0];
   const firstVisibleDepartureTime = firstVisibleItinerary ? formatTime(firstVisibleItinerary.departureTime) : activeTime;
   const lastVisibleItinerary = visibleItineraries[visibleItineraries.length - 1];
   const lastVisibleDepartureTime = lastVisibleItinerary ? formatTime(lastVisibleItinerary.departureTime) : activeTime;
+  const activeTimeLabel = formatClockTime(activeTime);
+  const connectionWindowLabel = !hasEarlierConnections && activeTimeLabel && !hasLoadedEarlierConnections
+    ? `From ${activeTimeLabel}`
+    : `${firstVisibleDepartureTime} - ${lastVisibleDepartureTime}`;
   const noConnectionsForWholeDay = !isLoading && !error && itineraries.length === 0;
+  const canLoadEarlierConnections = Boolean(activeTime) && !hasLoadedEarlierConnections && !isLoading && !error;
   const searchAfterLastSameDayConnection =
     !isLoading && !error && itineraries.length > 0 && !hasVisibleConnections && visibleConnectionStart >= itineraries.length;
   const isEarlyMorningSearch = Boolean(activeTime) && activeTime < "06:00";
   const showPreviousDayBoundary =
-    !isLoading && !error && isEarlyMorningSearch && !hasEarlierConnections && Boolean(previousDate) && !noConnectionsForWholeDay;
+    !isLoading && !error && isEarlyMorningSearch && !hasEarlierConnections && !canLoadEarlierConnections && Boolean(previousDate) && !noConnectionsForWholeDay;
   const showNextDayBoundary = !isLoading && !error && hasVisibleConnections && !hasLaterConnections && Boolean(nextDate);
   const showConnectionNotice = isLoading || error || noConnectionsForWholeDay || searchAfterLastSameDayConnection;
 
   function showEarlierConnections() {
+    if (!hasEarlierConnections && canLoadEarlierConnections) {
+      showEarlierAfterLoad.current = true;
+      setEarlierLoadedSearchKey(activeSearchKey);
+      return;
+    }
+
     setVisibleConnectionStart((current) => Math.max(current - CONNECTION_INCREMENT, 0));
   }
 
@@ -438,27 +477,27 @@ function SearchResultsPage() {
               {formatNoticeDate(activeDate)}.
             </span>
             <span>
-              {firstVisibleDepartureTime} - {lastVisibleDepartureTime}
+              {connectionWindowLabel}
             </span>
           </div>
         )}
 
         <button
           type="button"
-          className={`timeline-button ${hasEarlierConnections ? "" : "timeline-muted"}`}
+          className={`timeline-button ${hasEarlierConnections || canLoadEarlierConnections ? "" : "timeline-muted"}`}
           onClick={showEarlierConnections}
-          disabled={!hasEarlierConnections}
+          disabled={!hasEarlierConnections && !canLoadEarlierConnections}
         >
           Earlier
         </button>
 
         <section className="connection-list" aria-label="Available connections">
-          {visibleItineraries.map((itinerary, index) => (
+          {visibleItineraries.map((itinerary) => (
             <ItineraryCard
               itinerary={itinerary}
               key={itinerary.itineraryId}
-              rank={visibleConnectionStart + index}
               isExpanded={expandedItineraryId === itinerary.itineraryId}
+              isFastest={fastestDurationMinutes != null && itinerary.totalDurationMinutes === fastestDurationMinutes}
               purchaseQuery={purchaseQuery}
               selectionActionLabel={isRoundTrip ? `${isRoundTripComplete ? "Change" : "Select"} ${activeDirectionLabel}` : undefined}
               onChooseItinerary={() => chooseItinerary(itinerary)}

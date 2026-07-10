@@ -263,7 +263,7 @@ namespace TrainTicketPlatformAPI.Services
             foreach (var start in startSegments)
             {
                 var startItineraries = new List<List<ItinerarySegmentCandidate>>();
-                BuildItineraryPaths(start, searchGraph.SearchIndex, arrival, [start], startItineraries);
+                BuildItineraryPaths(start, searchGraph.SearchIndex, departure, notBefore, arrival, [start], startItineraries);
                 itineraries.AddRange(startItineraries.Take(MaximumItineraryPathsPerStartSegment));
             }
             _logger.LogInformation(
@@ -275,8 +275,17 @@ namespace TrainTicketPlatformAPI.Services
             var deduplicatedItineraries = DeduplicatePracticalItineraries(
                 itineraries.Select(ToItineraryDto));
 
-            var results = LimitStarterTrainVariants(deduplicatedItineraries)
+            var candidateResults = LimitStarterTrainVariants(deduplicatedItineraries)
                 .Where(PassesOvernightComfortRules)
+                .ToList();
+            var lastChanceItineraryIds = candidateResults
+                .OrderByDescending(itinerary => itinerary.DepartureTime)
+                .Take(3)
+                .Select(itinerary => itinerary.ItineraryId)
+                .ToHashSet(StringComparer.Ordinal);
+
+            var results = candidateResults
+                .Where(itinerary => lastChanceItineraryIds.Contains(itinerary.ItineraryId) || PassesPracticalValueRules(itinerary))
                 .OrderBy(itinerary => itinerary.DepartureTime)
                 .ThenBy(itinerary => itinerary.ArrivalTime)
                 .ThenBy(itinerary => itinerary.TransferCount)
@@ -728,6 +737,8 @@ namespace TrainTicketPlatformAPI.Services
             int departureStationId,
             DateTime previousArrival,
             IReadOnlyList<ItinerarySegmentCandidate> path,
+            string journeyOrigin,
+            DateTime? notBefore,
             string destination)
         {
             var usedTripIds = path.Select(segment => segment.Trip.Id).ToHashSet();
@@ -756,6 +767,9 @@ namespace TrainTicketPlatformAPI.Services
                 }
 
                 var departureStop = context.RouteStations[indexedDeparture.RouteStationIndex];
+                if (HasEarlierBoardableOriginStop(context, indexedDeparture.RouteStationIndex, journeyOrigin, notBefore))
+                    continue;
+
                 var destinationIndex = FindDestinationStationIndex(context, indexedDeparture.RouteStationIndex, destination);
                 if (destinationIndex.HasValue)
                 {
@@ -797,6 +811,26 @@ namespace TrainTicketPlatformAPI.Services
             }
 
             return null;
+        }
+
+        private static bool HasEarlierBoardableOriginStop(
+            ItineraryTripContext context,
+            int departureIndex,
+            string journeyOrigin,
+            DateTime? notBefore)
+        {
+            for (var index = 0; index < departureIndex; index++)
+            {
+                var previousStop = context.RouteStations[index];
+                if (!TripSegmentResolver.StationMatches(previousStop.Station, journeyOrigin))
+                    continue;
+
+                var plannedOrigin = context.CallingPatternByStopOrder[previousStop.Order];
+                var originDeparture = plannedOrigin.DepartureTime ?? plannedOrigin.ArrivalTime ?? context.Trip.DepartureTime;
+                return !notBefore.HasValue || originDeparture >= notBefore.Value;
+            }
+
+            return false;
         }
 
         private static ItinerarySegmentCandidate? BuildSegmentCandidate(
@@ -880,6 +914,8 @@ namespace TrainTicketPlatformAPI.Services
         private static void BuildItineraryPaths(
             ItinerarySegmentCandidate current,
             ItinerarySearchIndex searchIndex,
+            string journeyOrigin,
+            DateTime? notBefore,
             string destination,
             List<ItinerarySegmentCandidate> path,
             List<List<ItinerarySegmentCandidate>> results)
@@ -898,6 +934,8 @@ namespace TrainTicketPlatformAPI.Services
                     current.ArrivalStation.Id,
                     current.ArrivalTime,
                     path,
+                    journeyOrigin,
+                    notBefore,
                     destination)
                 .Take(MaximumNextSegmentsPerPath);
 
@@ -908,7 +946,7 @@ namespace TrainTicketPlatformAPI.Services
 
                 path.Add(next);
                 if (CanContinueOvernightPath(path, destination))
-                    BuildItineraryPaths(next, searchIndex, destination, path, results);
+                    BuildItineraryPaths(next, searchIndex, journeyOrigin, notBefore, destination, path, results);
                 path.RemoveAt(path.Count - 1);
             }
         }
@@ -1131,6 +1169,29 @@ namespace TrainTicketPlatformAPI.Services
             return NightTransfersAreReasonable(segments);
         }
 
+        private static bool PassesPracticalValueRules(TripItinerarySearchResultDto itinerary)
+        {
+            var segments = itinerary.Segments.ToList();
+            if (itinerary.TransferCount < 2)
+                return true;
+
+            if (IsOvernightItinerary(segments) && segments.Any(IsSleeperSegment))
+                return true;
+
+            var premiumMinutes = segments
+                .Where(IsPremiumSegment)
+                .Sum(segment => segment.DurationMinutes);
+
+            if (premiumMinutes <= 0)
+                return true;
+
+            var premiumShare = premiumMinutes / Math.Max(1d, itinerary.TotalDurationMinutes);
+            if (itinerary.TotalDurationMinutes >= 12 * 60 && premiumShare < 0.25d)
+                return false;
+
+            return true;
+        }
+
         private static bool IsOvernightItinerary(IReadOnlyList<TripItinerarySegmentDto> segments)
             => segments.Any(segment => CrossesNightWindow(segment.DepartureTime, segment.ArrivalTime));
 
@@ -1174,6 +1235,11 @@ namespace TrainTicketPlatformAPI.Services
 
         private static bool IsSleeperSegment(TripItinerarySegmentDto segment)
             => string.Equals(segment.ServiceType, SleeperTrainServiceType, StringComparison.OrdinalIgnoreCase);
+
+        private static bool IsPremiumSegment(TripItinerarySegmentDto segment)
+            => segment.TrainName.StartsWith("EIP ", StringComparison.OrdinalIgnoreCase) ||
+                segment.TrainName.Equals("EIP", StringComparison.OrdinalIgnoreCase) ||
+                segment.ServiceType.Contains("Premium", StringComparison.OrdinalIgnoreCase);
 
         private static string GetItineraryServiceType(Trip trip)
             => IsSleeperTrain(trip.Train) ? SleeperTrainServiceType : string.Empty;

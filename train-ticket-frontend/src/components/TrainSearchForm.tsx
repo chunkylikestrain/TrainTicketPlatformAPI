@@ -306,10 +306,14 @@ function TrainSearchForm({ compact = false }: TrainSearchFormProps) {
       </section>
 
       <datalist id="departure-station-suggestions">
-        {stations.map((station) => <option key={station.id} value={stationOptionLabel(station)} />)}
+        {stations.flatMap((station) =>
+          stationSuggestionValues(station).map((value) => <option key={`${station.id}-${value}`} value={value} />),
+        )}
       </datalist>
       <datalist id="arrival-station-suggestions">
-        {stations.map((station) => <option key={station.id} value={stationOptionLabel(station)} />)}
+        {stations.flatMap((station) =>
+          stationSuggestionValues(station).map((value) => <option key={`${station.id}-${value}`} value={value} />),
+        )}
       </datalist>
 
       {(stationError || searchError) && (
@@ -349,6 +353,18 @@ function stationOptionLabel(station: Station) {
     : `${station.name} (${station.code})`;
 }
 
+function stationSuggestionValues(station: Station) {
+  const values = [
+    stationOptionLabel(station),
+    station.name,
+    `${station.name} (${station.code})`,
+    station.code,
+  ];
+  const asciiValues = values.map(toAsciiSearchText).filter(Boolean);
+
+  return Array.from(new Set([...values, ...asciiValues]));
+}
+
 function getDefaultStationName(stations: Station[], fallbackName: string, fallbackCode: string) {
   return stations.find((station) => station.code.toLowerCase() === fallbackCode.toLowerCase())?.name ?? fallbackName;
 }
@@ -376,6 +392,10 @@ function resolveStationInput(value: string, stations: Station[]) {
 }
 
 function normalizeSearchText(value: string) {
+  return toAsciiSearchText(value).toLowerCase();
+}
+
+function legacyNormalizeSearchText(value: string) {
   return value
     .trim()
     .replace(/[Łł]/g, "l")
@@ -383,6 +403,18 @@ function normalizeSearchText(value: string) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase();
+}
+
+function toAsciiSearchText(value: string) {
+  if (!value.trim())
+    return legacyNormalizeSearchText(value);
+
+  return value
+    .trim()
+    .replace(/[\u0141\u0142]/g, "l")
+    .replace(/[\u0110\u0111]/g, "d")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
 }
 
 export default TrainSearchForm;

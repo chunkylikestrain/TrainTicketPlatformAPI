@@ -25,26 +25,22 @@ namespace TrainTicketPlatformAPI.Services
                         .ThenInclude(r => r.Country)
                 .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(query))
-            {
-                var normalizedQuery = query.Trim().ToLower();
-                stations = stations.Where(s =>
-                    s.Code.ToLower().Contains(normalizedQuery) ||
-                    s.Name.ToLower().Contains(normalizedQuery) ||
-                    s.City.ToLower().Contains(normalizedQuery) ||
-                    (s.Locality != null &&
-                        s.Locality.Name.ToLower().Contains(normalizedQuery)) ||
-                    (s.StateRegion != null &&
-                        s.StateRegion.Name.ToLower().Contains(normalizedQuery)) ||
-                    (s.Country != null &&
-                        s.Country.Name.ToLower().Contains(normalizedQuery)));
-            }
-
-            return await stations
+            var stationList = await stations
                 .OrderBy(s => s.Locality != null ? s.Locality.Name : s.City)
                 .ThenBy(s => s.Name)
-                .Select(s => ToDto(s))
                 .ToListAsync();
+
+            if (!string.IsNullOrWhiteSpace(query))
+            {
+                var normalizedQuery = TripSegmentResolver.NormalizeSearchText(query);
+                stationList = stationList
+                    .Where(s => StationContainsNormalizedQuery(s, normalizedQuery))
+                    .ToList();
+            }
+
+            return stationList
+                .Select(s => ToDto(s))
+                .ToList();
         }
 
         public async Task<StationDto> GetStationByIdAsync(int stationId)
@@ -78,5 +74,21 @@ namespace TrainTicketPlatformAPI.Services
             LocalityName = station.Locality?.Name ?? station.City,
             LocalityType = station.Locality?.Type ?? string.Empty
         };
+
+        private static bool StationContainsNormalizedQuery(Station station, string normalizedQuery)
+        {
+            var candidates = new[]
+            {
+                station.Code,
+                station.Name,
+                station.City,
+                station.Locality?.Name ?? string.Empty,
+                station.StateRegion?.Name ?? string.Empty,
+                station.Country?.Name ?? string.Empty
+            };
+
+            return candidates.Any(candidate =>
+                TripSegmentResolver.NormalizeSearchText(candidate).Contains(normalizedQuery));
+        }
     }
 }

@@ -3,10 +3,10 @@ import type { TripItinerarySearchResult, TripItinerarySegment } from "../types/t
 
 type ItineraryCardProps = {
   itinerary: TripItinerarySearchResult;
-  rank?: number;
   isExpanded?: boolean;
   purchaseQuery?: string;
   selectionActionLabel?: string;
+  isFastest?: boolean;
   onSelect?: () => void;
   onChooseItinerary?: () => void;
 };
@@ -74,14 +74,13 @@ function encodeItinerarySegments(itinerary: TripItinerarySearchResult) {
 
 function ItineraryCard({
   itinerary,
-  rank = 0,
   isExpanded = false,
   purchaseQuery = "",
   selectionActionLabel,
+  isFastest = false,
   onSelect,
   onChooseItinerary,
 }: ItineraryCardProps) {
-  const isFast = rank < 2;
   const isDirect = itinerary.transferCount === 0;
   const isSleeperConnection = hasSleeperSegment(itinerary);
   const firstSegment = itinerary.segments[0];
@@ -119,7 +118,7 @@ function ItineraryCard({
       <div className="connection-badges">
         <span>{isDirect ? "Direct" : `${itinerary.transferCount} transfer${itinerary.transferCount === 1 ? "" : "s"}`}</span>
         {isSleeperConnection && <span>Sleeper train</span>}
-        {isFast && <span>Fastest</span>}
+        {isFastest && <span>Fastest</span>}
       </div>
 
       <div className="connection-main">
