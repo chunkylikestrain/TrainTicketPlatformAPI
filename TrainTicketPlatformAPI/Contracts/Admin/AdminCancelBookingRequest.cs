@@ -7,5 +7,9 @@ namespace TrainTicketPlatformAPI.Contracts.Admin
         [Required]
         [StringLength(300)]
         public string Reason { get; set; } = string.Empty;
+
+        public bool ConfirmFullRefund { get; set; }
+
+        public string ConfirmationText { get; set; } = string.Empty;
     }
 }

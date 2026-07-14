@@ -5,6 +5,7 @@ using System.Text.Json;
 using Microsoft.EntityFrameworkCore;
 using TrainTicketPlatformAPI.Contracts.OpenRailway;
 using TrainTicketPlatformAPI.Models;
+using TrainTicketPlatformAPI.Security;
 
 namespace TrainTicketPlatformAPI.Data
 {
@@ -74,6 +75,10 @@ namespace TrainTicketPlatformAPI.Data
             string TrainCode,
             string RouteCode,
             DateTime DepartureTime);
+        private sealed record ImportedTripDatabaseKey(
+            int ExternalScheduleId,
+            int ExternalOrderId,
+            DateOnly ExternalOperatingDate);
         private sealed record DemoCarriageSeed(
             string TrainCode,
             string Coach,
@@ -747,17 +752,21 @@ namespace TrainTicketPlatformAPI.Data
                     contentRootPath,
                     cancellationToken));
             var useHandWrittenSchedules = configuration.GetValue("SeedData:UseHandWrittenDemoSchedules", false);
-            var useHandWrittenFallback = configuration.GetValue("SeedData:UseHandWrittenDemoScheduleFallback", true);
+            var useHandWrittenFallback = configuration.GetValue("SeedData:UseHandWrittenDemoScheduleFallback", false);
 
             if (useHandWrittenSchedules || (!loadedOpenRailwaySnapshots && useHandWrittenFallback))
             {
                 await LogSeedTimedAsync(logger, "handwritten demo schedules", () => EnsureDemoSchedulesAsync(db, cancellationToken));
             }
+            else if (loadedOpenRailwaySnapshots)
+            {
+                await LogSeedTimedAsync(logger, "non-PLK railway cleanup", () => CleanupNonOpenRailwayRailwayInventoryAsync(db, cancellationToken));
+            }
             await LogSeedTimedAsync(logger, "route identity fields", () => EnsureRouteIdentityFieldsAsync(db, cancellationToken));
             await LogSeedTimedAsync(logger, "discount rules", () => EnsureDiscountRulesAsync(db, cancellationToken));
 
-            await LogSeedTimedAsync(logger, "admin user", () => EnsureUserAsync(db, configuration, "SeedData:AdminPassword", AdminEmail, "Admin", cancellationToken));
-            await LogSeedTimedAsync(logger, "passenger user", () => EnsureUserAsync(db, configuration, "SeedData:PassengerPassword", PassengerEmail, "Passenger", cancellationToken));
+            await LogSeedTimedAsync(logger, "admin user", () => EnsureUserAsync(db, configuration, "SeedData:AdminPassword", AdminEmail, UserAccessPolicy.AdminRole, cancellationToken));
+            await LogSeedTimedAsync(logger, "passenger user", () => EnsureUserAsync(db, configuration, "SeedData:PassengerPassword", PassengerEmail, UserAccessPolicy.PassengerRole, cancellationToken));
 
             await LogSeedTimedAsync(logger, "final seed save", () => db.SaveChangesAsync(cancellationToken));
         }
@@ -922,6 +931,84 @@ namespace TrainTicketPlatformAPI.Data
 
                 db.TrainRouteStops.RemoveRange(emptyRouteStops);
                 db.TrainRoutes.RemoveRange(emptyPrototypeRoutes);
+                await db.SaveChangesAsync(cancellationToken);
+            }
+        }
+
+        private static async Task CleanupNonOpenRailwayRailwayInventoryAsync(
+            TrainTicketDbContext db,
+            CancellationToken cancellationToken)
+        {
+            var removableTripIds = await db.Trips
+                .Where(trip => trip.ExternalSource == string.Empty)
+                .Where(trip => !db.Bookings.Any(booking => booking.TripId == trip.Id))
+                .Select(trip => trip.Id)
+                .ToListAsync(cancellationToken);
+
+            if (removableTripIds.Count > 0)
+            {
+                var fares = await db.Fares
+                    .Where(fare => removableTripIds.Contains(fare.TripId))
+                    .ToListAsync(cancellationToken);
+                var serviceIdentities = await db.TripServiceIdentities
+                    .Where(identity => removableTripIds.Contains(identity.TripId))
+                    .ToListAsync(cancellationToken);
+                var carriageSegments = await db.TripCarriageSegments
+                    .Where(segment => removableTripIds.Contains(segment.TripId))
+                    .ToListAsync(cancellationToken);
+                var trips = await db.Trips
+                    .Where(trip => removableTripIds.Contains(trip.Id))
+                    .ToListAsync(cancellationToken);
+
+                db.Fares.RemoveRange(fares);
+                db.TripServiceIdentities.RemoveRange(serviceIdentities);
+                db.TripCarriageSegments.RemoveRange(carriageSegments);
+                db.Trips.RemoveRange(trips);
+                await db.SaveChangesAsync(cancellationToken);
+            }
+
+            var removableTrainIds = await db.Trains
+                .Where(train => train.ExternalSource == string.Empty)
+                .Where(train => !db.Trips.Any(trip => trip.TrainId == train.Id))
+                .Where(train => !db.Bookings.Any(booking => booking.TrainId == train.Id))
+                .Select(train => train.Id)
+                .ToListAsync(cancellationToken);
+
+            if (removableTrainIds.Count > 0)
+            {
+                var seats = await db.Seats
+                    .Where(seat => removableTrainIds.Contains(seat.TrainId))
+                    .ToListAsync(cancellationToken);
+                var carriages = await db.TrainCarriages
+                    .Where(carriage => removableTrainIds.Contains(carriage.TrainId))
+                    .ToListAsync(cancellationToken);
+                var trains = await db.Trains
+                    .Where(train => removableTrainIds.Contains(train.Id))
+                    .ToListAsync(cancellationToken);
+
+                db.Seats.RemoveRange(seats);
+                db.TrainCarriages.RemoveRange(carriages);
+                db.Trains.RemoveRange(trains);
+                await db.SaveChangesAsync(cancellationToken);
+            }
+
+            var removableRouteIds = await db.TrainRoutes
+                .Where(route => route.ExternalSource == string.Empty)
+                .Where(route => !db.Trips.Any(trip => trip.TrainRouteId == route.Id))
+                .Select(route => route.Id)
+                .ToListAsync(cancellationToken);
+
+            if (removableRouteIds.Count > 0)
+            {
+                var routeStops = await db.TrainRouteStops
+                    .Where(stop => removableRouteIds.Contains(stop.TrainRouteId))
+                    .ToListAsync(cancellationToken);
+                var routes = await db.TrainRoutes
+                    .Where(route => removableRouteIds.Contains(route.Id))
+                    .ToListAsync(cancellationToken);
+
+                db.TrainRouteStops.RemoveRange(routeStops);
+                db.TrainRoutes.RemoveRange(routes);
                 await db.SaveChangesAsync(cancellationToken);
             }
         }
@@ -1942,6 +2029,15 @@ namespace TrainTicketPlatformAPI.Data
             var existingTripsByKey = existingTrips
                 .GroupBy(BuildImportedTripKey)
                 .ToDictionary(group => group.Key, group => group.First());
+            var existingTripsByDatabaseKey = existingTrips
+                .Select(trip => new
+                {
+                    Key = BuildImportedTripDatabaseKey(trip),
+                    Trip = trip
+                })
+                .Where(item => item.Key != null)
+                .GroupBy(item => item.Key!)
+                .ToDictionary(group => group.Key, group => group.First().Trip);
             var existingTripIds = existingTrips
                 .Select(trip => trip.Id)
                 .Where(id => id > 0)
@@ -1955,10 +2051,12 @@ namespace TrainTicketPlatformAPI.Data
                     .ToListAsync(cancellationToken))
                     .ToHashSet();
             var tripsToRefresh = new List<(Trip Trip, ImportedTripTemplate Template)>();
+            var processedDatabaseKeys = new HashSet<ImportedTripDatabaseKey>();
 
             foreach (var template in templates.Where(template => template.TemplateOperatingDate != targetOperatingDate))
             {
                 var key = BuildImportedTripTemplateKey(template, targetOperatingDate);
+                var databaseKey = BuildImportedTripDatabaseKey(template, targetOperatingDate);
                 var departureTime = ShiftSnapshotDateTime(
                     template.Seed.DepartureTime,
                     template.TemplateOperatingDate,
@@ -1968,11 +2066,21 @@ namespace TrainTicketPlatformAPI.Data
                     template.TemplateOperatingDate,
                     targetOperatingDate);
 
+                if (databaseKey != null && !processedDatabaseKeys.Add(databaseKey))
+                    continue;
+
+                if (databaseKey != null && existingTripsByDatabaseKey.TryGetValue(databaseKey, out var tripByDatabaseKey))
+                {
+                    existingTripsByKey[key] = tripByDatabaseKey;
+                }
+
                 if (!existingTripsByKey.TryGetValue(key, out var trip))
                 {
                     trip = new Trip();
                     db.Trips.Add(trip);
                     existingTripsByKey[key] = trip;
+                    if (databaseKey != null)
+                        existingTripsByDatabaseKey[databaseKey] = trip;
                 }
                 else if (bookedTripIds.Contains(trip.Id))
                 {
@@ -2102,6 +2210,29 @@ namespace TrainTicketPlatformAPI.Data
                 trip.Train.Code,
                 trip.TrainRoute.Code,
                 trip.DepartureTime);
+
+        private static ImportedTripDatabaseKey? BuildImportedTripDatabaseKey(
+            ImportedTripTemplate template,
+            DateOnly targetOperatingDate)
+        {
+            var tripSeed = template.Seed;
+            return tripSeed.ExternalScheduleId.HasValue && tripSeed.ExternalOrderId.HasValue
+                ? new ImportedTripDatabaseKey(
+                    tripSeed.ExternalScheduleId.Value,
+                    tripSeed.ExternalOrderId.Value,
+                    targetOperatingDate)
+                : null;
+        }
+
+        private static ImportedTripDatabaseKey? BuildImportedTripDatabaseKey(Trip trip)
+            => trip.ExternalScheduleId.HasValue &&
+                trip.ExternalOrderId.HasValue &&
+                trip.ExternalOperatingDate.HasValue
+                ? new ImportedTripDatabaseKey(
+                    trip.ExternalScheduleId.Value,
+                    trip.ExternalOrderId.Value,
+                    trip.ExternalOperatingDate.Value)
+                : null;
 
         private static async Task EnsureSnapshotTripAsync(
             TrainTicketDbContext db,
@@ -2859,8 +2990,9 @@ namespace TrainTicketPlatformAPI.Data
                 Email = email,
                 NormalizedEmail = email.ToUpperInvariant(),
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(password),
-                Phone = role == "Admin" ? "000-ADMIN" : "000-PASSENGER",
-                Role = role
+                Phone = role == UserAccessPolicy.AdminRole ? "000-ADMIN" : "000-PASSENGER",
+                Role = UserAccessPolicy.NormalizeRole(role),
+                Status = UserAccessPolicy.ActiveStatus
             });
             await db.SaveChangesAsync(cancellationToken);
         }

@@ -49,6 +49,12 @@ function normalizePagedResponse<T>(data: UnknownPagedResponse<T> | T[]): PagedRe
   };
 }
 
+const dangerousActionHeaders = {
+  delete: { "X-RailBook-Confirm": "DELETE" },
+  cancelRefund: { "X-RailBook-Confirm": "CANCEL_REFUND" },
+  import: { "X-RailBook-Confirm": "IMPORT" },
+};
+
 export async function getAdminTrains() {
   const response = await apiClient.get<AdminTrain[]>("/admin/trains");
   return response.data;
@@ -70,7 +76,7 @@ export async function updateAdminTrain(train: AdminTrain) {
 }
 
 export async function deleteAdminTrain(id: number) {
-  await apiClient.delete(`/admin/trains/${id}`);
+  await apiClient.delete(`/admin/trains/${id}`, { headers: dangerousActionHeaders.delete });
 }
 
 export async function getAdminRollingStockOptions() {
@@ -99,7 +105,7 @@ export async function updateAdminRoute(route: AdminRoute) {
 }
 
 export async function deleteAdminRoute(id: number) {
-  await apiClient.delete(`/admin/routes/${id}`);
+  await apiClient.delete(`/admin/routes/${id}`, { headers: dangerousActionHeaders.delete });
 }
 
 export async function getAdminSchedules() {
@@ -118,7 +124,7 @@ export async function updateAdminSchedule(schedule: AdminSchedule) {
 }
 
 export async function deleteAdminSchedule(id: number) {
-  await apiClient.delete(`/admin/schedules/${id}`);
+  await apiClient.delete(`/admin/schedules/${id}`, { headers: dangerousActionHeaders.delete });
 }
 
 export async function getAdminDiscounts() {
@@ -137,35 +143,21 @@ export async function updateAdminDiscount(discount: AdminDiscount) {
 }
 
 export async function deleteAdminDiscount(id: number) {
-  await apiClient.delete(`/admin/discounts/${id}`);
+  await apiClient.delete(`/admin/discounts/${id}`, { headers: dangerousActionHeaders.delete });
 }
 
 export async function getAdminUsers(search = "") {
   const response = await apiClient.get<UnknownPagedResponse<AdminUser> | AdminUser[]>("/admin/users", {
     params: { search, pageSize: 100 },
   });
-  const page = normalizePagedResponse(response.data);
-
-  if (page.items.length > 0 || search.trim()) {
-    return page.items;
-  }
-
-  const legacyResponse = await apiClient.get<AdminUser[]>("/Users");
-  return legacyResponse.data;
+  return normalizePagedResponse(response.data).items;
 }
 
 export async function getAdminUsersPage(pageSize = 10) {
   const response = await apiClient.get<UnknownPagedResponse<AdminUser> | AdminUser[]>("/admin/users", {
     params: { pageSize },
   });
-  const page = normalizePagedResponse(response.data);
-
-  if (page.totalCount > 0) {
-    return page;
-  }
-
-  const legacyResponse = await apiClient.get<AdminUser[]>("/Users");
-  return normalizePagedResponse(legacyResponse.data);
+  return normalizePagedResponse(response.data);
 }
 
 export async function updateAdminUser(user: AdminUser) {
@@ -174,7 +166,7 @@ export async function updateAdminUser(user: AdminUser) {
 }
 
 export async function deleteAdminUser(id: number) {
-  await apiClient.delete(`/admin/users/${id}`);
+  await apiClient.delete(`/admin/users/${id}`, { headers: dangerousActionHeaders.delete });
 }
 
 export async function getAdminBookings(search = "") {
@@ -199,7 +191,10 @@ export async function getAdminBookingsPage(pageSize = 10) {
 }
 
 export async function adminCancelAndRefundBooking(id: number, reason: string) {
-  const response = await apiClient.post<AdminBooking>(`/admin/bookings/${id}/cancel-refund`, { reason });
+  const response = await apiClient.post<AdminBooking>(
+    `/admin/bookings/${id}/cancel-refund`,
+    { reason, confirmFullRefund: true, confirmationText: "REFUND" },
+    { headers: dangerousActionHeaders.cancelRefund });
   return response.data;
 }
 
@@ -239,7 +234,8 @@ export async function previewOpenRailwayRoute(scheduleId: number, orderId: numbe
 export async function importOpenRailwayRoutesForDate(date: string, request: OpenRailwayImportDateRequest) {
   const response = await apiClient.post<OpenRailwayImportDateResult>(
     `/admin/open-railway/routes/${date}/import`,
-    request);
+    request,
+    request.dryRun ? undefined : { headers: dangerousActionHeaders.import });
   return response.data;
 }
 

@@ -10,7 +10,6 @@ export type PaymentIntent = {
   currency: string;
   status: string;
   expiresAtUtc: string | null;
-  testPaymentMethodTokens: string[];
 };
 
 export type Payment = {

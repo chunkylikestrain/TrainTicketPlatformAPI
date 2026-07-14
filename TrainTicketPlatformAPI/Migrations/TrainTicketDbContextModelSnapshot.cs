@@ -1792,7 +1792,8 @@ namespace TrainTicketPlatformAPI.Migrations
 
                     b.Property<string>("Role")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(32)
+                        .HasColumnType("nvarchar(32)");
 
                     b.Property<string>("Status")
                         .IsRequired()
@@ -1806,7 +1807,12 @@ namespace TrainTicketPlatformAPI.Migrations
                     b.HasIndex("NormalizedEmail")
                         .IsUnique();
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", t =>
+                        {
+                            t.HasCheckConstraint("CK_Users_Role", "[Role] IN ('Admin', 'Passenger')");
+
+                            t.HasCheckConstraint("CK_Users_Status", "[Status] IN ('Active', 'Inactive', 'Suspended')");
+                        });
                 });
 
             modelBuilder.Entity("TrainTicketPlatformAPI.Models.Booking", b =>

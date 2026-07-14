@@ -616,9 +616,24 @@ namespace TrainTicketPlatformAPI.Data
                 .HasDefaultValue("");
 
             modelBuilder.Entity<User>()
+                .Property(u => u.Role)
+                .HasMaxLength(32);
+
+            modelBuilder.Entity<User>()
                 .Property(u => u.Status)
                 .HasMaxLength(32)
                 .HasDefaultValue("Active");
+
+            modelBuilder.Entity<User>()
+                .ToTable(t =>
+                {
+                    t.HasCheckConstraint(
+                        "CK_Users_Role",
+                        "[Role] IN ('Admin', 'Passenger')");
+                    t.HasCheckConstraint(
+                        "CK_Users_Status",
+                        "[Status] IN ('Active', 'Inactive', 'Suspended')");
+                });
 
             modelBuilder.Entity<User>()
                 .Property(u => u.NormalizedEmail)

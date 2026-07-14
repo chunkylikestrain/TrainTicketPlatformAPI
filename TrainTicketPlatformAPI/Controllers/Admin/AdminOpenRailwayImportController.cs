@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using TrainTicketPlatformAPI.Contracts.OpenRailway;
+using TrainTicketPlatformAPI.Security;
 using TrainTicketPlatformAPI.Services;
 
 namespace TrainTicketPlatformAPI.Controllers.Admin
@@ -8,6 +10,7 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
     [ApiController]
     [Route("api/admin/open-railway")]
     [Authorize(Roles = "Admin")]
+    [EnableRateLimiting(RateLimitPolicyNames.AdminImport)]
     public class AdminOpenRailwayImportController : ControllerBase
     {
         private readonly IOpenRailwayClient _client;
@@ -95,12 +98,19 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             [FromBody] OpenRailwayImportRouteRequest? request,
             CancellationToken cancellationToken)
         {
+            request ??= new OpenRailwayImportRouteRequest();
+            if (!IsConfirmedImport(request.ConfirmApply, request.ConfirmationText))
+                return ImportConfirmationRequired();
+
+            if (DangerousActionGuard.RequireHeader(this, DangerousActionGuard.Import) is { } headerError)
+                return headerError;
+
             return await TryOpenRailwayAsync(async () =>
             {
                 var result = await _importService.ImportRouteAsync(
                     scheduleId,
                     orderId,
-                    request?.OperatingDate,
+                    request.OperatingDate,
                     cancellationToken);
 
                 return Ok(result);
@@ -113,11 +123,21 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             [FromBody] OpenRailwayImportDateRequest? request,
             CancellationToken cancellationToken)
         {
+            request ??= new OpenRailwayImportDateRequest();
+            if (!request.DryRun)
+            {
+                if (!IsConfirmedImport(request.ConfirmApply, request.ConfirmationText))
+                    return ImportConfirmationRequired();
+
+                if (DangerousActionGuard.RequireHeader(this, DangerousActionGuard.Import) is { } headerError)
+                    return headerError;
+            }
+
             return await TryOpenRailwayAsync(async () =>
             {
                 var result = await _importService.ImportRoutesForDateAsync(
                     date,
-                    request ?? new OpenRailwayImportDateRequest(),
+                    request,
                     cancellationToken);
 
                 return Ok(result);
@@ -157,6 +177,22 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
                     Status = StatusCodes.Status502BadGateway
                 });
             }
+        }
+
+        private static bool IsConfirmedImport(bool confirmApply, string? confirmationText)
+        {
+            return confirmApply &&
+                string.Equals(confirmationText?.Trim(), "IMPORT", StringComparison.Ordinal);
+        }
+
+        private IActionResult ImportConfirmationRequired()
+        {
+            return BadRequest(new ProblemDetails
+            {
+                Title = "Import confirmation required",
+                Detail = "Set ConfirmApply to true and ConfirmationText to IMPORT before applying Open Railway data.",
+                Status = StatusCodes.Status400BadRequest
+            });
         }
     }
 }

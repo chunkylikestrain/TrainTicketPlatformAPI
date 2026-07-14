@@ -47,8 +47,7 @@ namespace TrainTicketPlatformAPI.Services
                 LoyaltyDiscountAmount = redemption.Amount,
                 Currency = fare.Currency,
                 Status = booking.PaymentStatus,
-                ExpiresAtUtc = booking.ExpiresAtUtc,
-                TestPaymentMethodTokens = new[] { SuccessToken, FailToken }
+                ExpiresAtUtc = booking.ExpiresAtUtc
             };
         }
 
@@ -77,8 +76,7 @@ namespace TrainTicketPlatformAPI.Services
                 LoyaltyDiscountAmount = redemption.Amount,
                 Currency = totals.Currency,
                 Status = order.PaymentStatus,
-                ExpiresAtUtc = order.ExpiresAtUtc,
-                TestPaymentMethodTokens = new[] { SuccessToken, FailToken }
+                ExpiresAtUtc = order.ExpiresAtUtc
             };
         }
 
@@ -126,7 +124,7 @@ namespace TrainTicketPlatformAPI.Services
             {
                 BookingId = booking.Id,
                 PaymentIntentId = paymentIntentId,
-                PaymentMethodToken = paymentMethodToken.Trim(),
+                PaymentMethodToken = RedactPaymentMethodToken(paymentMethodToken),
                 PaymentDate = paymentDate,
                 Amount = finalAmount,
                 LoyaltyPointsRedeemed = redemption.Points,
@@ -216,6 +214,11 @@ namespace TrainTicketPlatformAPI.Services
             return bookingOrderId;
         }
 
+        private static string RedactPaymentMethodToken(string paymentMethodToken)
+            => paymentMethodToken.Trim().Equals(SuccessToken, StringComparison.Ordinal)
+                ? "test_success_redacted"
+                : "test_failure_redacted";
+
         private async Task<Payment> ConfirmOrderPaymentAsync(string paymentIntentId, string paymentMethodToken)
         {
             var orderId = ParseOrderIdFromIntent(paymentIntentId);
@@ -248,7 +251,7 @@ namespace TrainTicketPlatformAPI.Services
             {
                 BookingOrderId = order.Id,
                 PaymentIntentId = paymentIntentId,
-                PaymentMethodToken = paymentMethodToken.Trim(),
+                PaymentMethodToken = RedactPaymentMethodToken(paymentMethodToken),
                 PaymentDate = paymentDate,
                 Amount = finalAmount,
                 LoyaltyPointsRedeemed = redemption.Points,

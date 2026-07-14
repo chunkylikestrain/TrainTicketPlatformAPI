@@ -13,6 +13,5 @@ namespace TrainTicketPlatformAPI.Contracts.Payments
         public string Currency { get; set; } = string.Empty;
         public string Status { get; set; } = string.Empty;
         public DateTime? ExpiresAtUtc { get; set; }
-        public IEnumerable<string> TestPaymentMethodTokens { get; set; } = Enumerable.Empty<string>();
     }
 }

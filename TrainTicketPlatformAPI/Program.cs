@@ -8,9 +8,12 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
 using System.Diagnostics;
+using System.Security.Claims;
+using System.IdentityModel.Tokens.Jwt;
 using TrainTicketPlatformAPI.Services;
 using TrainTicketPlatformAPI.Data;
 using TrainTicketPlatformAPI.Middleware;
+using TrainTicketPlatformAPI.Security;
 using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,20 +55,20 @@ builder.Services.AddCors(options =>
 builder.Services.AddRateLimiter(options =>
 {
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.AddPolicy("auth", httpContext =>
-    {
-        var partitionKey = httpContext.Connection.RemoteIpAddress?.ToString()
-            ?? "anonymous";
-
-        return RateLimitPartition.GetFixedWindowLimiter(
-            partitionKey,
-            _ => new FixedWindowRateLimiterOptions
-            {
-                PermitLimit = 10,
-                Window = TimeSpan.FromMinutes(1),
-                QueueLimit = 0
-            });
-    });
+    options.AddPolicy(RateLimitPolicyNames.Auth, httpContext =>
+        FixedWindow(httpContext, permitLimit: 10, window: TimeSpan.FromMinutes(1)));
+    options.AddPolicy(RateLimitPolicyNames.PublicRead, httpContext =>
+        FixedWindow(httpContext, permitLimit: 120, window: TimeSpan.FromMinutes(1)));
+    options.AddPolicy(RateLimitPolicyNames.PublicSearch, httpContext =>
+        FixedWindow(httpContext, permitLimit: 30, window: TimeSpan.FromMinutes(1)));
+    options.AddPolicy(RateLimitPolicyNames.BookingWrite, httpContext =>
+        FixedWindow(httpContext, permitLimit: 20, window: TimeSpan.FromMinutes(1)));
+    options.AddPolicy(RateLimitPolicyNames.TicketAccess, httpContext =>
+        FixedWindow(httpContext, permitLimit: 30, window: TimeSpan.FromMinutes(1)));
+    options.AddPolicy(RateLimitPolicyNames.Payment, httpContext =>
+        FixedWindow(httpContext, permitLimit: 10, window: TimeSpan.FromMinutes(1)));
+    options.AddPolicy(RateLimitPolicyNames.AdminImport, httpContext =>
+        FixedWindow(httpContext, permitLimit: 12, window: TimeSpan.FromMinutes(1)));
 });
 
 builder.Services.AddHealthChecks()
@@ -158,6 +161,8 @@ var jwtIssuer = builder.Configuration["Jwt:Issuer"]
     ?? throw new InvalidOperationException("Jwt:Issuer is not configured");
 var jwtAudience = builder.Configuration["Jwt:Audience"]
     ?? throw new InvalidOperationException("Jwt:Audience is not configured");
+if (Encoding.UTF8.GetByteCount(jwtKey) < 32)
+    throw new InvalidOperationException("Jwt:Key must be at least 32 bytes long.");
 
 builder.Services.AddAuthentication(options =>
 {
@@ -174,7 +179,10 @@ builder.Services.AddAuthentication(options =>
         ValidIssuer = jwtIssuer,
         ValidateAudience = true,
         ValidAudience = jwtAudience,
-        ValidateLifetime = true
+        ValidateLifetime = true,
+        ClockSkew = TimeSpan.FromMinutes(1),
+        NameClaimType = ClaimTypes.NameIdentifier,
+        RoleClaimType = ClaimTypes.Role
     };
 });
 
@@ -220,6 +228,25 @@ static async Task LogTimedAsync(ILogger logger, string operation, Func<Task> act
     await action();
     stopwatch.Stop();
     logger.LogInformation("Finished {Operation} in {ElapsedMilliseconds} ms", operation, stopwatch.ElapsedMilliseconds);
+}
+
+static RateLimitPartition<string> FixedWindow(
+    HttpContext httpContext,
+    int permitLimit,
+    TimeSpan window)
+{
+    var partitionKey = httpContext.User.Identity?.IsAuthenticated == true
+        ? $"user:{httpContext.User.FindFirstValue(ClaimTypes.NameIdentifier) ?? httpContext.User.FindFirstValue(JwtRegisteredClaimNames.Sub) ?? "unknown"}"
+        : $"ip:{httpContext.Connection.RemoteIpAddress?.ToString() ?? "anonymous"}";
+
+    return RateLimitPartition.GetFixedWindowLimiter(
+        partitionKey,
+        _ => new FixedWindowRateLimiterOptions
+        {
+            PermitLimit = permitLimit,
+            Window = window,
+            QueueLimit = 0
+        });
 }
 
 public partial class Program { }

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using TrainTicketPlatformAPI.Contracts.Trips;
+using TrainTicketPlatformAPI.Security;
 using TrainTicketPlatformAPI.Services;
 
 namespace TrainTicketPlatformAPI.Controllers
@@ -18,6 +20,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Trips/search?from=WAW&to=KRK&date=2026-07-01
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.PublicSearch)]
         [HttpGet("search")]
         public async Task<ActionResult<IEnumerable<TripSearchResultDto>>> Search(
             [FromQuery] string from,
@@ -38,6 +41,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Trips/itineraries?from=WAW&to=GDN&date=2026-07-01
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.PublicSearch)]
         [HttpGet("itineraries")]
         public async Task<ActionResult<IEnumerable<TripItinerarySearchResultDto>>> SearchItineraries(
             [FromQuery] string from,
@@ -58,6 +62,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Trips/5
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.PublicRead)]
         [HttpGet("{id}")]
         public async Task<ActionResult<TripDetailsDto>> GetById(int id)
         {
@@ -74,6 +79,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Trips/5/seats
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.PublicRead)]
         [HttpGet("{id}/seats")]
         public async Task<ActionResult<IEnumerable<TripSeatAvailabilityDto>>> GetSeats(
             int id,

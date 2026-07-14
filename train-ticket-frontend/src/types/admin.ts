@@ -280,6 +280,8 @@ export type OpenRailwayImportRouteResult = {
 export type OpenRailwayImportDateRequest = {
   limit: number;
   dryRun: boolean;
+  confirmApply?: boolean;
+  confirmationText?: string;
   routes: OpenRailwayImportRouteKey[];
 };
 

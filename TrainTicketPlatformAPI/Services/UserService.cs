@@ -7,6 +7,7 @@ using System.Text;
 using BCrypt.Net;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using TrainTicketPlatformAPI.Security;
 namespace TrainTicketPlatformAPI.Services
 {
     public class UserService : IUserService
@@ -29,6 +30,10 @@ namespace TrainTicketPlatformAPI.Services
         {
             user.Email = user.Email.Trim();
             user.NormalizedEmail = NormalizeEmail(user.Email);
+            user.Role = UserAccessPolicy.NormalizeRole(user.Role);
+            user.Status = UserAccessPolicy.NormalizeStatus(user.Status);
+            if (string.IsNullOrWhiteSpace(user.PasswordHash))
+                throw new InvalidOperationException("Password hash is required.");
 
             bool exists = await _db.Users.AnyAsync(u =>
                 u.NormalizedEmail == user.NormalizedEmail ||
@@ -63,9 +68,15 @@ namespace TrainTicketPlatformAPI.Services
 
             // update other allowed fields
             existing.Phone = user.Phone;
-            existing.Role = user.Role;
+            var requestedRole = UserAccessPolicy.NormalizeRole(user.Role);
+            var requestedStatus = UserAccessPolicy.NormalizeStatus(user.Status);
+
+            if (await WouldRemoveLastActiveAdminAsync(existing, requestedRole, requestedStatus))
+                throw new InvalidOperationException("At least one active admin account is required.");
+
+            existing.Role = requestedRole;
             existing.DisplayName = user.DisplayName;
-            existing.Status = user.Status;
+            existing.Status = requestedStatus;
 
             await _db.SaveChangesAsync();
             return existing;
@@ -80,6 +91,11 @@ namespace TrainTicketPlatformAPI.Services
             bool hasBookings = await _db.Bookings.AnyAsync(b => b.UserId == userId);
             if (hasBookings)
                 throw new InvalidOperationException("Cannot delete user with active bookings");
+
+            if (UserAccessPolicy.IsAdmin(user) &&
+                UserAccessPolicy.IsActive(user) &&
+                !await HasAnotherActiveAdminAsync(user.Id))
+                throw new InvalidOperationException("At least one active admin account is required.");
 
             _db.Users.Remove(user);
             await _db.SaveChangesAsync();
@@ -111,7 +127,8 @@ namespace TrainTicketPlatformAPI.Services
                 NormalizedEmail = normalizedEmail,
                 PasswordHash = hash,
                 Phone = dto.Phone,
-                Role = "Passenger"   // default role
+                Role = UserAccessPolicy.PassengerRole,
+                Status = UserAccessPolicy.ActiveStatus
             };
 
             _db.Users.Add(user);
@@ -132,12 +149,33 @@ namespace TrainTicketPlatformAPI.Services
             if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
                 throw new KeyNotFoundException("Invalid credentials");
 
+            string normalizedRole;
+            string normalizedStatus;
+            try
+            {
+                normalizedRole = UserAccessPolicy.NormalizeRole(user.Role);
+                normalizedStatus = UserAccessPolicy.NormalizeStatus(user.Status);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new KeyNotFoundException("Invalid credentials");
+            }
+
+            if (!string.Equals(normalizedStatus, UserAccessPolicy.ActiveStatus, StringComparison.Ordinal))
+                throw new KeyNotFoundException("Invalid credentials");
+
             var claims = new[]
             {
-        new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
-        new Claim(JwtRegisteredClaimNames.Email, user.Email),
-        new Claim(ClaimTypes.Role, user.Role)
-    };
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Role, normalizedRole),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
+                new Claim(
+                    JwtRegisteredClaimNames.Iat,
+                    DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString(),
+                    ClaimValueTypes.Integer64)
+            };
 
             var jwtKey = _config["Jwt:Key"]
                 ?? throw new InvalidOperationException("Jwt:Key is not configured");
@@ -162,11 +200,35 @@ namespace TrainTicketPlatformAPI.Services
             {
                 Token = serializedToken,
                 UserId = user.Id,
-                Role = user.Role
+                Role = normalizedRole
             };
         }
 
         private static string NormalizeEmail(string email)
             => email.Trim().ToUpperInvariant();
+
+        private async Task<bool> WouldRemoveLastActiveAdminAsync(
+            User existing,
+            string requestedRole,
+            string requestedStatus)
+        {
+            var currentlyActiveAdmin =
+                UserAccessPolicy.IsAdmin(existing) &&
+                UserAccessPolicy.IsActive(existing);
+
+            var remainsActiveAdmin =
+                string.Equals(requestedRole, UserAccessPolicy.AdminRole, StringComparison.Ordinal) &&
+                string.Equals(requestedStatus, UserAccessPolicy.ActiveStatus, StringComparison.Ordinal);
+
+            return currentlyActiveAdmin && !remainsActiveAdmin && !await HasAnotherActiveAdminAsync(existing.Id);
+        }
+
+        private async Task<bool> HasAnotherActiveAdminAsync(int userId)
+        {
+            return await _db.Users.AnyAsync(user =>
+                user.Id != userId &&
+                user.Role == UserAccessPolicy.AdminRole &&
+                user.Status == UserAccessPolicy.ActiveStatus);
+        }
     }
 }

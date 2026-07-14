@@ -4,6 +4,7 @@ using TrainTicketPlatformAPI.Contracts.Admin;
 using TrainTicketPlatformAPI.Contracts.Bookings;
 using TrainTicketPlatformAPI.Contracts.Common;
 using TrainTicketPlatformAPI.Models;
+using TrainTicketPlatformAPI.Security;
 using TrainTicketPlatformAPI.Services;
 
 namespace TrainTicketPlatformAPI.Controllers.Admin
@@ -65,6 +66,20 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
         [HttpPost("{id}/cancel-refund")]
         public async Task<ActionResult<BookingDto>> CancelAndRefund(int id, [FromBody] AdminCancelBookingRequest request)
         {
+            if (DangerousActionGuard.RequireHeader(this, DangerousActionGuard.CancelRefund) is { } headerError)
+                return headerError;
+
+            if (!request.ConfirmFullRefund ||
+                !string.Equals(request.ConfirmationText?.Trim(), "REFUND", StringComparison.Ordinal))
+            {
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Refund confirmation required",
+                    Detail = "ConfirmFullRefund must be true and ConfirmationText must be REFUND.",
+                    Status = StatusCodes.Status400BadRequest
+                });
+            }
+
             try
             {
                 var booking = await _bookingService.AdminCancelAndRefundAsync(id, request.Reason);

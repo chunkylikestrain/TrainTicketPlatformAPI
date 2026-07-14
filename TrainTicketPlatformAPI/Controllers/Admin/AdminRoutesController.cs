@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using TrainTicketPlatformAPI.Contracts.Admin;
 using TrainTicketPlatformAPI.Data;
 using TrainTicketPlatformAPI.Models;
+using TrainTicketPlatformAPI.Security;
 using TrainTicketPlatformAPI.Services;
 
 namespace TrainTicketPlatformAPI.Controllers.Admin
@@ -116,6 +117,9 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            if (DangerousActionGuard.RequireHeader(this, DangerousActionGuard.Delete) is { } headerError)
+                return headerError;
+
             var route = await _db.TrainRoutes.FindAsync(id)
                 ?? throw new KeyNotFoundException("Route not found");
 

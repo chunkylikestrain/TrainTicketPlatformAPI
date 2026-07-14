@@ -189,6 +189,8 @@ function AdminOpenRailwayImportPage() {
       const result = await importOpenRailwayRoutesForDate(date, {
         limit,
         dryRun,
+        confirmApply: !dryRun,
+        confirmationText: dryRun ? "" : "IMPORT",
         routes: selectedRoutes.map((route) => ({
           scheduleId: route.scheduleId,
           orderId: route.orderId,

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using TrainTicketPlatformAPI.Contracts.Stations;
+using TrainTicketPlatformAPI.Security;
 using TrainTicketPlatformAPI.Services;
 
 namespace TrainTicketPlatformAPI.Controllers
@@ -18,6 +20,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Stations?query=Warsaw
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.PublicSearch)]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StationDto>>> GetAll([FromQuery] string? query)
         {
@@ -27,6 +30,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Stations/5
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.PublicRead)]
         [HttpGet("{id}")]
         public async Task<ActionResult<StationDto>> GetById(int id)
         {

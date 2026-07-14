@@ -163,8 +163,7 @@ namespace TrainTicketPlatformAPI.Tests
             Assert.That(intent.BookingId, Is.EqualTo(1));
             Assert.That(intent.Amount, Is.EqualTo(49.99m));
             Assert.That(intent.Currency, Is.EqualTo("USD"));
-            Assert.That(intent.TestPaymentMethodTokens, Does.Contain(PaymentService.SuccessToken));
-            Assert.That(intent.TestPaymentMethodTokens, Does.Contain(PaymentService.FailToken));
+            Assert.That(intent.Status, Is.EqualTo("Pending"));
         }
 
         [Test]
@@ -237,7 +236,7 @@ namespace TrainTicketPlatformAPI.Tests
 
             Assert.That(payment.Status, Is.EqualTo("Successful"));
             Assert.That(payment.PaymentIntentId, Is.EqualTo("pi_1"));
-            Assert.That(payment.PaymentMethodToken, Is.EqualTo(PaymentService.SuccessToken));
+            Assert.That(payment.PaymentMethodToken, Is.EqualTo("test_success_redacted"));
             Assert.That(payment.Amount, Is.EqualTo(49.99m));
 
             var booking = await db.Bookings.FindAsync(1);
@@ -310,6 +309,7 @@ namespace TrainTicketPlatformAPI.Tests
             var payment = await svc.ConfirmPaymentAsync("pi_1", PaymentService.FailToken);
 
             Assert.That(payment.Status, Is.EqualTo("Failed"));
+            Assert.That(payment.PaymentMethodToken, Is.EqualTo("test_failure_redacted"));
             var booking = await db.Bookings.FindAsync(1);
             Assert.That(booking!.PaymentStatus, Is.EqualTo("Failed"));
             Assert.That(booking.BookingStatus, Is.EqualTo("PendingPayment"));

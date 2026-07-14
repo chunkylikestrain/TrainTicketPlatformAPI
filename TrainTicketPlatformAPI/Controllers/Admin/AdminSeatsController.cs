@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TrainTicketPlatformAPI.Contracts.Admin;
 using TrainTicketPlatformAPI.Models;
+using TrainTicketPlatformAPI.Security;
 using TrainTicketPlatformAPI.Services;
 
 namespace TrainTicketPlatformAPI.Controllers.Admin
@@ -86,6 +87,9 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
+            if (DangerousActionGuard.RequireHeader(this, DangerousActionGuard.Delete) is { } headerError)
+                return headerError;
+
             try
             {
                 await _seatService.DeleteSeatAsync(id);

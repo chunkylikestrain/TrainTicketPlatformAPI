@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TrainTicketPlatformAPI.Contracts.Bookings;
 using TrainTicketPlatformAPI.Contracts.Tickets;
 using TrainTicketPlatformAPI.Models;
+using TrainTicketPlatformAPI.Security;
 using TrainTicketPlatformAPI.Services;
 
 namespace TrainTicketPlatformAPI.Controllers
@@ -77,6 +79,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Bookings/availability?trainId=1&seatId=5&travelDate=2025-06-20
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.PublicRead)]
         [HttpGet("availability")]
         public async Task<ActionResult<bool>> CheckAvailability(
             [FromQuery] int trainId,
@@ -90,6 +93,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // POST: api/Bookings
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.BookingWrite)]
         [HttpPost]
         public async Task<ActionResult<BookingDto>> Create([FromBody] CreateBookingRequest request)
         {
@@ -133,6 +137,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // PUT: api/Bookings/5/extras
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.BookingWrite)]
         [HttpPut("{id}/extras")]
         public async Task<ActionResult<BookingDto>> UpdateExtras(
             int id,
@@ -159,6 +164,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // PUT: api/Bookings/5/guest-data
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.BookingWrite)]
         [HttpPut("{id}/guest-data")]
         public async Task<ActionResult<BookingDto>> UpdateGuestData(
             int id,
@@ -186,6 +192,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Bookings/guest?email=guest@example.com
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.TicketAccess)]
         [HttpGet("guest")]
         public async Task<ActionResult<IEnumerable<BookingDto>>> GetGuestTickets([FromQuery] string email)
         {
@@ -202,6 +209,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // POST: api/Bookings/tickets/WH123/refund
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.TicketAccess)]
         [HttpPost("tickets/{ticketNumber}/refund")]
         public async Task<ActionResult<BookingDto>> RefundTicket(
             string ticketNumber,
@@ -224,6 +232,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // POST: api/Bookings/orders
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.BookingWrite)]
         [HttpPost("orders")]
         public async Task<ActionResult<BookingOrderDto>> CreateOrder([FromBody] CreateBookingOrderRequest request)
         {
@@ -315,6 +324,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // PUT: api/Bookings/orders/5/extras
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.BookingWrite)]
         [HttpPut("orders/{id}/extras")]
         public async Task<ActionResult<BookingOrderDto>> UpdateOrderExtras(
             int id,
@@ -411,6 +421,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Bookings/orders/5/tickets?email=guest@example.com
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.TicketAccess)]
         [HttpGet("orders/{id}/tickets")]
         public async Task<ActionResult<BookingOrderTicketsDto>> GetOrderTickets(
             int id,
@@ -446,6 +457,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // POST: api/Bookings/orders/5/tickets/email
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.TicketAccess)]
         [HttpPost("orders/{id}/tickets/email")]
         public async Task<ActionResult<BookingOrderEmailDeliveryDto>> SendOrderTicketsEmail(
             int id,
@@ -482,6 +494,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Bookings/orders/5/tickets/pdf?email=guest@example.com
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.TicketAccess)]
         [HttpGet("orders/{id}/tickets/pdf")]
         public async Task<IActionResult> GetOrderTicketsPdf(
             int id,
@@ -510,6 +523,7 @@ namespace TrainTicketPlatformAPI.Controllers
         }
 
         // POST: api/Bookings/5/refund
+        [EnableRateLimiting(RateLimitPolicyNames.BookingWrite)]
         [HttpPost("{id}/refund")]
         public async Task<ActionResult<BookingDto>> RefundMyTicket(
             int id,
@@ -539,6 +553,7 @@ namespace TrainTicketPlatformAPI.Controllers
         }
 
         // POST: api/Bookings/5/cancel
+        [EnableRateLimiting(RateLimitPolicyNames.BookingWrite)]
         [HttpPost("{id}/cancel")]
         public async Task<IActionResult> CancelBooking(int id)
         {
@@ -546,6 +561,7 @@ namespace TrainTicketPlatformAPI.Controllers
         }
 
         // POST: api/Bookings/5/confirm
+        [EnableRateLimiting(RateLimitPolicyNames.BookingWrite)]
         [HttpPost("{id}/confirm")]
         public async Task<ActionResult<BookingDto>> Confirm(int id)
         {
@@ -570,6 +586,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Bookings/5/ticket?email=guest@example.com
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.TicketAccess)]
         [HttpGet("{id}/ticket")]
         public async Task<ActionResult<TicketArtifactDto>> GetTicket(
             int id,
@@ -595,6 +612,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Bookings/5/ticket/qr?email=guest@example.com
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.TicketAccess)]
         [HttpGet("{id}/ticket/qr")]
         public async Task<IActionResult> GetTicketQr(
             int id,
@@ -621,6 +639,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // GET: api/Bookings/5/ticket/pdf?email=guest@example.com
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.TicketAccess)]
         [HttpGet("{id}/ticket/pdf")]
         public async Task<IActionResult> GetTicketPdf(
             int id,
@@ -650,6 +669,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // POST: api/Bookings/5/ticket/email
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.TicketAccess)]
         [HttpPost("{id}/ticket/email")]
         public async Task<ActionResult<TicketEmailDeliveryDto>> SendTicketEmail(
             int id,
@@ -675,19 +695,24 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // PUT: api/Bookings/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Booking booking)
+        public async Task<ActionResult<BookingDto>> Update(int id, [FromBody] UpdateBookingRequest request)
         {
-            if (id != booking.Id)
-                return BadRequest("ID mismatch");
-
             try
             {
                 var existing = await _bookingService.GetBookingByIdAsync(id);
                 if (!CanAccessBooking(existing))
                     return Forbid();
 
+                var booking = new Booking
+                {
+                    Id = id,
+                    SeatId = request.SeatId ?? existing.SeatId,
+                    TripId = request.TripId ?? existing.TripId,
+                    TravelDate = request.TravelDate ?? existing.TravelDate
+                };
+
                 var updated = await _bookingService.UpdateBookingAsync(booking);
-                return Ok(updated);
+                return Ok(ToDto(updated));
             }
             catch (KeyNotFoundException)
             {

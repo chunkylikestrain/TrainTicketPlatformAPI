@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using TrainTicketPlatformAPI.Contracts.Payments;
 using TrainTicketPlatformAPI.Models;
+using TrainTicketPlatformAPI.Security;
 using TrainTicketPlatformAPI.Services;
 
 namespace TrainTicketPlatformAPI.Controllers
@@ -80,6 +82,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // POST: api/Payments/intent
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.Payment)]
         [HttpPost("intent")]
         public async Task<ActionResult<PaymentIntentDto>> CreateIntent([FromBody] CreatePaymentIntentRequest request)
         {
@@ -124,6 +127,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // POST: api/Payments
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.Payment)]
         [HttpPost]
         public async Task<ActionResult<PaymentDto>> Create([FromBody] ConfirmPaymentRequest request)
         {
@@ -132,6 +136,7 @@ namespace TrainTicketPlatformAPI.Controllers
 
         // POST: api/Payments/confirm
         [AllowAnonymous]
+        [EnableRateLimiting(RateLimitPolicyNames.Payment)]
         [HttpPost("confirm")]
         public async Task<ActionResult<PaymentDto>> Confirm([FromBody] ConfirmPaymentRequest request)
         {
