@@ -7,7 +7,6 @@ import ed161FirstInterior from "../../../docs/NotMyTrainImages/ED1611stClassInte
 import ed161SecondInterior from "../../../docs/NotMyTrainImages/ED1612ndClassInterior(Wikicommons).jpg";
 import ed74Image from "../../../docs/NotMyTrainImages/ED74(Wkicommons).jpg";
 import ed74FirstInterior from "../../../docs/NotMyTrainImages/ED741stClassinterior(Wikicommons).jpg";
-import ep07Image from "../../../docs/MyTrainImages/EP07.jpg";
 import ep08Image from "../../../docs/NotMyTrainImages/EP08(Radial's).jpg";
 import ep09Image from "../../../docs/MyTrainImages/EP09.jpg";
 import eu07Image from "../../../docs/NotMyTrainImages/EU07(Radial's).jpg";
@@ -23,6 +22,8 @@ import sd85SecondInterior from "../../../docs/MyTrainImages/SD852ndClassInterior
 import sn84Image from "../../../docs/MyTrainImages/SN84.jpg";
 import su160Image from "../../../docs/NotMyTrainImages/SU160(Radial's).jpg";
 import su4210Image from "../../../docs/NotMyTrainImages/SU4210(Radial's).jpg";
+
+const ep07Image = "/images/EP07.jpg";
 
 const emuSets = [
   {

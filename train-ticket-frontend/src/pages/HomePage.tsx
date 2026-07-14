@@ -13,9 +13,10 @@ import type { ReactNode } from "react";
 import { Link } from "react-router-dom";
 import TrainSearchForm from "../components/TrainSearchForm";
 import ed250Image from "../../../docs/MyTrainImages/ED250.jpg";
-import ep07Image from "../../../docs/MyTrainImages/EP07.jpg";
 import explorePolandImage from "../../../docs/MyCityImages/Krakow.jpg";
 import studentOfferImage from "../../../docs/NotMyTrainImages/ED160(Radial's).jpg";
+
+const ep07Image = "/images/EP07.jpg";
 
 const quickActions = [
   {

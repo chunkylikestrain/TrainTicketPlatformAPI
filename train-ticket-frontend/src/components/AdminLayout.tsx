@@ -26,7 +26,7 @@ const adminLinks = [
   { to: "/admin", label: "Dashboard", icon: <DashboardOutlined /> },
   { to: "/admin/trains", label: "Trains", icon: <ProfileOutlined /> },
   { to: "/admin/routes", label: "Routes", icon: <ShareAltOutlined /> },
-  { to: "/admin/open-railway", label: "Rail data import", icon: <CloudDownloadOutlined /> },
+  { to: "/admin/open-railway", label: "Schedule sync", icon: <CloudDownloadOutlined /> },
   { to: "/admin/schedules", label: "Schedules", icon: <CalendarOutlined /> },
   { to: "/admin/pricing", label: "Pricing", icon: <DollarOutlined /> },
   { to: "/admin/bookings", label: "Bookings", icon: <CheckCircleOutlined /> },

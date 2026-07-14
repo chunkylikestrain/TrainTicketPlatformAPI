@@ -55,14 +55,20 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
             {
                 var routes = await _client.GetRouteIdsAsync(date, cancellationToken);
                 var safeLimit = Math.Clamp(limit, 1, 1_000);
+                var allRoutes = routes.Routes ?? [];
+                var interCityRoutes = allRoutes
+                    .Where(route => OpenRailwayImportRules.IsInterCityCarrier(route.CarrierCode))
+                    .ToList();
 
                 return Ok(new
                 {
                     routes.GeneratedAt,
                     routes.Date,
-                    routes.Count,
-                    ReturnedCount = Math.Min(routes.Routes?.Count ?? 0, safeLimit),
-                    Routes = (routes.Routes ?? [])
+                    Count = interCityRoutes.Count,
+                    SourceCount = routes.Count,
+                    FilteredOutCount = Math.Max(0, routes.Count - interCityRoutes.Count),
+                    ReturnedCount = Math.Min(interCityRoutes.Count, safeLimit),
+                    Routes = interCityRoutes
                         .Take(safeLimit)
                 });
             });
@@ -72,11 +78,12 @@ namespace TrainTicketPlatformAPI.Controllers.Admin
         public async Task<IActionResult> PreviewRoute(
             int scheduleId,
             int orderId,
+            [FromQuery] DateOnly? operatingDate,
             CancellationToken cancellationToken)
         {
             return await TryOpenRailwayAsync(async () =>
             {
-                var preview = await _importService.PreviewRouteAsync(scheduleId, orderId, cancellationToken);
+                var preview = await _importService.PreviewRouteAsync(scheduleId, orderId, operatingDate, cancellationToken);
                 return Ok(preview);
             });
         }

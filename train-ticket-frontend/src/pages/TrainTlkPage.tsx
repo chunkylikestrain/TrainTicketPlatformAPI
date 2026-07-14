@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import ep07Image from "../../../docs/MyTrainImages/EP07.jpg";
 import eu07Image from "../../../docs/NotMyTrainImages/EU07(Radial's).jpg";
 import sn84Image from "../../../docs/MyTrainImages/SN84.jpg";
 import su4210Image from "../../../docs/NotMyTrainImages/SU4210(Radial's).jpg";
@@ -9,6 +8,8 @@ import tlkSleeper from "../../../docs/MyTrainImages/TLKSleeper.jpg";
 import tlkSleeperInteriorOne from "../../../docs/NotMyTrainImages/TLKSleeperCarInterior1(Wikicommons).jpg";
 import tlkSleeperInteriorTwo from "../../../docs/NotMyTrainImages/TLKSleeperCarInterior2(Wikicommons).jpg";
 import tlkTrainImage from "../../../docs/MyTrainImages/TLKtrain.jpg";
+
+const ep07Image = "/images/EP07.jpg";
 
 const tlkFacts = [
   "TLK is the lowest-price long-distance category, built for passengers who want to travel far without paying premium fares.",

@@ -7,6 +7,7 @@ namespace TrainTicketPlatformAPI.Services
         Task<OpenRailwayImportPreviewDto> PreviewRouteAsync(
             int scheduleId,
             int orderId,
+            DateOnly? operatingDate,
             CancellationToken cancellationToken);
 
         Task<OpenRailwayImportRouteResultDto> ImportRouteAsync(

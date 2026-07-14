@@ -210,6 +210,8 @@ export type OpenRailwayRouteIdsResponse = {
   generatedAt: string;
   date: string;
   count: number;
+  sourceCount?: number;
+  filteredOutCount?: number;
   returnedCount: number;
   routes: OpenRailwayRouteId[];
 };
@@ -239,6 +241,14 @@ export type OpenRailwayImportPreview = {
   trainName: string;
   carrierCode: string;
   category: string;
+  operatingDate: string;
+  actionType: string;
+  actionLabel: string;
+  actionDescription: string;
+  trainExists: boolean;
+  routeExists: boolean;
+  tripExists: boolean;
+  missingStationCount: number;
   operatingDates: string[];
   stops: OpenRailwayImportStopPreview[];
 };

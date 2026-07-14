@@ -2192,7 +2192,7 @@
   background:
     linear-gradient(90deg, rgba(6, 26, 85, 0.68), rgba(6, 26, 85, 0.12) 46%, rgba(255, 255, 255, 0.06)),
     linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(6, 26, 85, 0.18)),
-    url("../../docs/MyTrainImages/EP07.jpg");
+    url("/images/EP07.jpg");
   background-size: cover;
   background-position: center 48%;
   overflow: hidden;
@@ -7176,7 +7176,7 @@
   border-radius: 8px;
   background:
     linear-gradient(90deg, rgba(6, 26, 85, 0.9), rgba(6, 26, 85, 0.68) 48%, rgba(6, 26, 85, 0.16)),
-    url("../../docs/MyTrainImages/EP07.jpg");
+    url("/images/EP07.jpg");
   background-size: cover;
   background-position: center 50%;
   color: var(--white);
@@ -7265,7 +7265,7 @@
   border-radius: 8px;
   background:
     linear-gradient(90deg, rgba(244, 248, 251, 0.96), rgba(244, 248, 251, 0.84) 54%, rgba(244, 248, 251, 0.3)),
-    url("../../docs/MyTrainImages/EP07.jpg");
+    url("/images/EP07.jpg");
   background-size: cover;
   background-position: center 48%;
   border-left: 6px solid var(--orange);
@@ -7493,7 +7493,7 @@
   border-radius: 4px;
   background:
     linear-gradient(90deg, rgba(244, 248, 251, 0.95), rgba(244, 248, 251, 0.78) 58%, rgba(244, 248, 251, 0.28)),
-    url("../../docs/MyTrainImages/EP07.jpg");
+    url("/images/EP07.jpg");
   background-size: cover;
   background-position: center 48%;
 }
@@ -8821,6 +8821,25 @@
   justify-content: flex-end;
 }
 
+.open-railway-safety-panel {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 18px;
+  border-left: 5px solid #1098d8;
+  background: #f4fbff;
+  color: var(--navy);
+}
+
+.open-railway-safety-panel strong {
+  white-space: nowrap;
+}
+
+.open-railway-safety-panel span {
+  color: #51617d;
+  font-weight: 800;
+}
+
 .open-railway-table-heading {
   justify-content: space-between;
   margin-bottom: 1rem;
@@ -8836,6 +8855,25 @@
   margin: 0.5rem 0 1.25rem;
   color: #51617d;
   font-weight: 700;
+}
+
+.open-railway-preview-action {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 14px 16px;
+  border-left: 5px solid var(--orange);
+  background: #fff7ef;
+}
+
+.open-railway-preview-action p {
+  margin: 0;
+  color: var(--navy);
+}
+
+.open-railway-preview-action small {
+  color: #51617d;
+  font-weight: 800;
 }
 
 .open-railway-stop-list {

@@ -27,14 +27,27 @@ namespace TrainTicketPlatformAPI.Services
         public async Task<OpenRailwayImportPreviewDto> PreviewRouteAsync(
             int scheduleId,
             int orderId,
+            DateOnly? operatingDate,
             CancellationToken cancellationToken)
         {
             var route = await _client.GetRouteAsync(scheduleId, orderId, cancellationToken);
+            EnsureInterCityRoute(route);
+            var orderedStops = (route.Stations ?? [])
+                .OrderBy(stop => stop.OrderNumber)
+                .ToList();
+            var selectedOperatingDate = ResolveOperatingDate(route, operatingDate);
             var trainNumber = FirstNonBlank(
                 route.NationalNumber,
                 route.InternationalDepartureNumber,
                 route.InternationalArrivalNumber,
                 route.OrderId.ToString());
+            var trainCode = BuildTrainCode(route, trainNumber);
+            var action = await AnalyzePreviewActionAsync(
+                route,
+                orderedStops,
+                selectedOperatingDate,
+                trainCode,
+                cancellationToken);
 
             return new OpenRailwayImportPreviewDto
             {
@@ -42,17 +55,20 @@ namespace TrainTicketPlatformAPI.Services
                 ScheduleId = route.ScheduleId,
                 OrderId = route.OrderId,
                 TrainOrderId = route.TrainOrderId,
-                TrainCode = string.IsNullOrWhiteSpace(route.CommercialCategorySymbol)
-                    ? trainNumber
-                    : $"{route.CommercialCategorySymbol}-{trainNumber}",
-                TrainName = string.IsNullOrWhiteSpace(route.Name)
-                    ? trainNumber
-                    : $"{route.CommercialCategorySymbol} {trainNumber} {route.Name}".Trim(),
+                TrainCode = trainCode,
+                TrainName = BuildTrainName(route, trainNumber),
                 CarrierCode = route.CarrierCode ?? string.Empty,
                 Category = route.CommercialCategorySymbol ?? string.Empty,
+                OperatingDate = selectedOperatingDate,
+                ActionType = action.ActionType,
+                ActionLabel = action.ActionLabel,
+                ActionDescription = action.ActionDescription,
+                TrainExists = action.TrainExists,
+                RouteExists = action.RouteExists,
+                TripExists = action.TripExists,
+                MissingStationCount = action.MissingStationCount,
                 OperatingDates = route.OperatingDates ?? [],
-                Stops = (route.Stations ?? [])
-                    .OrderBy(stop => stop.OrderNumber)
+                Stops = orderedStops
                     .Select(stop => new OpenRailwayImportStopPreviewDto
                     {
                         ExternalStationId = stop.StationId,
@@ -75,6 +91,7 @@ namespace TrainTicketPlatformAPI.Services
             CancellationToken cancellationToken)
         {
             var route = await _client.GetRouteAsync(scheduleId, orderId, cancellationToken);
+            EnsureInterCityRoute(route);
             var orderedStops = (route.Stations ?? [])
                 .OrderBy(stop => stop.OrderNumber)
                 .ToList();
@@ -155,16 +172,17 @@ namespace TrainTicketPlatformAPI.Services
                     r.ExternalOperatingDate == selectedOperatingDate,
                     cancellationToken);
             var matchedByExternalIdentity = trainRoute != null;
+            var matchedByRailBookIdentity = false;
 
             if (trainRoute == null)
             {
-                trainRoute = await _db.TrainRoutes
-                    .Include(r => r.RouteStops)
-                    .FirstOrDefaultAsync(r =>
-                        r.DepartureStationId == departureStation.Id &&
-                        r.ArrivalStationId == arrivalStation.Id &&
-                        r.RouteFingerprint == routeFingerprint,
-                        cancellationToken);
+                trainRoute = await FindExistingRouteAsync(
+                    departureStation.Id,
+                    arrivalStation.Id,
+                    routeFingerprint,
+                    adminDisplayName,
+                    cancellationToken);
+                matchedByRailBookIdentity = trainRoute != null;
             }
 
             var routeCreated = trainRoute == null;
@@ -173,39 +191,40 @@ namespace TrainTicketPlatformAPI.Services
                 trainRoute = new TrainRoute();
                 _db.TrainRoutes.Add(trainRoute);
             }
+            var shouldUpdateRoute = routeCreated || matchedByExternalIdentity || matchedByRailBookIdentity;
 
             trainRoute.Code = string.IsNullOrWhiteSpace(trainRoute.Code)
                 ? await BuildUniqueRouteCodeAsync(departureStation, arrivalStation, routeFingerprint, cancellationToken)
                 : trainRoute.Code;
-            if (routeCreated || matchedByExternalIdentity || string.IsNullOrWhiteSpace(trainRoute.Name))
+            if (shouldUpdateRoute || string.IsNullOrWhiteSpace(trainRoute.Name))
             {
                 trainRoute.Name = Truncate($"{departureStation.Name} -> {arrivalStation.Name}", 240);
             }
 
             trainRoute.RouteFingerprint = routeFingerprint;
-            if (routeCreated || matchedByExternalIdentity || string.IsNullOrWhiteSpace(trainRoute.AdminDisplayName))
+            if (shouldUpdateRoute || string.IsNullOrWhiteSpace(trainRoute.AdminDisplayName))
             {
                 trainRoute.AdminDisplayName = adminDisplayName;
             }
 
             trainRoute.DepartureStationId = departureStation.Id;
             trainRoute.ArrivalStationId = arrivalStation.Id;
-            if (routeCreated || matchedByExternalIdentity || trainRoute.EstimatedDurationMinutes <= 0)
+            if (shouldUpdateRoute || trainRoute.EstimatedDurationMinutes <= 0)
             {
                 trainRoute.EstimatedDurationMinutes = Math.Max(0, (int)Math.Round((arrivalTime - departureTime).TotalMinutes));
             }
 
-            if (routeCreated || matchedByExternalIdentity)
+            if (shouldUpdateRoute)
             {
                 trainRoute.DistanceKm = 0m;
             }
 
-            if (routeCreated || matchedByExternalIdentity || string.IsNullOrWhiteSpace(trainRoute.OperatingDays))
+            if (shouldUpdateRoute || string.IsNullOrWhiteSpace(trainRoute.OperatingDays))
             {
                 trainRoute.OperatingDays = "Imported";
             }
 
-            if (routeCreated || matchedByExternalIdentity || string.IsNullOrWhiteSpace(trainRoute.IntermediateStops))
+            if (shouldUpdateRoute || string.IsNullOrWhiteSpace(trainRoute.IntermediateStops))
             {
                 trainRoute.IntermediateStops = Truncate(string.Join(", ", orderedStops
                     .Skip(1)
@@ -213,12 +232,12 @@ namespace TrainTicketPlatformAPI.Services
                     .Select(stop => stationMap[stop.StationId].Name)), 1000);
             }
 
-            if (routeCreated || matchedByExternalIdentity)
+            if (shouldUpdateRoute)
             {
                 trainRoute.IsActive = true;
             }
 
-            if (routeCreated || string.IsNullOrWhiteSpace(trainRoute.ExternalSource))
+            if (shouldUpdateRoute && (routeCreated || string.IsNullOrWhiteSpace(trainRoute.ExternalSource)))
             {
                 trainRoute.ExternalSource = _options.ExternalSource;
                 trainRoute.ExternalScheduleId = route.ScheduleId;
@@ -227,7 +246,7 @@ namespace TrainTicketPlatformAPI.Services
                 trainRoute.ExternalOperatingDate = selectedOperatingDate;
             }
 
-            var shouldRewriteRouteStops = routeCreated || matchedByExternalIdentity || trainRoute.RouteStops.Count == 0;
+            var shouldRewriteRouteStops = shouldUpdateRoute || trainRoute.RouteStops.Count == 0;
             if (shouldRewriteRouteStops)
             {
                 var existingStops = trainRoute.RouteStops.ToList();
@@ -345,17 +364,7 @@ namespace TrainTicketPlatformAPI.Services
 
             if (requestedRoutes.Count == 0)
             {
-                var availableRoutes = await _client.GetRouteIdsAsync(date, cancellationToken);
-                requestedRoutes = (availableRoutes.Routes ?? [])
-                    .Where(route => route.ScheduleId > 0 && route.OrderId > 0)
-                    .GroupBy(route => new { route.ScheduleId, route.OrderId })
-                    .Select(group => new OpenRailwayImportRouteKeyDto
-                    {
-                        ScheduleId = group.Key.ScheduleId,
-                        OrderId = group.Key.OrderId
-                    })
-                    .Take(safeLimit)
-                    .ToList();
+                throw new InvalidOperationException("Select at least one InterCity update candidate before previewing or applying schedule sync.");
             }
 
             var result = new OpenRailwayImportDateResultDto
@@ -380,7 +389,7 @@ namespace TrainTicketPlatformAPI.Services
                 {
                     if (request.DryRun)
                     {
-                        item.Preview = await PreviewRouteAsync(route.ScheduleId, route.OrderId, cancellationToken);
+                        item.Preview = await PreviewRouteAsync(route.ScheduleId, route.OrderId, date, cancellationToken);
                         item.Status = "Previewed";
                     }
                     else
@@ -594,6 +603,16 @@ namespace TrainTicketPlatformAPI.Services
                 ? $"external:{station.ExternalStationId.Value}"
                 : $"code:{station.Code}";
 
+        private static string NormalizeRouteIdentity(string? value)
+            => new string((value ?? string.Empty)
+                .Trim()
+                .ToUpperInvariant()
+                .Where(char.IsLetterOrDigit)
+                .ToArray());
+
+        private static string NormalizeStationName(string? value)
+            => (value ?? string.Empty).Trim().ToUpperInvariant();
+
         private static DateOnly ResolveOperatingDate(OpenRailwayRouteDto route, DateOnly? requestedDate)
         {
             if (requestedDate.HasValue)
@@ -607,6 +626,16 @@ namespace TrainTicketPlatformAPI.Services
                 return operatingDate.Value;
 
             return DateOnly.FromDateTime(DateTime.Today);
+        }
+
+        private static void EnsureInterCityRoute(OpenRailwayRouteDto route)
+        {
+            if (OpenRailwayImportRules.IsInterCityCarrier(route.CarrierCode))
+                return;
+
+            var carrier = string.IsNullOrWhiteSpace(route.CarrierCode) ? "unknown" : route.CarrierCode.Trim();
+            throw new InvalidOperationException(
+                $"Open Railway route {route.ScheduleId}/{route.OrderId} belongs to carrier '{carrier}'. RailBook imports InterCity carrier routes only.");
         }
 
         private async Task<Station> UpsertStationAsync(
@@ -688,6 +717,162 @@ namespace TrainTicketPlatformAPI.Services
             return names;
         }
 
+        private async Task<OpenRailwayPreviewAction> AnalyzePreviewActionAsync(
+            OpenRailwayRouteDto route,
+            IReadOnlyList<OpenRailwayStationOnRouteDto> orderedStops,
+            DateOnly operatingDate,
+            string trainCode,
+            CancellationToken cancellationToken)
+        {
+            var trainExists = await FindExistingTrainAsync(route, trainCode, cancellationToken) != null;
+            var tripExists = await _db.Trips.AnyAsync(t =>
+                    t.ExternalSource == _options.ExternalSource &&
+                    t.ExternalScheduleId == route.ScheduleId &&
+                    t.ExternalOrderId == route.OrderId &&
+                    t.ExternalOperatingDate == operatingDate,
+                    cancellationToken);
+
+            var stationNames = await ResolveStationNamesAsync(
+                orderedStops.Select(stop => stop.StationId).Distinct().ToArray(),
+                cancellationToken);
+            var stationMap = await ResolveExistingStationsAsync(stationNames, cancellationToken);
+            var missingStationCount = orderedStops
+                .Select(stop => stop.StationId)
+                .Distinct()
+                .Count(stationId => !stationMap.ContainsKey(stationId));
+
+            var routeExists = false;
+            if (missingStationCount == 0 &&
+                orderedStops.Count >= 2 &&
+                stationMap.TryGetValue(orderedStops[0].StationId, out var departureStation) &&
+                stationMap.TryGetValue(orderedStops[^1].StationId, out var arrivalStation))
+            {
+                var routeFingerprint = BuildRouteFingerprint(orderedStops, stationMap);
+                var adminDisplayName = BuildAdminRouteDisplayName(orderedStops, stationMap);
+                routeExists = await FindExistingRouteAsync(
+                    departureStation.Id,
+                    arrivalStation.Id,
+                    routeFingerprint,
+                    adminDisplayName,
+                    cancellationToken) != null;
+            }
+
+            if (tripExists)
+            {
+                return new OpenRailwayPreviewAction(
+                    "UpdateSchedule",
+                    "Update existing schedule",
+                    "RailBook already has this train for the selected date. Applying sync will refresh the timetable, platform, track, and import metadata.",
+                    trainExists,
+                    routeExists,
+                    true,
+                    missingStationCount);
+            }
+
+            if (routeExists && trainExists)
+            {
+                return new OpenRailwayPreviewAction(
+                    "AddMissingTrip",
+                    "Add missing trip",
+                    "RailBook already knows the route and train. Applying sync will add the missing operating-day schedule.",
+                    true,
+                    true,
+                    false,
+                    missingStationCount);
+            }
+
+            if (routeExists)
+            {
+                return new OpenRailwayPreviewAction(
+                    "AddTrainAndTrip",
+                    "Add train and schedule",
+                    "RailBook already knows the route. Applying sync will add the missing train record and operating-day schedule.",
+                    false,
+                    true,
+                    false,
+                    missingStationCount);
+            }
+
+            if (trainExists)
+            {
+                return new OpenRailwayPreviewAction(
+                    "AddRouteAndTrip",
+                    "Add route and schedule",
+                    "RailBook already knows the train. Applying sync will add the missing route shape and operating-day schedule.",
+                    true,
+                    false,
+                    false,
+                    missingStationCount);
+            }
+
+            if (missingStationCount > 0)
+            {
+                return new OpenRailwayPreviewAction(
+                    "AddStationsRouteTrainTrip",
+                    "Add stations, route, train, and schedule",
+                    "RailBook is missing at least one station for this route. Applying sync will add missing stations, route data, train data, and the schedule.",
+                    false,
+                    false,
+                    false,
+                    missingStationCount);
+            }
+
+            return new OpenRailwayPreviewAction(
+                "AddRouteTrainTrip",
+                "Add route, train, and schedule",
+                "RailBook does not yet have this route and train combination. Applying sync will add them with the operating-day schedule.",
+                false,
+                false,
+                false,
+                0);
+        }
+
+        private async Task<Dictionary<int, Station>> ResolveExistingStationsAsync(
+            IReadOnlyDictionary<int, string> stationNames,
+            CancellationToken cancellationToken)
+        {
+            var externalIds = stationNames.Keys.ToArray();
+            var stations = await _db.Stations
+                .Where(station =>
+                    station.ExternalSource == _options.ExternalSource &&
+                    station.ExternalStationId.HasValue &&
+                    externalIds.Contains(station.ExternalStationId.Value))
+                .ToListAsync(cancellationToken);
+
+            var map = stations
+                .Where(station => station.ExternalStationId.HasValue)
+                .GroupBy(station => station.ExternalStationId!.Value)
+                .ToDictionary(group => group.Key, group => group.First());
+
+            var unresolvedNames = stationNames
+                .Where(item => !map.ContainsKey(item.Key) && !string.IsNullOrWhiteSpace(item.Value))
+                .Select(item => NormalizeStationName(item.Value))
+                .Where(name => !string.IsNullOrWhiteSpace(name))
+                .Distinct()
+                .ToArray();
+
+            if (unresolvedNames.Length == 0)
+                return map;
+
+            var stationsByName = (await _db.Stations
+                .Where(station => unresolvedNames.Contains(station.NormalizedName))
+                .ToListAsync(cancellationToken))
+                .GroupBy(station => station.NormalizedName)
+                .ToDictionary(group => group.Key, group => group.First());
+
+            foreach (var item in stationNames)
+            {
+                if (map.ContainsKey(item.Key))
+                    continue;
+
+                var normalizedName = NormalizeStationName(item.Value);
+                if (stationsByName.TryGetValue(normalizedName, out var station))
+                    map[item.Key] = station;
+            }
+
+            return map;
+        }
+
         private async Task<string> BuildUniqueStationCodeAsync(
             string stationName,
             int externalStationId,
@@ -736,6 +921,40 @@ namespace TrainTicketPlatformAPI.Services
                     cancellationToken);
 
             return train ?? await _db.Trains.FirstOrDefaultAsync(t => t.Code == trainCode, cancellationToken);
+        }
+
+        private async Task<TrainRoute?> FindExistingRouteAsync(
+            int departureStationId,
+            int arrivalStationId,
+            string routeFingerprint,
+            string adminDisplayName,
+            CancellationToken cancellationToken)
+        {
+            var route = await _db.TrainRoutes
+                .Include(r => r.RouteStops)
+                .FirstOrDefaultAsync(r =>
+                    r.DepartureStationId == departureStationId &&
+                    r.ArrivalStationId == arrivalStationId &&
+                    r.RouteFingerprint == routeFingerprint,
+                    cancellationToken);
+
+            if (route != null)
+                return route;
+
+            var normalizedDisplayName = NormalizeRouteIdentity(adminDisplayName);
+            if (string.IsNullOrWhiteSpace(normalizedDisplayName))
+                return null;
+
+            var candidates = await _db.TrainRoutes
+                .Include(r => r.RouteStops)
+                .Where(r =>
+                    r.DepartureStationId == departureStationId &&
+                    r.ArrivalStationId == arrivalStationId)
+                .ToListAsync(cancellationToken);
+
+            return candidates.FirstOrDefault(route =>
+                NormalizeRouteIdentity(route.AdminDisplayName) == normalizedDisplayName ||
+                NormalizeRouteIdentity(route.Name) == normalizedDisplayName);
         }
 
         private async Task<DefaultConsistResult> EnsureDefaultConsistAsync(
@@ -1203,6 +1422,15 @@ namespace TrainTicketPlatformAPI.Services
             bool Applied,
             int CarriagesCreated,
             int SeatsCreated);
+
+        private sealed record OpenRailwayPreviewAction(
+            string ActionType,
+            string ActionLabel,
+            string ActionDescription,
+            bool TrainExists,
+            bool RouteExists,
+            bool TripExists,
+            int MissingStationCount);
 
         private sealed record DefaultCarriageSeed(
             string Coach,

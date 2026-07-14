@@ -229,9 +229,10 @@ export async function getOpenRailwayRoutes(date: string, limit = 100) {
   return response.data;
 }
 
-export async function previewOpenRailwayRoute(scheduleId: number, orderId: number) {
+export async function previewOpenRailwayRoute(scheduleId: number, orderId: number, operatingDate?: string) {
   const response = await apiClient.get<OpenRailwayImportPreview>(
-    `/admin/open-railway/routes/${scheduleId}/${orderId}/preview`);
+    `/admin/open-railway/routes/${scheduleId}/${orderId}/preview`,
+    { params: operatingDate ? { operatingDate } : undefined });
   return response.data;
 }
 
