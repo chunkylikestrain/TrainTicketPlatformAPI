@@ -9,17 +9,16 @@ namespace TrainTicketPlatformAPI.Services
         public static byte[] Build(Invoice invoice)
         {
             var stream = BuildPageStream(invoice);
-            var objects = new List<string>
+            var objects = new List<byte[]>
             {
-                "<< /Type /Catalog /Pages 2 0 R >>",
-                "<< /Type /Pages /Kids [5 0 R] /Count 1 >>",
-                "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
-                "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>",
-                $"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>",
-                $"<< /Length {Encoding.ASCII.GetByteCount(stream)} >>\nstream\n{stream}\nendstream"
+                SimplePdfWriter.PdfObject("<< /Type /Catalog /Pages 2 0 R >>"),
+                SimplePdfWriter.PdfObject("<< /Type /Pages /Kids [13 0 R] /Count 1 >>")
             };
+            objects.AddRange(SimplePdfWriter.BuildUnicodeFontObjects());
+            objects.Add(SimplePdfWriter.PdfObject("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 14 0 R >>"));
+            objects.Add(SimplePdfWriter.PdfObject($"<< /Length {Encoding.ASCII.GetByteCount(stream)} >>\nstream\n{stream}\nendstream"));
 
-            return BuildPdf(objects);
+            return SimplePdfWriter.BuildPdf(objects, "RailBook invoice");
         }
 
         private static string BuildPageStream(Invoice invoice)
@@ -97,49 +96,11 @@ namespace TrainTicketPlatformAPI.Services
             builder.AppendLine("BT");
             builder.AppendLine($"/{(bold ? "F2" : "F1")} {size} Tf");
             builder.AppendLine($"{x} {y} Td");
-            builder.AppendLine($"({EscapePdfText(text)}) Tj");
+            builder.AppendLine($"<{SimplePdfWriter.EncodeText(text)}> Tj");
             builder.AppendLine("ET");
-        }
-
-        private static byte[] BuildPdf(IReadOnlyList<string> objects)
-        {
-            using var stream = new MemoryStream();
-            using var writer = new StreamWriter(stream, Encoding.ASCII, leaveOpen: true);
-
-            writer.Write("%PDF-1.4\n");
-            writer.Write("% RailBook invoice\n");
-            writer.Flush();
-
-            var offsets = new List<long> { 0 };
-            for (var index = 0; index < objects.Count; index++)
-            {
-                offsets.Add(stream.Position);
-                writer.Write($"{index + 1} 0 obj\n");
-                writer.Write(objects[index]);
-                writer.Write("\nendobj\n");
-                writer.Flush();
-            }
-
-            var xrefOffset = stream.Position;
-            writer.Write($"xref\n0 {objects.Count + 1}\n");
-            writer.Write("0000000000 65535 f \n");
-            foreach (var offset in offsets.Skip(1))
-                writer.Write($"{offset:0000000000} 00000 n \n");
-
-            writer.Write("trailer\n");
-            writer.Write($"<< /Size {objects.Count + 1} /Root 1 0 R >>\n");
-            writer.Write("startxref\n");
-            writer.Write($"{xrefOffset}\n");
-            writer.Write("%%EOF");
-            writer.Flush();
-
-            return stream.ToArray();
         }
 
         private static string FormatMoney(decimal value, string currency)
             => $"{value.ToString("0.00", CultureInfo.InvariantCulture)} {currency}";
-
-        private static string EscapePdfText(string value)
-            => value.Replace("\\", "\\\\").Replace("(", "\\(").Replace(")", "\\)");
     }
 }

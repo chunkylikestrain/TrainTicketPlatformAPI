@@ -39,6 +39,12 @@ namespace TrainTicketPlatformAPI.Services
             }
 
             return stationList
+                .GroupBy(GetStationIdentityKey)
+                .Select(group => group
+                    .OrderByDescending(GetStationDisplayScore)
+                    .ThenBy(s => s.Name)
+                    .ThenBy(s => s.Id)
+                    .First())
                 .Select(s => ToDto(s))
                 .ToList();
         }
@@ -89,6 +95,43 @@ namespace TrainTicketPlatformAPI.Services
 
             return candidates.Any(candidate =>
                 TripSegmentResolver.NormalizeSearchText(candidate).Contains(normalizedQuery));
+        }
+
+        private static string GetStationIdentityKey(Station station)
+        {
+            var normalizedName = TripSegmentResolver.NormalizeSearchText(station.Name);
+            var locality = TripSegmentResolver.NormalizeSearchText(station.Locality?.Name ?? station.City);
+            var normalizedCode = TripSegmentResolver.NormalizeSearchText(station.Code);
+            if (!string.IsNullOrWhiteSpace(normalizedName) &&
+                !string.Equals(normalizedName, normalizedCode, StringComparison.Ordinal))
+                return $"name:{normalizedName}:{locality}";
+
+            if (!string.IsNullOrWhiteSpace(normalizedCode))
+                return $"code:{normalizedCode}";
+
+            if (!string.IsNullOrWhiteSpace(station.ExternalSource) && station.ExternalStationId.HasValue)
+                return $"external:{station.ExternalSource}:{station.ExternalStationId.Value}";
+
+            return $"id:{station.Id}";
+        }
+
+        private static int GetStationDisplayScore(Station station)
+        {
+            var score = 0;
+            if (!string.IsNullOrWhiteSpace(station.Name))
+                score += 20;
+            if (!string.Equals(station.Name, station.Code, StringComparison.OrdinalIgnoreCase))
+                score += 10;
+            if (station.Name.Any(c => c > 127))
+                score += 5;
+            if (!string.IsNullOrWhiteSpace(station.Locality?.Name ?? station.City))
+                score += 3;
+            if (!string.IsNullOrWhiteSpace(station.Code))
+                score += 2;
+            if (station.ExternalStationId.HasValue)
+                score += 1;
+
+            return score;
         }
     }
 }

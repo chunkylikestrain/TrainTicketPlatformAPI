@@ -307,18 +307,25 @@ function SeatMapPage() {
     }
 
     if (isRoundTripMode) {
-      if (activeSegmentIndex < segmentCount - 1) {
-        setActiveSegmentIndex((current) => current + 1);
-        setActivePassengerIndex(0);
-        setItineraryCompletionMessage("");
-        return;
-      }
-
       const firstIncompleteSegmentIndex = selectedSeatsBySegment.findIndex((segmentSeats) =>
         segmentSeats.length !== passengerTotal || segmentSeats.some((seat) => !seat),
       );
 
       if (firstIncompleteSegmentIndex >= 0) {
+        if (firstIncompleteSegmentIndex !== activeSegmentIndex) {
+          setActiveSegmentIndex(firstIncompleteSegmentIndex);
+          setActivePassengerIndex(0);
+          setItineraryCompletionMessage(`Complete segment ${firstIncompleteSegmentIndex + 1} before finishing the itinerary.`);
+          return;
+        }
+
+        if (activeSegmentIndex < segmentCount - 1) {
+          setActiveSegmentIndex((current) => current + 1);
+          setActivePassengerIndex(0);
+          setItineraryCompletionMessage("");
+          return;
+        }
+
         setActiveSegmentIndex(firstIncompleteSegmentIndex);
         setActivePassengerIndex(0);
         setItineraryCompletionMessage(`Complete segment ${firstIncompleteSegmentIndex + 1} before finishing the itinerary.`);
@@ -416,18 +423,25 @@ function SeatMapPage() {
     }
 
     if (isItineraryMode) {
-      if (activeSegmentIndex < segmentCount - 1) {
-        setActiveSegmentIndex((current) => current + 1);
-        setActivePassengerIndex(0);
-        setItineraryCompletionMessage("");
-        return;
-      }
-
       const firstIncompleteSegmentIndex = selectedSeatsBySegment.findIndex((segmentSeats) =>
         segmentSeats.length !== passengerTotal || segmentSeats.some((seat) => !seat),
       );
 
       if (firstIncompleteSegmentIndex >= 0) {
+        if (firstIncompleteSegmentIndex !== activeSegmentIndex) {
+          setActiveSegmentIndex(firstIncompleteSegmentIndex);
+          setActivePassengerIndex(0);
+          setItineraryCompletionMessage(`Complete segment ${firstIncompleteSegmentIndex + 1} before finishing the itinerary.`);
+          return;
+        }
+
+        if (activeSegmentIndex < segmentCount - 1) {
+          setActiveSegmentIndex((current) => current + 1);
+          setActivePassengerIndex(0);
+          setItineraryCompletionMessage("");
+          return;
+        }
+
         setActiveSegmentIndex(firstIncompleteSegmentIndex);
         setActivePassengerIndex(0);
         setItineraryCompletionMessage(`Complete segment ${firstIncompleteSegmentIndex + 1} before finishing the itinerary.`);
@@ -763,7 +777,11 @@ function SeatMapPage() {
         >
           {isCreatingHold
             ? "Reserving..."
-            : (isItineraryMode || isRoundTripMode) && activeSegmentIndex < segmentCount - 1
+            : isRoundTripMode && allItinerarySeatsHaveSeats
+              ? "Confirm round-trip seats"
+              : isItineraryMode && allItinerarySeatsHaveSeats
+                ? "Confirm all segment seats"
+                : (isItineraryMode || isRoundTripMode) && activeSegmentIndex < segmentCount - 1
               ? `Confirm ${isRoundTripMode ? activeJourneyLabel.toLowerCase() : "segment"} ${activeSegmentIndex + 1}`
               : isRoundTripMode
                 ? "Confirm round-trip seats"
@@ -793,6 +811,10 @@ function getPlaceLabel(classType: string) {
 function getReservationErrorMessage(error: unknown) {
   if (axios.isAxiosError(error)) {
     if (!error.response) {
+      if (error.code === "ECONNABORTED") {
+        return "Booking took too long to confirm. Please try again; no payment has been taken.";
+      }
+
       return "Could not reserve this seat because the API is unavailable.";
     }
 

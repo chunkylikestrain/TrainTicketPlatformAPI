@@ -14,7 +14,9 @@ export async function createBookingHold(request: CreateBookingRequest) {
 }
 
 export async function createBookingOrderHold(request: CreateBookingOrderRequest) {
-  const response = await apiClient.post<BookingOrder>("/Bookings/orders", request);
+  const response = await apiClient.post<BookingOrder>("/Bookings/orders", request, {
+    timeout: 30000,
+  });
   return response.data;
 }
 

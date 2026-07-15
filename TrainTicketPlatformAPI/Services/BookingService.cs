@@ -130,9 +130,12 @@ namespace TrainTicketPlatformAPI.Services
             await ExpireStalePendingBookingsAsync();
 
             var preparedBookings = new List<PreparedOrderBooking>();
+            var trainsById = new Dictionary<int, Train>();
+            var seatsById = new Dictionary<int, Seat>();
+            var tripsById = new Dictionary<int, Trip>();
             foreach (var booking in bookingList)
             {
-                preparedBookings.Add(await PrepareOrderBookingAsync(booking));
+                preparedBookings.Add(await PrepareOrderBookingAsync(booking, trainsById, seatsById, tripsById));
             }
 
             if (HasOverlappingSeatInsideOrder(preparedBookings))
@@ -722,9 +725,19 @@ namespace TrainTicketPlatformAPI.Services
             return query.AnyAsync();
         }
 
-        private async Task<PreparedOrderBooking> PrepareOrderBookingAsync(Booking booking)
+        private async Task<PreparedOrderBooking> PrepareOrderBookingAsync(
+            Booking booking,
+            Dictionary<int, Train> trainsById,
+            Dictionary<int, Seat> seatsById,
+            Dictionary<int, Trip> tripsById)
         {
-            var train = await _db.Trains.FindAsync(booking.TrainId);
+            if (!trainsById.TryGetValue(booking.TrainId, out var train))
+            {
+                train = await _db.Trains.FindAsync(booking.TrainId);
+                if (train != null)
+                    trainsById[booking.TrainId] = train;
+            }
+
             if (train == null)
                 throw new KeyNotFoundException("Train not found");
 
@@ -733,16 +746,21 @@ namespace TrainTicketPlatformAPI.Services
 
             if (booking.TripId.HasValue)
             {
-                var trip = await _db.Trips
-                    .Include(t => t.TrainRoute)
-                        .ThenInclude(r => r.DepartureStation)
-                    .Include(t => t.TrainRoute)
-                        .ThenInclude(r => r.ArrivalStation)
-                    .Include(t => t.TrainRoute)
-                        .ThenInclude(r => r.RouteStops)
-                            .ThenInclude(s => s.Station)
-                    .FirstOrDefaultAsync(t => t.Id == booking.TripId.Value)
-                           ?? throw new KeyNotFoundException("Trip not found");
+                if (!tripsById.TryGetValue(booking.TripId.Value, out var trip))
+                {
+                    trip = await _db.Trips
+                        .AsSplitQuery()
+                        .Include(t => t.TrainRoute)
+                            .ThenInclude(r => r.DepartureStation)
+                        .Include(t => t.TrainRoute)
+                            .ThenInclude(r => r.ArrivalStation)
+                        .Include(t => t.TrainRoute)
+                            .ThenInclude(r => r.RouteStops)
+                                .ThenInclude(s => s.Station)
+                        .FirstOrDefaultAsync(t => t.Id == booking.TripId.Value)
+                               ?? throw new KeyNotFoundException("Trip not found");
+                    tripsById[booking.TripId.Value] = trip;
+                }
 
                 if (trip.TrainId != booking.TrainId)
                     throw new InvalidOperationException("Trip does not belong to the selected train");
@@ -758,7 +776,13 @@ namespace TrainTicketPlatformAPI.Services
                 throw new InvalidOperationException("Travel date is required");
             }
 
-            var seat = await _db.Seats.FindAsync(booking.SeatId);
+            if (!seatsById.TryGetValue(booking.SeatId, out var seat))
+            {
+                seat = await _db.Seats.FindAsync(booking.SeatId);
+                if (seat != null)
+                    seatsById[booking.SeatId] = seat;
+            }
+
             if (seat == null || !seat.IsAvailable)
                 throw new InvalidOperationException("Seat not available");
 

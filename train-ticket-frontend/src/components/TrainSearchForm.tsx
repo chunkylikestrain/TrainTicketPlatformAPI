@@ -354,15 +354,7 @@ function stationOptionLabel(station: Station) {
 }
 
 function stationSuggestionValues(station: Station) {
-  const values = [
-    stationOptionLabel(station),
-    station.name,
-    `${station.name} (${station.code})`,
-    station.code,
-  ];
-  const asciiValues = values.map(toAsciiSearchText).filter(Boolean);
-
-  return Array.from(new Set([...values, ...asciiValues]));
+  return [stationOptionLabel(station)];
 }
 
 function getDefaultStationName(stations: Station[], fallbackName: string, fallbackCode: string) {
